@@ -36,6 +36,7 @@ import maud.Maud;
 import maud.MaudUtil;
 import maud.action.ActionPrefix;
 import maud.model.cgm.Cgm;
+import maud.model.option.Background;
 
 /**
  * Rendering options for scene views.
@@ -356,16 +357,30 @@ public class RenderOptions implements Cloneable {
                 + Boolean.toString(shadowsRendered);
         MaudUtil.writePerformAction(writer, action);
 
+        action = ActionPrefix.sfSkySimulated + Boolean.toString(skySimulated);
+        MaudUtil.writePerformAction(writer, action);
+
+        action = String.format("%s%s %s", ActionPrefix.setBackgroundColor,
+                Background.SourceScenesWithNoSky, sourceBackground);
+        MaudUtil.writePerformAction(writer, action);
+
+        action = String.format("%s%s %s", ActionPrefix.setBackgroundColor,
+                Background.TargetScenesWithNoSky, targetBackground);
+        MaudUtil.writePerformAction(writer, action);
+
         action = ActionPrefix.selectEdgeFilter + edgeFilter.toString();
+        MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.setCloudiness + Float.toString(cloudiness);
+        MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.setHour + Float.toString(hour);
         MaudUtil.writePerformAction(writer, action);
 
         action = ActionPrefix.setNumSplits + Integer.toString(numSplits);
         MaudUtil.writePerformAction(writer, action);
 
         action = ActionPrefix.setMapSize + Integer.toString(shadowMapSize);
-        MaudUtil.writePerformAction(writer, action);
-
-        action = ActionPrefix.sfSkySimulated + Boolean.toString(skySimulated);
         MaudUtil.writePerformAction(writer, action);
 
         action = ActionPrefix.selectTriangleMode + triangleMode.toString();

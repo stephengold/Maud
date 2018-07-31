@@ -313,6 +313,12 @@ class SetAction {
             float width = Float.valueOf(arg);
             model.getScene().getBounds().setLineWidth(width);
 
+        } else if (actionString.startsWith(ActionPrefix.setCloudiness)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setCloudiness);
+            float fraction = Float.valueOf(arg);
+            model.getScene().getRender().setCloudiness(fraction);
+
         } else if (actionString.startsWith(ActionPrefix.setColorDepth)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setColorDepth);
@@ -345,6 +351,11 @@ class SetAction {
             arg = MyString.remainder(actionString, ActionPrefix.setFrameTime);
             float value = Float.parseFloat(arg);
             target.getFrame().setTime(value);
+
+        } else if (actionString.startsWith(ActionPrefix.setHour)) {
+            arg = MyString.remainder(actionString, ActionPrefix.setHour);
+            float hour = Float.valueOf(arg);
+            model.getScene().getRender().setHour(hour);
 
         } else if (actionString.startsWith(ActionPrefix.setMainDirection)) {
             arg = MyString.remainder(actionString,
@@ -393,10 +404,22 @@ class SetAction {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setPhysicsRbpValue);
             String[] args = arg.split(" ");
-            RigidBodyParameter parm = RigidBodyParameter.valueOf(args[0]);
             if (args.length == 2) {
+                RigidBodyParameter parm = RigidBodyParameter.valueOf(args[0]);
                 float value = Float.parseFloat(args[1]);
                 target.setRigidBodyParameter(parm, value);
+            } else {
+                handled = false;
+            }
+
+        } else if (actionString.startsWith(ActionPrefix.setPlatformDiameter)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setPlatformDiameter);
+            String[] args = arg.split(" ");
+            if (args.length == 2) {
+                WhichCgm which = WhichCgm.valueOf(args[0]);
+                float diameter = Float.parseFloat(args[1]);
+                model.getScene().setPlatformDiameter(which, diameter);
             } else {
                 handled = false;
             }
@@ -410,8 +433,8 @@ class SetAction {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setShapeParmValue);
             String[] args = arg.split(" ");
-            ShapeParameter parm = ShapeParameter.valueOf(args[0]);
             if (args.length == 2) {
+                ShapeParameter parm = ShapeParameter.valueOf(args[0]);
                 float value = Float.parseFloat(args[1]);
                 target.setShapeParameter(parm, value);
             } else {

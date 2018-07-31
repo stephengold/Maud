@@ -477,6 +477,10 @@ public class ActionPrefix {
      */
     final public static String setBoundsLineWidth = "set boundsLineWidth ";
     /**
+     * argument is a decimal fraction
+     */
+    final public static String setCloudiness = "set cloudiness ";
+    /**
      * argument is a decimal number of bits
      */
     final public static String setColorDepth = "set colorDepth ";
@@ -498,6 +502,10 @@ public class ActionPrefix {
      * argument is a decimal time in seconds
      */
     final public static String setFrameTime = "set frameTime ";
+    /**
+     * argument is a decimal float
+     */
+    final public static String setHour = "set hour ";
     /**
      * argument is a Vector3f value
      */
@@ -531,6 +539,10 @@ public class ActionPrefix {
      * arguments are the parameter name and a decimal value
      */
     final public static String setPhysicsRbpValue = "set physicsRbpValue ";
+    /**
+     * arguments are whichCgm and a decimal diameter in world units
+     */
+    final public static String setPlatformDiameter = "set platformDiameter ";
     /**
      * argument is a decimal refresh rate in Hertz
      */

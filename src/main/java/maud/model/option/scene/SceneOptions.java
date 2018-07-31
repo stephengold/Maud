@@ -30,6 +30,8 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
+import maud.MaudUtil;
+import maud.action.ActionPrefix;
 import maud.model.WhichCgm;
 
 /**
@@ -256,6 +258,12 @@ public class SceneOptions implements Cloneable {
         boundsOptions.writeToScript(writer);
         cameraOptions.writeToScript(writer);
         cursorOptions.writeToScript(writer);
+
+        // CGM load overrides platform diameter, so no point in writing it here
+        String action = ActionPrefix.selectPlatformType
+                + platformType.toString();
+        MaudUtil.writePerformAction(writer, action);
+
         lightsOptions.writeToScript(writer);
         renderOptions.writeToScript(writer);
         skeletonOptions.writeToScript(writer);
