@@ -182,8 +182,7 @@ public class AxesOptions implements Cloneable {
         action = ActionPrefix.selectAxesSubject + subject.toString();
         MaudUtil.writePerformAction(writer, action);
 
-        action = ActionPrefix.setAxesDepthTest
-                + Boolean.toString(depthTestFlag);
+        action = ActionPrefix.sfAxesDepthTest + Boolean.toString(depthTestFlag);
         MaudUtil.writePerformAction(writer, action);
 
         action = ActionPrefix.setAxesLineWidth + Float.toString(lineWidth);

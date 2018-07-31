@@ -217,6 +217,10 @@ public class EditorInputMode extends InputMode {
                     handled = SetAction.process(actionString);
                     break;
 
+                case "setFlag":
+                    handled = SetFlagAction.process(actionString);
+                    break;
+
                 case "toggle":
                     handled = toggleAction(actionString);
                     break;

@@ -54,7 +54,7 @@ import maud.model.option.ShapeParameter;
 import maud.model.option.scene.SkeletonColors;
 
 /**
- * Process actions that start with the word "set". TODO split off "setFlag"
+ * Process actions that start with the word "set".
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -278,18 +278,6 @@ class SetAction {
             float size = Float.valueOf(arg);
             model.getScene().getCursor().setSize(size);
 
-        } else if (actionString.startsWith(ActionPrefix.set3DCursorVisible)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.set3DCursorVisible);
-            boolean newSetting = Boolean.parseBoolean(arg);
-            model.getScene().getCursor().setVisible(newSetting);
-
-        } else if (actionString.startsWith(ActionPrefix.setAxesDepthTest)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.setAxesDepthTest);
-            boolean newSetting = Boolean.parseBoolean(arg);
-            model.getScene().getAxes().setDepthTestFlag(newSetting);
-
         } else if (actionString.startsWith(ActionPrefix.setAxesLineWidth)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setAxesLineWidth);
@@ -314,12 +302,6 @@ class SetAction {
             Spatial.BatchHint value = Spatial.BatchHint.valueOf(arg);
             target.setBatchHint(value);
 
-        } else if (actionString.startsWith(ActionPrefix.setBoundsDepthTest)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.setBoundsDepthTest);
-            boolean newSetting = Boolean.parseBoolean(arg);
-            model.getScene().getBounds().setDepthTestFlag(newSetting);
-
         } else if (actionString.startsWith(ActionPrefix.setBoundsColor)) {
             arg = MyString.remainder(actionString, ActionPrefix.setBoundsColor);
             ColorRGBA color = MaudUtil.parseColor(arg);
@@ -341,11 +323,6 @@ class SetAction {
             arg = MyString.remainder(actionString, ActionPrefix.setCullHint);
             Spatial.CullHint value = Spatial.CullHint.valueOf(arg);
             target.setCullHint(value);
-
-        } else if (actionString.startsWith(ActionPrefix.setDiagnose)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setDiagnose);
-            boolean newSetting = Boolean.parseBoolean(arg);
-            model.getMisc().setDiagnoseLoads(newSetting);
 
         } else if (actionString.startsWith(ActionPrefix.setDimensions)) {
             arg = MyString.remainder(actionString, ActionPrefix.setDimensions);
@@ -379,11 +356,6 @@ class SetAction {
             int base = Integer.parseInt(arg);
             model.getMisc().setIndexBase(base);
 
-        } else if (actionString.startsWith(ActionPrefix.setLoadZUp)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setLoadZUp);
-            boolean zUp = Boolean.parseBoolean(arg);
-            model.getMisc().setLoadZup(zUp);
-
         } else if (actionString.startsWith(ActionPrefix.setMapSize)) {
             arg = MyString.remainder(actionString, ActionPrefix.setMapSize);
             int mapSize = Integer.parseInt(arg);
@@ -393,12 +365,6 @@ class SetAction {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setMatParamValue);
             target.setMatParamValue(arg);
-
-        } else if (actionString.startsWith(ActionPrefix.setMenuBarVisible)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.setMenuBarVisible);
-            boolean visible = Boolean.parseBoolean(arg);
-            model.getMisc().setMenuBarVisible(visible);
 
         } else if (actionString.startsWith(ActionPrefix.setMsaaFactor)) {
             arg = MyString.remainder(actionString, ActionPrefix.setMsaaFactor);
@@ -434,12 +400,6 @@ class SetAction {
                 handled = false;
             }
 
-        } else if (actionString.startsWith(ActionPrefix.setPhysicsRendered)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.setPhysicsRendered);
-            boolean rendered = Boolean.parseBoolean(arg);
-            model.getScene().getRender().setPhysicsRendered(rendered);
-
         } else if (actionString.startsWith(ActionPrefix.setQueueBucket)) {
             arg = MyString.remainder(actionString, ActionPrefix.setQueueBucket);
             RenderQueue.Bucket value = RenderQueue.Bucket.valueOf(arg);
@@ -454,30 +414,6 @@ class SetAction {
             arg = MyString.remainder(actionString, ActionPrefix.setShadowMode);
             RenderQueue.ShadowMode value = RenderQueue.ShadowMode.valueOf(arg);
             target.setShadowMode(value);
-
-        } else if (actionString.startsWith(ActionPrefix.setShadowsRendered)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.setShadowsRendered);
-            boolean rendered = Boolean.parseBoolean(arg);
-            model.getScene().getRender().setShadowsRendered(rendered);
-
-        } else if (actionString.startsWith(ActionPrefix.setShowRotations)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.setShowRotations);
-            boolean shown = Boolean.parseBoolean(arg);
-            model.getScore().setShowRotations(shown);
-
-        } else if (actionString.startsWith(ActionPrefix.setShowScales)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.setShowScales);
-            boolean shown = Boolean.parseBoolean(arg);
-            model.getScore().setShowScales(shown);
-
-        } else if (actionString.startsWith(ActionPrefix.setShowTranslations)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.setShowTranslations);
-            boolean shown = Boolean.parseBoolean(arg);
-            model.getScore().setShowTranslations(shown);
 
         } else if (actionString.startsWith(ActionPrefix.setShapeParmValue)) {
             arg = MyString.remainder(actionString,
@@ -515,12 +451,6 @@ class SetAction {
                     ActionPrefix.setSkeletonPointSize);
             float pointSize = Float.valueOf(arg);
             model.getScene().getSkeleton().setPointSize(pointSize);
-
-        } else if (actionString.startsWith(ActionPrefix.setSkySimulated)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.setSkySimulated);
-            boolean rendered = Boolean.parseBoolean(arg);
-            model.getScene().getRender().setSkySimulated(rendered);
 
         } else if (actionString.startsWith(ActionPrefix.setSubmenuWarp)) {
             arg = MyString.remainder(actionString, ActionPrefix.setSubmenuWarp);

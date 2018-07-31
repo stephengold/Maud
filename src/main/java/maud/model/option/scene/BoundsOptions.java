@@ -128,8 +128,7 @@ public class BoundsOptions implements Cloneable {
         Validate.inRange(newWidth, "new width", 0f, Float.MAX_VALUE);
         lineWidth = newWidth;
     }
-    
-    
+
     /**
      * Write the options to a script using the specified writer.
      *
@@ -139,7 +138,7 @@ public class BoundsOptions implements Cloneable {
     void writeToScript(Writer writer) throws IOException {
         Validate.nonNull(writer, "writer");
 
-        String action = ActionPrefix.setBoundsDepthTest
+        String action = ActionPrefix.sfBoundsDepthTest
                 + Boolean.toString(depthTestFlag);
         MaudUtil.writePerformAction(writer, action);
 

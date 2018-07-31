@@ -348,11 +348,11 @@ public class RenderOptions implements Cloneable {
     void writeToScript(Writer writer) throws IOException {
         Validate.nonNull(writer, "writer");
 
-        String action = ActionPrefix.setPhysicsRendered
+        String action = ActionPrefix.sfPhysicsRendered
                 + Boolean.toString(physicsRendered);
         MaudUtil.writePerformAction(writer, action);
 
-        action = ActionPrefix.setShadowsRendered
+        action = ActionPrefix.sfShadowsRendered
                 + Boolean.toString(shadowsRendered);
         MaudUtil.writePerformAction(writer, action);
 
@@ -365,7 +365,7 @@ public class RenderOptions implements Cloneable {
         action = ActionPrefix.setMapSize + Integer.toString(shadowMapSize);
         MaudUtil.writePerformAction(writer, action);
 
-        action = ActionPrefix.setSkySimulated + Boolean.toString(skySimulated);
+        action = ActionPrefix.sfSkySimulated + Boolean.toString(skySimulated);
         MaudUtil.writePerformAction(writer, action);
 
         action = ActionPrefix.selectTriangleMode + triangleMode.toString();

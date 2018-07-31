@@ -170,7 +170,7 @@ public class DddCursorOptions implements Cloneable {
     void writeToScript(Writer writer) throws IOException {
         Validate.nonNull(writer, "writer");
 
-        String action = ActionPrefix.set3DCursorVisible
+        String action = ActionPrefix.sf3DCursorVisible
                 + Boolean.toString(visible);
         MaudUtil.writePerformAction(writer, action);
 

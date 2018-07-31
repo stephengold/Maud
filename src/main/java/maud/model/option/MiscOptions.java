@@ -543,13 +543,13 @@ public class MiscOptions implements Cloneable {
         String action = ActionPrefix.selectBackground + background.toString();
         MaudUtil.writePerformAction(writer, action);
 
-        action = ActionPrefix.setDiagnose + Boolean.toString(diagnoseLoads);
+        action = ActionPrefix.sfDiagnose + Boolean.toString(diagnoseLoads);
         MaudUtil.writePerformAction(writer, action);
 
-        action = ActionPrefix.setLoadZUp + Boolean.toString(loadZup);
+        action = ActionPrefix.sfLoadZUp + Boolean.toString(loadZup);
         MaudUtil.writePerformAction(writer, action);
 
-        action = ActionPrefix.setMenuBarVisible
+        action = ActionPrefix.sfMenuBarVisible
                 + Boolean.toString(menuBarVisibility);
         MaudUtil.writePerformAction(writer, action);
 

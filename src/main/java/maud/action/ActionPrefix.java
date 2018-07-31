@@ -437,14 +437,6 @@ public class ActionPrefix {
      */
     final public static String set3DCursorSize = "set 3DCursorSize ";
     /**
-     * argument is a boolean value
-     */
-    final public static String set3DCursorVisible = "set 3DCursorVisible ";
-    /**
-     * argument is a boolean value
-     */
-    final public static String setAxesDepthTest = "set axesDepthTest ";
-    /**
      * argument is a decimal width in pixels
      */
     final public static String setAxesLineWidth = "set axesLineWidth ";
@@ -461,10 +453,6 @@ public class ActionPrefix {
      */
     final public static String setBoundsColor = "set boundsColor ";
     /**
-     * argument is a boolean value
-     */
-    final public static String setBoundsDepthTest = "set boundsDepthTest ";
-    /**
      * argument is a decimal width in pixels
      */
     final public static String setBoundsLineWidth = "set boundsLineWidth ";
@@ -476,10 +464,6 @@ public class ActionPrefix {
      * argument is the name of a cull hint
      */
     final public static String setCullHint = "set cullHint ";
-    /**
-     * argument is a boolean value
-     */
-    final public static String setDiagnose = "set diagnose ";
     /**
      * arguments are the decimal width in pixels, an "x", and the decimal height
      * in pixels
@@ -503,17 +487,9 @@ public class ActionPrefix {
      */
     final public static String setIndexBase = "set indexBase ";
     /**
-     * argument is a boolean value
-     */
-    final public static String setLoadZUp = "set loadZUp ";
-    /**
      * argument is a decimal size in bits
      */
     final public static String setMapSize = "set mapSize ";
-    /**
-     * argument is a boolean value
-     */
-    final public static String setMenuBarVisible = "set menuBarVisible ";
     /**
      * argument is a number of samples per pixel, formatted using
      * {@link maud.MaudUtil#describeMsaaFactor(int)}
@@ -536,10 +512,6 @@ public class ActionPrefix {
      */
     final public static String setPhysicsRbpValue = "set physicsRbpValue ";
     /**
-     * argument is a boolean value
-     */
-    final public static String setPhysicsRendered = "set physicsRendered ";
-    /**
      * argument is a decimal refresh rate in Hertz
      */
     final public static String setRefreshRate = "set refreshRate ";
@@ -552,25 +524,9 @@ public class ActionPrefix {
      */
     final public static String setShadowMode = "set shadowMode ";
     /**
-     * argument is a boolean value
-     */
-    final public static String setShadowsRendered = "set shadowsRendered ";
-    /**
      * arguments are the parameter name and a decimal float
      */
     final public static String setShapeParmValue = "set shapeParmValue ";
-    /**
-     * argument is a boolean value
-     */
-    final public static String setShowRotations = "set showRotations ";
-    /**
-     * argument is a boolean value
-     */
-    final public static String setShowScales = "set showScales ";
-    /**
-     * argument is a boolean value
-     */
-    final public static String setShowTranslations = "set showTranslations ";
     /**
      * arguments are the name of a SkeletonColors and a color
      */
@@ -583,10 +539,6 @@ public class ActionPrefix {
      * argument is a decimal size in pixels
      */
     final public static String setSkeletonPointSize = "set skeletonPointSize ";
-    /**
-     * argument is a boolean value
-     */
-    final public static String setSkySimulated = "set skySimulated ";
     /**
      * arguments are 2 decimal fractions
      */
@@ -609,6 +561,54 @@ public class ActionPrefix {
      * argument is a decimal fraction
      */
     final public static String setXBoundary = "set xBoundary ";
+    /**
+     * argument is a boolean value
+     */
+    final public static String sf3DCursorVisible = "setFlag 3DCursorVisible ";
+    /**
+     * argument is a boolean value
+     */
+    final public static String sfAxesDepthTest = "setFlag axesDepthTest ";
+    /**
+     * argument is a boolean value
+     */
+    final public static String sfBoundsDepthTest = "setFlag boundsDepthTest ";
+    /**
+     * argument is a boolean value
+     */
+    final public static String sfDiagnose = "setFlag diagnose ";
+    /**
+     * argument is a boolean value
+     */
+    final public static String sfLoadZUp = "setFlag loadZUp ";
+    /**
+     * argument is a boolean value
+     */
+    final public static String sfMenuBarVisible = "setFlag menuBarVisible ";
+    /**
+     * argument is a boolean value
+     */
+    final public static String sfPhysicsRendered = "setFlag physicsRendered ";
+    /**
+     * argument is a boolean value
+     */
+    final public static String sfShadowsRendered = "setFlag shadowsRendered ";
+    /**
+     * argument is a boolean value
+     */
+    final public static String sfShowRotations = "setFlag showRotations ";
+    /**
+     * argument is a boolean value
+     */
+    final public static String sfShowScales = "setFlag showScales ";
+    /**
+     * argument is a boolean value
+     */
+    final public static String sfShowTranslations = "setFlag showTranslations ";
+    /**
+     * argument is a boolean value
+     */
+    final public static String sfSkySimulated = "setFlag skySimulated ";
     /**
      * argument is the name of a license type
      */
