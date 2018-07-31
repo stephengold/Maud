@@ -27,8 +27,12 @@
 package maud.model.option.scene;
 
 import com.jme3.math.Vector3f;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
+import maud.MaudUtil;
+import maud.action.ActionPrefix;
 
 /**
  * Options for lighting scene views with no sky simulation.
@@ -131,6 +135,26 @@ public class LightsOptions implements Cloneable {
     public void setMainLevel(float newLevel) {
         Validate.nonNegative(newLevel, "new level");
         mainLevel = newLevel;
+    }
+
+    /**
+     * Write the options to a script using the specified writer.
+     *
+     * @param writer (not null)
+     * @throws java.io.IOException if an I/O error occurs while writing
+     */
+    void writeToScript(Writer writer) throws IOException {
+        Validate.nonNull(writer, "writer");
+
+        String action = ActionPrefix.setAmbientLevel
+                + Float.toString(ambientLevel);
+        MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.setMainLevel + Float.toString(mainLevel);
+        MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.setMainDirection + direction.toString();
+        MaudUtil.writePerformAction(writer, action);
     }
     // *************************************************************************
     // Cloneable methods

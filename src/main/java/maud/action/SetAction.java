@@ -28,6 +28,7 @@ package maud.action;
 
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector3f;
 import com.jme3.shader.VarType;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
@@ -276,6 +277,12 @@ class SetAction {
             float size = Float.valueOf(arg);
             model.getScene().getCursor().setSize(size);
 
+        } else if (actionString.startsWith(ActionPrefix.setAmbientLevel)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setAmbientLevel);
+            float level = Float.valueOf(arg);
+            model.getScene().getLights().setAmbientLevel(level);
+
         } else if (actionString.startsWith(ActionPrefix.setAxesLineWidth)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setAxesLineWidth);
@@ -338,6 +345,17 @@ class SetAction {
             arg = MyString.remainder(actionString, ActionPrefix.setFrameTime);
             float value = Float.parseFloat(arg);
             target.getFrame().setTime(value);
+
+        } else if (actionString.startsWith(ActionPrefix.setMainDirection)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setMainDirection);
+            Vector3f direction = MaudUtil.parseVector3f(arg);
+            model.getScene().getLights().setDirection(direction);
+
+        } else if (actionString.startsWith(ActionPrefix.setMainLevel)) {
+            arg = MyString.remainder(actionString, ActionPrefix.setMainLevel);
+            float level = Float.valueOf(arg);
+            model.getScene().getLights().setMainLevel(level);
 
         } else if (actionString.startsWith(ActionPrefix.setMapSize)) {
             arg = MyString.remainder(actionString, ActionPrefix.setMapSize);

@@ -111,6 +111,11 @@ public class MaudUtil {
      */
     final private static Pattern nullPattern = Pattern.compile("\\s*null\\s*");
     /**
+     * pattern for matching a Vector3f
+     */
+    final private static Pattern vector3fPattern = Pattern.compile(
+            "\\(\\s*([^,]+),\\s+([^,]+),\\s+(\\S+)\\s*\\)");
+    /**
      * local copy of {@link com.jme3.math.Transform#IDENTITY}
      */
     final private static Transform transformIdentity = new Transform();
@@ -966,6 +971,31 @@ public class MaudUtil {
                 default: // TODO more types
                     throw new IllegalArgumentException();
             }
+        }
+
+        return result;
+    }
+
+    /**
+     * Parse a Vector3f from the specified text string. TODO use heart library
+     *
+     * @param textString input text (not null, not empty)
+     * @return a new vector, or null if the text is invalid
+     */
+    public static Vector3f parseVector3f(String textString) {
+        Validate.nonEmpty(textString, "text string");
+
+        Vector3f result = null;
+        Matcher matcher = vector3fPattern.matcher(textString);
+        boolean valid = matcher.matches();
+        if (valid) {
+            String xText = matcher.group(1);
+            float x = Float.parseFloat(xText);
+            String yText = matcher.group(2);
+            float y = Float.parseFloat(yText);
+            String zText = matcher.group(3);
+            float z = Float.parseFloat(zText);
+            result = new Vector3f(x, y, z);
         }
 
         return result;

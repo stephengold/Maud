@@ -457,6 +457,10 @@ public class ActionPrefix {
      */
     final public static String set3DCursorSize = "set 3DCursorSize ";
     /**
+     * argument is a decimal float
+     */
+    final public static String setAmbientLevel = "set ambientLevel ";
+    /**
      * argument is a decimal width in pixels
      */
     final public static String setAxesLineWidth = "set axesLineWidth ";
@@ -494,6 +498,14 @@ public class ActionPrefix {
      * argument is a decimal time in seconds
      */
     final public static String setFrameTime = "set frameTime ";
+    /**
+     * argument is a Vector3f value
+     */
+    final public static String setMainDirection = "set mainDirection ";
+    /**
+     * argument is a decimal float
+     */
+    final public static String setMainLevel = "set mainLevel ";
     /**
      * argument is a decimal size in bits
      */
