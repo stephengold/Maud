@@ -154,27 +154,6 @@ public class SceneView extends SceneViewCore {
     }
 
     /**
-     * Calculate the length of the specified axis.
-     *
-     * @param axisIndex which axis: 0&rarr;X, 1&rarr;Y, 2&rarr;Z
-     * @return length (in local units, &ge;0)
-     */
-    public float axisLength(int axisIndex) {
-        Validate.inRange(axisIndex, "axis index", MyVector3f.firstAxis,
-                MyVector3f.lastAxis);
-
-        AxesVisualizer visualizer = getAxesVisualizer();
-        Spatial spatial = visualizer.getSpatial();
-        Vector3f tipWorld = visualizer.tipLocation(axisIndex);
-        assert !MySpatial.isIgnoringTransforms(spatial);
-        Vector3f tipLocal = spatial.worldToLocal(tipWorld, null);
-        float length = tipLocal.length();
-
-        assert length >= 0f : length;
-        return length;
-    }
-
-    /**
      * Attach a clone of the specified child spatial to the specified node in
      * the C-G model.
      *
@@ -219,6 +198,27 @@ public class SceneView extends SceneViewCore {
              */
             controlled.addControl(skeletonVisualizer);
         }
+    }
+
+    /**
+     * Calculate the length of the specified axis.
+     *
+     * @param axisIndex which axis: 0&rarr;X, 1&rarr;Y, 2&rarr;Z
+     * @return length (in local units, &ge;0)
+     */
+    public float axisLength(int axisIndex) {
+        Validate.inRange(axisIndex, "axis index", MyVector3f.firstAxis,
+                MyVector3f.lastAxis);
+
+        AxesVisualizer visualizer = getAxesVisualizer();
+        Spatial spatial = visualizer.getSpatial();
+        Vector3f tipWorld = visualizer.tipLocation(axisIndex);
+        assert !MySpatial.isIgnoringTransforms(spatial);
+        Vector3f tipLocal = spatial.worldToLocal(tipWorld, null);
+        float length = tipLocal.length();
+
+        assert length >= 0f : length;
+        return length;
     }
 
     /**
