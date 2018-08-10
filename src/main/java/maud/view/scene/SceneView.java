@@ -90,13 +90,15 @@ public class SceneView extends SceneViewCore {
      * created)
      * @param parentNode attachment point in the scene graph (not null, alias
      * created)
-     * @param port1 initial view port, or null for none (alias created)
-     * @param port2 view port to use after the screen is split (not null, alias
+     * @param port1 initial main view port, or null for none (alias created)
+     * @param port2 main view port to use after the screen is split (not null,
+     * alias created)
+     * @param overlayRoot root node of the overlay scene graph (not null, alias
      * created)
      */
     public SceneView(Cgm ownerCgm, Node parentNode, ViewPort port1,
-            ViewPort port2) {
-        super(ownerCgm, parentNode, port1, port2);
+            ViewPort port2, Node overlayRoot) {
+        super(ownerCgm, parentNode, port1, port2, overlayRoot);
     }
     // *************************************************************************
     // new methods exposed

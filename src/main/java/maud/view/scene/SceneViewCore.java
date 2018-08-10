@@ -189,6 +189,10 @@ public class SceneViewCore
      */
     final private DirectionalLight mainLight = new DirectionalLight();
     /**
+     * root node of the overlay scene (not null)
+     */
+    final private Node overlayRoot;
+    /**
      * attachment point for this view's copy of the C-G model (applies
      * shadowMode and transforms)
      */
@@ -226,11 +230,11 @@ public class SceneViewCore
      */
     private Spatial vertexSpatial;
     /**
-     * view port used when the screen is not split, or null for none
+     * base view port used when the screen is not split, or null for none
      */
     private ViewPort viewPort1 = null;
     /**
-     * view port used when the screen is split (not null)
+     * base view port used when the screen is split (not null)
      */
     final private ViewPort viewPort2;
     // *************************************************************************
@@ -243,35 +247,38 @@ public class SceneViewCore
      * created)
      * @param parentNode attachment point in the scene graph (not null, alias
      * created)
-     * @param port1 initial view port, or null for none (alias created)
-     * @param port2 view port to use after the screen is split (not null, alias
-     * created)
+     * @param port1 initial base view port, or null for none (alias created)
+     * @param port2 base view port to use after the screen is split (not null,
+     * alias created)
+     * @param oRoot root node of the overlay scene (not null, alias created)
      */
     protected SceneViewCore(Cgm ownerCgm, Node parentNode, ViewPort port1,
-            ViewPort port2) {
+            ViewPort port2, Node oRoot) {
         Validate.nonNull(ownerCgm, "loaded model");
         Validate.nonNull(parentNode, "parent node");
         Validate.nonNull(port2, "port2");
+        Validate.nonNull(oRoot, "overlay root");
 
         cgm = ownerCgm;
         parent = parentNode;
         viewPort1 = port1;
         viewPort2 = port2;
+        overlayRoot = oRoot;
         bulletAppState = makeBullet(port1, port2);
     }
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Attach an orphan spatial to the scene's root node.
+     * Attach an orphan spatial to the scene's base root node.
      *
      * @param orphan spatial to clone (not null)
      */
     void attachToSceneRoot(Spatial orphan) {
         assert MySpatial.isOrphan(orphan);
 
-        Node scene = getSceneRoot();
-        scene.attachChild(orphan);
+        Node baseRoot = getSceneRoot();
+        baseRoot.attachChild(orphan);
     }
 
     /**
@@ -531,7 +538,7 @@ public class SceneViewCore
             MyControlP.enablePhysicsControls(cgmRoot, space);
         }
         if (skeletonVisualizer != null) {
-            parent.addControl(skeletonVisualizer);
+            overlayRoot.addControl(skeletonVisualizer);
         }
         /*
          * Update backpointers to this view.
@@ -608,7 +615,7 @@ public class SceneViewCore
             skeletonVisualizer = new SkeletonVisualizer(assetManager);
             skeletonVisualizer.setSubject(skeletonControl);
             skeletonVisualizer.setSkeleton(skeleton);
-            parent.addControl(skeletonVisualizer);
+            overlayRoot.addControl(skeletonVisualizer);
             skeletonVisualizer.setEnabled(true);
             /*
              * Cause the visualizer to add its geometries to the scene graph.
@@ -811,7 +818,7 @@ public class SceneViewCore
     }
 
     /**
-     * Access the view port used to render this view.
+     * Access the base view port used to render this view.
      *
      * @return the pre-existing view port
      */
@@ -1067,8 +1074,7 @@ public class SceneViewCore
 
         AssetManager assetManager = Locators.getAssetManager();
         boundsVisualizer = new BoundsVisualizer(assetManager);
-        Node scene = getSceneRoot();
-        scene.addControl(boundsVisualizer);
+        overlayRoot.addControl(boundsVisualizer);
     }
 
     /**
@@ -1137,18 +1143,18 @@ public class SceneViewCore
         vertexSpatial = new Geometry("vertex", mesh);
         vertexSpatial.setMaterial(material);
         vertexSpatial.setQueueBucket(Bucket.Transparent);
-
-        attachToSceneRoot(vertexSpatial);
+        overlayRoot.attachChild(vertexSpatial);
     }
 
     /**
-     * Access the root node of the main scene graph.
+     * Access the root node of the base view port's scene graph.
      *
      * @return the pre-existing instance (not null)
      */
     private Node getSceneRoot() {
         List<Spatial> scenes = viewPort2.getScenes();
         int numScenes = scenes.size();
+        assert numScenes >= 1 : numScenes;
         assert numScenes <= 2 : numScenes;
         Spatial spatial = scenes.get(0);
         Node node = (Node) spatial;

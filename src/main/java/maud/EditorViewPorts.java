@@ -62,29 +62,47 @@ public class EditorViewPorts {
     // fields
 
     /**
-     * left half of the display in scene mode
+     * base view port for the left half of the display in scene mode
      */
-    private static ViewPort sourceSceneViewPort;
+    private static ViewPort sourceSceneBase;
+    /**
+     * overlay view port for the left half of the display in scene mode
+     */
+    private static ViewPort sourceSceneOverlay;
     /**
      * left half of the display in score mode
      */
-    private static ViewPort sourceScoreViewPort;
+    private static ViewPort sourceScore;
     /**
-     * right half of the display in hybrid mode or scene mode
+     * base view port for the right half of the display in hybrid mode or scene
+     * mode
      */
-    private static ViewPort targetSceneRightViewPort;
+    private static ViewPort targetSceneRightBase;
+    /**
+     * overlay view port for the right half of the display in hybrid mode or
+     * scene mode
+     */
+    private static ViewPort targetSceneRightOverlay;
+    /**
+     * base view port for the whole display in scene mode, aka "Default"
+     */
+    private static ViewPort targetSceneWideBase;
+    /**
+     * overlay view port for the whole display in scene mode
+     */
+    private static ViewPort targetSceneWideOverlay;
     /**
      * left half of the display in hybrid mode
      */
-    private static ViewPort targetScoreLeftViewPort;
+    private static ViewPort targetScoreLeft;
     /**
      * right half of the display in score mode
      */
-    private static ViewPort targetScoreRightViewPort;
+    private static ViewPort targetScoreRight;
     /**
-     * the whole display in score mode
+     * whole display in score mode
      */
-    private static ViewPort targetScoreWideViewPort;
+    private static ViewPort targetScoreWide;
 // *************************************************************************
     // constructors
 
@@ -100,7 +118,7 @@ public class EditorViewPorts {
      * Add a shadow renderer to the specified view port, without specifying a
      * light.
      *
-     * @param vp which view port (not null)
+     * @param vp which view port (not null, modified)
      * @return the new, disabled instance
      */
     public static DirectionalLightShadowRenderer addShadows(ViewPort vp) {
@@ -111,7 +129,8 @@ public class EditorViewPorts {
         int mapSize = options.getShadowMapSize();
         int numSplits = options.getNumSplits();
         DirectionalLightShadowRenderer dlsr
-                = new DirectionalLightShadowRenderer(manager, mapSize, numSplits);
+                = new DirectionalLightShadowRenderer(manager, mapSize,
+                        numSplits);
         vp.addProcessor(dlsr);
 
         return dlsr;
@@ -137,17 +156,33 @@ public class EditorViewPorts {
      */
     static void startup1() {
         /*
-         * Configure the default view port for the target scene wide view.
+         * Configure the default view port, camera, and root node
+         * for use by the target scene view.
          */
         Maud application = Maud.getApplication();
-        Camera cam = application.getCamera();
-        cam.setName("Target Scene Wide");
-        ViewPort viewPort = application.getViewPort();
+        targetSceneWideBase = application.getViewPort();
+        Camera camera = targetSceneWideBase.getCamera();
+        camera.setName("Target Scene Wide");
+        Node targetBRoot = application.getRootNode();
+        targetBRoot.setName("root for target scene base");
         /*
          * Create 2 view ports for split-display scene views.
          */
         Node sourceSceneParent = createSourceSceneViewPort();
         Node targetSceneParent = createTargetSceneViewPort();
+        /*
+         * Create 2 root nodes for scene-view overlays.
+         */
+        Node sourceOverlayNode = new Node("root for source scene overlays");
+        Node targetOverlayNode = new Node("root for target scene overlays");
+        /*
+         * Create 3 view ports for scene-view overlays.
+         */
+        sourceSceneOverlay = createOverlay(sourceSceneBase, sourceOverlayNode);
+        targetSceneRightOverlay = createOverlay(targetSceneRightBase,
+                targetOverlayNode);
+        targetSceneWideOverlay = createOverlay(targetSceneWideBase,
+                targetOverlayNode);
         /*
          * Create 4 view ports for score views.
          */
@@ -159,17 +194,19 @@ public class EditorViewPorts {
          * Create 2 scene views, each with its own bulletAppState.
          */
         EditorModel editorModel = Maud.getModel();
+        Node sourceORoot = (Node) sourceSceneOverlay.getScenes().get(0);
         SceneView sourceSceneView = new SceneView(editorModel.getSource(),
-                sourceSceneParent, null, sourceSceneViewPort);
+                sourceSceneParent, null, sourceSceneBase, sourceORoot);
+        Node targetORoot = (Node) targetSceneWideOverlay.getScenes().get(0);
         SceneView targetSceneView = new SceneView(editorModel.getTarget(),
-                targetSceneParent, viewPort, targetSceneRightViewPort);
+                targetSceneParent, targetSceneWideBase, targetSceneRightBase,
+                targetORoot);
         /*
          * Create 2 score views.
          */
-        ScoreView sourceScoreView
-                = new ScoreView(null, sourceScoreViewPort, null);
-        ScoreView targetScoreView = new ScoreView(targetScoreWideViewPort,
-                targetScoreRightViewPort, targetScoreLeftViewPort);
+        ScoreView sourceScoreView = new ScoreView(null, sourceScore, null);
+        ScoreView targetScoreView = new ScoreView(targetScoreWide,
+                targetScoreRight, targetScoreLeft);
         /*
          * Attach views to C-G model slots.
          */
@@ -185,41 +222,49 @@ public class EditorViewPorts {
      * Update the configuration of view ports to reflect the MVC model.
      */
     static void update() {
-        ViewPort viewPort = Maud.getApplication().getViewPort();
         EditorModel editorModel = Maud.getModel();
         boolean twoModelsLoaded = editorModel.getSource().isLoaded();
-        MiscOptions misc = editorModel.getMisc();
 
+        MiscOptions misc = editorModel.getMisc();
         ViewMode viewMode = misc.getViewMode();
         switch (viewMode) {
             case Hybrid: // score view on left, scene view on right
-                sourceSceneViewPort.setEnabled(false);
-                targetSceneRightViewPort.setEnabled(true);
-                viewPort.setEnabled(false);
-                sourceScoreViewPort.setEnabled(false);
-                targetScoreLeftViewPort.setEnabled(true);
-                targetScoreRightViewPort.setEnabled(false);
-                targetScoreWideViewPort.setEnabled(false);
+                sourceSceneBase.setEnabled(false);
+                sourceSceneOverlay.setEnabled(false);
+                sourceScore.setEnabled(false);
+                targetSceneRightBase.setEnabled(true);
+                targetSceneRightOverlay.setEnabled(true);
+                targetSceneWideBase.setEnabled(false);
+                targetSceneWideOverlay.setEnabled(false);
+                targetScoreLeft.setEnabled(true);
+                targetScoreRight.setEnabled(false);
+                targetScoreWide.setEnabled(false);
                 break;
 
             case Scene:
-                sourceSceneViewPort.setEnabled(twoModelsLoaded);
-                targetSceneRightViewPort.setEnabled(twoModelsLoaded);
-                viewPort.setEnabled(!twoModelsLoaded);
-                sourceScoreViewPort.setEnabled(false);
-                targetScoreLeftViewPort.setEnabled(false);
-                targetScoreRightViewPort.setEnabled(false);
-                targetScoreWideViewPort.setEnabled(false);
+                sourceSceneBase.setEnabled(twoModelsLoaded);
+                sourceSceneOverlay.setEnabled(twoModelsLoaded);
+                sourceScore.setEnabled(false);
+                targetSceneRightBase.setEnabled(twoModelsLoaded);
+                targetSceneRightOverlay.setEnabled(twoModelsLoaded);
+                targetSceneWideBase.setEnabled(!twoModelsLoaded);
+                targetSceneWideOverlay.setEnabled(!twoModelsLoaded);
+                targetScoreLeft.setEnabled(false);
+                targetScoreRight.setEnabled(false);
+                targetScoreWide.setEnabled(false);
                 break;
 
             case Score:
-                sourceSceneViewPort.setEnabled(false);
-                targetSceneRightViewPort.setEnabled(false);
-                viewPort.setEnabled(false);
-                sourceScoreViewPort.setEnabled(twoModelsLoaded);
-                targetScoreLeftViewPort.setEnabled(false);
-                targetScoreRightViewPort.setEnabled(twoModelsLoaded);
-                targetScoreWideViewPort.setEnabled(!twoModelsLoaded);
+                sourceSceneBase.setEnabled(false);
+                sourceSceneOverlay.setEnabled(false);
+                sourceScore.setEnabled(twoModelsLoaded);
+                targetSceneRightBase.setEnabled(false);
+                targetSceneRightOverlay.setEnabled(false);
+                targetSceneWideBase.setEnabled(false);
+                targetSceneWideOverlay.setEnabled(false);
+                targetScoreLeft.setEnabled(false);
+                targetScoreRight.setEnabled(twoModelsLoaded);
+                targetScoreWide.setEnabled(!twoModelsLoaded);
                 break;
 
             default:
@@ -230,11 +275,13 @@ public class EditorViewPorts {
         boolean split = isSplitScreen();
         if (split) {
             float xBoundary = misc.getXBoundary();
-            updateSideViewPort(sourceSceneViewPort, false, xBoundary);
-            updateSideViewPort(sourceScoreViewPort, false, xBoundary);
-            updateSideViewPort(targetSceneRightViewPort, true, xBoundary);
-            updateSideViewPort(targetScoreLeftViewPort, false, xBoundary);
-            updateSideViewPort(targetScoreRightViewPort, true, xBoundary);
+            updateSideViewPort(sourceSceneBase, false, xBoundary);
+            updateSideViewPort(sourceSceneOverlay, false, xBoundary);
+            updateSideViewPort(sourceScore, false, xBoundary);
+            updateSideViewPort(targetSceneRightBase, true, xBoundary);
+            updateSideViewPort(targetSceneRightOverlay, true, xBoundary);
+            updateSideViewPort(targetScoreLeft, false, xBoundary);
+            updateSideViewPort(targetScoreRight, true, xBoundary);
         }
     }
     // *************************************************************************
@@ -259,6 +306,26 @@ public class EditorViewPorts {
         Node boundaryRoot = new Node("Root for " + name);
         boundaryRoot.setQueueBucket(RenderQueue.Bucket.Gui);
         viewPort.attachScene(boundaryRoot);
+    }
+
+    /**
+     * Create an overlay for a pre-existing view port.
+     *
+     * @param base base view port (not null, unaffected)
+     * @param overlayRoot root node for the new view port (not null, alias
+     * created)
+     * @return a new, disabled view port
+     */
+    private static ViewPort createOverlay(ViewPort base, Node overlayRoot) {
+        String name = base.getName() + " Overlay";
+        Camera camera = base.getCamera();
+        RenderManager renderManager = Maud.getApplication().getRenderManager();
+        ViewPort viewPort = renderManager.createMainView(name, camera);
+        viewPort.attachScene(overlayRoot);
+        viewPort.setClearFlags(false, false, false);
+        viewPort.setEnabled(false);
+
+        return viewPort;
     }
 
     /**
@@ -287,14 +354,14 @@ public class EditorViewPorts {
         Camera camera = createHalfCamera(false);
         camera.setName(name);
         RenderManager renderManager = Maud.getApplication().getRenderManager();
-        sourceSceneViewPort = renderManager.createMainView(name, camera);
-        sourceSceneViewPort.setClearFlags(true, true, true);
-        sourceSceneViewPort.setEnabled(false);
+        sourceSceneBase = renderManager.createMainView(name, camera);
+        sourceSceneBase.setClearFlags(true, true, true);
+        sourceSceneBase.setEnabled(false);
         /*
          * Attach a scene to the new view port.
          */
-        Node scene = new Node("Root for source scene");
-        sourceSceneViewPort.attachScene(scene);
+        Node scene = new Node("root for source scene base");
+        sourceSceneBase.attachScene(scene);
         /*
          * Add an attachment point to the scene.
          */
@@ -308,20 +375,18 @@ public class EditorViewPorts {
      * Create a left-half view port for the source score.
      */
     private static void createSourceScoreViewPort() {
-        String name = "Source Score Left";
         Camera camera = createHalfCamera(false);
-        camera.setName(name);
+        camera.setName("Source Score Left");
         camera.setParallelProjection(true);
         RenderManager renderManager = Maud.getApplication().getRenderManager();
-        sourceScoreViewPort
-                = renderManager.createMainView("Source Score", camera);
-        sourceScoreViewPort.setClearFlags(true, true, true);
-        sourceScoreViewPort.setEnabled(false);
+        sourceScore = renderManager.createMainView("Source Score", camera);
+        sourceScore.setClearFlags(true, true, true);
+        sourceScore.setEnabled(false);
         /*
          * Attach a scene to the new view port.
          */
         Node root = new Node("Root for source score");
-        sourceScoreViewPort.attachScene(root);
+        sourceScore.attachScene(root);
     }
 
     /**
@@ -335,14 +400,14 @@ public class EditorViewPorts {
         camera.setName(name);
         Maud application = Maud.getApplication();
         RenderManager renderManager = application.getRenderManager();
-        targetSceneRightViewPort = renderManager.createMainView(name, camera);
-        targetSceneRightViewPort.setClearFlags(true, true, true);
-        targetSceneRightViewPort.setEnabled(false);
+        targetSceneRightBase = renderManager.createMainView(name, camera);
+        targetSceneRightBase.setClearFlags(true, true, true);
+        targetSceneRightBase.setEnabled(false);
         /*
          * Attach the existing scene to the new view port.
          */
         Node rootNode = application.getRootNode();
-        targetSceneRightViewPort.attachScene(rootNode);
+        targetSceneRightBase.attachScene(rootNode);
         /*
          * Add an attachment point to the scene.
          */
@@ -361,14 +426,14 @@ public class EditorViewPorts {
         camera.setName(name);
         camera.setParallelProjection(true);
         RenderManager renderManager = Maud.getApplication().getRenderManager();
-        targetScoreLeftViewPort = renderManager.createMainView(name, camera);
-        targetScoreLeftViewPort.setClearFlags(true, true, true);
-        targetScoreLeftViewPort.setEnabled(false);
+        targetScoreLeft = renderManager.createMainView(name, camera);
+        targetScoreLeft.setClearFlags(true, true, true);
+        targetScoreLeft.setEnabled(false);
         /*
          * Attach a scene to the new view port.
          */
         Node root = new Node("Root for " + name);
-        targetScoreLeftViewPort.attachScene(root);
+        targetScoreLeft.attachScene(root);
     }
 
     /**
@@ -380,14 +445,14 @@ public class EditorViewPorts {
         camera.setName(name);
         camera.setParallelProjection(true);
         RenderManager renderManager = Maud.getApplication().getRenderManager();
-        targetScoreRightViewPort = renderManager.createMainView(name, camera);
-        targetScoreRightViewPort.setClearFlags(true, true, true);
-        targetScoreRightViewPort.setEnabled(false);
+        targetScoreRight = renderManager.createMainView(name, camera);
+        targetScoreRight.setClearFlags(true, true, true);
+        targetScoreRight.setEnabled(false);
         /*
          * Attach a scene to the new view port.
          */
         Node root = new Node("Root for " + name);
-        targetScoreRightViewPort.attachScene(root);
+        targetScoreRight.attachScene(root);
     }
 
     /**
@@ -401,14 +466,14 @@ public class EditorViewPorts {
         camera.setName(name);
         camera.setParallelProjection(true);
         RenderManager renderManager = application.getRenderManager();
-        targetScoreWideViewPort = renderManager.createMainView(name, camera);
-        targetScoreWideViewPort.setClearFlags(true, true, true);
-        targetScoreWideViewPort.setEnabled(false);
+        targetScoreWide = renderManager.createMainView(name, camera);
+        targetScoreWide.setClearFlags(true, true, true);
+        targetScoreWide.setEnabled(false);
         /*
          * Attach a scene to the new view port.
          */
         Node root = new Node("Root for " + name);
-        targetScoreWideViewPort.attachScene(root);
+        targetScoreWide.attachScene(root);
     }
 
     /**
@@ -443,7 +508,7 @@ public class EditorViewPorts {
      *
      * @param vp the view port to update (not null)
      * @param onRightSide which side of the boundary the viewport is on (false
-     * &rarr; left, true &rarr; right)
+     * &rarr; left, true &rarr; right) TODO enum
      * @param xBoundary the display X-coordinate of the left-right boundary
      * (&gt;0, &lt;1)
      */
