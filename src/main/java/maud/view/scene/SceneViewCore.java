@@ -165,7 +165,7 @@ public class SceneViewCore
      */
     private AxesVisualizer axesVisualizer;
     /*
-     * visualizer for bounding boxes added to the scene
+     * bounds visualizer added to the overlay scene
      */
     private BoundsVisualizer boundsVisualizer;
     /**
@@ -214,7 +214,7 @@ public class SceneViewCore
      */
     private SkeletonControl skeletonControl;
     /**
-     * skeleton visualizer with the selected skeleton, or null if none
+     * skeleton visualizer added to the overlay scene
      */
     private SkeletonVisualizer skeletonVisualizer;
     /**
@@ -245,8 +245,8 @@ public class SceneViewCore
      *
      * @param ownerCgm C-G model that will own this view (not null, aliases
      * created)
-     * @param parentNode attachment point in the scene graph (not null, alias
-     * created)
+     * @param parentNode attachment point in the base scene graph (not null,
+     * alias created)
      * @param port1 initial base view port, or null for none (alias created)
      * @param port2 base view port to use after the screen is split (not null,
      * alias created)
@@ -265,6 +265,8 @@ public class SceneViewCore
         viewPort2 = port2;
         overlayRoot = oRoot;
         bulletAppState = makeBullet(port1, port2);
+
+        createSkeletonVisualizer();
     }
     // *************************************************************************
     // new methods exposed
@@ -339,7 +341,7 @@ public class SceneViewCore
     }
 
     /**
-     * Access the bounds visualizer added to the scene.
+     * Access the bounds visualizer added to the overlay scene.
      *
      * @return the pre-existing instance (not null)
      */
@@ -442,11 +444,12 @@ public class SceneViewCore
     }
 
     /**
-     * Access the skeleton visualizer added to the scene.
+     * Access the skeleton visualizer added to the overlay scene.
      *
-     * @return the pre-existing instance, or null if none
+     * @return the pre-existing instance
      */
     SkeletonVisualizer getSkeletonVisualizer() {
+        assert skeletonVisualizer != null;
         return skeletonVisualizer;
     }
 
@@ -481,7 +484,7 @@ public class SceneViewCore
     }
 
     /**
-     * Insert a new node into the scene graph as the parent of the selected
+     * Insert a new node into the base scene graph as the parent of the selected
      * spatial.
      *
      * @param newNodeName a name for the new node (not null, not empty)
@@ -521,8 +524,8 @@ public class SceneViewCore
     }
 
     /**
-     * Re-install the C-G model in the scene graph. Invoked after restoring a
-     * checkpoint.
+     * Re-install the C-G model in the scene base graph. Invoked after restoring
+     * a checkpoint.
      */
     public void postMakeLive() {
         /*
@@ -537,9 +540,7 @@ public class SceneViewCore
             PhysicsSpace space = getPhysicsSpace();
             MyControlP.enablePhysicsControls(cgmRoot, space);
         }
-        if (skeletonVisualizer != null) {
-            overlayRoot.addControl(skeletonVisualizer);
-        }
+        skeletonVisualizer.setSubject(skeletonControl);
         /*
          * Update backpointers to this view.
          */
@@ -549,8 +550,8 @@ public class SceneViewCore
     }
 
     /**
-     * Un-install the C-G model from the scene graph. Invoked before restoring a
-     * checkpoint.
+     * Un-install the C-G model from the base scene graph. Invoked before
+     * restoring a checkpoint.
      */
     public void preMakeLive() {
         if (cgmRoot != null) {
@@ -611,17 +612,15 @@ public class SceneViewCore
             controlled.addControl(skeletonControl);
             skeletonControl.setHardwareSkinningPreferred(false);
 
-            AssetManager assetManager = Locators.getAssetManager();
-            skeletonVisualizer = new SkeletonVisualizer(assetManager);
             skeletonVisualizer.setSubject(skeletonControl);
             skeletonVisualizer.setSkeleton(skeleton);
-            overlayRoot.addControl(skeletonVisualizer);
-            skeletonVisualizer.setEnabled(true);
             /*
-             * Cause the visualizer to add its geometries to the scene graph.
+             * Cause the visualizer to add its geometries to the overlay scene
+             * graph.
              * This is vital when loading BVH files, which don't provide any
              * geometries.
              */
+            skeletonVisualizer.setEnabled(true);
             skeletonVisualizer.update(0f);
         }
     }
@@ -631,7 +630,7 @@ public class SceneViewCore
      */
     public void unloadCgm() {
         /*
-         * Detach the old spatial (if any) from the scene graph.
+         * Detach the old spatial (if any) from the base scene graph.
          */
         if (cgmRoot != null) {
             MyControlP.disablePhysicsControls(cgmRoot);
@@ -641,7 +640,6 @@ public class SceneViewCore
         animControl = null;
         skeleton = null;
         skeletonControl = null;
-        skeletonVisualizer = null;
     }
     // *************************************************************************
     // EditorView methods
@@ -847,7 +845,7 @@ public class SceneViewCore
     public void update(Cgm ignored, float updateInterval) {
         if (skyControl == null) {  // TODO add an init method
             /*
-             * Initialize the scene graph on first update.
+             * Initialize the scene graphs on first update.
              */
             createAxes();
             createBounds();
@@ -912,12 +910,13 @@ public class SceneViewCore
         cgmTransform = cloner.clone(cgmTransform);
         // cursor not cloned: shared
         // mainLight not cloned: shared
+        // overlayRoot not cloned: shared
         // parent not cloned: shared
         // platform not cloned: shared
         // projectile not cloned: shared
         skeleton = cloner.clone(skeleton);
         skeletonControl = cloner.clone(skeletonControl);
-        skeletonVisualizer = cloner.clone(skeletonVisualizer);
+        // skeletonVisualizer not cloned: shared
         // skyControl not cloned: shared
         // vertexSpatial not cloned: shared
         // viewPort1, viewPort2 not cloned: shared
@@ -1030,9 +1029,10 @@ public class SceneViewCore
             RenderManager rm = Maud.getApplication().getRenderManager();
             skeletonControl.render(rm, null);
             skeleton = null;
+            skeletonVisualizer.setSkeleton(null);
         }
         /*
-         * Remove any skeleton-dependent S-G controls from the scene graph.
+         * Remove any skeleton-dependent S-G controls from the base scene graph.
          */
         if (animControl != null) {
             Spatial controlled = animControl.getSpatial();
@@ -1046,16 +1046,10 @@ public class SceneViewCore
             assert success;
             skeletonControl = null;
         }
-        if (skeletonVisualizer != null) {
-            Spatial controlled = skeletonVisualizer.getSpatial();
-            boolean success = controlled.removeControl(skeletonVisualizer);
-            assert success;
-            skeletonVisualizer = null;
-        }
     }
 
     /**
-     * Add an axes visualizer to the scene graph.
+     * Add an axes visualizer to the base scene graph.
      */
     private void createAxes() {
         AssetManager assetManager = Locators.getAssetManager();
@@ -1067,7 +1061,7 @@ public class SceneViewCore
     }
 
     /**
-     * Create a bounds visualizer and add it to the scene graph.
+     * Create a bounds visualizer and add it to the overlay scene graph.
      */
     private void createBounds() {
         assert boundsVisualizer == null;
@@ -1078,7 +1072,7 @@ public class SceneViewCore
     }
 
     /**
-     * Name 2 lights and add them to the scene graph.
+     * Name 2 lights and add them to the base scene graph.
      */
     private void createLights() {
         Node scene = getSceneRoot();
@@ -1097,7 +1091,16 @@ public class SceneViewCore
     }
 
     /**
-     * Create a sky simulation and add it to the scene graph.
+     * Create a skeleton visualizer and add it to the overlay scene graph.
+     */
+    private void createSkeletonVisualizer() {
+        AssetManager assetManager = Locators.getAssetManager();
+        skeletonVisualizer = new SkeletonVisualizer(assetManager);
+        overlayRoot.addControl(skeletonVisualizer);
+    }
+
+    /**
+     * Create a sky simulation and add it to the base scene graph.
      */
     private void createSky() {
         assert skyControl == null;
@@ -1123,7 +1126,8 @@ public class SceneViewCore
     }
 
     /**
-     * Create a selected-vertex visualization and attach it to the scene graph.
+     * Create a selected-vertex visualization and attach it to the overlay scene
+     * graph.
      */
     private void createVertex() {
         assert vertexSpatial == null;
@@ -1147,7 +1151,7 @@ public class SceneViewCore
     }
 
     /**
-     * Access the root node of the base view port's scene graph.
+     * Access the root node of the base scene graph.
      *
      * @return the pre-existing instance (not null)
      */
@@ -1208,7 +1212,7 @@ public class SceneViewCore
      */
     private void prepareForViewing() {
         /*
-         * Attach the C-G model to the view's scene graph.
+         * Attach the C-G model to the base scene graph.
          */
         parent.attachChild(cgmRoot);
         /*
@@ -1230,12 +1234,12 @@ public class SceneViewCore
         setSkeleton(selectedSkeleton, false);
         /*
          * Configure the transform based on the ranges of vertex coordinates
-         * in the C-G model and (if any) the skeleton visualization subtree.
+         * in the C-G model and the skeleton visualization subtree.
          */
         parent.setLocalTransform(transformIdentity);
         Vector3f[] minMax = MySpatial.findMinMaxCoords(cgmRoot);
-        if (skeletonVisualizer != null) {
-            Node subtree = skeletonVisualizer.getSubtree();
+        Node subtree = skeletonVisualizer.getSubtree();
+        if (subtree != null) {
             Vector3f[] subtreeMinMax = MySpatial.findMinMaxCoords(subtree);
             MyVector3f.accumulateMinima(minMax[0], subtreeMinMax[0]);
             MyVector3f.accumulateMaxima(minMax[1], subtreeMinMax[1]);
@@ -1283,7 +1287,7 @@ public class SceneViewCore
      * Copy the local transform of each spatial in the specified subtree from
      * the MVC model. Note: recursive!
      *
-     * @param spatial subtree of the scene graph (not null)
+     * @param spatial subtree of the base scene graph (not null)
      * @param position tree position of subtree (not null, unaffected)
      */
     private void updateLocalTransforms(Spatial spatial,
@@ -1367,7 +1371,8 @@ public class SceneViewCore
                 pose.modelTransform(boneIndex, transform);
                 Spatial transformSpatial = findTransformSpatial();
                 if (!MySpatial.isIgnoringTransforms(transformSpatial)) {
-                    Transform worldTransform = transformSpatial.getWorldTransform();
+                    Transform worldTransform
+                            = transformSpatial.getWorldTransform();
                     transform.combineWithParent(worldTransform);
                 }
                 MySpatial.setWorldTransform(attachNode, transform);
