@@ -57,7 +57,6 @@ import jme3utilities.MyLight;
 import jme3utilities.MySpatial;
 import jme3utilities.Validate;
 import jme3utilities.debug.AxesVisualizer;
-import jme3utilities.debug.SkeletonVisualizer;
 import jme3utilities.math.MyVector3f;
 import jme3utilities.minie.MyControlP;
 import jme3utilities.minie.MyObject;
@@ -174,16 +173,6 @@ public class SceneView extends SceneViewCore {
         MyControlP.removeNonPhysicsControls(clone);
         PhysicsSpace space = getPhysicsSpace();
         MyControlP.enablePhysicsControls(clone, space);
-
-        SkeletonVisualizer skeletonVisualizer = getSkeletonVisualizer();
-        Spatial controlled = null;
-        if (skeletonVisualizer != null) {
-            /*
-             * Temporarily detach the skeleton visualizer from the scene.
-             */
-            controlled = skeletonVisualizer.getSpatial();
-            controlled.removeControl(skeletonVisualizer);
-        }
         /*
          * Attach the child to the scene.
          */
@@ -193,13 +182,6 @@ public class SceneView extends SceneViewCore {
             parentNode = (Node) parentSpatial;
         }
         parentNode.attachChild(clone);
-
-        if (controlled != null) {
-            /*
-             * Re-attach the skeleton visualizer.
-             */
-            controlled.addControl(skeletonVisualizer);
-        }
     }
 
     /**

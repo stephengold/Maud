@@ -417,9 +417,6 @@ class SceneUpdater {
     private static void updateSkeleton(Cgm cgm) {
         SkeletonVisualizer visualizer
                 = cgm.getSceneView().getSkeletonVisualizer();
-        if (visualizer == null) {
-            return;
-        }
 
         SkeletonOptions options = Maud.getModel().getScene().getSkeleton();
         ShowBones showBones = options.getShowBones();
