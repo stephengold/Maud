@@ -462,12 +462,7 @@ public class SelectedLight implements JmeCloneable {
         if (isSelected() && editableCgm != null) {
             Light newLight = selected.clone();
             newLight.setColor(newColor);
-            String type = getType();
-            String name = selected.getName();
-            String description = String.format(
-                    "changed the color of the %s light named %s",
-                    type, MyString.quote(name));
-            editableCgm.replaceLight(newLight, description);
+            editableCgm.replaceLightColor(newLight);
             select(newLight);
         }
     }

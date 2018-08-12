@@ -106,9 +106,11 @@ public class EditableCgm extends LoadedCgm {
     /**
      * indicates which model state is being edited continuously, either:
      * <ul>
+     * <li> "lc" + light being recolored, or
+     * <li> "lpd" + light being repositioned/redirected, or
+     * <li> "pp" + physics collision object being repositioned, or
      * <li> "ss" + physics collision shape being resized, or
      * <li> "st" + tree position of the spatial being transformed, or
-     * <li> "pp" + physics collision object being repositioned, or
      * <li> "" for no continuous edits
      * </ul>
      */
@@ -801,6 +803,27 @@ public class EditableCgm extends LoadedCgm {
         }
         getSceneView().replaceLight(oldName, newLight);
         setEdited(eventDescription);
+    }
+
+    /**
+     * Remove the selected light and replace it the specified light, which
+     * differs only in color. The invoker is responsible for updating the
+     * selection.
+     *
+     * @param newLight the light to add (not null, alias created)
+     */
+    void replaceLightColor(Light newLight) {
+        assert newLight != null;
+
+        SelectedLight selectedLight = getLight();
+        Spatial owner = selectedLight.getOwner();
+        Light oldLight = selectedLight.get();
+        String oldName = oldLight.getName();
+
+        owner.removeLight(oldLight);
+        owner.addLight(newLight);
+        getSceneView().replaceLight(oldName, newLight);
+        setEditedLightColor();
     }
 
     /**
@@ -1537,6 +1560,23 @@ public class EditableCgm extends LoadedCgm {
         ++editCount;
         continousEditState = "";
         History.addEvent(eventDescription);
+    }
+
+    /**
+     * If not a continuation of the previous light-color edit, update the edit
+     * count.
+     */
+    private void setEditedLightColor() {
+        String lightName = getLight().name();
+        String newState = "lc" + lightName;
+        if (!newState.equals(continousEditState)) {
+            History.autoAdd();
+            ++editCount;
+            continousEditState = newState;
+            String description = String.format("recolor light named %s",
+                    MyString.quote(lightName));
+            History.addEvent(description);
+        }
     }
 
     /**

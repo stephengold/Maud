@@ -1084,6 +1084,47 @@ the menu bar, status bar, and tool windows.
                 </panel>
             </control>
 
+            <control name="window" id="lightColorTool" title="Light-Color Tool"
+                     hideOnClose="true"
+                     height="220px" width="170px" x="210" y="60">
+                <panel childLayout="vertical">
+                    <panel childLayout="horizontal">
+                        <control name="verticalSlider" id="lcRSlider"
+                                 buttonStepSize="1"
+                                 height="150px"
+                                 max="1.2" min="0" stepSize="0.001"/>
+                        <control name="verticalSlider" id="lcGSlider"
+                                 buttonStepSize="1"
+                                 height="150px"
+                                 max="1.2" min="0" stepSize="0.001"/>
+                        <control name="verticalSlider" id="lcBSlider"
+                                 buttonStepSize="1"
+                                 height="150px"
+                                 max="1.2" min="0" stepSize="0.001"/>
+                        <panel childLayout="vertical"
+                               height="150px" width="90px">
+                            <control name="label" id="lcRSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="label" id="lcGSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="label" id="lcBSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="button" id="resetLightColorButton"
+                                     width="*">
+                                <interact onRelease="perform(reset light color)"/>
+                            </control>
+                        </panel>
+                    </panel>
+                    <control name="label" text="Level:"/>
+                    <control name="horizontalSlider" id="lightLevelSlider"
+                             buttonStepSize="1"
+                             max="0.9" min="-1" stepSize="0.001"/>
+                </panel>
+            </control>
+
             <control name="window" id="lightsTool" title="Lights Tool"
                      hideOnClose="true"
                      height="225px" width="270px" x="145" y="125">
@@ -1155,6 +1196,12 @@ the menu bar, status bar, and tool windows.
                         <control name="label" id="lightColor"
                                  backgroundColor="#ffff"
                                  width="*"/>
+                        <control name="button" label="Tool"
+                                 id="id13ToAvoidNiftyWarning"
+                                 width="36px">
+                            <interact onRelease="perform(select tool lightColor)"/>
+                        </control>
+
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Direction:  "/>
@@ -1182,7 +1229,7 @@ the menu bar, status bar, and tool windows.
                                  backgroundColor="#ffff"
                                  width="*"/>
                         <control name="button" label="Load"
-                                 id="id10ToAvoidNiftyWarning"
+                                 id="id14ToAvoidNiftyWarning"
                                  width="40px">
                             <interact onRelease="perform(load map asset)"/>
                         </control>
@@ -1196,7 +1243,7 @@ the menu bar, status bar, and tool windows.
                                  textHAlign="center"
                                  width="70px"/>
                         <control name="button" label="History"
-                                 id="id11ToAvoidNiftyWarning"
+                                 id="id15ToAvoidNiftyWarning"
                                  width="60px">
                             <interact onRelease="perform(select tool history)"/>
                         </control>
@@ -1255,7 +1302,7 @@ the menu bar, status bar, and tool windows.
                                  backgroundColor="#ffff"
                                  width="*"/>
                         <control name="button" label="Select"
-                                 id="id12ToAvoidNiftyWarning"
+                                 id="id16ToAvoidNiftyWarning"
                                  width="50px">
                             <interact onRelease="perform(select bone)"/>
                         </control>
@@ -1269,7 +1316,7 @@ the menu bar, status bar, and tool windows.
                         </control>
                         <panel/>
                         <control name="button" label="Twist"
-                                 id="id13ToAvoidNiftyWarning"
+                                 id="id17ToAvoidNiftyWarning"
                                  width="50px">
                             <interact onRelease="perform(select tool twist)"/>
                         </control>
@@ -1434,7 +1481,7 @@ the menu bar, status bar, and tool windows.
                         </control>
                         <panel/>
                         <control name="button" label="Add new"
-                                 id="id14ToAvoidNiftyWarning"
+                                 id="id18ToAvoidNiftyWarning"
                                  width="60px">
                             <interact onRelease="perform(new override)"/>
                         </control>

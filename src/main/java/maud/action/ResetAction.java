@@ -26,6 +26,7 @@
  */
 package maud.action;
 
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import java.util.logging.Logger;
@@ -43,6 +44,10 @@ class ResetAction {
     // *************************************************************************
     // constants and loggers
 
+    /**
+     * local copy of {@link com.jme3.math.ColorRGBA#White}
+     */
+    final private static ColorRGBA white = new ColorRGBA(1f, 1f, 1f, 1f);
     /**
      * message logger for this class
      */
@@ -111,6 +116,10 @@ class ResetAction {
 
             case Action.resetBoneSelection:
                 mouseCgm.getBone().deselect();
+                break;
+
+            case Action.resetLightColor:
+                target.getLight().setColor(white);
                 break;
 
             case Action.resetSpatialRotation:

@@ -114,6 +114,10 @@ public class EditorTools {
      */
     final private KeyframeTool keyframe;
     /**
+     * controller for the LightColorTool
+     */
+    final private LightColorTool lightColor;
+    /**
      * controller for the LightsTool
      */
     final private LightsTool lights;
@@ -249,6 +253,7 @@ public class EditorTools {
         history = new HistoryTool(screen);
         joint = new JointTool(screen);
         keyframe = new KeyframeTool(screen);
+        lightColor = new LightColorTool(screen);
         lights = new LightsTool(screen);
         mapping = new MappingTool(screen);
         material = new MaterialTool(screen);
@@ -291,7 +296,8 @@ public class EditorTools {
     public void attachAll(AppStateManager stateManager) {
         stateManager.attachAll(animation, axes, background, bone, boneRotation,
                 boneScale, boneTranslation, bounds, camera, cgm, cursor,
-                displaySettings, extract, history, keyframe, joint, lights,
+                displaySettings, extract, history, keyframe, joint, lightColor,
+                lights,
                 mapping, material, object, overrides, platform, render,
                 retarget, sceneLighting, sceneVertex, score, settings, sgc,
                 shape, skeleton, sky, sourceAnimation, spatial, spatialDetails,

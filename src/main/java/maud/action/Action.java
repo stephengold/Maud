@@ -152,6 +152,7 @@ public class Action {
     final static String resetBoneScaleToAnimation = "reset bone sca anim";
     final static String resetBoneScaleToBind = "reset bone sca bind";
     final static String resetBoneSelection = "reset bone selection";
+    final static String resetLightColor = "reset light color";
     final static String resetSpatialRotation = "reset spatial rotation";
     final static String resetSpatialScale = "reset spatial scale";
     final static String resetSpatialTranslation = "reset spatial translation";
