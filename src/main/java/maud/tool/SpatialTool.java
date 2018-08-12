@@ -138,7 +138,7 @@ class SpatialTool extends Tool {
                 materialText = "none";
             }
         } else {
-            materialText = "n/a";
+            materialText = "(not applicable)";
         }
 
         setStatusText("spatialMaterial", " " + materialText);
@@ -172,7 +172,7 @@ class SpatialTool extends Tool {
                 meshText = "none";
             }
         } else {
-            meshText = "n/a";
+            meshText = "(not applicable)";
         }
 
         setStatusText("spatialMesh", " " + meshText);

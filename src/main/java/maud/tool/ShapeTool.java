@@ -116,7 +116,7 @@ class ShapeTool extends Tool {
                     scButton = "Select";
                 }
             } else {
-                childrenText = "n/a";
+                childrenText = "(not applicable)";
             }
         }
 
