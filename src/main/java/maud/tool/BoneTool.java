@@ -140,11 +140,11 @@ class BoneTool extends Tool {
     }
 
     /**
-     * Update the index status and previous/next buttons.
+     * Update the index status and previous/next/select buttons.
      */
     private void updateIndex() {
         String indexStatus;
-        String nextButton, previousButton;
+        String nextButton, previousButton, selectButton;
 
         Cgm target = Maud.getModel().getTarget();
         int numBones = target.getSkeleton().countBones();
@@ -166,9 +166,16 @@ class BoneTool extends Tool {
             previousButton = "";
         }
 
+        if (numBones == 0) {
+            selectButton = "";
+        } else {
+            selectButton = "Select";
+        }
+
         setStatusText("boneIndex", indexStatus);
         setButtonText("boneNext", nextButton);
         setButtonText("bonePrevious", previousButton);
+        setButtonText("boneSelect", selectButton);
     }
 
     /**

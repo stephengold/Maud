@@ -353,8 +353,7 @@ the menu bar, status bar, and tool windows.
                             <interact onRelease="perform(next bone)"/>
                         </control>
                         <panel/>
-                        <control name="button" label="Select bone"
-                                 id="id1ToAvoidNiftyWarning"
+                        <control name="button" id="boneSelectButton"
                                  width="74px">
                             <interact onRelease="perform(select bone)"/>
                         </control>
