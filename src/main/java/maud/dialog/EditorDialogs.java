@@ -1129,6 +1129,27 @@ public class EditorDialogs {
         }
         // TODO bone data
     }
+
+    /**
+     * Display a "wrap animation" dialog.
+     */
+    public static void wrapAnimation() {
+        FloatDialog controller
+                = new FloatDialog("Wrap animation", 0f, 1f, false);
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter weight for end-time keyframes:",
+                "0", ActionPrefix.wrapAnimation, controller);
+    }
+
+    /**
+     * Display a "wrap track" dialog.
+     */
+    public static void wrapTrack() {
+        FloatDialog controller = new FloatDialog("Wrap track", 0f, 1f, false);
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter weight for end-time keyframe:", "0",
+                ActionPrefix.wrapTrack, controller);
+    }
     // *************************************************************************
     // private methods
 
@@ -1161,26 +1182,5 @@ public class EditorDialogs {
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter number of samples:", "17", prefix,
                 controller);
-    }
-
-    /**
-     * Display a "wrap animation" dialog.
-     */
-    public static void wrapAnimation() {
-        FloatDialog controller
-                = new FloatDialog("Wrap animation", 0f, 1f, false);
-        Maud.gui.closeAllPopups();
-        Maud.gui.showTextEntryDialog("Enter weight for end-time keyframes:",
-                "0", ActionPrefix.wrapAnimation, controller);
-    }
-
-    /**
-     * Display a "wrap track" dialog.
-     */
-    public static void wrapTrack() {
-        FloatDialog controller = new FloatDialog("Wrap track", 0f, 1f, false);
-        Maud.gui.closeAllPopups();
-        Maud.gui.showTextEntryDialog("Enter weight for end-time keyframe:", "0",
-                ActionPrefix.wrapTrack, controller);
     }
 }

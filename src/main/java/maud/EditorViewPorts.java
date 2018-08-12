@@ -309,6 +309,22 @@ public class EditorViewPorts {
     }
 
     /**
+     * Instantiate a new camera with a half-width view port.
+     *
+     * @param onRightSide which side of the boundary the viewport is on (false
+     * &rarr; left, true &rarr; right)
+     * @return a new instance with perspective projection
+     */
+    private static Camera createHalfCamera(boolean onRightSide) {
+        Camera cam = Maud.getApplication().getCamera();
+        Camera camera = cam.clone();
+        float xBoundary = 0.5f;
+        updateSideCamera(camera, onRightSide, xBoundary);
+
+        return camera;
+    }
+
+    /**
      * Create an overlay for a pre-existing view port.
      *
      * @param base base view port (not null, unaffected)
@@ -326,22 +342,6 @@ public class EditorViewPorts {
         viewPort.setEnabled(false);
 
         return viewPort;
-    }
-
-    /**
-     * Instantiate a new camera with a half-width view port.
-     *
-     * @param onRightSide which side of the boundary the viewport is on (false
-     * &rarr; left, true &rarr; right)
-     * @return a new instance with perspective projection
-     */
-    private static Camera createHalfCamera(boolean onRightSide) {
-        Camera cam = Maud.getApplication().getCamera();
-        Camera camera = cam.clone();
-        float xBoundary = 0.5f;
-        updateSideCamera(camera, onRightSide, xBoundary);
-
-        return camera;
     }
 
     /**
