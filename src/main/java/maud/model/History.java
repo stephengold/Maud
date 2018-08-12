@@ -220,7 +220,7 @@ public class History {
             ++nextIndex;
         } else {
             message = "There is nothing to redo!";
-            logger.warning(message);
+            warn(message);
         }
 
         setAutoScroll();
@@ -243,8 +243,7 @@ public class History {
 
         } else {
             message = "There is nothing to redo!";
-            logger.warning(message);
-            Maud.getModel().getMisc().setStatusMessage(message);
+            warn(message);
         }
 
         setAutoScroll();
@@ -298,9 +297,24 @@ public class History {
 
         } else {
             message = "There is nothing to undo!";
-            logger.warning(message);
+            warn(message);
         }
 
         setAutoScroll();
+    }
+    // *************************************************************************
+    // private methods
+
+    /**
+     * Issue a warning to the user.
+     *
+     * @param message (not null, not empty)
+     */
+    private static void warn(String message) {
+        assert message != null;
+        assert !message.isEmpty();
+
+        logger.warning(message);
+        Maud.getModel().getMisc().setStatusMessage(message);
     }
 }
