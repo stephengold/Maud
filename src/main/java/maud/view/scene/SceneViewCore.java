@@ -265,8 +265,15 @@ public class SceneViewCore
         viewPort2 = port2;
         overlayRoot = oRoot;
         bulletAppState = makeBullet(port1, port2);
-
+        /*
+         * Initialize the scene graphs.
+         */
+        createAxes();
+        createBounds();
+        createLights();
         createSkeletonVisualizer();
+        createSky();
+        createVertex();
     }
     // *************************************************************************
     // new methods exposed
@@ -843,17 +850,6 @@ public class SceneViewCore
      */
     @Override
     public void update(Cgm ignored, float updateInterval) {
-        if (skyControl == null) {  // TODO add an init method
-            /*
-             * Initialize the scene graphs on first update.
-             */
-            createAxes();
-            createBounds();
-            createLights();
-            createSky();
-            createVertex();
-        }
-
         Camera camera = getCamera();
         if (camera != null) {
             List<Integer> modelRootPosition = new ArrayList<>(0);
