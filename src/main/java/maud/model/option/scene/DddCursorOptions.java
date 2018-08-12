@@ -168,7 +168,7 @@ public class DddCursorOptions implements Cloneable {
      * @throws java.io.IOException if an I/O error occurs while writing
      */
     void writeToScript(Writer writer) throws IOException {
-        Validate.nonNull(writer, "writer");
+        assert writer != null;
 
         String action = ActionPrefix.sf3DCursorVisible
                 + Boolean.toString(visible);

@@ -112,7 +112,7 @@ public class SelectedOverride implements Cloneable {
      * @return the pre-existing instance, or null if none found
      */
     MatParamOverride find(String parameterName) {
-        Validate.nonNull(parameterName, "parameter name");
+        assert parameterName != null;
 
         MatParamOverride result = null;
         if (cgm.isLoaded()) {

@@ -341,7 +341,7 @@ public class SelectedObject implements Cloneable {
      * @param newValue new parameter value
      */
     void set(RigidBodyParameter parameter, float newValue) {
-        Validate.nonNull(parameter, "parameter");
+        assert parameter != null;
 
         PhysicsCollisionObject object = find();
         PhysicsRigidBody prb = (PhysicsRigidBody) object;

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -114,7 +114,7 @@ public class VertexOptions implements Cloneable {
      * @throws java.io.IOException if an I/O error occurs while writing
      */
     void writeToScript(Writer writer) throws IOException {
-        Validate.nonNull(writer, "writer");
+        assert writer != null;
 
         String action = ActionPrefix.setVertexColor + color.toString();
         MaudUtil.writePerformAction(writer, action);

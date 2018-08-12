@@ -397,7 +397,7 @@ public class LoadedAnimation implements Cloneable {
      * @return the pre-existing instance, or null if not found
      */
     SpatialTrack findSpatialTrack(int spatialTrackIndex) {
-        Validate.nonNegative(spatialTrackIndex, "spatial track index");
+        assert spatialTrackIndex >= 0 : spatialTrackIndex;
 
         SpatialTrack result = null;
         Animation realAnimation = getReal();
@@ -416,7 +416,7 @@ public class LoadedAnimation implements Cloneable {
      * @return the pre-existing instance, or null if none
      */
     BoneTrack findTrackForBone(int boneIndex) {
-        Validate.nonNegative(boneIndex, "bone index");
+        assert boneIndex >= 0 : boneIndex;
 
         BoneTrack result = null;
         Animation realAnimation = getReal();

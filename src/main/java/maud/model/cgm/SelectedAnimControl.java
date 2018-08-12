@@ -370,7 +370,7 @@ public class SelectedAnimControl implements JmeCloneable {
      * @return the pre-existing instance, or null if not found
      */
     Animation getAnimation(String name) {
-        Validate.nonNull(name, "animation name");
+        assert name != null;
 
         Animation result;
         AnimControl animControl = find();

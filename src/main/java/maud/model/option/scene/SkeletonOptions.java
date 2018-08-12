@@ -243,7 +243,7 @@ public class SkeletonOptions implements Cloneable {
      * @throws java.io.IOException if an I/O error occurs while writing
      */
     void writeToScript(Writer writer) throws IOException {
-        Validate.nonNull(writer, "writer");
+        assert writer != null;
 
         ColorRGBA color = new ColorRGBA();
         String action;

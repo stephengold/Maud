@@ -108,7 +108,7 @@ public class SelectedMatParam implements Cloneable {
      * @return the pre-existing instance, or null if not found
      */
     MatParam find(String parameterName) {
-        Validate.nonNull(parameterName, "parameter name");
+        assert parameterName != null;
 
         MatParam result = null;
         if (cgm.isLoaded()) {

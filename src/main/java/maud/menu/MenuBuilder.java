@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
-import jme3utilities.Validate;
 import maud.Maud;
 
 /**
@@ -68,10 +67,10 @@ class MenuBuilder {
      * Add an item without an icon.
      *
      * @param item (not null, not empty)
-     *
      */
     void add(String item) {
-        Validate.nonEmpty(item, "item");
+        assert item != null;
+        assert !item.isEmpty();
 
         items.add(item);
         icons.add(null);
@@ -84,7 +83,8 @@ class MenuBuilder {
      * @param iconAssetPath path to the icon's image asset (may be null)
      */
     void add(String item, String iconAssetPath) {
-        Validate.nonEmpty(item, "item");
+        assert item != null;
+        assert !item.isEmpty();
 
         items.add(item);
         icons.add(iconAssetPath);
@@ -96,7 +96,7 @@ class MenuBuilder {
      * @param items (not null, unaffected)
      */
     void addAll(Collection<String> items) {
-        Validate.nonNull(items, "items");
+        assert items != null;
 
         for (String item : items) {
             add(item);
@@ -109,7 +109,9 @@ class MenuBuilder {
      * @param item (not null, not empty)
      */
     void addBlend(String item) {
-        Validate.nonEmpty(item, "item");
+        assert item != null;
+        assert !item.isEmpty();
+
         add(item, "Textures/icons/BlenderDesktopLogo.png");
     }
 
@@ -119,7 +121,9 @@ class MenuBuilder {
      * @param item (not null, not empty)
      */
     void addBone(String item) {
-        Validate.nonEmpty(item, "item");
+        assert item != null;
+        assert !item.isEmpty();
+
         add(item, "Textures/icons/bone.png");
     }
 
@@ -129,7 +133,9 @@ class MenuBuilder {
      * @param item (not null, not empty)
      */
     void addBvh(String item) {
-        Validate.nonEmpty(item, "item");
+        assert item != null;
+        assert !item.isEmpty();
+
         add(item, "Textures/icons/bvh.png");
     }
 
@@ -139,7 +145,9 @@ class MenuBuilder {
      * @param item (not null, not empty)
      */
     void addDialog(String item) {
-        Validate.nonEmpty(item, "item");
+        assert item != null;
+        assert !item.isEmpty();
+
         add(item, "Textures/icons/dialog.png");
     }
 
@@ -149,7 +157,9 @@ class MenuBuilder {
      * @param item (not null, not empty)
      */
     void addEdit(String item) {
-        Validate.nonEmpty(item, "item");
+        assert item != null;
+        assert !item.isEmpty();
+
         add(item, "Textures/icons/edit.png");
     }
 
@@ -159,7 +169,9 @@ class MenuBuilder {
      * @param item (not null, not empty)
      */
     void addEllipsis(String item) {
-        Validate.nonEmpty(item, "item");
+        assert item != null;
+        assert !item.isEmpty();
+
         add(item, "Textures/icons/ellipsis.png");
     }
 
@@ -169,7 +181,8 @@ class MenuBuilder {
      * @param name the name of the file/entry (not null, not empty)
      */
     void addFile(String name) {
-        Validate.nonEmpty(name, "name");
+        assert name != null;
+        assert !name.isEmpty();
 
         if (name.endsWith(".blend")) {
             addBlend(name);
@@ -207,8 +220,8 @@ class MenuBuilder {
      * @param maxItems maximum number of menu items to add (&ge;2)
      */
     void addFiles(Collection<String> names, int maxItems) {
-        Validate.nonNull(names, "names");
-        Validate.inRange(maxItems, "max items", 2, Integer.MAX_VALUE);
+        assert names != null;
+        assert maxItems >= 2 : maxItems;
         /*
          * Generate the list of names and prefixes to add.
          */
@@ -231,7 +244,9 @@ class MenuBuilder {
      * @param item (not null, not empty)
      */
     void addFolder(String item) {
-        Validate.nonEmpty(item, "item");
+        assert item != null;
+        assert !item.isEmpty();
+
         add(item, "Textures/icons/folder.png");
     }
 
@@ -241,7 +256,9 @@ class MenuBuilder {
      * @param item (not null, not empty)
      */
     void addGeometry(String item) {
-        Validate.nonEmpty(item, "item");
+        assert item != null;
+        assert !item.isEmpty();
+
         add(item, "Textures/icons/geometry.png");
     }
 
@@ -251,7 +268,9 @@ class MenuBuilder {
      * @param item (not null, not empty)
      */
     void addJar(String item) {
-        Validate.nonEmpty(item, "item");
+        assert item != null;
+        assert !item.isEmpty();
+
         add(item, "Textures/icons/jar.png");
     }
 
@@ -261,7 +280,9 @@ class MenuBuilder {
      * @param item (not null, not empty)
      */
     void addJme(String item) {
-        Validate.nonEmpty(item, "item");
+        assert item != null;
+        assert !item.isEmpty();
+
         add(item, "Textures/icons/jme.png");
     }
 
@@ -271,7 +292,9 @@ class MenuBuilder {
      * @param item (not null, not empty)
      */
     void addNode(String item) {
-        Validate.nonEmpty(item, "item");
+        assert item != null;
+        assert !item.isEmpty();
+
         add(item, "Textures/icons/node.png");
     }
 
@@ -281,7 +304,9 @@ class MenuBuilder {
      * @param item (not null, not empty)
      */
     void addOgre(String item) {
-        Validate.nonEmpty(item, "item");
+        assert item != null;
+        assert !item.isEmpty();
+
         add(item, "Textures/icons/ogre.png");
     }
 
@@ -291,7 +316,9 @@ class MenuBuilder {
      * @param item (not null, not empty)
      */
     void addSubmenu(String item) {
-        Validate.nonEmpty(item, "item");
+        assert item != null;
+        assert !item.isEmpty();
+
         add(item, "Textures/icons/submenu.png");
     }
 
@@ -301,7 +328,9 @@ class MenuBuilder {
      * @param item (not null, not empty)
      */
     void addTool(String item) {
-        Validate.nonEmpty(item, "item");
+        assert item != null;
+        assert !item.isEmpty();
+
         add(item, "Textures/icons/tool.png");
     }
 
@@ -311,7 +340,9 @@ class MenuBuilder {
      * @param item (not null, not empty)
      */
     void addXbuf(String item) {
-        Validate.nonEmpty(item, "item");
+        assert item != null;
+        assert !item.isEmpty();
+
         add(item, "Textures/icons/xbuf.png");
     }
 
@@ -321,7 +352,9 @@ class MenuBuilder {
      * @param item (not null, not empty)
      */
     void addZip(String item) {
-        Validate.nonEmpty(item, "item");
+        assert item != null;
+        assert !item.isEmpty();
+
         add(item, "Textures/icons/zip.png");
     }
 
@@ -361,7 +394,8 @@ class MenuBuilder {
      * @param name the name of the file/entry (not null, not empty)
      */
     static boolean hasCgmSuffix(String name) {
-        Validate.nonEmpty(name, "name");
+        assert name != null;
+        assert !name.isEmpty();
 
         boolean result = false;
         if (name.endsWith(".blend")) {
@@ -393,7 +427,9 @@ class MenuBuilder {
      * @return true if found, otherwise false
      */
     boolean hasItem(String item) {
-        Validate.nonEmpty(item, "item");
+        assert item != null;
+        assert !item.isEmpty();
+
         boolean result = items.contains(item);
         return result;
     }
@@ -423,7 +459,7 @@ class MenuBuilder {
      * usually the final character will be a space)
      */
     void show(String actionPrefix) {
-        Validate.nonNull(actionPrefix, "action prefix");
+        assert actionPrefix != null;
         logger.log(Level.INFO, "actionPrefix = {0}",
                 MyString.quote(actionPrefix));
 

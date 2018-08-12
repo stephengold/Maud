@@ -638,7 +638,7 @@ public class SelectedShape implements Cloneable {
      * @param newShape replacement shape (not null, not a compound shape)
      */
     private void replaceForResize(CollisionShape newShape) {
-        Validate.nonNull(newShape, "new shape");
+        assert newShape != null;
         assert !(newShape instanceof CompoundCollisionShape);
 
         PhysicsSpace space = cgm.getSceneView().getPhysicsSpace();

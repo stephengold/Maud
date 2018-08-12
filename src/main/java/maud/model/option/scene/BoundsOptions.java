@@ -136,7 +136,7 @@ public class BoundsOptions implements Cloneable {
      * @throws java.io.IOException if an I/O error occurs while writing
      */
     void writeToScript(Writer writer) throws IOException {
-        Validate.nonNull(writer, "writer");
+        assert writer != null;
 
         String action = ActionPrefix.sfBoundsDepthTest
                 + Boolean.toString(depthTestFlag);

@@ -41,7 +41,6 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
-import jme3utilities.Validate;
 import jme3utilities.nifty.dialog.DialogController;
 import jme3utilities.ui.Locators;
 
@@ -86,15 +85,16 @@ class AssetDialog implements DialogController {
      * Instantiate a controller with the specified commit description, asset
      * location, and list of extensions.
      *
-     * @param description (not null)
+     * @param description (not null, not empty)
      * @param specification URL specification of asset location, or null for the
      * default location
      * @param extList list of accepted extensions (not null, unaffected)
      */
     AssetDialog(String description, String specification,
             Collection<String> extList) {
-        Validate.nonEmpty(description, "description");
-        Validate.nonNull(extList, "ext list");
+        assert description != null;
+        assert !description.isEmpty();
+        assert extList != null;
 
         commitDescription = description;
         spec = specification;

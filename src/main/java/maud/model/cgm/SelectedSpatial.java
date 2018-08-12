@@ -1083,7 +1083,7 @@ public class SelectedSpatial implements JmeCloneable {
      * @param newSpatial (not null)
      */
     void select(Spatial newSpatial) {
-        Validate.nonNull(newSpatial, "spatial");
+        assert newSpatial != null;
 
         List<Integer> position = cgm.findSpatial(newSpatial);
         assert position != null;

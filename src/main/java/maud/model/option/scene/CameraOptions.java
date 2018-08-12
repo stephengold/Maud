@@ -211,7 +211,6 @@ public class CameraOptions implements Cloneable {
      */
     public void setMode(OrbitCenter newCenter) {
         Validate.nonNull(newCenter, "new center");
-
         orbitCenter = newCenter;
     }
 
@@ -254,7 +253,7 @@ public class CameraOptions implements Cloneable {
      * @throws java.io.IOException if an I/O error occurs while writing
      */
     void writeToScript(Writer writer) throws IOException {
-        Validate.nonNull(writer, "writer");
+        assert writer != null;
 
         String action = ActionPrefix.selectMovement + movementMode.toString();
         MaudUtil.writePerformAction(writer, action);

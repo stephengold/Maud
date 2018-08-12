@@ -645,7 +645,7 @@ public class LoadedMap implements Cloneable {
      * @return a bone mapping (may be pre-existing) or null if none found
      */
     private BoneMapping effectiveMapping(String targetBoneName) {
-        Validate.nonNull(targetBoneName, "bone name");
+        assert targetBoneName != null;
 
         BoneMapping result = null;
         if (invertMapFlag) {

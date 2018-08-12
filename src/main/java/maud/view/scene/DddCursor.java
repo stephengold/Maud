@@ -41,7 +41,6 @@ import java.util.logging.Logger;
 import jme3utilities.MyAsset;
 import jme3utilities.MyCamera;
 import jme3utilities.MySpatial;
-import jme3utilities.Validate;
 import jme3utilities.math.MyColor;
 import jme3utilities.ui.Locators;
 import maud.Maud;
@@ -124,7 +123,7 @@ public class DddCursor {
      * @param newLocation (in world coordinates, not null, unaffected)
      */
     void setLocation(Vector3f newLocation) {
-        Validate.nonNull(newLocation, "new location");
+        assert newLocation != null;
         location.set(newLocation);
     }
 
