@@ -139,18 +139,4 @@ class LightColorTool extends Tool {
         setSlider("lightLevel", levelSt, level);
         setSlidersEnabled(selected);
     }
-    // *************************************************************************
-    // private methods
-
-    /**
-     * Disable or enable all 4 sliders.
-     *
-     * @param newState true&rarr;enable the sliders, false&rarr;disable them
-     */
-    private void setSlidersEnabled(boolean newState) {
-        List<String> list = listSliders();
-        for (String sliderName : list) {
-            setSliderEnabled(sliderName, newState);
-        }
-    }
 }

@@ -162,19 +162,6 @@ class BoneScaleTool extends Tool {
     }
 
     /**
-     * Disable or enable all 4 sliders.
-     *
-     * @param newState true&rarr;enable the sliders, false&rarr;disable them
-     */
-    private void setSlidersEnabled(boolean newState) {
-        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-            String sliderName = axisNames[iAxis] + "Sca";
-            setSliderEnabled(sliderName, newState);
-        }
-        setSliderEnabled("scaMaster", newState);
-    }
-
-    /**
      * Set all 4 sliders (and their status labels) based on the pose.
      */
     private void setSlidersToPose() {

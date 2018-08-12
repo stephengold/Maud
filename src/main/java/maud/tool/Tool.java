@@ -76,7 +76,7 @@ abstract public class Tool extends GuiWindowController {
     // new methods exposed
 
     /**
-     * Enumerate this tool's check boxes.
+     * Enumerate this tool's check boxes. TODO protected
      *
      * @return a new list of names (unique id prefixes)
      */
@@ -86,7 +86,7 @@ abstract public class Tool extends GuiWindowController {
     }
 
     /**
-     * Enumerate this tool's sliders.
+     * Enumerate this tool's sliders. TODO protected
      *
      * @return a new list of names (unique id prefixes)
      */
@@ -112,7 +112,7 @@ abstract public class Tool extends GuiWindowController {
      * Update the MVC model based on this tool's sliders, if any.
      */
     public void onSliderChanged() {
-        logger.log(Level.WARNING, "unexpected slider change ignored");
+        logger.warning("unexpected slider change ignored");
     }
 
     /**
@@ -120,6 +120,20 @@ abstract public class Tool extends GuiWindowController {
      * pass while the tool is displayed.)
      */
     abstract void toolUpdate();
+    // *************************************************************************
+    // protected methods
+
+    /**
+     * Disable or enable all of the tool's sliders.
+     *
+     * @param newState true&rarr;enable the sliders, false&rarr;disable them
+     */
+    protected void setSlidersEnabled(boolean newState) {
+        List<String> list = listSliders();
+        for (String sliderName : list) {
+            setSliderEnabled(sliderName, newState);
+        }
+    }
     // *************************************************************************
     // GuiWindowController methods
 
