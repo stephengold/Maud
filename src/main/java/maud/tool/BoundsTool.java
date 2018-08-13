@@ -77,7 +77,7 @@ class BoundsTool extends Tool {
      * @return a new list of names (unique id prefixes)
      */
     @Override
-    List<String> listCheckBoxes() {
+    protected List<String> listCheckBoxes() {
         List<String> result = super.listCheckBoxes();
         result.add("boundsDepthTest");
 
@@ -90,7 +90,7 @@ class BoundsTool extends Tool {
      * @return a new list of names (unique id prefixes)
      */
     @Override
-    List<String> listSliders() {
+    protected List<String> listSliders() {
         List<String> result = super.listSliders();
         result.add("boundsR");
         result.add("boundsG");
@@ -139,7 +139,7 @@ class BoundsTool extends Tool {
      * pass while this tool is displayed.)
      */
     @Override
-    void toolUpdate() {
+    protected void toolUpdate() {
         BoundsOptions options = Maud.getModel().getScene().getBounds();
 
         ColorRGBA color = options.copyColor(null);

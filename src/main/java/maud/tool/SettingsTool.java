@@ -73,7 +73,7 @@ class SettingsTool extends Tool {
      * @return a new list of names (unique id prefixes)
      */
     @Override
-    List<String> listCheckBoxes() {
+    protected List<String> listCheckBoxes() {
         List<String> result = super.listCheckBoxes();
         result.add("settingsDiagnose");
 
@@ -86,7 +86,7 @@ class SettingsTool extends Tool {
      * @return a new list of names (unique id prefixes)
      */
     @Override
-    List<String> listSliders() {
+    protected List<String> listSliders() {
         List<String> result = super.listSliders();
         result.add("submenuWarpX");
         result.add("submenuWarpY");
@@ -130,7 +130,7 @@ class SettingsTool extends Tool {
      * pass while this tool is displayed.)
      */
     @Override
-    void toolUpdate() {
+    protected void toolUpdate() {
         MiscOptions options = Maud.getModel().getMisc();
 
         RotationDisplayMode mode = options.getRotationDisplay();

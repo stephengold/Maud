@@ -74,7 +74,7 @@ class PlatformTool extends Tool {
      * @return a new list of names (unique id prefixes)
      */
     @Override
-    List<String> listSliders() {
+    protected List<String> listSliders() {
         List<String> result = super.listSliders();
         result.add("sourcePlatformDiameter");
         result.add("targetPlatformDiameter");
@@ -101,7 +101,7 @@ class PlatformTool extends Tool {
      * pass while the tool is displayed.)
      */
     @Override
-    void toolUpdate() {
+    protected void toolUpdate() {
         SceneOptions options = Maud.getModel().getScene();
 
         PlatformType type = options.getPlatformType();

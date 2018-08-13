@@ -84,7 +84,7 @@ class TwistTool extends Tool {
      * @return a new list of names (unique id prefixes)
      */
     @Override
-    List<String> listSliders() {
+    protected List<String> listSliders() {
         List<String> result = super.listSliders();
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             String sliderName = axisNames[iAxis] + "Twist";
@@ -125,7 +125,7 @@ class TwistTool extends Tool {
      * pass while the tool is displayed.)
      */
     @Override
-    void toolUpdate() {
+    protected void toolUpdate() {
         updateSelected();
 
         RotationDisplayMode mode

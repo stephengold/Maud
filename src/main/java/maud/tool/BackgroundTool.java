@@ -76,7 +76,7 @@ class BackgroundTool extends Tool {
      * @return a new list of names (unique id prefixes)
      */
     @Override
-    List<String> listSliders() {
+    protected List<String> listSliders() {
         List<String> result = super.listSliders();
         result.add("bgR");
         result.add("bgG");
@@ -123,7 +123,7 @@ class BackgroundTool extends Tool {
      * pass while the tool is displayed.)
      */
     @Override
-    void toolUpdate() {
+    protected void toolUpdate() {
         EditorModel editorModel = Maud.getModel();
         RenderOptions forScenes = editorModel.getScene().getRender();
         ScoreOptions forScores = editorModel.getScore();

@@ -72,7 +72,7 @@ class RetargetTool extends Tool {
      * pass while the tool is displayed.)
      */
     @Override
-    void toolUpdate() {
+    protected void toolUpdate() {
         EditorModel model = Maud.getModel();
         LoadedCgm target = model.getTarget();
         String targetCgmName = target.getName();

@@ -68,7 +68,7 @@ class ScoreTool extends Tool {
      * @return a new list of names (unique id prefixes)
      */
     @Override
-    List<String> listCheckBoxes() {
+    protected List<String> listCheckBoxes() {
         List<String> result = super.listCheckBoxes();
         result.add("scoreTranslations");
         result.add("scoreRotations");
@@ -110,7 +110,7 @@ class ScoreTool extends Tool {
      * pass while this tool is displayed.)
      */
     @Override
-    void toolUpdate() {
+    protected void toolUpdate() {
         ScoreOptions scoreOptions = Maud.getModel().getScore();
 
         boolean translations = scoreOptions.showsTranslations();

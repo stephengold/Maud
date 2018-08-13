@@ -94,7 +94,7 @@ class LightPositionTool extends Tool {
      * @return a new list of names (unique id prefixes)
      */
     @Override
-    List<String> listSliders() {
+    protected List<String> listSliders() {
         List<String> result = super.listSliders();
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             String sliderName = axisNames[iAxis] + "LPos";
@@ -123,11 +123,11 @@ class LightPositionTool extends Tool {
      * pass while the tool is displayed.)
      */
     @Override
-    void toolUpdate() {
+    protected void toolUpdate() {
         String resetButton = "";
 
         SelectedLight light = Maud.getModel().getTarget().getLight();
-        boolean enabled = light.isSelected() && light.canPosition();
+        boolean enabled = light.canPosition();
         if (enabled) {
             resetButton = "Reset";
             setSlidersToPosition();

@@ -78,7 +78,7 @@ class SkyTool extends Tool {
      * @return a new list of names (unique id prefixes)
      */
     @Override
-    List<String> listCheckBoxes() {
+    protected List<String> listCheckBoxes() {
         List<String> result = super.listCheckBoxes();
         result.add("sky");
 
@@ -91,7 +91,7 @@ class SkyTool extends Tool {
      * @return a new list of names (unique id prefixes)
      */
     @Override
-    List<String> listSliders() {
+    protected List<String> listSliders() {
         List<String> result = super.listSliders();
         result.add("cloudiness");
         result.add("hour");
@@ -138,7 +138,7 @@ class SkyTool extends Tool {
      * pass while this tool is displayed.)
      */
     @Override
-    void toolUpdate() {
+    protected void toolUpdate() {
         RenderOptions options = Maud.getModel().getScene().getRender();
 
         boolean isSkySimulated = options.isSkySimulated();

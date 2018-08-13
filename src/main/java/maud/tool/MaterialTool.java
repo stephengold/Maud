@@ -75,7 +75,7 @@ class MaterialTool extends Tool {
      * @return a new list of names (unique id prefixes)
      */
     @Override
-    List<String> listCheckBoxes() {
+    protected List<String> listCheckBoxes() {
         List<String> result = super.listCheckBoxes();
         result.add("matDepthTest");
         result.add("matWireframe");
@@ -112,7 +112,7 @@ class MaterialTool extends Tool {
      * pass while this tool is displayed.)
      */
     @Override
-    void toolUpdate() {
+    protected void toolUpdate() {
         updateNames();
         updateRenderState();
         updateParameterIndex();

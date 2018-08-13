@@ -73,7 +73,7 @@ class LightsTool extends Tool {
      * @return a new list of names (unique id prefixes)
      */
     @Override
-    List<String> listCheckBoxes() {
+    protected List<String> listCheckBoxes() {
         List<String> result = super.listCheckBoxes();
         result.add("lightEnable");
 
@@ -105,7 +105,7 @@ class LightsTool extends Tool {
      * pass while this tool is displayed.)
      */
     @Override
-    void toolUpdate() {
+    protected void toolUpdate() {
         updateIndex();
         updateProperties();
 

@@ -87,12 +87,21 @@ public class HistoryTool extends Tool {
     // new methods exposed
 
     /**
+     * scroll to "you are here" on next update
+     */
+    public void setAutoScroll() {
+        autoScrollFlag = true;
+    }
+    // *************************************************************************
+    // Tool methods
+
+    /**
      * Enumerate this tool's check boxes.
      *
      * @return a new list of names (unique id prefixes)
      */
     @Override
-    List<String> listCheckBoxes() {
+    protected List<String> listCheckBoxes() {
         List<String> result = super.listCheckBoxes();
         result.add("autoCheckpoint");
 
@@ -119,20 +128,11 @@ public class HistoryTool extends Tool {
     }
 
     /**
-     * scroll to "you are here" on next update
-     */
-    public void setAutoScroll() {
-        autoScrollFlag = true;
-    }
-    // *************************************************************************
-    // Tool methods
-
-    /**
      * Callback to update this tool prior to rendering. (Invoked once per render
      * pass while this tool is displayed.)
      */
     @Override
-    void toolUpdate() {
+    protected void toolUpdate() {
         String aButton = "";
         String rButton = "";
         int nextIndex = History.getNextIndex();

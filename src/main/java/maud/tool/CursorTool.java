@@ -83,7 +83,7 @@ class CursorTool extends Tool {
      * @return a new list of names (unique id prefixes)
      */
     @Override
-    List<String> listCheckBoxes() {
+    protected List<String> listCheckBoxes() {
         List<String> result = super.listCheckBoxes();
         result.add("3DCursor");
 
@@ -96,7 +96,7 @@ class CursorTool extends Tool {
      * @return a new list of names (unique id prefixes)
      */
     @Override
-    List<String> listSliders() {
+    protected List<String> listSliders() {
         List<String> result = super.listSliders();
         result.add("cursorR");
         result.add("cursorG");
@@ -150,7 +150,7 @@ class CursorTool extends Tool {
      * pass while this tool is displayed.)
      */
     @Override
-    void toolUpdate() {
+    protected void toolUpdate() {
         DddCursorOptions options = Maud.getModel().getScene().getCursor();
 
         boolean visible = options.isVisible();

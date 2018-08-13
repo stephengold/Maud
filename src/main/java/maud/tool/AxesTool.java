@@ -74,7 +74,7 @@ class AxesTool extends Tool {
      * @return a new list of names (unique id prefixes)
      */
     @Override
-    List<String> listCheckBoxes() {
+    protected List<String> listCheckBoxes() {
         List<String> result = super.listCheckBoxes();
         result.add("axesDepthTest");
 
@@ -87,7 +87,7 @@ class AxesTool extends Tool {
      * @return a new list of names (unique id prefixes)
      */
     @Override
-    List<String> listSliders() {
+    protected List<String> listSliders() {
         List<String> result = super.listSliders();
         result.add("axesLineWidth");
 
@@ -128,7 +128,7 @@ class AxesTool extends Tool {
      * pass while this tool is displayed.)
      */
     @Override
-    void toolUpdate() {
+    protected void toolUpdate() {
         AxesOptions options = Maud.getModel().getScene().getAxes();
         boolean depthTestFlag = options.getDepthTestFlag();
         setChecked("axesDepthTest", depthTestFlag);

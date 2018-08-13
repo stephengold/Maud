@@ -77,7 +77,7 @@ class VertexTool extends Tool {
      * pass while the tool is displayed.)
      */
     @Override
-    void toolUpdate() {
+    protected void toolUpdate() {
         updateBuffer();
         updateBone(0);
         updateBone(1);

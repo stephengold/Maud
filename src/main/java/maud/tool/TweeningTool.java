@@ -67,7 +67,7 @@ class TweeningTool extends Tool {
      * pass while the tool is displayed.)
      */
     @Override
-    void toolUpdate() {
+    protected void toolUpdate() {
         TweenTransforms techniques = Maud.getModel().getTweenTransforms();
         TweenVectors tweenTranslations = techniques.getTweenTranslations();
         String desc = tweenTranslations.toString();

@@ -77,7 +77,7 @@ class SceneVertexTool extends Tool {
      * @return a new list of names (unique id prefixes)
      */
     @Override
-    List<String> listSliders() {
+    protected List<String> listSliders() {
         List<String> result = super.listSliders();
         result.add("svR");
         result.add("svG");
@@ -106,7 +106,7 @@ class SceneVertexTool extends Tool {
      * pass while the tool is displayed.)
      */
     @Override
-    void toolUpdate() {
+    protected void toolUpdate() {
         VertexOptions options = Maud.getModel().getScene().getVertex();
 
         ColorRGBA color = options.copyColor(null);

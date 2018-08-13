@@ -81,7 +81,7 @@ class LightDirectionTool extends Tool {
      * @return a new list of names (unique id prefixes)
      */
     @Override
-    List<String> listSliders() {
+    protected List<String> listSliders() {
         List<String> result = super.listSliders();
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             String sliderName = axisNames[iAxis] + "LDir";
@@ -96,9 +96,10 @@ class LightDirectionTool extends Tool {
      */
     @Override
     public void onSliderChanged() {
-        SelectedLight light = Maud.getModel().getTarget().getLight();
         Vector3f direction = readVectorBank("LDir", axisSt, null);
         direction.normalizeLocal();
+
+        SelectedLight light = Maud.getModel().getTarget().getLight();
         light.setDirection(direction);
     }
 
@@ -107,13 +108,13 @@ class LightDirectionTool extends Tool {
      * pass while the tool is displayed.)
      */
     @Override
-    void toolUpdate() {
+    protected void toolUpdate() {
         String resetButton = "";
         String reverseButton = "";
         String snapButton = "";
 
         SelectedLight light = Maud.getModel().getTarget().getLight();
-        boolean enabled = light.isSelected() && light.canDirect();
+        boolean enabled = light.canDirect();
         if (enabled) {
             resetButton = "Reset";
             reverseButton = "Reverse";

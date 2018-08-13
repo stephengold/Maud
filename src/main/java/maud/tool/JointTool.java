@@ -67,7 +67,7 @@ class JointTool extends Tool {
      * pass while the tool is displayed.)
      */
     @Override
-    void toolUpdate() {
+    protected void toolUpdate() {
         updateDescription();
         updateIndex();
         updateName();

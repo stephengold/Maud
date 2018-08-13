@@ -76,26 +76,6 @@ abstract public class Tool extends GuiWindowController {
     // new methods exposed
 
     /**
-     * Enumerate this tool's check boxes. TODO protected
-     *
-     * @return a new list of names (unique id prefixes)
-     */
-    List<String> listCheckBoxes() {
-        List<String> result = new ArrayList<>(5);
-        return result;
-    }
-
-    /**
-     * Enumerate this tool's sliders. TODO protected
-     *
-     * @return a new list of names (unique id prefixes)
-     */
-    List<String> listSliders() {
-        List<String> result = new ArrayList<>(5);
-        return result;
-    }
-
-    /**
      * Update the MVC model based on a check-box event.
      *
      * @param name the name (unique id prefix) of the check box
@@ -114,14 +94,28 @@ abstract public class Tool extends GuiWindowController {
     public void onSliderChanged() {
         logger.warning("unexpected slider change ignored");
     }
+    // *************************************************************************
+    // new protected methods
 
     /**
-     * Callback to update this tool prior to rendering. (Invoked once per render
-     * pass while the tool is displayed.)
+     * Enumerate this tool's check boxes.
+     *
+     * @return a new list of names (unique id prefixes)
      */
-    abstract void toolUpdate();
-    // *************************************************************************
-    // protected methods
+    protected List<String> listCheckBoxes() {
+        List<String> result = new ArrayList<>(5);
+        return result;
+    }
+
+    /**
+     * Enumerate this tool's sliders.
+     *
+     * @return a new list of names (unique id prefixes)
+     */
+    protected List<String> listSliders() {
+        List<String> result = new ArrayList<>(5);
+        return result;
+    }
 
     /**
      * Disable or enable all of the tool's sliders.
@@ -134,6 +128,12 @@ abstract public class Tool extends GuiWindowController {
             setSliderEnabled(sliderName, newState);
         }
     }
+
+    /**
+     * Callback to update this tool prior to rendering. (Invoked once per render
+     * pass while the tool is displayed.)
+     */
+    abstract protected void toolUpdate();
     // *************************************************************************
     // GuiWindowController methods
 

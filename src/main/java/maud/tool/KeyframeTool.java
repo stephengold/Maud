@@ -69,7 +69,7 @@ class KeyframeTool extends Tool {
      * pass while the tool is displayed.)
      */
     @Override
-    void toolUpdate() {
+    protected void toolUpdate() {
         String indexText, timeText;
 
         EditableCgm target = Maud.getModel().getTarget();

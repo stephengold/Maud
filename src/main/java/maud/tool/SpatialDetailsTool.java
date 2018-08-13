@@ -72,7 +72,7 @@ class SpatialDetailsTool extends Tool {
      * @return a new list of names (unique id prefixes)
      */
     @Override
-    List<String> listCheckBoxes() {
+    protected List<String> listCheckBoxes() {
         List<String> result = super.listCheckBoxes();
         result.add("spatialIgnoreTransform");
 
@@ -103,7 +103,7 @@ class SpatialDetailsTool extends Tool {
      * pass while this tool is displayed.)
      */
     @Override
-    void toolUpdate() {
+    protected void toolUpdate() {
         updateBatchHint();
         updateBound();
         updateBucket();

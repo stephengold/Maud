@@ -67,7 +67,7 @@ class TrackTool extends Tool {
      * pass while the tool is displayed.)
      */
     @Override
-    void toolUpdate() {
+    protected void toolUpdate() {
         boolean isReal = Maud.getModel().getTarget().getAnimation().isReal();
         String selectButton = isReal ? "Select track" : "";
         setButtonText("selectTrack", selectButton);

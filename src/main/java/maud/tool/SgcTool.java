@@ -72,7 +72,7 @@ class SgcTool extends Tool {
      * @return a new list of names (unique id prefixes)
      */
     @Override
-    List<String> listCheckBoxes() {
+    protected List<String> listCheckBoxes() {
         List<String> result = super.listCheckBoxes();
         result.add("sgcEnable");
         result.add("sgcLocalPhysics");
@@ -109,7 +109,7 @@ class SgcTool extends Tool {
      * pass while this tool is displayed.)
      */
     @Override
-    void toolUpdate() {
+    protected void toolUpdate() {
         updateIndex();
 
         String deleteButton, selectObjectButton, selectSpatialButton;

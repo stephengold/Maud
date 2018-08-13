@@ -82,7 +82,7 @@ class AnimationTool extends Tool {
      * @return a new list of names (unique id prefixes)
      */
     @Override
-    List<String> listCheckBoxes() {
+    protected List<String> listCheckBoxes() {
         List<String> result = super.listCheckBoxes();
         result.add("freeze");
         result.add("loop");
@@ -98,7 +98,7 @@ class AnimationTool extends Tool {
      * @return a new list of names (unique id prefixes)
      */
     @Override
-    List<String> listSliders() {
+    protected List<String> listSliders() {
         List<String> result = super.listSliders();
         result.add("speed");
         result.add("time");
@@ -178,7 +178,7 @@ class AnimationTool extends Tool {
      * pass while this tool is displayed.)
      */
     @Override
-    void toolUpdate() {
+    protected void toolUpdate() {
         updateControlIndex();
         updateIndex();
         updateLooping();

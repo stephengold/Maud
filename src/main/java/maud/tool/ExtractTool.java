@@ -72,7 +72,7 @@ class ExtractTool extends Tool {
      * pass while the tool is displayed.)
      */
     @Override
-    void toolUpdate() {
+    protected void toolUpdate() {
         LoadedCgm target = Maud.getModel().getTarget();
 
         String animControlButton = "";

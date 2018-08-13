@@ -78,7 +78,7 @@ class LightColorTool extends Tool {
      * @return a new list of names (unique id prefixes)
      */
     @Override
-    List<String> listSliders() {
+    protected List<String> listSliders() {
         List<String> result = super.listSliders();
         result.add("lcR");
         result.add("lcG");
@@ -93,12 +93,13 @@ class LightColorTool extends Tool {
      */
     @Override
     public void onSliderChanged() {
-        SelectedLight light = Maud.getModel().getTarget().getLight();
         ColorRGBA color = readColorBank("lc", colorSt, null);
         float level = readSlider("lightLevel", levelSt);
         color.r *= level;
         color.g *= level;
         color.b *= level;
+
+        SelectedLight light = Maud.getModel().getTarget().getLight();
         light.setColor(color);
     }
 
@@ -107,7 +108,7 @@ class LightColorTool extends Tool {
      * pass while the tool is displayed.)
      */
     @Override
-    void toolUpdate() {
+    protected void toolUpdate() {
         String resetButton = "";
         float r = 1f;
         float g = 1f;

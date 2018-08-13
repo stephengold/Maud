@@ -73,7 +73,7 @@ class CameraTool extends Tool {
      * pass while the tool is displayed.)
      */
     @Override
-    void toolUpdate() {
+    protected void toolUpdate() {
         CameraOptions options = Maud.getModel().getScene().getCamera();
 
         MovementMode movement = options.getMovementMode();
