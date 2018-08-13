@@ -28,6 +28,7 @@ package maud.tool;
 
 import com.jme3.app.state.AppStateManager;
 import java.util.logging.Logger;
+import jme3utilities.MyString;
 import jme3utilities.Validate;
 import maud.EditorScreen;
 import maud.Maud;
@@ -190,6 +191,12 @@ public class EditorTools {
         Validate.nonEmpty(toolName, "tool name");
 
         Tool tool = Maud.gui.getTool(toolName);
-        tool.select();
+        if (tool == null) {
+            String message = String.format("unimplemented feature (tool = %s)",
+                    MyString.quote(toolName));
+            Maud.getModel().getMisc().setStatusMessage(message);
+        } else {
+            tool.select();
+        }
     }
 }
