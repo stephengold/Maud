@@ -1125,6 +1125,51 @@ the menu bar, status bar, and tool windows.
                 </panel>
             </control>
 
+            <control name="window" id="lightDirectionTool" title="Light-Direction Tool"
+                     hideOnClose="true"
+                     height="190px" width="170px" x="210" y="60">
+                <panel childLayout="vertical">
+                    <panel childLayout="horizontal">
+                        <control name="verticalSlider" id="xLDirSlider"
+                                 buttonStepSize="1"
+                                 height="150px"
+                                 max="1" min="-1" stepSize="0.001"/>
+                        <control name="verticalSlider" id="yLDirSlider"
+                                 buttonStepSize="1"
+                                 height="150px"
+                                 max="1" min="-1" stepSize="0.001"/>
+                        <control name="verticalSlider" id="zLDirSlider"
+                                 buttonStepSize="1"
+                                 height="150px"
+                                 max="1" min="-1" stepSize="0.001"/>
+                        <panel childLayout="vertical"
+                               height="150px" width="90px">
+                            <control name="label" id="xLDirSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="label" id="yLDirSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="label" id="zLDirSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="button" id="resetLightDirButton"
+                                     width="*">
+                                <interact onRelease="perform(reset light dir)"/>
+                            </control>
+                            <control name="button" id="reverseLightDirButton"
+                                     width="*">
+                                <interact onRelease="perform(set lightDir reverse)"/>
+                            </control>
+                            <control name="button" id="snapLightDirButton"
+                                     width="*">
+                                <interact onRelease="perform(set lightDir cardinal)"/>
+                            </control>
+                        </panel>
+                    </panel>
+                </panel>
+            </control>
+
             <control name="window" id="lightsTool" title="Lights Tool"
                      hideOnClose="true"
                      height="225px" width="270px" x="145" y="125">
@@ -1197,17 +1242,21 @@ the menu bar, status bar, and tool windows.
                                  backgroundColor="#ffff"
                                  width="*"/>
                         <control name="button" label="Tool"
-                                 id="id13ToAvoidNiftyWarning"
+                                 id="id10ToAvoidNiftyWarning"
                                  width="36px">
                             <interact onRelease="perform(select tool lightColor)"/>
                         </control>
-
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Direction:  "/>
                         <control name="label" id="lightDirection"
                                  backgroundColor="#ffff"
                                  width="*"/>
+                        <control name="button" label="Tool"
+                                 id="id11ToAvoidNiftyWarning"
+                                 width="36px">
+                            <interact onRelease="perform(select tool lightDirection)"/>
+                        </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Position:  "/>
@@ -1217,7 +1266,6 @@ the menu bar, status bar, and tool windows.
                     </panel>
                 </panel>
             </control>
-
 
             <control name="window" id="mappingTool" title="Mapping Tool"
                      hideOnClose="true"

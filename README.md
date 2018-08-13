@@ -186,7 +186,7 @@ is split into overlapping sub-windows called "tools".
 
 #### Tools
 
-At last count, Maud had 44 tools.
+At last count, Maud had 45 tools.
 Each tool can be independently hidden or made visible.
 
 Selecting a tool makes it visible and moves it to the top layer for convenient

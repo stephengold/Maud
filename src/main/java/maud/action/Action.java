@@ -153,6 +153,7 @@ public class Action {
     final static String resetBoneScaleToBind = "reset bone sca bind";
     final static String resetBoneSelection = "reset bone selection";
     final static String resetLightColor = "reset light color";
+    final static String resetLightDir = "reset light dir";
     final static String resetSpatialRotation = "reset spatial rotation";
     final static String resetSpatialScale = "reset spatial scale";
     final static String resetSpatialTranslation = "reset spatial translation";
@@ -218,6 +219,8 @@ public class Action {
     final static String setColorDepth = "set colorDepth";
     final static String setCullHint = "set cullHint";
     final static String setDimensions = "set dimensions";
+    final static String setLightDirCardinal = "set lightDir cardinal";
+    final static String setLightDirReverse = "set lightDir reverse";
     final static String setMatParamValue = "set matParamValue";
     final static String setMsaaFactor = "set msaaFactor";
     final static String setPhysicsRbpValue = "set physicsRbpValue";

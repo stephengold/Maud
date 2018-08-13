@@ -58,6 +58,10 @@ class ResetAction {
      */
     final private static Quaternion rotationIdentity = new Quaternion();
     /**
+     * negative Y-axis
+     */
+    final private static Vector3f negativeUnitY = new Vector3f(0f, -1f, 0f);
+    /**
      * local copy of {@link com.jme3.math.Vector3f#UNIT_XYZ}
      */
     final private static Vector3f scaleIdentity = new Vector3f(1f, 1f, 1f);
@@ -120,6 +124,10 @@ class ResetAction {
 
             case Action.resetLightColor:
                 target.getLight().setColor(white);
+                break;
+
+            case Action.resetLightDir:
+                target.getLight().setDirection(negativeUnitY);
                 break;
 
             case Action.resetSpatialRotation:

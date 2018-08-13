@@ -109,6 +109,14 @@ class SetAction {
                 }
                 break;
 
+            case Action.setLightDirCardinal:
+                target.getLight().cardinalizeDirection();
+                break;
+
+            case Action.setLightDirReverse:
+                target.getLight().reverseDirection();
+                break;
+
             case Action.setMatParamValue:
                 SelectedMatParam matParam = target.getMatParam();
                 if (matParam.isSelected()) {

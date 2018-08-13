@@ -49,181 +49,50 @@ public class EditorTools {
     // *************************************************************************
     // fields
 
-    /**
-     * controller for the AnimationTool
-     */
     final private AnimationTool animation;
-    /**
-     * controller for the AxesTool
-     */
     final private AxesTool axes;
-    /**
-     * controller for the BackgroundTool
-     */
     final private BackgroundTool background;
-    /**
-     * controller for the BoneRotationTool
-     */
     final private BoneRotationTool boneRotation;
-    /**
-     * controller for the BoneScaleTool
-     */
     final private BoneScaleTool boneScale;
-    /**
-     * controller for the BoneTool
-     */
     final private BoneTool bone;
-    /**
-     * controller for the BoneTranslationTool
-     */
     final private BoneTranslationTool boneTranslation;
-    /**
-     * controller for the BoundsTool
-     */
     final private BoundsTool bounds;
-    /**
-     * controller for the CameraTool
-     */
     final private CameraTool camera;
-    /**
-     * controller for the CgmTool
-     */
     final private CgmTool cgm;
-    /**
-     * controller for the CursorTool
-     */
     final private CursorTool cursor;
-    /**
-     * controller for the DisplaySettingsTool
-     */
     final private DisplaySettingsTool displaySettings;
-    /**
-     * controller for the ExtractTool
-     */
     final private ExtractTool extract;
-    /**
-     * controller for the HistoryTool
-     */
     final private HistoryTool history;
-    /**
-     * controller for the JointTool
-     */
     final private JointTool joint;
-    /**
-     * controller for the KeyframeTool
-     */
     final private KeyframeTool keyframe;
-    /**
-     * controller for the LightColorTool
-     */
     final private LightColorTool lightColor;
-    /**
-     * controller for the LightsTool
-     */
+    final private LightDirectionTool lightDirection;
     final private LightsTool lights;
-    /**
-     * controller for the MappingTool
-     */
     final private MappingTool mapping;
-    /**
-     * controller for the MaterialTool
-     */
     final private MaterialTool material;
-    /**
-     * controller for the ObjectTool
-     */
     final private ObjectTool object;
-    /**
-     * controller for the OverridesTool
-     */
     final private OverridesTool overrides;
-    /**
-     * controller for the PlatformTool
-     */
     final private PlatformTool platform;
-    /**
-     * controller for the RenderTool
-     */
     final private RenderTool render;
-    /**
-     * controller for the RetargetTool
-     */
     final private RetargetTool retarget;
-    /**
-     * controller for the SceneLightingTool
-     */
     final private SceneLightingTool sceneLighting;
-    /**
-     * controller for the SceneVertexTool
-     */
     final private SceneVertexTool sceneVertex;
-    /**
-     * controller for ScoreTool
-     */
     final private ScoreTool score;
-    /**
-     * controller for the SettingsTool
-     */
     final private SettingsTool settings;
-    /**
-     * controller for the SgcTool
-     */
     final private SgcTool sgc;
-    /**
-     * controller for the ShapeTool
-     */
     final private ShapeTool shape;
-    /**
-     * controller for SkeletonTool
-     */
     final private SkeletonTool skeleton;
-    /**
-     * controller for the SkyTool
-     */
     final private SkyTool sky;
-    /**
-     * controller for the SourceAnimationTool
-     */
     final private SourceAnimationTool sourceAnimation;
-    /**
-     * controller for the SpatialDetailsTool
-     */
     final private SpatialDetailsTool spatialDetails;
-    /**
-     * controller for the SpatialRotationTool
-     */
     final private SpatialRotationTool spatialRotation;
-    /**
-     * controller for the SpatialScaleTool
-     */
     final private SpatialScaleTool spatialScale;
-    /**
-     * controller for the SpatialTool
-     */
     final private SpatialTool spatial;
-    /**
-     * controller for the SpatialTranslationTool
-     */
     final private SpatialTranslationTool spatialTranslation;
-    /**
-     * controller for the TrackTool
-     */
     final private TrackTool track;
-    /**
-     * controller for the TweeningTool
-     */
     final private TweeningTool tweening;
-    /**
-     * controller for the TwistTool
-     */
     final private TwistTool twist;
-    /**
-     * controller for the UserDataTool
-     */
     final private UserDataTool userData;
-    /**
-     * controller for the VertexTool
-     */
     final private VertexTool vertex;
     // *************************************************************************
     // constructors
@@ -254,6 +123,7 @@ public class EditorTools {
         joint = new JointTool(screen);
         keyframe = new KeyframeTool(screen);
         lightColor = new LightColorTool(screen);
+        lightDirection = new LightDirectionTool(screen);
         lights = new LightsTool(screen);
         mapping = new MappingTool(screen);
         material = new MaterialTool(screen);
@@ -297,7 +167,7 @@ public class EditorTools {
         stateManager.attachAll(animation, axes, background, bone, boneRotation,
                 boneScale, boneTranslation, bounds, camera, cgm, cursor,
                 displaySettings, extract, history, keyframe, joint, lightColor,
-                lights,
+                lightDirection, lights,
                 mapping, material, object, overrides, platform, render,
                 retarget, sceneLighting, sceneVertex, score, settings, sgc,
                 shape, skeleton, sky, sourceAnimation, spatial, spatialDetails,

@@ -131,6 +131,17 @@ public class MaudUtil {
      * local copy of {@link com.jme3.math.Vector3f#UNIT_Z}
      */
     final private static Vector3f zAxis = new Vector3f(0f, 0f, 1f);
+    /**
+     * array of cardinal axes
+     */
+    final private static Vector3f cardinalAxes[] = {
+        new Vector3f(1f, 0f, 0f),
+        new Vector3f(0f, 1f, 0f),
+        new Vector3f(0f, 0f, 1f),
+        new Vector3f(-1f, 0f, 0f),
+        new Vector3f(0f, -1f, 0f),
+        new Vector3f(0f, 0f, -1f)
+    };
     // *************************************************************************
     // constructors
 
@@ -255,6 +266,36 @@ public class MaudUtil {
         }
 
         return storeResult;
+    }
+
+    /**
+     * Find the cardinal direction most similar to the specified input. TODO use
+     * heart library
+     *
+     * @param input (not null, modified)
+     */
+    public static void cardinalizeLocal(Vector3f input) {
+        Validate.nonNull(input, "input");
+
+        input.normalizeLocal();
+        /*
+         * Generate each of the 6 cardinal directions.
+         */
+        Vector3f bestCardinalDirection = new Vector3f();
+        float bestDot = -2f;
+        for (Vector3f x : cardinalAxes) {
+            /*
+             * Measure the similarity of the 2 directions
+             * using their dot product.
+             */
+            float dot = x.dot(input);
+            if (dot > bestDot) {
+                bestDot = dot;
+                bestCardinalDirection.set(x);
+            }
+        }
+
+        input.set(bestCardinalDirection);
     }
 
     /**
