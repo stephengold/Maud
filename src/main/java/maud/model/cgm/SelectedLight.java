@@ -482,7 +482,6 @@ public class SelectedLight implements JmeCloneable {
             Light newLight = selected.clone();
             newLight.setColor(newColor);
             editableCgm.replaceLightColor(newLight);
-            select(newLight);
         }
     }
 
@@ -508,7 +507,6 @@ public class SelectedLight implements JmeCloneable {
                 throw new IllegalStateException();
             }
             editableCgm.replaceLightPosDir(newLight);
-            select(newLight);
         }
     }
 
@@ -555,7 +553,6 @@ public class SelectedLight implements JmeCloneable {
                 throw new IllegalStateException();
             }
             editableCgm.replaceLightPosDir(newLight);
-            select(newLight);
         }
     }
 

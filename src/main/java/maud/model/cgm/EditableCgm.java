@@ -807,8 +807,7 @@ public class EditableCgm extends LoadedCgm {
 
     /**
      * Remove the selected light and replace it the specified light, which
-     * differs only in color. The invoker is responsible for updating the
-     * selection.
+     * differs only in color.
      *
      * @param newLight the light to add (not null, alias created)
      */
@@ -823,13 +822,13 @@ public class EditableCgm extends LoadedCgm {
         owner.removeLight(oldLight);
         owner.addLight(newLight);
         getSceneView().replaceLight(oldName, newLight);
+        selectedLight.select(newLight);
         setEditedLightColor();
     }
 
     /**
      * Remove the selected light and replace it the specified light, which
-     * differs only in position and/or direction. The invoker is responsible for
-     * updating the selection.
+     * differs only in position and/or direction.
      *
      * @param newLight the light to add (not null, alias created)
      */
@@ -844,6 +843,7 @@ public class EditableCgm extends LoadedCgm {
         owner.removeLight(oldLight);
         owner.addLight(newLight);
         getSceneView().replaceLight(oldName, newLight);
+        selectedLight.select(newLight);
         setEditedLightPosDir();
     }
 
