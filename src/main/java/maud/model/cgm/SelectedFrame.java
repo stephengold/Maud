@@ -263,7 +263,7 @@ public class SelectedFrame implements Cloneable {
                 newSelected);
     }
     // *************************************************************************
-    // Cloneable methods
+    // Object methods
 
     /**
      * Create a deep copy of this object.

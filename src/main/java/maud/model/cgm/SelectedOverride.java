@@ -275,7 +275,7 @@ public class SelectedOverride implements Cloneable {
         }
     }
     // *************************************************************************
-    // Cloneable methods
+    // Object methods
 
     /**
      * Create a deep copy of this object.

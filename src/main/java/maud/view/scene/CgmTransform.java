@@ -174,7 +174,7 @@ public class CgmTransform implements Cloneable {
         return result;
     }
     // *************************************************************************
-    // Cloneable methods
+    // Object methods
 
     /**
      * Create a deep copy of this object.

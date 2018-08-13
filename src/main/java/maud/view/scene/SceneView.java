@@ -619,7 +619,7 @@ public class SceneView extends SceneViewCore {
         return storeResult;
     }
     // *************************************************************************
-    // JmeCloneable methods
+    // SceneViewCore methods
 
     /**
      * Don't use this method; use a {@link com.jme3.util.clone.Cloner} instead.

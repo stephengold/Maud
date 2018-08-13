@@ -59,7 +59,7 @@ public class SelectedMatParam implements Cloneable {
      */
     private Cgm cgm = null;
     /**
-     * editable C-G model, if any, containing the parameter (set by
+     * editable C-G model, if any, containing the override (set by
      * {@link #setCgm(Cgm)})
      */
     private EditableCgm editableCgm;
@@ -273,7 +273,7 @@ public class SelectedMatParam implements Cloneable {
         }
     }
     // *************************************************************************
-    // Object methods
+    // Cloneable methods
 
     /**
      * Create a deep copy of this object.

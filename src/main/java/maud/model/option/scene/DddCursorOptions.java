@@ -187,7 +187,7 @@ public class DddCursorOptions implements Cloneable {
         MaudUtil.writePerformAction(writer, action);
     }
     // *************************************************************************
-    // Cloneable methods
+    // Object methods
 
     /**
      * Create a deep copy of this object.

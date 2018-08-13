@@ -307,7 +307,7 @@ public class PlayOptions implements Cloneable {
         return reverseFlag;
     }
     // *************************************************************************
-    // Cloneable methods
+    // Object methods
 
     /**
      * Create a deep copy of this object.

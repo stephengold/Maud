@@ -323,7 +323,7 @@ public class SelectedVertex implements Cloneable {
         return storeResult;
     }
     // *************************************************************************
-    // Cloneable methods
+    // Object methods
 
     /**
      * Create a deep copy of this object.

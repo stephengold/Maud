@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -257,7 +257,7 @@ public class LoadedCgm extends Cgm {
         }
     }
     // *************************************************************************
-    // protected methods
+    // new protected methods
 
     /**
      * Invoked after successfully loading a C-G model.

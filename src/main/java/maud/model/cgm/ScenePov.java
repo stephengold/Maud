@@ -194,7 +194,7 @@ public class ScenePov implements Cloneable, Pov {
         }
     }
     // *************************************************************************
-    // Cloneable methods
+    // Object methods
 
     /**
      * Create a deep copy of this object.

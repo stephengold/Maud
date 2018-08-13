@@ -193,7 +193,7 @@ public class ScorePov implements Cloneable, Pov {
         camera.setFrustumTop(halfHeight);
     }
     // *************************************************************************
-    // Cloneable methods
+    // Object methods
 
     /**
      * Create a deep copy of this object.

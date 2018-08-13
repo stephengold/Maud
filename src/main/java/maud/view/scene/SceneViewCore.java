@@ -933,7 +933,7 @@ public class SceneViewCore
         }
     }
     // *************************************************************************
-    // protected methods
+    // new protected methods
 
     /**
      * Find the selected material-parameter override in this view's copy of its

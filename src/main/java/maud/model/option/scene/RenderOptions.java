@@ -387,7 +387,7 @@ public class RenderOptions implements Cloneable {
         MaudUtil.writePerformAction(writer, action);
     }
     // *************************************************************************
-    // Cloneable methods
+    // Object methods
 
     /**
      * Create a copy of this object.

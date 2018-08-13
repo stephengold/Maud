@@ -1231,7 +1231,7 @@ public class LoadedAnimation implements Cloneable {
                 newSelectedTrack);
     }
     // *************************************************************************
-    // Cloneable methods
+    // Object methods
 
     /**
      * Create a deep copy of this object.

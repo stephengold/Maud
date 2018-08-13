@@ -589,7 +589,7 @@ public class LoadedMap implements Cloneable {
         return result;
     }
     // *************************************************************************
-    // protected methods
+    // new protected methods
 
     /**
      * Access the selected bone mapping.

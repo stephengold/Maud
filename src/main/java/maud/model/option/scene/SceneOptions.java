@@ -270,7 +270,7 @@ public class SceneOptions implements Cloneable {
         vertexOptions.writeToScript(writer);
     }
     // *************************************************************************
-    // Cloneable methods
+    // Object methods
 
     /**
      * Create a deep copy of this object.
