@@ -1170,6 +1170,48 @@ the menu bar, status bar, and tool windows.
                 </panel>
             </control>
 
+            <control name="window" id="lightPositionTool" title="Light-Position Tool"
+                     hideOnClose="true"
+                     height="250px" width="200px" x="210" y="60">
+                <panel childLayout="vertical">
+                    <control name="label" text="Master control:"/>
+                    <control name="horizontalSlider" id="lPosMasterSlider"
+                             buttonStepSize="1"
+                             max="3" min="-2" stepSize="0.001"/>
+                    <control name="label" text="Per-axis controls:"/>
+                    <panel childLayout="horizontal">
+                        <control name="verticalSlider" id="xLPosSlider"
+                                 buttonStepSize="1"
+                                 height="150px"
+                                 max="1" min="-1" stepSize="0.001"/>
+                        <control name="verticalSlider" id="yLPosSlider"
+                                 buttonStepSize="1"
+                                 height="150px"
+                                 max="1" min="-1" stepSize="0.001"/>
+                        <control name="verticalSlider" id="zLPosSlider"
+                                 buttonStepSize="1"
+                                 height="150px"
+                                 max="1" min="-1" stepSize="0.001"/>
+                        <panel childLayout="vertical"
+                               height="150px" width="120px">
+                            <control name="label" id="xLPosSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="label" id="yLPosSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="label" id="zLPosSliderStatus"
+                                     textHAlign="center"
+                                     width="*"/>
+                            <control name="button" id="resetLightPosButton"
+                                     width="*">
+                                <interact onRelease="perform(reset light pos)"/>
+                            </control>
+                        </panel>
+                    </panel>
+                </panel>
+            </control>
+
             <control name="window" id="lightsTool" title="Lights Tool"
                      hideOnClose="true"
                      height="225px" width="270px" x="145" y="125">
@@ -1263,6 +1305,11 @@ the menu bar, status bar, and tool windows.
                         <control name="label" id="lightPosition"
                                  backgroundColor="#ffff"
                                  width="*"/>
+                        <control name="button" label="Tool"
+                                 id="id12ToAvoidNiftyWarning"
+                                 width="36px">
+                            <interact onRelease="perform(select tool lightPosition)"/>
+                        </control>
                     </panel>
                 </panel>
             </control>

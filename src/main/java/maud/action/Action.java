@@ -154,6 +154,7 @@ public class Action {
     final static String resetBoneSelection = "reset bone selection";
     final static String resetLightColor = "reset light color";
     final static String resetLightDir = "reset light dir";
+    final static String resetLightPos = "reset light pos";
     final static String resetSpatialRotation = "reset spatial rotation";
     final static String resetSpatialScale = "reset spatial scale";
     final static String resetSpatialTranslation = "reset spatial translation";

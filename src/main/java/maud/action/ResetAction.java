@@ -130,6 +130,10 @@ class ResetAction {
                 target.getLight().setDirection(negativeUnitY);
                 break;
 
+            case Action.resetLightPos:
+                target.getLight().setPosition(translateIdentity);
+                break;
+
             case Action.resetSpatialRotation:
                 target.setSpatialRotation(rotationIdentity);
                 break;

@@ -59,6 +59,7 @@ public class EditorTools {
     final private BoundsTool bounds;
     final private CameraTool camera;
     final private CgmTool cgm;
+
     final private CursorTool cursor;
     final private DisplaySettingsTool displaySettings;
     final private ExtractTool extract;
@@ -67,7 +68,9 @@ public class EditorTools {
     final private KeyframeTool keyframe;
     final private LightColorTool lightColor;
     final private LightDirectionTool lightDirection;
+    final private LightPositionTool lightPosition;
     final private LightsTool lights;
+
     final private MappingTool mapping;
     final private MaterialTool material;
     final private ObjectTool object;
@@ -78,6 +81,7 @@ public class EditorTools {
     final private SceneLightingTool sceneLighting;
     final private SceneVertexTool sceneVertex;
     final private ScoreTool score;
+
     final private SettingsTool settings;
     final private SgcTool sgc;
     final private ShapeTool shape;
@@ -88,6 +92,7 @@ public class EditorTools {
     final private SpatialRotationTool spatialRotation;
     final private SpatialScaleTool spatialScale;
     final private SpatialTool spatial;
+
     final private SpatialTranslationTool spatialTranslation;
     final private TrackTool track;
     final private TweeningTool tweening;
@@ -124,11 +129,12 @@ public class EditorTools {
         keyframe = new KeyframeTool(screen);
         lightColor = new LightColorTool(screen);
         lightDirection = new LightDirectionTool(screen);
+        lightPosition = new LightPositionTool(screen);
         lights = new LightsTool(screen);
+
         mapping = new MappingTool(screen);
         material = new MaterialTool(screen);
         object = new ObjectTool(screen);
-
         overrides = new OverridesTool(screen);
         platform = new PlatformTool(screen);
         render = new RenderTool(screen);
@@ -136,10 +142,10 @@ public class EditorTools {
         sceneLighting = new SceneLightingTool(screen);
         sceneVertex = new SceneVertexTool(screen);
         score = new ScoreTool(screen);
+
         settings = new SettingsTool(screen);
         sgc = new SgcTool(screen);
         shape = new ShapeTool(screen);
-
         skeleton = new SkeletonTool(screen);
         sky = new SkyTool(screen);
         sourceAnimation = new SourceAnimationTool(screen);
@@ -147,10 +153,10 @@ public class EditorTools {
         spatialRotation = new SpatialRotationTool(screen);
         spatialScale = new SpatialScaleTool(screen);
         spatial = new SpatialTool(screen);
+
         spatialTranslation = new SpatialTranslationTool(screen);
         track = new TrackTool(screen);
         tweening = new TweeningTool(screen);
-
         twist = new TwistTool(screen);
         userData = new UserDataTool(screen);
         vertex = new VertexTool(screen);
@@ -167,12 +173,12 @@ public class EditorTools {
         stateManager.attachAll(animation, axes, background, bone, boneRotation,
                 boneScale, boneTranslation, bounds, camera, cgm, cursor,
                 displaySettings, extract, history, keyframe, joint, lightColor,
-                lightDirection, lights,
-                mapping, material, object, overrides, platform, render,
-                retarget, sceneLighting, sceneVertex, score, settings, sgc,
-                shape, skeleton, sky, sourceAnimation, spatial, spatialDetails,
-                spatialRotation, spatialScale, spatialTranslation, track,
-                tweening, twist, userData, vertex);
+                lightDirection, lightPosition, lights, mapping, material,
+                object, overrides, platform, render, retarget, sceneLighting,
+                sceneVertex, score, settings, sgc, shape, skeleton, sky,
+                sourceAnimation, spatial, spatialDetails, spatialRotation,
+                spatialScale, spatialTranslation, track, tweening, twist,
+                userData, vertex);
     }
 
     /**
