@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -177,19 +177,6 @@ public class Finial extends Mesh {
         this(tra, rot, sca, (float) hpf);
     }
     // *************************************************************************
-    // Object methods
-
-    /**
-     * Create a copy of this mesh.
-     *
-     * @return a new mesh, equivalent to this one
-     */
-    @Override
-    public Finial clone() {
-        Finial clone = (Finial) super.clone();
-        return clone;
-    }
-    // *************************************************************************
     // new methods exposed
 
     /**
@@ -200,6 +187,19 @@ public class Finial extends Mesh {
     public float getHeight() {
         assert height >= 0.0 : height;
         return (float) height;
+    }
+    // *************************************************************************
+    // Mesh methods
+
+    /**
+     * Create a copy of this mesh.
+     *
+     * @return a new mesh, equivalent to this one
+     */
+    @Override
+    public Finial clone() {
+        Finial clone = (Finial) super.clone();
+        return clone;
     }
     // *************************************************************************
     // private methods

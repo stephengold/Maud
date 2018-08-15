@@ -457,6 +457,20 @@ public class SelectedObject implements Cloneable {
         return result;
     }
     // *************************************************************************
+    // Object methods
+
+    /**
+     * Create a copy of this object.
+     *
+     * @return a new object, equivalent to this one
+     * @throws CloneNotSupportedException if the superclass isn't cloneable
+     */
+    @Override
+    public SelectedObject clone() throws CloneNotSupportedException {
+        SelectedObject clone = (SelectedObject) super.clone();
+        return clone;
+    }
+    // *************************************************************************
     // private methods
 
     /**
@@ -472,19 +486,5 @@ public class SelectedObject implements Cloneable {
         }
 
         return result;
-    }
-    // *************************************************************************
-    // Cloneable methods
-
-    /**
-     * Create a copy of this object.
-     *
-     * @return a new object, equivalent to this one
-     * @throws CloneNotSupportedException if the superclass isn't cloneable
-     */
-    @Override
-    public SelectedObject clone() throws CloneNotSupportedException {
-        SelectedObject clone = (SelectedObject) super.clone();
-        return clone;
     }
 }
