@@ -126,19 +126,17 @@ class SpatialTool extends Tool {
         String materialText;
 
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
-        if (spatial.isGeometry()) {
-            if (spatial.hasMaterial()) {
-                String materialName = spatial.getMaterialName();
-                if (materialName == null) {
-                    materialText = "nameless";
-                } else {
-                    materialText = MyString.quote(materialName);
-                }
+        if (spatial.hasMaterial()) {
+            String materialName = spatial.getMaterialName();
+            if (materialName == null) {
+                materialText = "nameless";
             } else {
-                materialText = "none";
+                materialText = MyString.quote(materialName);
             }
+        } else if (spatial.isNode()) {
+            materialText = "none (a node is selected)";
         } else {
-            materialText = "(not applicable)";
+            materialText = "none";
         }
 
         setStatusText("spatialMaterial", " " + materialText);
@@ -151,28 +149,20 @@ class SpatialTool extends Tool {
         String meshText;
 
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
-        if (spatial.isGeometry()) {
-            if (spatial.hasMesh()) {
-                if (spatial.hasAnimatedMesh()) {
-                    meshText = "animated";
-                } else {
-                    meshText = "non-animated";
-                }
-                Mesh.Mode mode = spatial.getMeshMode();
-                meshText += String.format(" %s", mode.toString());
-                int numVertices = spatial.countVertices();
-                meshText += String.format(", %d verts, ", numVertices);
-                int numLevels = spatial.countLodLevels();
-                if (numLevels == 1) {
-                    meshText += "one LoD";
-                } else {
-                    meshText += String.format("%d LoDs", numLevels);
-                }
+        if (spatial.hasMesh()) {
+            if (spatial.hasAnimatedMesh()) {
+                meshText = "animated";
             } else {
-                meshText = "none";
+                meshText = "non-animated";
             }
+            Mesh.Mode mode = spatial.getMeshMode();
+            meshText += String.format(" %s", mode.toString());
+            int numVertices = spatial.countVertices();
+            meshText += String.format(", %d vertices", numVertices);
+        } else if (spatial.isNode()) {
+            meshText = "none (a node is selected)";
         } else {
-            meshText = "(not applicable)";
+            meshText = "none";
         }
 
         setStatusText("spatialMesh", " " + meshText);

@@ -142,6 +142,9 @@ class MaterialTool extends Tool {
             } else {
                 materialText = MyString.quote(materialName);
             }
+        } else if (spatial.isNode()) {
+            defText = "(a node is selected)";
+            materialText = "(a node is selected)";
         } else {
             defText = "(no material)";
             materialText = "(no material)";
@@ -183,6 +186,10 @@ class MaterialTool extends Tool {
 
         Cgm target = Maud.getModel().getTarget();
         int numParams = target.getSpatial().countMatParams();
+        if (numParams > 1) {
+            sButton = "Select parameter";
+        }
+
         int selectedIndex = target.getMatParam().findNameIndex();
         if (selectedIndex >= 0) {
             indexText = MaudUtil.formatIndex(selectedIndex);
@@ -190,17 +197,14 @@ class MaterialTool extends Tool {
             if (numParams > 1) {
                 nButton = "+";
                 pButton = "-";
-                sButton = "Select";
             }
         } else { // no parameter selected
             if (numParams == 0) {
-                indexText = "no parameters";
+                indexText = "none";
             } else if (numParams == 1) {
                 indexText = "one parameter";
-                sButton = "Select";
             } else {
                 indexText = String.format("%d parameters", numParams);
-                sButton = "Select";
             }
         }
 
@@ -225,7 +229,7 @@ class MaterialTool extends Tool {
             typeText = varType.toString();
         } else {
             dButton = "";
-            nameText = "(no parameter selected)";
+            nameText = "none (no parameter selected)";
             typeText = "";
         }
 
@@ -258,7 +262,7 @@ class MaterialTool extends Tool {
                 }
             }
         } else {
-            valueText = "(no parameter selected)";
+            valueText = "none (no parameter selected)";
         }
 
         setStatusText("mpValue", " " + valueText);
