@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -26,26 +26,25 @@
  */
 package maud.tool;
 
-import com.jme3.animation.Bone;
-import com.jme3.material.RenderState;
-import com.jme3.shader.VarType;
+import com.jme3.bounding.BoundingVolume;
+import com.jme3.scene.Mesh;
+import com.jme3.scene.VertexBuffer;
 import java.util.List;
 import java.util.logging.Logger;
-import jme3utilities.MyString;
 import jme3utilities.nifty.GuiScreenController;
 import maud.Maud;
 import maud.MaudUtil;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
-import maud.model.cgm.SelectedMatParam;
+import maud.model.cgm.SelectedBuffer;
 import maud.model.cgm.SelectedSpatial;
 
 /**
- * The controller for the "Material" tool in Maud's editor screen.
+ * The controller for the "Mesh" tool in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class MaterialTool extends Tool {
+class MeshTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -53,7 +52,7 @@ class MaterialTool extends Tool {
      * message logger for this class
      */
     final private static Logger logger
-            = Logger.getLogger(MaterialTool.class.getName());
+            = Logger.getLogger(MeshTool.class.getName());
     // *************************************************************************
     // constructors
 
@@ -63,8 +62,8 @@ class MaterialTool extends Tool {
      * @param screenController the controller of the screen that contains the
      * tool (not null)
      */
-    MaterialTool(GuiScreenController screenController) {
-        super(screenController, "material");
+    MeshTool(GuiScreenController screenController) {
+        super(screenController, "mesh");
     }
     // *************************************************************************
     // Tool methods
@@ -77,8 +76,7 @@ class MaterialTool extends Tool {
     @Override
     protected List<String> listCheckBoxes() {
         List<String> result = super.listCheckBoxes();
-        result.add("matDepthTest");
-        result.add("matWireframe");
+        result.add("vbNormalized");
 
         return result;
     }
@@ -94,12 +92,8 @@ class MaterialTool extends Tool {
     public void onCheckBoxChanged(String name, boolean isChecked) {
         EditableCgm target = Maud.getModel().getTarget();
         switch (name) {
-            case "matDepthTest":
-                target.setDepthTest(isChecked);
-                break;
-
-            case "matWireframe":
-                target.setWireframe(isChecked);
+            case "vbNormalized":
+                target.setBufferNormalized(isChecked);
                 break;
 
             default:
@@ -113,155 +107,168 @@ class MaterialTool extends Tool {
      */
     @Override
     protected void toolUpdate() {
-        updateNames();
-        updateRenderState();
-        updateParameterIndex();
-        updateParameterName();
-        updateParameterValue();
+        updateBufferInfo();
+        updateBufferIndex();
+        updateMeshInfo();
     }
     // *************************************************************************
     // private methods
 
     /**
-     * Update the definition name and material name.
+     * Update the information about the selected vertex buffer.
      */
-    private void updateNames() {
-        String defText, materialText;
+    private void updateBufferInfo() {
+        String capacityText, formatText, instanceButton;
+        String limitButton, strideButton, typeText, usageButton;
 
-        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
-        if (spatial.hasMaterial()) {
-            String defName = spatial.getMaterialDefName();
-            if (defName == null) {
-                defText = "nameless";
+        SelectedBuffer buffer = Maud.getModel().getTarget().getBuffer();
+        if (buffer.isSelected()) {
+            int capacity = buffer.capacity();
+            capacityText = Integer.toString(capacity);
+
+            int numComponents = buffer.countComponents();
+            VertexBuffer.Format format = buffer.format();
+            if (numComponents == 1) {
+                formatText = format.toString();
             } else {
-                defText = MyString.quote(defName);
+                formatText = String.format("%d x %s", numComponents, format);
             }
-            String materialName = spatial.getMaterialName();
-            if (materialName == null) {
-                materialText = "nameless";
-            } else {
-                materialText = MyString.quote(materialName);
-            }
+
+            int limit = buffer.limit();
+            limitButton = Integer.toString(limit);
+
+            int stride = buffer.stride();
+            strideButton = Integer.toString(stride);
+
+            VertexBuffer.Type vbType = buffer.type();
+            typeText = vbType.toString();
+
+            VertexBuffer.Usage usage = buffer.usage();
+            usageButton = usage.toString();
+
+            int instanceSpan = buffer.instanceSpan();
+            instanceButton = Integer.toString(instanceSpan);
+
+            boolean isNormalized = buffer.isNormalized();
+            setChecked("vbNormalized", isNormalized);
+
         } else {
-            defText = "(no material)";
-            materialText = "(no material)";
+            capacityText = "";
+            formatText = "";
+            instanceButton = "";
+            limitButton = "";
+            strideButton = "";
+            typeText = "";
+            usageButton = "";
+
+            disableCheckBox("vbNormalized");
         }
 
-        setStatusText("matDef", " " + defText);
-        setStatusText("matName", " " + materialText);
+        setStatusText("vbCapacity", capacityText);
+        setStatusText("vbFormat", " " + formatText);
+        setButtonText("vbInstanceSpan", instanceButton);
+        setButtonText("vbLimit", limitButton);
+        setButtonText("vbStride", strideButton);
+        setStatusText("vbType", " " + typeText);
+        setButtonText("vbUsage", usageButton);
     }
 
     /**
-     * Update the additional render state information.
+     * Update the buffer-index status and next/previous/delete/select texts.
      */
-    private void updateRenderState() {
-        String faceCullButton = "";
-
-        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
-        if (spatial.hasMaterial()) {
-            RenderState state = spatial.copyAdditionalRenderState();
-            boolean depthTest = state.isDepthTest();
-            setChecked("matDepthTest", depthTest);
-            boolean wireframe = state.isWireframe();
-            setChecked("matWireframe", wireframe);
-            RenderState.FaceCullMode faceCullMode = state.getFaceCullMode();
-            faceCullButton = faceCullMode.toString();
-        } else {
-            disableCheckBox("matDepthTest");
-            disableCheckBox("matWireframe");
-        }
-
-        setButtonText("matFaceCull", faceCullButton);
-    }
-
-    /**
-     * Update the parameter-index status and next/previous/select-button texts.
-     */
-    private void updateParameterIndex() {
+    private void updateBufferIndex() {
         String indexText;
-        String nButton = "", pButton = "", sButton = "";
+        String nextButton = "", previousButton = "";
+        String deleteButton = "", selectButton = "";
 
         Cgm target = Maud.getModel().getTarget();
-        int numParams = target.getSpatial().countMatParams();
-        int selectedIndex = target.getMatParam().findNameIndex();
+        List<String> list = target.getSpatial().listBufferDescs();
+        int numBuffers = list.size();
+        if (numBuffers > 0) {
+            selectButton = "Select buffer";
+        }
+
+        SelectedBuffer buffer = target.getBuffer();
+        int selectedIndex = buffer.index();
         if (selectedIndex >= 0) {
             indexText = MaudUtil.formatIndex(selectedIndex);
-            indexText = String.format("%s of %d", indexText, numParams);
-            if (numParams > 1) {
-                nButton = "+";
-                pButton = "-";
-                sButton = "Select";
+            indexText = String.format("%s of %d", indexText, numBuffers);
+            if (numBuffers > 1) {
+                nextButton = "+";
+                previousButton = "-";
             }
-        } else { // no parameter selected
-            if (numParams == 0) {
-                indexText = "no parameters";
-            } else if (numParams == 1) {
-                indexText = "one parameter";
-                sButton = "Select";
+            if (buffer.canDelete()) {
+                deleteButton = "Delete";
+            }
+        } else { // no buffer selected
+            if (numBuffers == 0) {
+                indexText = "none";
+            } else if (numBuffers == 1) {
+                indexText = "one buffer";
             } else {
-                indexText = String.format("%d parameters", numParams);
-                sButton = "Select";
+                indexText = String.format("%d buffers", numBuffers);
             }
         }
 
-        setStatusText("mpIndex", indexText);
-        setButtonText("mpNext", nButton);
-        setButtonText("mpPrevious", pButton);
-        setButtonText("mpSelect", sButton);
+        setStatusText("vbIndex", indexText);
+        setButtonText("vbNext", nextButton);
+        setButtonText("vbPrevious", previousButton);
+        setButtonText("vbDelete", deleteButton);
+        setButtonText("vbSelect", selectButton);
     }
 
     /**
-     * Update the parameter-name/type statuses and delete button text.
+     * Update the information on the selected mesh.
      */
-    private void updateParameterName() {
-        String dButton, nameText, typeText;
+    private void updateMeshInfo() {
+        String animatedText, btButton, modeButton, elementsText;
+        String verticesText, weightsButton;
 
-        SelectedMatParam param = Maud.getModel().getTarget().getMatParam();
-        if (param.isSelected()) {
-            dButton = "Delete";
-            String name = param.getName();
-            nameText = MyString.quote(name);
-            VarType varType = param.getVarType();
-            typeText = varType.toString();
-        } else {
-            dButton = "";
-            nameText = "(no parameter selected)";
-            typeText = "";
-        }
-
-        setStatusText("mpName", " " + nameText);
-        setStatusText("mpType", " " + typeText);
-        setButtonText("mpDelete", dButton);
-    }
-
-    /**
-     * Update the parameter-value status and the edit button text.
-     */
-    private void updateParameterValue() {
-        String eButton = "", valueText;
-
-        SelectedMatParam param = Maud.getModel().getTarget().getMatParam();
-        if (param.isSelected()) {
-            eButton = "Edit";
-            if (param.isOverridden()) {
-                valueText = "(overridden)";
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        if (spatial.hasMesh()) {
+            if (spatial.hasAnimatedMesh()) {
+                animatedText = "animated mesh";
+                int mnwpv = spatial.getMaxNumWeights();
+                weightsButton = Integer.toString(mnwpv);
             } else {
-                Object data = param.getValue();
-                if (data == null || data instanceof String) {
-                    String string = (String) data;
-                    valueText = MyString.quote(string);
-                } else if (data instanceof Bone) {
-                    Bone bone = (Bone) data;
-                    valueText = bone.getName();
-                } else {
-                    valueText = data.toString();
-                }
+                animatedText = "non-animated mesh";
+                weightsButton = "";
             }
+
+            BoundingVolume.Type type = spatial.getWorldBoundType();
+            if (type == null) {
+                btButton = "null";
+            } else {
+                btButton = type.toString();
+            }
+
+            int numElements = spatial.countElements();
+            elementsText = Integer.toString(numElements);
+
+            Mesh.Mode mode = spatial.getMeshMode();
+            modeButton = mode.toString();
+
+            int numVertices = spatial.countVertices();
+            verticesText = Integer.toString(numVertices);
+
         } else {
-            valueText = "(no parameter selected)";
+            if (spatial.isNode()) {
+                animatedText = "no mesh (a node is selected)";
+            } else {
+                animatedText = "no mesh";
+            }
+            btButton = "";
+            elementsText = "(no mesh)";
+            modeButton = "";
+            verticesText = "(no mesh)";
+            weightsButton = "";
         }
 
-        setStatusText("mpValue", " " + valueText);
-        setButtonText("mpEdit", eButton);
+        setStatusText("meshAnimated", animatedText);
+        setButtonText("meshBoundType", btButton);
+        setStatusText("meshElements", elementsText);
+        setButtonText("meshMode", modeButton);
+        setStatusText("meshVertices", verticesText);
+        setButtonText("meshWeights", weightsButton);
     }
 }

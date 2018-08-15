@@ -253,7 +253,7 @@ public class MaudUtil {
         if (subtree instanceof Geometry) {
             Geometry geometry = (Geometry) subtree;
             Mesh mesh = geometry.getMesh();
-            if (mesh.isAnimated()) {
+            if (isAnimated(mesh)) {
                 addDirectInfluencers(mesh, storeResult);
             }
 
@@ -749,6 +749,23 @@ public class MaudUtil {
         } else {
             result = false;
         }
+
+        return result;
+    }
+
+    /**
+     * Test whether the specified mesh is animated. Unlike mesh.isAnimated()
+     * this method checks for bone weights and ignores HW buffers.
+     *
+     * @param mesh which mesh to test (not null, unaffected)
+     * @return true if animated, otherwise false
+     */
+    public static boolean isAnimated(Mesh mesh) {
+        VertexBuffer indices = mesh.getBuffer(VertexBuffer.Type.BoneIndex);
+        boolean hasIndices = indices != null;
+        VertexBuffer weights = mesh.getBuffer(VertexBuffer.Type.BoneWeight);
+        boolean hasWeights = weights != null;
+        boolean result = hasIndices && hasWeights;
 
         return result;
     }

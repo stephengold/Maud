@@ -57,6 +57,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.control.Control;
+import com.jme3.util.SafeArrayList;
 import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
 import java.util.ArrayList;
@@ -86,10 +87,18 @@ public class SelectedSpatial implements JmeCloneable {
     // constants and loggers
 
     /**
+     * dummy buffer index, used to indicate that no buffer is selected
+     */
+    final public static int noBufferIndex = -1;
+    /**
      * message logger for this class
      */
     final private static Logger logger
             = Logger.getLogger(SelectedSpatial.class.getName());
+    /**
+     * dummy buffer description, used to indicate that no buffer is selected
+     */
+    final public static String noBuffer = "( no buffer )";
     // *************************************************************************
     // fields
 
@@ -309,6 +318,24 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
+     * Count how many elements are in the spatial's mesh.
+     *
+     * @return count (&ge;0)
+     */
+    public int countElements() {
+        Mesh mesh = getMesh();
+        int result;
+        if (mesh == null) {
+            result = 0;
+        } else {
+            result = mesh.getTriangleCount();
+        }
+
+        assert result >= 0 : result;
+        return result;
+    }
+
+    /**
      * Count how many local lights the spatial has.
      *
      * @return count (&ge;0)
@@ -440,7 +467,7 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Count the vertices are in the spatial's mesh.
+     * Count how many vertices are in the spatial's mesh.
      *
      * @return count (&ge;0)
      */
@@ -506,6 +533,26 @@ public class SelectedSpatial implements JmeCloneable {
         Spatial result = underRoot(modelRoot);
 
         assert result != null;
+        return result;
+    }
+
+    /**
+     * Access the indexed buffer.
+     *
+     * @param index which buffer in the list (&ge;0)
+     * @return the pre-existing instance, or null if not found
+     */
+    VertexBuffer findBuffer(int index) {
+        assert index >= 0 : index;
+
+        VertexBuffer result = null;
+        List<String> bufferDescs = listBufferDescs();
+        int numBuffers = bufferDescs.size();
+        if (index < numBuffers) {
+            String desc = bufferDescs.get(index);
+            result = findBuffer(desc);
+        }
+
         return result;
     }
 
@@ -729,7 +776,7 @@ public class SelectedSpatial implements JmeCloneable {
         if (mesh == null) {
             return false;
         } else {
-            return mesh.isAnimated();
+            return MaudUtil.isAnimated(mesh);
         }
     }
 
@@ -922,6 +969,38 @@ public class SelectedSpatial implements JmeCloneable {
         Spatial spatial = find();
         boolean result = MySpatial.isIgnoringTransforms(spatial);
 
+        return result;
+    }
+
+    /**
+     * Enumerate all data-bearing vertex buffers in the mesh.
+     *
+     * @return a new list of vertex buffer descriptions, in standard order, with
+     * LoDs at the end
+     */
+    public List<String> listBufferDescs() {
+        int numBuffers = countBuffers();
+        List<String> result = new ArrayList<>(numBuffers);
+
+        Mesh mesh = getMesh();
+        if (mesh != null) {
+            SafeArrayList<VertexBuffer> buffers = mesh.getBufferList();
+            for (VertexBuffer buffer : buffers) {
+                String desc = buffer.getBufferType().toString();
+                if (buffer.getData() != null) {
+                    result.add(desc);
+                }
+            }
+
+            int numLodLevels = mesh.getNumLodLevels();
+            for (int iLevel = 0; iLevel < numLodLevels; iLevel++) {
+                String desc = "LoD" + Integer.toString(iLevel);
+                result.add(desc);
+            }
+        }
+
+        int size = result.size();
+        assert size <= numBuffers : size;
         return result;
     }
 
@@ -1336,6 +1415,49 @@ public class SelectedSpatial implements JmeCloneable {
     // private methods
 
     /**
+     * Count how many buffers are in the spatial's mesh, including LoDs and
+     * buffers without data.
+     *
+     * @return count (&ge;0)
+     */
+    private int countBuffers() {
+        int result = 0;
+        Mesh mesh = getMesh();
+        if (mesh != null) {
+            SafeArrayList<VertexBuffer> buffers = mesh.getBufferList();
+            result = buffers.size() + mesh.getNumLodLevels();
+        }
+
+        assert result >= 0 : result;
+        return result;
+    }
+
+    /**
+     * Access the described buffer.
+     *
+     * @param description which buffer (not null)
+     * @return the pre-existing instance, or null if not found
+     */
+    private VertexBuffer findBuffer(String description) {
+        assert description != null;
+
+        VertexBuffer result = null;
+        if (hasMesh() && !noBuffer.equals(description)) {
+            Mesh mesh = cgm.getSpatial().getMesh();
+            if (description.startsWith("LoD")) {
+                String lodText = MyString.removeSuffix(description, "LoD");
+                int level = Integer.parseInt(lodText);
+                result = mesh.getLodLevel(level);
+            } else {
+                VertexBuffer.Type type = VertexBuffer.Type.valueOf(description);
+                result = mesh.getBuffer(type);
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Access (by index) a child of the selected spatial in the MVC model.
      *
      * @param childIndex which child (&ge;0)
@@ -1362,6 +1484,7 @@ public class SelectedSpatial implements JmeCloneable {
     private void postSelect() {
         Spatial found = find();
         if (found != last) {
+            cgm.getBuffer().deselect();
             cgm.getMatParam().deselect();
             cgm.getOverride().deselect();
             cgm.getUserData().deselect();

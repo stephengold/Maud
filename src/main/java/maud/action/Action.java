@@ -51,6 +51,7 @@ public class Action {
      * delete the selected animation
      */
     final public static String deleteAnimation = "delete animation";
+    final static String deleteBuffer = "delete buffer";
     final static String deleteLight = "delete light";
     final static String deleteMapping = "delete mapping";
     final static String deleteMatParam = "delete matParam";
@@ -90,6 +91,7 @@ public class Action {
     final static String nextAnimation = "next animation";
     final static String nextAnimControl = "next animControl";
     final static String nextBone = "next bone";
+    final static String nextBuffer = "next buffer";
     final static String nextCheckpoint = "next checkpoint";
     final static String nextJoint = "next joint";
     final static String nextLight = "next light";
@@ -118,6 +120,7 @@ public class Action {
     final static String previousAnimation = "previous animation";
     final static String previousAnimControl = "previous animControl";
     final static String previousBone = "previous bone";
+    final static String previousBuffer = "previous buffer";
     final static String previousCheckpoint = "previous checkpoint";
     final static String previousJoint = "previous joint";
     final static String previousLight = "previous light";
@@ -172,6 +175,8 @@ public class Action {
     final static String selectBoneChild = "select boneChild";
     final static String selectBoneParent = "select boneParent";
     final static String selectBoneTrack = "select boneTrack";
+    final static String selectBuffer = "select buffer";
+    final static String selectBufferUsage = "select bufferUsage";
     final static String selectEdgeFilter = "select edgeFilter";
     final static String selectFaceCull = "select faceCull";
     final static String selectJoint = "select joint";
@@ -185,6 +190,7 @@ public class Action {
     final static String selectMapSourceBone = "select mapSourceBone";
     final static String selectMapTargetBone = "select mapTargetBone";
     final static String selectMatParam = "select matParam";
+    final static String selectMeshMode = "select meshMode";
     final static String selectOrbitCenter = "select orbitCenter";
     final static String selectOverride = "select override";
     final static String selectPhysics = "select physics";
@@ -214,15 +220,18 @@ public class Action {
     final static String selectTweenTranslations = "select tweenTranslations";
     final static String selectUserKey = "select userKey";
     final static String selectVertex = "select vertex";
-    final static String selectVertexBuffer = "select vertexBuffer";
 
     final static String setBatchHint = "set batchHint";
+    final static String setBufferInstanceSpan = "set bufferInstanceSpan";
+    final static String setBufferLimit = "set bufferLimit";
+    final static String setBufferStride = "set bufferStride";
     final static String setColorDepth = "set colorDepth";
     final static String setCullHint = "set cullHint";
     final static String setDimensions = "set dimensions";
     final static String setLightDirCardinal = "set lightDir cardinal";
     final static String setLightDirReverse = "set lightDir reverse";
     final static String setMatParamValue = "set matParamValue";
+    final static String setMeshWeights = "set meshWeights";
     final static String setMsaaFactor = "set msaaFactor";
     final static String setPhysicsRbpValue = "set physicsRbpValue";
     final static String setOverrideValue = "set overrideValue";

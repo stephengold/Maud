@@ -69,6 +69,7 @@ import maud.model.cgm.LoadedCgm;
 import maud.model.cgm.PlayOptions;
 import maud.model.cgm.PlayTimes;
 import maud.model.cgm.SelectedBone;
+import maud.model.cgm.SelectedBuffer;
 import maud.model.cgm.SelectedFrame;
 import maud.model.cgm.SelectedLight;
 import maud.model.cgm.SelectedObject;
@@ -641,9 +642,10 @@ public class EditorDialogs {
      * Display a "select boneIndex " dialog to enter the bone index.
      */
     public static void selectBoneIndex() {
-        Cgm target = Maud.getModel().getTarget();
+        EditorModel model = Maud.getModel();
+        Cgm target = model.getTarget();
         int numBones = target.getSkeleton().countBones();
-        int indexBase = Maud.getModel().getMisc().getIndexBase();
+        int indexBase = model.getMisc().getIndexBase();
         DialogController controller = new IntegerDialog("Select", indexBase,
                 numBones + indexBase - 1, false);
 
@@ -660,9 +662,10 @@ public class EditorDialogs {
      * Display a "select keyframe " dialog to enter the keyframe index.
      */
     public static void selectKeyframe() {
-        Cgm target = Maud.getModel().getTarget();
+        EditorModel model = Maud.getModel();
+        Cgm target = model.getTarget();
         int numKeyframes = target.getTrack().countKeyframes();
-        int indexBase = Maud.getModel().getMisc().getIndexBase();
+        int indexBase = model.getMisc().getIndexBase();
         DialogController controller = new IntegerDialog("Select", indexBase,
                 numKeyframes + indexBase - 1, false);
 
@@ -679,9 +682,10 @@ public class EditorDialogs {
      * Display a "select vertex " dialog to enter the vertex index.
      */
     public static void selectVertex() {
-        Cgm target = Maud.getModel().getTarget();
+        EditorModel model = Maud.getModel();
+        Cgm target = model.getTarget();
         int numVertices = target.getSpatial().countVertices();
-        int indexBase = Maud.getModel().getMisc().getIndexBase();
+        int indexBase = model.getMisc().getIndexBase();
         DialogController controller = new IntegerDialog("Select", indexBase,
                 numVertices + indexBase - 1, false);
 
@@ -692,6 +696,54 @@ public class EditorDialogs {
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter the index of the vertex:",
                 defaultText, ActionPrefix.selectVertex, controller);
+    }
+
+    /**
+     * Display a "set bufferInstanceSpan " dialog to enter the new span.
+     */
+    public static void setBufferInstanceSpan() {
+        DialogController controller = new IntegerDialog("Set", 0,
+                Integer.MAX_VALUE, false);
+
+        SelectedBuffer buffer = Maud.getModel().getTarget().getBuffer();
+        int oldSpan = buffer.instanceSpan();
+        String defaultText = Integer.toString(oldSpan);
+
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter the instance span:", defaultText,
+                ActionPrefix.setBufferInstanceSpan, controller);
+    }
+
+    /**
+     * Display a "set bufferLimit " dialog to enter the new buffer limit.
+     */
+    public static void setBufferLimit() {
+        SelectedBuffer buffer = Maud.getModel().getTarget().getBuffer();
+        int capacity = buffer.capacity();
+        DialogController controller
+                = new IntegerDialog("Set", 1, capacity, false);
+
+        int oldLimit = buffer.limit();
+        String defaultText = Integer.toString(oldLimit);
+
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter the buffer limit:", defaultText,
+                ActionPrefix.setBufferLimit, controller);
+    }
+
+    /**
+     * Display a "set bufferStride " dialog to enter the new buffer stride.
+     */
+    public static void setBufferStride() {
+        DialogController controller = new IntegerDialog("Set", 0, 999, false);
+
+        SelectedBuffer buffer = Maud.getModel().getTarget().getBuffer();
+        int oldStride = buffer.stride();
+        String defaultText = Integer.toString(oldStride);
+
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter the buffer stride in bytes:",
+                defaultText, ActionPrefix.setBufferStride, controller);
     }
 
     /**
@@ -710,7 +762,7 @@ public class EditorDialogs {
                 minHeight, maxWidth, maxHeight);
 
         Maud.gui.closeAllPopups();
-        Maud.gui.showTextEntryDialog("Enter display dimensions:",
+        Maud.gui.showTextEntryDialog("Enter display dimensions in pixels:",
                 defaultText, ActionPrefix.setDimensions, controller);
     }
 
@@ -785,7 +837,7 @@ public class EditorDialogs {
         FloatDialog controller
                 = new FloatDialog("Adjust", minTime, maxTime, false);
         Maud.gui.closeAllPopups();
-        Maud.gui.showTextEntryDialog("Enter new time for the frame:",
+        Maud.gui.showTextEntryDialog("Enter new time for the frame in seconds:",
                 defaultValue, ActionPrefix.setFrameTime, controller);
     }
 
@@ -1019,7 +1071,8 @@ public class EditorDialogs {
      */
     public static void setTimeToKeyframe(WhichCgm whichCgm,
             PlayTimes whichTime) {
-        Cgm cgm = Maud.getModel().getCgm(whichCgm);
+        EditorModel model = Maud.getModel();
+        Cgm cgm = model.getCgm(whichCgm);
         SelectedTrack track = cgm.getTrack();
         assert track.isSelected();
 
@@ -1046,7 +1099,7 @@ public class EditorDialogs {
                 throw new IllegalArgumentException();
         }
 
-        int indexBase = Maud.getModel().getMisc().getIndexBase();
+        int indexBase = model.getMisc().getIndexBase();
         String defaultText = "";
         int defaultIndex = cgm.getFrame().findIndex();
         if (defaultIndex != -1) {

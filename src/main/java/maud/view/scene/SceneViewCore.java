@@ -58,6 +58,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.VertexBuffer;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.texture.Texture;
 import com.jme3.util.clone.Cloner;
@@ -73,6 +74,7 @@ import jme3utilities.MyCamera;
 import jme3utilities.MyMesh;
 import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
+import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.debug.AxesVisualizer;
 import jme3utilities.debug.BoundsVisualizer;
@@ -934,6 +936,30 @@ public class SceneViewCore
     }
     // *************************************************************************
     // new protected methods
+
+    /**
+     * Find the selected buffer in this view's copy of its C-G model.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    protected VertexBuffer findBuffer() {
+        Spatial spatial = selectedSpatial();
+        Mesh mesh = ((Geometry) spatial).getMesh();
+
+        VertexBuffer result;
+        String description = cgm.getBuffer().describe();
+        if (description.startsWith("LoD")) {
+            String lodText = MyString.removeSuffix(description, "LoD");
+            int level = Integer.parseInt(lodText);
+            result = mesh.getLodLevel(level);
+        } else {
+            VertexBuffer.Type type = VertexBuffer.Type.valueOf(description);
+            result = mesh.getBuffer(type);
+        }
+
+        assert result != null;
+        return result;
+    }
 
     /**
      * Find the selected material-parameter override in this view's copy of its

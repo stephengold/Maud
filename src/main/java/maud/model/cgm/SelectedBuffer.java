@@ -26,23 +26,21 @@
  */
 package maud.model.cgm;
 
-import com.jme3.material.MatParam;
-import com.jme3.material.MatParamOverride;
-import com.jme3.material.Material;
-import com.jme3.scene.Spatial;
-import com.jme3.shader.VarType;
-import java.util.Collection;
+import com.jme3.scene.Mesh;
+import com.jme3.scene.VertexBuffer;
+import com.jme3.util.IntMap;
+import java.nio.Buffer;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 
 /**
- * The MVC model of the selected material parameter in a loaded C-G model.
+ * The MVC model of the selected vertex buffer in a loaded C-G model.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class SelectedMatParam implements Cloneable {
+public class SelectedBuffer implements Cloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -50,165 +48,206 @@ public class SelectedMatParam implements Cloneable {
      * message logger for this class
      */
     final private static Logger logger
-            = Logger.getLogger(SelectedMatParam.class.getName());
+            = Logger.getLogger(SelectedBuffer.class.getName());
     // *************************************************************************
     // fields
 
     /**
-     * C-G model containing the parameter (set by {@link #setCgm(Cgm)})
+     * C-G model containing the buffer (set by {@link #setCgm(Cgm)})
      */
     private Cgm cgm = null;
     /**
-     * editable C-G model, if any, containing the override (set by
+     * editable C-G model, if any, containing the buffer (set by
      * {@link #setCgm(Cgm)})
      */
     private EditableCgm editableCgm;
     /**
-     * name of the selected parameter, or null if none selected
+     * index of the selected buffer in the selected spatial's list (&ge;0) or -1
+     * if none selected
      */
-    private String selectedName = null;
+    private int selectedIndex = SelectedSpatial.noBufferIndex;
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Delete (and deselect) the selected parameter.
+     * Test whether the buffer can be deleted without causing an
+     * NullPointerException in SkeletonControl.
+     *
+     * @return true if it can, otherwise false
      */
-    public void delete() {
-        if (isSelected() && editableCgm != null) {
-            editableCgm.deleteMatParam();
-            selectedName = null;
+    public boolean canDelete() {
+        Mesh mesh = cgm.getSpatial().getMesh();
+        boolean isAnimated = mesh.isAnimated(); // what SkeletonControl uses
+        VertexBuffer bindTangents
+                = mesh.getBuffer(VertexBuffer.Type.BindPoseTangent);
+        boolean hasBindPoseTangents = bindTangents != null;
+
+        boolean result;
+        VertexBuffer.Type type = type();
+        switch (type) {
+            case Tangent:
+                result = !(isAnimated && hasBindPoseTangents);
+                break;
+            case BindPoseNormal:
+            case BindPosePosition:
+            case BoneWeight:
+            case Normal:
+            case Position:
+                result = !isAnimated;
+                break;
+            default:
+                result = true;
         }
+
+        return result;
     }
 
     /**
-     * Deselect the selected parameter, if any.
+     * Read the capacity of the buffer.
+     *
+     * @return capacity (in elements, &ge;0)
+     */
+    public int capacity() {
+        VertexBuffer buffer = find();
+        Buffer data = buffer.getData();
+        int result = data.capacity();
+
+        assert result >= 0 : result;
+        return result;
+    }
+
+    /**
+     * Count how many components each element has.
+     *
+     * @return count (&ge;0)
+     */
+    public int countComponents() {
+        VertexBuffer buffer = find();
+        int count = buffer.getNumComponents();
+
+        assert count >= 0 : count;
+        return count;
+    }
+
+    /**
+     * Describe the selected buffer.
+     *
+     * @return description (not null, not empty)
+     */
+    public String describe() {
+        String result = SelectedSpatial.noBuffer;
+        if (isSelected()) {
+            List<String> list = cgm.getSpatial().listBufferDescs();
+            result = list.get(selectedIndex);
+        }
+
+        assert result != null;
+        assert !result.isEmpty();
+        return result;
+    }
+
+    /**
+     * Deselect the selected buffer, if any.
      */
     public void deselect() {
-        selectedName = null;
+        select(SelectedSpatial.noBufferIndex);
     }
 
     /**
-     * Access the selected parameter.
+     * Access the selected buffer.
      *
      * @return the pre-existing instance, or null if none selected
      */
-    MatParam find() {
-        MatParam result = null;
+    VertexBuffer find() {
+        VertexBuffer result = null;
         if (isSelected()) {
-            result = find(selectedName);
+            result = cgm.getSpatial().findBuffer(selectedIndex);
         }
 
         return result;
     }
 
     /**
-     * Access the named parameter.
-     *
-     * @param parameterName which parameter (not null)
-     * @return the pre-existing instance, or null if not found
-     */
-    MatParam find(String parameterName) {
-        assert parameterName != null;
-
-        MatParam result = null;
-        if (cgm.isLoaded()) {
-            Material material = cgm.getSpatial().getMaterial();
-            Collection<MatParam> params = material.getParams();
-            for (MatParam param : params) {
-                if (param.getName().equals(parameterName)) {
-                    result = param;
-                    break;
-                }
-            }
-        }
-
-        return result;
-    }
-
-    /**
-     * Find the index of the selected parameter (in name lexical order).
-     *
-     * @return index, or -1 if none selected
-     */
-    public int findNameIndex() {
-        int index = -1;
-        if (isSelected()) {
-            List<String> nameList = cgm.getSpatial().listMatParamNames();
-            index = nameList.indexOf(selectedName);
-        }
-
-        return index;
-    }
-
-    /**
-     * Read the name of the selected parameter.
-     *
-     * @return a parameter name, or null if none selected
-     */
-    public String getName() {
-        return selectedName;
-    }
-
-    /**
-     * Read the parameter's value.
-     *
-     * @return the pre-existing object, or null if none
-     */
-    public Object getValue() {
-        Object value = null;
-        MatParam mpo = find();
-        if (mpo != null) {
-            value = mpo.getValue();
-        }
-
-        return value;
-    }
-
-    /**
-     * Read the parameter's type.
+     * Read the buffer's format.
      *
      * @return an enum value, or null if none selected
      */
-    public VarType getVarType() {
-        VarType varType = null;
-        MatParam mpo = find();
-        if (mpo != null) {
-            varType = mpo.getVarType();
+    public VertexBuffer.Format format() {
+        VertexBuffer.Format result = null;
+        VertexBuffer buffer = find();
+        if (buffer != null) {
+            result = buffer.getFormat();
         }
 
-        return varType;
+        return result;
     }
 
     /**
-     * Test whether the parameter is overridden.
+     * Read the index of the selected buffer in the selected spatial's list.
      *
-     * @return true if overridden, otherwise false
+     * @return index (&ge;0), or -1 if none selected
      */
-    public boolean isOverridden() {
-        Spatial spatial = cgm.getSpatial().find();
-        while (spatial != null) {
-            List<MatParamOverride> mpos = spatial.getLocalMatParamOverrides();
-            for (MatParamOverride mpo : mpos) {
-                if (mpo.getName().equals(selectedName)
-                        && mpo.isEnabled()
-                        && mpo.getValue() != null) {
-                    return true;
-                }
-            }
-            spatial = spatial.getParent();
-        }
-
-        return false;
+    public int index() {
+        assert selectedIndex >= -1 : selectedIndex;
+        return selectedIndex;
     }
 
     /**
-     * Test whether a parameter is selected.
+     * Read the buffer's instance span.
+     *
+     * @return 0 &rarr; not instanced, 1 &rarr; each element goes with one
+     * instance, etc.
+     */
+    public int instanceSpan() {
+        int result = 0;
+        VertexBuffer buffer = find();
+        if (buffer != null) {
+            result = buffer.getInstanceSpan();
+        }
+
+        return result;
+    }
+
+    /**
+     * Test whether the buffer is in the buffer map of the selected mesh.
+     *
+     * @return true if in the list, otherwise false
+     */
+    public boolean isMapped() {
+        VertexBuffer buffer = find();
+        boolean result = false;
+        if (buffer != null) {
+            Mesh mesh = cgm.getSpatial().getMesh();
+            IntMap<VertexBuffer> map = mesh.getBuffers();
+            result = map.containsValue(buffer);
+        }
+
+        return result;
+    }
+
+    /**
+     * Test whether the buffer is normalized.
+     *
+     * @return true if instanced, otherwise false
+     */
+    public boolean isNormalized() {
+        boolean result = false;
+        VertexBuffer buffer = find();
+        if (buffer != null) {
+            result = buffer.isNormalized();
+        }
+
+        return result;
+    }
+
+    /**
+     * Test whether a buffer is selected.
      *
      * @return true if selected, otherwise false
      */
     public boolean isSelected() {
         boolean result;
-        if (selectedName == null) {
+        if (selectedIndex == SelectedSpatial.noBufferIndex) {
             result = false;
         } else {
             result = true;
@@ -218,40 +257,84 @@ public class SelectedMatParam implements Cloneable {
     }
 
     /**
-     * Select the parameter with the specified name.
+     * Read the limit of the buffer: the index of the 1st element that should
+     * not be read or written.
      *
-     * @param parameterName a parameter name (not null, not empty)
+     * @return limit (&ge;0)
      */
-    public void select(String parameterName) {
-        Validate.nonEmpty(parameterName, "parameter name");
-        selectedName = parameterName;
+    public int limit() {
+        VertexBuffer buffer = find();
+        Buffer data = buffer.getData();
+        int result = data.limit();
+
+        assert result >= 0 : result;
+        return result;
     }
 
     /**
-     * Select the next parameter (in name lexical order).
+     * Read the position of the buffer: the index of the next element to be read
+     * or written.
+     *
+     * @return limit (&ge;0)
      */
-    public void selectNextName() {
-        List<String> nameList = cgm.getSpatial().listMatParamNames();
-        if (isSelected() && !nameList.isEmpty()) {
-            int numNames = nameList.size();
-            int index = nameList.indexOf(selectedName);
-            int nextIndex = MyMath.modulo(index + 1, numNames);
-            String nextName = nameList.get(nextIndex);
-            select(nextName);
+    public int position() {
+        VertexBuffer buffer = find();
+        Buffer data = buffer.getData();
+        int result = data.position();
+
+        assert result >= 0 : result;
+        return result;
+    }
+
+    /**
+     * Select the described buffer.
+     *
+     * @param description which buffer (not null, not empty)
+     */
+    public void select(String description) {
+        Validate.nonEmpty(description, "description");
+
+        List<String> list = cgm.getSpatial().listBufferDescs();
+        int newIndex = list.indexOf(description);
+        select(newIndex);
+    }
+
+    /**
+     * Select the indexed buffer.
+     *
+     * @param newIndex index of the buffer in the selected spatial's list
+     * (&ge;0) or -1 for none
+     */
+    public void select(int newIndex) {
+        Validate.inRange(newIndex, "new index", -1, Integer.MAX_VALUE);
+        selectedIndex = newIndex;
+    }
+
+    /**
+     * Select the next buffer.
+     */
+    public void selectNext() {
+        assert isSelected();
+
+        List<String> buffers = cgm.getSpatial().listBufferDescs();
+        int numBuffers = buffers.size();
+        if (numBuffers > 1) {
+            int nextIndex = MyMath.modulo(selectedIndex + 1, numBuffers);
+            select(nextIndex);
         }
     }
 
     /**
-     * Select the previous parameter (in name lexical order).
+     * Select the previous buffer.
      */
-    public void selectPreviousName() {
-        List<String> nameList = cgm.getSpatial().listMatParamNames();
-        if (isSelected() && !nameList.isEmpty()) {
-            int numNames = nameList.size();
-            int index = nameList.indexOf(selectedName);
-            int nextIndex = MyMath.modulo(index - 1, numNames);
-            String previousName = nameList.get(nextIndex);
-            select(previousName);
+    public void selectPrevious() {
+        assert isSelected();
+
+        List<String> buffers = cgm.getSpatial().listBufferDescs();
+        int numBuffers = buffers.size();
+        if (numBuffers > 1) {
+            int prevIndex = MyMath.modulo(selectedIndex - 1, numBuffers);
+            select(prevIndex);
         }
     }
 
@@ -263,7 +346,7 @@ public class SelectedMatParam implements Cloneable {
      */
     void setCgm(Cgm newCgm) {
         assert newCgm != null;
-        assert newCgm.getMatParam() == this;
+        assert newCgm.getBuffer() == this;
 
         cgm = newCgm;
         if (newCgm instanceof EditableCgm) {
@@ -272,8 +355,51 @@ public class SelectedMatParam implements Cloneable {
             editableCgm = null;
         }
     }
+
+    /**
+     * Read the stride of the buffer.
+     *
+     * @return stride (in bytes, &ge;0)
+     */
+    public int stride() {
+        VertexBuffer buffer = find();
+        int result = buffer.getStride();
+
+        assert result >= 0 : result;
+        return result;
+    }
+
+    /**
+     * Read the buffer's type.
+     *
+     * @return an enum value, or null if none selected
+     */
+    public VertexBuffer.Type type() {
+        VertexBuffer.Type result = null;
+        VertexBuffer buffer = find();
+        if (buffer != null) {
+            result = buffer.getBufferType();
+        }
+
+        return result;
+    }
+
+    /**
+     * Read the buffer's usage.
+     *
+     * @return an enum value, or null if none selected
+     */
+    public VertexBuffer.Usage usage() {
+        VertexBuffer.Usage result = null;
+        VertexBuffer buffer = find();
+        if (buffer != null) {
+            result = buffer.getUsage();
+        }
+
+        return result;
+    }
     // *************************************************************************
-    // Cloneable methods
+    // Object methods
 
     /**
      * Create a deep copy of this object.
@@ -282,8 +408,8 @@ public class SelectedMatParam implements Cloneable {
      * @throws CloneNotSupportedException if the superclass isn't cloneable
      */
     @Override
-    public SelectedMatParam clone() throws CloneNotSupportedException {
-        SelectedMatParam clone = (SelectedMatParam) super.clone();
+    public SelectedBuffer clone() throws CloneNotSupportedException {
+        SelectedBuffer clone = (SelectedBuffer) super.clone();
         return clone;
     }
 }

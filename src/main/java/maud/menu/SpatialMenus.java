@@ -105,6 +105,10 @@ public class SpatialMenus {
                     Maud.gui.tools.select("material");
                     break;
 
+                case "Mesh":
+                    Maud.gui.tools.select("mesh");
+                    break;
+
                 case "Overrides":
                     Maud.gui.tools.select("overrides");
                     break;

@@ -71,6 +71,10 @@ class DeleteAction {
                 target.getAnimation().delete();
                 break;
 
+            case Action.deleteBuffer:
+                target.deleteBuffer();
+                break;
+
             case Action.deleteLight:
                 target.getLight().delete();
                 break;

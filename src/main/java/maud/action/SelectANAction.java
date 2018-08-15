@@ -27,7 +27,9 @@
 package maud.action;
 
 import com.jme3.material.RenderState;
+import com.jme3.scene.Mesh;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.VertexBuffer;
 import com.jme3.shadow.EdgeFilteringMode;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
@@ -125,6 +127,14 @@ class SelectANAction {
                 target.getBone().selectTrack();
                 break;
 
+            case Action.selectBuffer:
+                ShowMenus.selectBuffer();
+                break;
+
+            case Action.selectBufferUsage:
+                EnumMenus.selectBufferUsage();
+                break;
+
             case Action.selectEdgeFilter:
                 EnumMenus.selectEdgeFilter();
                 break;
@@ -175,6 +185,10 @@ class SelectANAction {
 
             case Action.selectMatParam:
                 ShowMenus.selectMatParam();
+                break;
+
+            case Action.selectMeshMode:
+                EnumMenus.selectMeshMode();
                 break;
 
             default:
@@ -244,6 +258,16 @@ class SelectANAction {
             int indexBase = Maud.getModel().getMisc().getIndexBase();
             target.getBone().select(index - indexBase);
 
+        } else if (actionString.startsWith(ActionPrefix.selectBuffer)) {
+            arg = MyString.remainder(actionString, ActionPrefix.selectBuffer);
+            target.getBuffer().select(arg);
+
+        } else if (actionString.startsWith(ActionPrefix.selectBufferUsage)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectBufferUsage);
+            VertexBuffer.Usage usage = VertexBuffer.Usage.valueOf(arg);
+            target.setBufferUsage(usage);
+
         } else if (actionString.startsWith(ActionPrefix.selectCullHint)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectCullHint);
             Spatial.CullHint value = Spatial.CullHint.valueOf(arg);
@@ -299,6 +323,11 @@ class SelectANAction {
             arg = MyString.remainder(actionString, ActionPrefix.selectMovement);
             MovementMode mode = MovementMode.valueOf(arg);
             model.getScene().getCamera().setMode(mode);
+
+        } else if (actionString.startsWith(ActionPrefix.selectMeshMode)) {
+            arg = MyString.remainder(actionString, ActionPrefix.selectMeshMode);
+            Mesh.Mode mode = Mesh.Mode.valueOf(arg);
+            target.setMeshMode(mode);
 
         } else {
             handled = false;

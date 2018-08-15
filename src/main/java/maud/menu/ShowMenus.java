@@ -40,6 +40,7 @@ import maud.MaudUtil;
 import maud.action.ActionPrefix;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
+import maud.model.cgm.SelectedBuffer;
 import maud.model.cgm.SelectedLight;
 import maud.model.cgm.SelectedOverride;
 import maud.model.cgm.SelectedSgc;
@@ -174,6 +175,30 @@ public class ShowMenus {
             }
             builder.show(ActionPrefix.selectBoneChild);
         }
+    }
+
+    /**
+     * Handle a "select buffer" action without an argument.
+     */
+    public static void selectBuffer() {
+        MenuBuilder builder = new MenuBuilder();
+
+        Cgm target = Maud.getModel().getTarget();
+        SelectedBuffer buffer = target.getBuffer();
+        SelectedSpatial spatial = target.getSpatial();
+        if (buffer.isSelected()) {
+            builder.add(SelectedSpatial.noBuffer);
+        }
+
+        String currentDesc = buffer.describe();
+        List<String> bufferDescs = spatial.listBufferDescs();
+        for (String desc : bufferDescs) {
+            if (!desc.equals(currentDesc)) {
+                builder.add(desc);
+            }
+        }
+
+        builder.show(ActionPrefix.selectBuffer);
     }
 
     /**
@@ -417,6 +442,21 @@ public class ShowMenus {
         }
 
         builder.show(ActionPrefix.setDimensions);
+    }
+
+    /**
+     * Display a menu to configure the maximum number of weights per mesh vertex
+     * using the "set meshWeights " action prefix.
+     */
+    public static void setMeshWeights() {
+        MenuBuilder builder = new MenuBuilder();
+
+        for (int numWeights = 1; numWeights <= 4; numWeights++) {
+            String description = Integer.toString(numWeights);
+            builder.add(description);
+        }
+
+        builder.show(ActionPrefix.setMeshWeights);
     }
 
     /**

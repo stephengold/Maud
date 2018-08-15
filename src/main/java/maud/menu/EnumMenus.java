@@ -29,6 +29,7 @@ package maud.menu;
 import com.jme3.light.Light;
 import com.jme3.material.RenderState;
 import com.jme3.renderer.queue.RenderQueue;
+import com.jme3.scene.Mesh;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.shader.VarType;
@@ -44,9 +45,8 @@ import jme3utilities.wes.TweenVectors;
 import maud.Maud;
 import maud.action.ActionPrefix;
 import maud.dialog.LicenseType;
-import maud.model.EditorModel;
+import maud.model.cgm.SelectedBuffer;
 import maud.model.cgm.SelectedSpatial;
-import maud.model.cgm.SelectedVertex;
 import maud.model.cgm.UserDataType;
 import maud.model.option.Background;
 import maud.model.option.MiscOptions;
@@ -167,6 +167,26 @@ public class EnumMenus {
     }
 
     /**
+     * Handle a "select bufferUsage" action without an argument.
+     */
+    public static void selectBufferUsage() {
+        MenuBuilder builder = new MenuBuilder();
+
+        SelectedBuffer buffer = Maud.getModel().getTarget().getBuffer();
+        boolean isIndexBuffer = (buffer.type() == VertexBuffer.Type.Index);
+        VertexBuffer.Usage currentUsage = buffer.usage();
+        for (VertexBuffer.Usage usage : VertexBuffer.Usage.values()) {
+            if (usage != currentUsage
+                    && (usage != VertexBuffer.Usage.CpuOnly || !isIndexBuffer)) {
+                // OpenGL crashes when an index buffer is CPU-only
+                builder.add(usage.toString());
+            }
+        }
+
+        builder.show(ActionPrefix.selectBufferUsage);
+    }
+
+    /**
      * Display a menu to set the shadow edge filtering mode using the "select
      * edgeFilter " action prefix.
      */
@@ -243,6 +263,25 @@ public class EnumMenus {
         builder.addAll(names);
 
         builder.show(ActionPrefix.newOverride);
+    }
+
+    /**
+     * Display a menu for selecting a mesh mode using the "select meshMode "
+     * action prefix.
+     */
+    public static void selectMeshMode() {
+        MenuBuilder builder = new MenuBuilder();
+
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        Mesh.Mode selectedMode = spatial.getMeshMode();
+        for (Mesh.Mode mode : Mesh.Mode.values()) {
+            if (mode != selectedMode && mode != Mesh.Mode.Hybrid) {
+                String name = mode.toString();
+                builder.add(name);
+            }
+        }
+
+        builder.show(ActionPrefix.selectMeshMode);
     }
 
     /**
@@ -394,35 +433,6 @@ public class EnumMenus {
         }
 
         builder.show(ActionPrefix.newUserKey);
-    }
-
-    /**
-     * Handle a "select vertexBuffer" action without an argument.
-     */
-    public static void selectVertexBuffer() {
-        MenuBuilder builder = new MenuBuilder();
-
-        EditorModel model = Maud.getModel();
-        SelectedSpatial spatial = model.getTarget().getSpatial();
-        SelectedVertex vertex = model.getTarget().getVertex();
-        VertexBuffer.Type current = model.getMisc().getVertexBuffer();
-
-        int maxNumber = VertexBuffer.Type.values().length;
-        List<String> bufferNames = new ArrayList<>(maxNumber);
-        for (VertexBuffer.Type buffer : VertexBuffer.Type.values()) {
-            if (vertex.isSelected() && !spatial.hasVertexBuffer(buffer)) {
-                continue;
-            }
-            if (buffer != current && buffer != VertexBuffer.Type.Index
-                    && buffer != VertexBuffer.Type.HWBoneIndex
-                    && buffer != VertexBuffer.Type.HWBoneWeight) {
-                bufferNames.add(buffer.toString());
-            }
-        }
-        Collections.sort(bufferNames);
-        builder.addAll(bufferNames);
-
-        builder.show(ActionPrefix.selectVertexBuffer);
     }
 
     /**

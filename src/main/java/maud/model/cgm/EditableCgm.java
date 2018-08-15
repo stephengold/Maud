@@ -51,13 +51,16 @@ import com.jme3.math.Vector3f;
 import com.jme3.math.Vector4f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.UserData;
+import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.control.Control;
 import com.jme3.shader.VarType;
 import java.io.File;
 import java.io.IOException;
+import java.nio.Buffer;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -335,6 +338,7 @@ public class EditableCgm extends LoadedCgm {
 
         History.autoAdd();
         animControl.removeAnim(anim);
+        // scene view not updated
         setEdited("delete animation");
     }
 
@@ -369,6 +373,31 @@ public class EditableCgm extends LoadedCgm {
         setEdited(description);
 
         assert !selectedBone.hasAttachmentsNode();
+    }
+
+    /**
+     * Delete the selected buffer (which must be a mapped buffer) and deselect
+     * it.
+     */
+    public void deleteBuffer() {
+        SelectedBuffer buffer = getBuffer();
+        assert buffer.isMapped();
+        String description = "delete buffer " + buffer.describe();
+        VertexBuffer.Type type = buffer.type();
+
+        Spatial spatial = getSpatial().find();
+        Geometry geometry = (Geometry) spatial;
+        Mesh mesh = geometry.getMesh();
+
+        History.autoAdd();
+        getSceneView().deleteBuffer();
+        mesh.clearBuffer(type);
+        if (type == VertexBuffer.Type.BoneIndex) {
+            mesh.clearBuffer(VertexBuffer.Type.HWBoneIndex);
+        }
+        setEdited(description);
+
+        buffer.deselect();
     }
 
     /**
@@ -912,7 +941,109 @@ public class EditableCgm extends LoadedCgm {
             History.autoAdd();
             modelSpatial.setBatchHint(newHint);
             // scene view not updated
-            setEdited("change batch hint");
+            String description = String.format(
+                    "set batch hint of spatial to %s", newHint);
+            setEdited(description);
+        }
+    }
+
+    /**
+     * Alter the instance span of the selected buffer.
+     *
+     * @param newSpan 0 &rarr; not instanced, 1 &rarr; each element goes with
+     * one instance, etc.
+     */
+    public void setBufferInstanceSpan(int newSpan) {
+        Validate.nonNegative(newSpan, "new span");
+
+        VertexBuffer buffer = getBuffer().find();
+        int oldSpan = buffer.getInstanceSpan();
+        if (oldSpan != newSpan) {
+            History.autoAdd();
+            buffer.setInstanceSpan(newSpan);
+            getSceneView().setBufferInstanceSpan(newSpan);
+            String description = String.format(
+                    "set instance span of buffer to %d", newSpan);
+            setEdited(description);
+        }
+    }
+
+    /**
+     * Alter the limit of the selected buffer.
+     *
+     * @param newLimit (&ge;1)
+     */
+    public void setBufferLimit(int newLimit) {
+        Validate.positive(newLimit, "new limit");
+
+        VertexBuffer buffer = getBuffer().find();
+        Buffer data = buffer.getData();
+        int oldLimit = data.limit();
+        if (oldLimit != newLimit) {
+            History.autoAdd();
+            data.limit(newLimit);
+            getSceneView().setBufferLimit(newLimit);
+            String description
+                    = String.format("set limit of buffer to %d", newLimit);
+            setEdited(description);
+        }
+    }
+
+    /**
+     * Alter the normalized flag of the selected buffer.
+     *
+     * @param newSetting true&rarr;normalized, false&rarr;not normalized
+     */
+    public void setBufferNormalized(boolean newSetting) {
+        VertexBuffer buffer = getBuffer().find();
+        boolean oldSetting = buffer.isNormalized();
+        if (oldSetting != newSetting) {
+            History.autoAdd();
+            buffer.setNormalized(newSetting);
+            getSceneView().setBufferNormalized(newSetting);
+            String description = String.format(
+                    "set normalized flag of buffer to %s", newSetting);
+            setEdited(description);
+        }
+    }
+
+    /**
+     * Alter the stride of the selected buffer.
+     *
+     * @param newStride new value for stride (&ge;0)
+     */
+    public void setBufferStride(int newStride) {
+        Validate.nonNegative(newStride, "new stride");
+
+        VertexBuffer buffer = getBuffer().find();
+        int oldStride = buffer.getStride();
+        if (oldStride != newStride) {
+            History.autoAdd();
+            buffer.setStride(newStride);
+            getSceneView().setBufferStride(newStride);
+            String description = String.format(
+                    "set stride of buffer to %d", newStride);
+            setEdited(description);
+        }
+    }
+
+    /**
+     * Alter the usage of the selected buffer.
+     *
+     * @param newUsage new value for usage (not null)
+     */
+    public void setBufferUsage(VertexBuffer.Usage newUsage) {
+        Validate.nonNull(newUsage, "new usage");
+
+        VertexBuffer buffer = getBuffer().find();
+        VertexBuffer.Usage oldUsage = buffer.getUsage();
+        if (oldUsage != newUsage) {
+            History.autoAdd();
+            buffer.setUsage(newUsage);
+            getSceneView().setBufferUsage(newUsage);
+            String description = String.format(
+                    "set usage of buffer to %s", newUsage);
+            setEdited(description);
         }
     }
 
@@ -930,7 +1061,9 @@ public class EditableCgm extends LoadedCgm {
             History.autoAdd();
             modelSpatial.setCullHint(newHint);
             getSceneView().setCullHint(newHint);
-            setEdited("change cull hint");
+            String description = String.format(
+                    "set cull hint of spatial to %s", newHint);
+            setEdited(description);
         }
     }
 
@@ -950,8 +1083,7 @@ public class EditableCgm extends LoadedCgm {
                 sceneView.setDepthTest(newState);
 
                 String description = String.format(
-                        "set depth test to %s in the selected material",
-                        newState);
+                        "set depth test flag of material to %s", newState);
                 setEdited(description);
             }
         }
@@ -975,8 +1107,7 @@ public class EditableCgm extends LoadedCgm {
                 sceneView.setFaceCullMode(newMode);
 
                 String description = String.format(
-                        "set face-cull mode to %s in the selected material",
-                        newMode);
+                        "set face-cull mode of material to %s", newMode);
                 setEdited(description);
             }
         }
@@ -1054,6 +1185,48 @@ public class EditableCgm extends LoadedCgm {
                 "alter value of material parameter %s",
                 MyString.quote(parameterName));
         setEdited(description);
+    }
+
+    /**
+     * Alter the mode of the selected mesh.
+     *
+     * @param newMode new value for mode (not null, not Hybrid)
+     */
+    public void setMeshMode(Mesh.Mode newMode) {
+        Validate.nonNull(newMode, "new mode");
+        assert newMode != Mesh.Mode.Hybrid;
+
+        Mesh mesh = getSpatial().getMesh();
+        if (mesh.getMode() != newMode) {
+            History.autoAdd();
+            mesh.setMode(newMode);
+            SceneView sceneView = getSceneView();
+            sceneView.setMeshMode(newMode);
+
+            String description = String.format("set mode of mesh to %s",
+                    newMode);
+            setEdited(description);
+        }
+    }
+
+    /**
+     * Alter the maximum number of weights per vertex in the selected mesh.
+     *
+     * @param newLimit new number (&ge;1, &le;4)
+     */
+    public void setMeshWeights(int newLimit) {
+        Validate.inRange(newLimit, "new limit", 1, 4);
+
+        Mesh mesh = getSpatial().getMesh();
+        int oldLimit = mesh.getMaxNumWeights();
+        if (oldLimit != newLimit) {
+            History.autoAdd();
+            mesh.setMaxNumWeights(newLimit);
+            getSceneView().setMeshWeights(newLimit);
+            String description = String.format(
+                    "set max weights of mesh to %d", newLimit);
+            setEdited(description);
+        }
     }
 
     /**
@@ -1306,8 +1479,7 @@ public class EditableCgm extends LoadedCgm {
                 updateSceneWireframe();
 
                 String description = String.format(
-                        "set wireframe to %s in the selected material",
-                        newState);
+                        "set wireframe flag of material to %s", newState);
                 setEdited(description);
             }
         }

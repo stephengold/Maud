@@ -27,7 +27,6 @@
 package maud.model.option;
 
 import com.jme3.math.FastMath;
-import com.jme3.scene.VertexBuffer;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.logging.Level;
@@ -121,10 +120,6 @@ public class MiscOptions implements Cloneable {
      * message to display in the status bar (not null)
      */
     private String statusMessage = "Welcome to Maud!";
-    /**
-     * buffer to view/edit in VertexTool (not null)
-     */
-    private VertexBuffer.Type vertexBuffer = VertexBuffer.Type.BindPosePosition;
     /**
      * view mode (not null)
      */
@@ -250,16 +245,6 @@ public class MiscOptions implements Cloneable {
         assert warpY >= 0f : warpY;
         assert warpY <= 1f : warpY;
         return warpY;
-    }
-
-    /**
-     * Read which vertex buffer to view/edit in VertexTool.
-     *
-     * @return an enum value (not null)
-     */
-    public VertexBuffer.Type getVertexBuffer() {
-        assert vertexBuffer != null;
-        return vertexBuffer;
     }
 
     /**
@@ -391,16 +376,6 @@ public class MiscOptions implements Cloneable {
     public void selectShapeParameter(ShapeParameter newParameter) {
         Validate.nonNull(newParameter, "new parameter");
         shapeParameter = newParameter;
-    }
-
-    /**
-     * Alter which buffer to view/edit in VertexTool.
-     *
-     * @param newBuffer an enum value (not null)
-     */
-    public void selectVertexBuffer(VertexBuffer.Type newBuffer) {
-        Validate.nonNull(newBuffer, "new buffer");
-        vertexBuffer = newBuffer;
     }
 
     /**
@@ -581,9 +556,6 @@ public class MiscOptions implements Cloneable {
         MaudUtil.writePerformAction(writer, action);
 
         // Don't write the status message.
-        action = ActionPrefix.selectVertexBuffer + vertexBuffer.toString();
-        MaudUtil.writePerformAction(writer, action);
-
         action = ActionPrefix.selectViewMode + viewMode.toString();
         MaudUtil.writePerformAction(writer, action);
     }

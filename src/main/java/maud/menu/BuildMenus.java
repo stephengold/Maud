@@ -646,7 +646,7 @@ public class BuildMenus {
         builder.addTool("Details");
         builder.addTool("Lights");
         builder.addTool("Material");
-        //builder.addTool("Mesh"); TODO
+        builder.addTool("Mesh");
         builder.addTool("Overrides");
         builder.addTool("Rotate");
         builder.addTool("Scale");

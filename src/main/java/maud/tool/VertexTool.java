@@ -36,12 +36,11 @@ import jme3utilities.MyString;
 import jme3utilities.nifty.GuiScreenController;
 import maud.Maud;
 import maud.MaudUtil;
-import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
+import maud.model.cgm.SelectedBuffer;
 import maud.model.cgm.SelectedSkeleton;
 import maud.model.cgm.SelectedSpatial;
 import maud.model.cgm.SelectedVertex;
-import maud.model.option.MiscOptions;
 
 /**
  * The controller for the "Vertex" tool in Maud's editor screen.
@@ -133,11 +132,10 @@ class VertexTool extends Tool {
      * Update the selected vertex buffer and the data read from the buffer.
      */
     private void updateBuffer() {
-        EditorModel model = Maud.getModel();
-        MiscOptions options = model.getMisc();
-        VertexBuffer.Type bufferType = options.getVertexBuffer();
-        String bufferButton = bufferType.toString();
-        setButtonText("vertexBufferSelect", bufferButton);
+        Cgm target = Maud.getModel().getTarget();
+        SelectedBuffer buffer = target.getBuffer();
+        String bufferDesc = buffer.describe();
+        setButtonText("vertexBufferSelect", bufferDesc);
 
         String data0 = "";
         String data1 = "";
@@ -148,10 +146,9 @@ class VertexTool extends Tool {
         String label2 = "";
         String label3 = "";
 
-        Cgm target = Maud.getModel().getTarget();
-        SelectedSpatial spatial = target.getSpatial();
         SelectedVertex vertex = target.getVertex();
-        if (vertex.isSelected() && spatial.hasVertexBuffer(bufferType)) {
+        if (buffer.isSelected() && vertex.isSelected()) {
+            VertexBuffer.Type bufferType = buffer.type();
             switch (bufferType) {
                 case BoneIndex:
                     int boneIndex[] = vertex.boneIndices(null);

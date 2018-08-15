@@ -74,6 +74,7 @@ public class EditorTools {
 
     final private MappingTool mapping;
     final private MaterialTool material;
+    final private MeshTool mesh;
     final private ObjectTool object;
     final private OverridesTool overrides;
     final private PlatformTool platform;
@@ -81,8 +82,8 @@ public class EditorTools {
     final private RetargetTool retarget;
     final private SceneLightingTool sceneLighting;
     final private SceneVertexTool sceneVertex;
-    final private ScoreTool score;
 
+    final private ScoreTool score;
     final private SettingsTool settings;
     final private SgcTool sgc;
     final private ShapeTool shape;
@@ -92,8 +93,8 @@ public class EditorTools {
     final private SpatialDetailsTool spatialDetails;
     final private SpatialRotationTool spatialRotation;
     final private SpatialScaleTool spatialScale;
-    final private SpatialTool spatial;
 
+    final private SpatialTool spatial;
     final private SpatialTranslationTool spatialTranslation;
     final private TrackTool track;
     final private TweeningTool tweening;
@@ -135,6 +136,7 @@ public class EditorTools {
 
         mapping = new MappingTool(screen);
         material = new MaterialTool(screen);
+        mesh = new MeshTool(screen);
         object = new ObjectTool(screen);
         overrides = new OverridesTool(screen);
         platform = new PlatformTool(screen);
@@ -174,7 +176,7 @@ public class EditorTools {
         stateManager.attachAll(animation, axes, background, bone, boneRotation,
                 boneScale, boneTranslation, bounds, camera, cgm, cursor,
                 displaySettings, extract, history, keyframe, joint, lightColor,
-                lightDirection, lightPosition, lights, mapping, material,
+                lightDirection, lightPosition, lights, mapping, material, mesh,
                 object, overrides, platform, render, retarget, sceneLighting,
                 sceneVertex, score, settings, sgc, shape, skeleton, sky,
                 sourceAnimation, spatial, spatialDetails, spatialRotation,

@@ -93,6 +93,18 @@ class SetAction {
                 EnumMenus.setBatchHint();
                 break;
 
+            case Action.setBufferInstanceSpan:
+                EditorDialogs.setBufferInstanceSpan();
+                break;
+
+            case Action.setBufferLimit:
+                EditorDialogs.setBufferLimit();
+                break;
+
+            case Action.setBufferStride:
+                EditorDialogs.setBufferStride();
+                break;
+
             case Action.setColorDepth:
                 ShowMenus.setColorDepth();
                 break;
@@ -127,6 +139,10 @@ class SetAction {
                     EditorDialogs.setMatParamValue(parameterName, varType,
                             oldValue, allowNull, ActionPrefix.setMatParamValue);
                 }
+                break;
+
+            case Action.setMeshWeights:
+                ShowMenus.setMeshWeights();
                 break;
 
             case Action.setMsaaFactor:
@@ -265,7 +281,7 @@ class SetAction {
                     ActionPrefix.set3DCursorColor);
             String[] args = arg.split(" ");
             if (args.length >= 2) {
-                int index = Integer.valueOf(args[0]);
+                int index = Integer.parseInt(args[0]);
                 String colorText = MyString.remainder(arg, args[0] + " ");
                 ColorRGBA color = MaudUtil.parseColor(colorText);
                 model.getScene().getCursor().setColor(index, color);
@@ -321,15 +337,31 @@ class SetAction {
             float width = Float.valueOf(arg);
             model.getScene().getBounds().setLineWidth(width);
 
-        } else if (actionString.startsWith(ActionPrefix.setCloudiness)) {
+        } else if (actionString.startsWith(
+                ActionPrefix.setBufferInstanceSpan)) {
             arg = MyString.remainder(actionString,
-                    ActionPrefix.setCloudiness);
-            float fraction = Float.valueOf(arg);
+                    ActionPrefix.setBufferInstanceSpan);
+            int span = Integer.parseInt(arg);
+            target.setBufferInstanceSpan(span);
+
+        } else if (actionString.startsWith(ActionPrefix.setBufferLimit)) {
+            arg = MyString.remainder(actionString, ActionPrefix.setBufferLimit);
+            int limit = Integer.parseInt(arg);
+            target.setBufferLimit(limit);
+
+        } else if (actionString.startsWith(ActionPrefix.setBufferStride)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setBufferStride);
+            int stride = Integer.parseInt(arg);
+            target.setBufferStride(stride);
+
+        } else if (actionString.startsWith(ActionPrefix.setCloudiness)) {
+            arg = MyString.remainder(actionString, ActionPrefix.setCloudiness);
+            float fraction = Float.parseFloat(arg);
             model.getScene().getRender().setCloudiness(fraction);
 
         } else if (actionString.startsWith(ActionPrefix.setColorDepth)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.setColorDepth);
+            arg = MyString.remainder(actionString, ActionPrefix.setColorDepth);
             int bitsPerPixel = Integer.parseInt(arg);
             DisplaySettings.setColorDepth(bitsPerPixel);
 
@@ -385,6 +417,11 @@ class SetAction {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setMatParamValue);
             target.setMatParamValue(arg);
+
+        } else if (actionString.startsWith(ActionPrefix.setMeshWeights)) {
+            arg = MyString.remainder(actionString, ActionPrefix.setMeshWeights);
+            int mnwpv = Integer.parseInt(arg);
+            target.setMeshWeights(mnwpv);
 
         } else if (actionString.startsWith(ActionPrefix.setMsaaFactor)) {
             arg = MyString.remainder(actionString, ActionPrefix.setMsaaFactor);
@@ -515,7 +552,7 @@ class SetAction {
                 if (args.length == 2) {
                     EditorDialogs.setTimeToKeyframe(whichCgm, whichTime);
                 } else if (args.length == 3) {
-                    int indexBase = Maud.getModel().getMisc().getIndexBase();
+                    int indexBase = model.getMisc().getIndexBase();
                     int index = Integer.parseInt(args[2]) - indexBase;
                     Cgm cgm = model.getCgm(whichCgm);
                     float newValue = cgm.getTrack().keyframeTime(index);

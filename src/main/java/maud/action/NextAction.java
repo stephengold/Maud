@@ -81,6 +81,10 @@ class NextAction {
                 target.getBone().selectNext();
                 break;
 
+            case Action.nextBuffer:
+                target.getBuffer().selectNext();
+                break;
+
             case Action.nextCheckpoint:
                 History.redo();
                 break;

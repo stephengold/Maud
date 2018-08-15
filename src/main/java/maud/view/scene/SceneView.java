@@ -44,10 +44,13 @@ import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.VertexBuffer;
 import com.jme3.shader.VarType;
 import com.jme3.util.clone.Cloner;
+import java.nio.Buffer;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -203,6 +206,23 @@ public class SceneView extends SceneViewCore {
 
         assert length >= 0f : length;
         return length;
+    }
+
+    /**
+     * Delete the selected buffer (which must be a mapped buffer).
+     */
+    public void deleteBuffer() {
+        VertexBuffer buffer = findBuffer();
+        VertexBuffer.Type type = buffer.getBufferType();
+
+        Spatial spatial = selectedSpatial();
+        Geometry geometry = (Geometry) spatial;
+        Mesh mesh = geometry.getMesh();
+
+        mesh.clearBuffer(type);
+        if (type == VertexBuffer.Type.BoneIndex) {
+            mesh.clearBuffer(VertexBuffer.Type.HWBoneIndex);
+        }
     }
 
     /**
@@ -418,6 +438,66 @@ public class SceneView extends SceneViewCore {
     }
 
     /**
+     * Alter the instance span of the selected buffer.
+     *
+     * @param newSpan 0 &rarr; not instanced, 1 &rarr; each element goes with
+     * one instance, etc.
+     */
+    public void setBufferInstanceSpan(int newSpan) {
+        Validate.nonNegative(newSpan, "new span");
+
+        VertexBuffer buffer = findBuffer();
+        buffer.setInstanceSpan(newSpan);
+    }
+
+    /**
+     * Alter the limit of the selected buffer.
+     *
+     * @param newLimit new value for limit (&ge;0)
+     */
+    public void setBufferLimit(int newLimit) {
+        Validate.nonNegative(newLimit, "new limit");
+
+        VertexBuffer buffer = findBuffer();
+        Buffer data = buffer.getData();
+        data.limit(newLimit);
+    }
+
+    /**
+     * Alter the normalized flag of the selected buffer.
+     *
+     * @param newSetting true&rarr;normalized, false&rarr;not normalized
+     */
+    public void setBufferNormalized(boolean newSetting) {
+        VertexBuffer buffer = findBuffer();
+        buffer.setNormalized(newSetting);
+    }
+
+    /**
+     * Alter the stride of the selected buffer.
+     *
+     * @param newStride new value for stride (&ge;0)
+     */
+    public void setBufferStride(int newStride) {
+        Validate.nonNegative(newStride, "new stride");
+
+        VertexBuffer buffer = findBuffer();
+        buffer.setStride(newStride);
+    }
+
+    /**
+     * Alter the usage of the selected buffer.
+     *
+     * @param newUsage new value for usage (not null)
+     */
+    public void setBufferUsage(VertexBuffer.Usage newUsage) {
+        Validate.nonNull(newUsage, "new usage");
+
+        VertexBuffer buffer = findBuffer();
+        buffer.setUsage(newUsage);
+    }
+
+    /**
      * Alter the cull hint of the selected spatial.
      *
      * @param newHint new value for cull hint (not null)
@@ -474,6 +554,34 @@ public class SceneView extends SceneViewCore {
         String name = matParam.getName();
         VarType varType = matParam.getVarType();
         material.setParam(name, varType, newValue);
+    }
+
+    /**
+     * Alter the mode of the selected mesh.
+     *
+     * @param newMode new value for mode (not null)
+     */
+    public void setMeshMode(Mesh.Mode newMode) {
+        Validate.nonNull(newMode, "new mode");
+
+        Spatial spatial = selectedSpatial();
+        Geometry geometry = (Geometry) spatial;
+        Mesh mesh = geometry.getMesh();
+        mesh.setMode(newMode);
+    }
+
+    /**
+     * Alter the maximum number of weights per vertex in the selected mesh.
+     *
+     * @param newLimit new number (&ge;0, &le;4)
+     */
+    public void setMeshWeights(int newLimit) {
+        Validate.inRange(newLimit, "new limit", 0, 4);
+
+        Spatial spatial = selectedSpatial();
+        Geometry geometry = (Geometry) spatial;
+        Mesh mesh = geometry.getMesh();
+        mesh.setMaxNumWeights(newLimit);
     }
 
     /**

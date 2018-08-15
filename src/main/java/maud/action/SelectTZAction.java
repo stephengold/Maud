@@ -26,7 +26,6 @@
  */
 package maud.action;
 
-import com.jme3.scene.VertexBuffer;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.tools.SizeValue;
@@ -116,10 +115,6 @@ class SelectTZAction {
                 ShowMenus.selectVertex();
                 break;
 
-            case Action.selectVertexBuffer:
-                EnumMenus.selectVertexBuffer();
-                break;
-
             default:
                 handled = testForPrefixes(actionString);
         }
@@ -196,12 +191,6 @@ class SelectTZAction {
             int[] boneIndices = vertex.boneIndices(null);
             int boneIndex = boneIndices[weightIndex];
             target.getBone().select(boneIndex);
-
-        } else if (actionString.startsWith(ActionPrefix.selectVertexBuffer)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.selectVertexBuffer);
-            VertexBuffer.Type buffer = VertexBuffer.Type.valueOf(arg);
-            model.getMisc().selectVertexBuffer(buffer);
 
         } else if (actionString.startsWith(ActionPrefix.selectViewMode)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectViewMode);

@@ -257,6 +257,14 @@ public class ActionPrefix {
      */
     final public static String selectBoneIndex = "select boneIndex ";
     /**
+     * argument is a buffer description
+     */
+    final public static String selectBuffer = "select buffer ";
+    /**
+     * argument is the name of a VertexBuffer.Usage
+     */
+    final public static String selectBufferUsage = "select bufferUsage ";
+    /**
      * argument is the name of a cull hint
      */
     final public static String selectCullHint = "select cullHint ";
@@ -293,13 +301,17 @@ public class ActionPrefix {
      */
     final public static String selectLight = "select light ";
     /**
-     * argument is a pre-existing material-parameter name
+     * argument is the name of a pre-existing material parameter
      */
     final public static String selectMatParam = "select matParam ";
     /**
      * argument is the menu path of a menu item
      */
     final public static String selectMenuItem = "select menuItem ";
+    /**
+     * argument is the name of a mesh mode
+     */
+    final public static String selectMeshMode = "select meshMode ";
     /**
      * argument is the name of a movement-mode enum value
      */
@@ -437,10 +449,6 @@ public class ActionPrefix {
      */
     final static String selectVertexBone = "select vertexBone ";
     /**
-     * argument is the name of a VertexBuffer.Type
-     */
-    final public static String selectVertexBuffer = "select vertexBuffer ";
-    /**
      * argument is the name of a view mode
      */
     final public static String selectViewMode = "select viewMode ";
@@ -476,6 +484,19 @@ public class ActionPrefix {
      * argument is a decimal width in pixels
      */
     final public static String setBoundsLineWidth = "set boundsLineWidth ";
+    /**
+     * argument is a decimal number of instances
+     */
+    final public static String setBufferInstanceSpan
+            = "set bufferInstanceSpan ";
+    /**
+     * argument is a decimal element index
+     */
+    final public static String setBufferLimit = "set bufferLimit ";
+    /**
+     * argument is a decimal number of bytes
+     */
+    final public static String setBufferStride = "set bufferStride ";
     /**
      * argument is a decimal fraction
      */
@@ -519,14 +540,18 @@ public class ActionPrefix {
      */
     final public static String setMapSize = "set mapSize ";
     /**
+     * argument is a material-parameter value
+     */
+    final static String setMatParamValue = "set matParamValue ";
+    /**
+     * argument is a decimal number of weights
+     */
+    final public static String setMeshWeights = "set meshWeights ";
+    /**
      * argument is a number of samples per pixel, formatted using
      * {@link maud.MaudUtil#describeMsaaFactor(int)}
      */
     final public static String setMsaaFactor = "set msaaFactor ";
-    /**
-     * argument is a material-parameter value
-     */
-    final static String setMatParamValue = "set matParamValue ";
     /**
      * argument is a decimal number of splits
      */

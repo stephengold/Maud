@@ -81,6 +81,10 @@ class PreviousAction {
                 target.getBone().selectPrevious();
                 break;
 
+            case Action.previousBuffer:
+                target.getBuffer().selectPrevious();
+                break;
+
             case Action.previousCheckpoint:
                 History.undo();
                 break;

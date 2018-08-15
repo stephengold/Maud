@@ -125,6 +125,10 @@ public class Cgm implements Cloneable {
      */
     private SelectedBone selectedBone = new SelectedBone();
     /**
+     * which vertex buffer is selected in the selected spatial's mesh
+     */
+    private SelectedBuffer selectedBuffer = new SelectedBuffer();
+    /**
      * which frame is selected in the selected track
      */
     private SelectedFrame selectedFrame = new SelectedFrame();
@@ -198,6 +202,7 @@ public class Cgm implements Cloneable {
         assert scoreView == null;
         selectedAnimControl.setCgm(cgm);
         selectedBone.setCgm(cgm);
+        selectedBuffer.setCgm(cgm);
         selectedFrame.setCgm(cgm);
         selectedJoint.setCgm(cgm);
         selectedLight.setCgm(cgm);
@@ -385,6 +390,16 @@ public class Cgm implements Cloneable {
     public SelectedBone getBone() {
         assert selectedBone != null;
         return selectedBone;
+    }
+
+    /**
+     * Access the selected vertex buffer.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public SelectedBuffer getBuffer() {
+        assert selectedBuffer != null;
+        return selectedBuffer;
     }
 
     /**
@@ -1038,6 +1053,7 @@ public class Cgm implements Cloneable {
         //scoreView not cloned
         clone.selectedAnimControl = cloner.clone(selectedAnimControl);
         clone.selectedBone = selectedBone.clone();
+        clone.selectedBuffer = selectedBuffer.clone();
         clone.selectedFrame = selectedFrame.clone();
         clone.selectedJoint = selectedJoint.clone();
         clone.selectedLight = cloner.clone(selectedLight);

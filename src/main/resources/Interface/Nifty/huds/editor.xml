@@ -407,12 +407,12 @@ the menu bar, status bar, and tool windows.
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Transform tools:  "/>
                         <control name="button" label="Rotate"
-                                 id="id3ToAvoidNiftyWarning"
+                                 id="id2ToAvoidNiftyWarning"
                                  width="49px">
                             <interact onRelease="perform(select tool boneRotation)"/>
                         </control>
                         <control name="button" label="Scale"
-                                 id="id2ToAvoidNiftyWarning"
+                                 id="id3ToAvoidNiftyWarning"
                                  width="43px">
                             <interact onRelease="perform(select tool boneScale)"/>
                         </control>
@@ -1324,7 +1324,7 @@ the menu bar, status bar, and tool windows.
                                  backgroundColor="#ffff"
                                  width="*"/>
                         <control name="button" label="Load"
-                                 id="id14ToAvoidNiftyWarning"
+                                 id="id13ToAvoidNiftyWarning"
                                  width="40px">
                             <interact onRelease="perform(load map asset)"/>
                         </control>
@@ -1338,7 +1338,7 @@ the menu bar, status bar, and tool windows.
                                  textHAlign="center"
                                  width="70px"/>
                         <control name="button" label="History"
-                                 id="id15ToAvoidNiftyWarning"
+                                 id="id14ToAvoidNiftyWarning"
                                  width="60px">
                             <interact onRelease="perform(select tool history)"/>
                         </control>
@@ -1397,7 +1397,7 @@ the menu bar, status bar, and tool windows.
                                  backgroundColor="#ffff"
                                  width="*"/>
                         <control name="button" label="Select"
-                                 id="id16ToAvoidNiftyWarning"
+                                 id="id15ToAvoidNiftyWarning"
                                  width="50px">
                             <interact onRelease="perform(select bone)"/>
                         </control>
@@ -1411,7 +1411,7 @@ the menu bar, status bar, and tool windows.
                         </control>
                         <panel/>
                         <control name="button" label="Twist"
-                                 id="id17ToAvoidNiftyWarning"
+                                 id="id16ToAvoidNiftyWarning"
                                  width="50px">
                             <interact onRelease="perform(select tool twist)"/>
                         </control>
@@ -1427,17 +1427,18 @@ the menu bar, status bar, and tool windows.
 
             <control name="window" id="materialTool" title="Material Tool"
                      hideOnClose="true"
-                     height="165px" width="500px" x="135" y="135">
+                     height="173px" width="500px" x="135" y="135">
                 <panel childLayout="vertical">
+                    <panel height="4px"/>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Name:  "/>
                         <control name="label" id="matName"
                                  backgroundColor="#ffff"
-                                 width="200px"/>
-                        <control name="label" text="    Def:  "/>
+                                 width="*"/>
+                        <control name="label" text="    MatDef:  "/>
                         <control name="label" id="matDef"
                                  backgroundColor="#ffff"
-                                 width="100px"/>
+                                 width="*"/>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Render state:    "/>
@@ -1452,6 +1453,7 @@ the menu bar, status bar, and tool windows.
                             <interact onRelease="perform(select faceCull)"/>
                         </control>
                     </panel>
+                    <panel height="10px"/>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Parameters:  "/>
                         <control name="button" id="mpPreviousButton"
@@ -1466,9 +1468,9 @@ the menu bar, status bar, and tool windows.
                                  width="20px">
                             <interact onRelease="perform(next matParam)"/>
                         </control>
-                        <panel/>
+                        <panel width="20px"/>
                         <control name="button" id="mpSelectButton"
-                                 width="60px">
+                                 width="110px">
                             <interact onRelease="perform(select matParam)"/>
                         </control>
                     </panel>
@@ -1482,10 +1484,10 @@ the menu bar, status bar, and tool windows.
                         <control name="label" text="    Type:  "/>
                         <control name="label" id="mpType"
                                  backgroundColor="#ffff"
-                                 width="110px"/>
+                                 width="70px"/>
                         <control name="label" text="  "/>
                         <control name="button" id="mpDeleteButton"
-                                 width="60px">
+                                 width="50px">
                             <interact onRelease="perform(delete matParam)"/>
                         </control>
                     </panel>
@@ -1497,8 +1499,125 @@ the menu bar, status bar, and tool windows.
                                  backgroundColor="#ffff"
                                  width="*"/>
                         <control name="button" id="mpEditButton"
-                                 width="60px">
+                                 width="30px">
                             <interact onRelease="perform(set matParamValue)"/>
+                        </control>
+                    </panel>
+                </panel>
+            </control>
+
+            <control name="window" id="meshTool" title="Mesh Tool"
+                     hideOnClose="true"
+                     height="230px" width="345px" x="135" y="135">
+                <panel childLayout="vertical">
+                    <panel height="4px"/>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" id="meshAnimated"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="*"/>
+                        <control name="label" text="    Max weights:  "/>
+                        <control name="button" id="meshWeightsButton"
+                                 width="20px">
+                            <interact onRelease="perform(set meshWeights)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Mode:  "/>
+                        <control name="button" id="meshModeButton"
+                                 width="90px">
+                            <interact onRelease="perform(select meshMode)"/>
+                        </control>
+                        <control name="label" text="    Bound type:  "/>
+                        <control name="button" id="meshBoundTypeButton"
+                                 width="55px">
+                            <interact onRelease="perform(toggle boundType)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Elements:  "/>
+                        <control name="label" id="meshElements"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="70px"/>
+                        <control name="label" text="    Vertices:  "/>
+                        <control name="label" id="meshVertices"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="70px"/>
+                        <control name="button" label="Tool"
+                                 id="id17ToAvoidNiftyWarning"
+                                 width="36px">
+                            <interact onRelease="perform(select tool vertex)"/>
+                        </control>
+                    </panel>
+                    <panel height="10px"/>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Buffers:  "/>
+                        <control name="button" id="vbPreviousButton"
+                                 width="20px">
+                            <interact onRelease="perform(previous buffer)"/>
+                        </control>
+                        <control name="label" id="vbIndex"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="70px"/>
+                        <control name="button" id="vbNextButton"
+                                 width="20px">
+                            <interact onRelease="perform(next buffer)"/>
+                        </control>
+                        <panel width="20px"/>
+                        <control name="button" id="vbSelectButton"
+                                 width="90px">
+                            <interact onRelease="perform(select buffer)"/>
+                        </control>
+                        <panel/>
+                        <control name="button" id="vbDeleteButton"
+                                 width="50px">
+                            <interact onRelease="perform(delete buffer)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Type:  "/>
+                        <control name="label" id="vbType"
+                                 backgroundColor="#ffff"
+                                 width="110px"/>
+                        <control name="label" text="    Format:  "/>
+                        <control name="label" id="vbFormat"
+                                 backgroundColor="#ffff"
+                                 width="120px"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Limit:  "/>
+                        <control name="button" id="vbLimitButton"
+                                 width="55px">
+                            <interact onRelease="perform(set bufferLimit)"/>
+                        </control>
+                        <control name="label" text="    Capacity:  "/>
+                        <control name="label" id="vbCapacity"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="55px"/>
+                        <panel width="20px"/>
+                        <control name="checkbox" id="vbNormalizedCheckBox"
+                                 width="20px"/>
+                        <control name="label" text="  normalized"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Instance span:  "/>
+                        <control name="button" id="vbInstanceSpanButton"
+                                 width="35px">
+                            <interact onRelease="perform(set bufferInstanceSpan)"/>
+                        </control>
+                        <control name="label" text="    Stride:  "/>
+                        <control name="button" id="vbStrideButton"
+                                 width="35px">
+                            <interact onRelease="perform(set bufferStride)"/>
+                        </control>
+                        <control name="label" text="    Usage:  "/>
+                        <control name="button" id="vbUsageButton"
+                                 width="70px">
+                            <interact onRelease="perform(select bufferUsage)"/>
                         </control>
                     </panel>
                 </panel>
@@ -2358,7 +2477,7 @@ the menu bar, status bar, and tool windows.
                                  backgroundColor="#ffff"
                                  width="*"/>
                         <control name="button" label="Rename"
-                                 id="id23ToAvoidNiftyWarning"
+                                 id="id22ToAvoidNiftyWarning"
                                  width="60px">
                             <interact onRelease="perform(rename spatial)"/>
                         </control>
@@ -2389,8 +2508,8 @@ the menu bar, status bar, and tool windows.
                                  backgroundColor="#ffff"
                                  width="*"/>
                         <control name="button" label="Tool"
-                                 id="id24ToAvoidNiftyWarning"
-                                 width="40px">
+                                 id="id23ToAvoidNiftyWarning"
+                                 width="36px">
                             <interact onRelease="perform(select tool material)"/>
                         </control>
                     </panel>
@@ -2399,6 +2518,11 @@ the menu bar, status bar, and tool windows.
                         <control name="label" id="spatialMesh"
                                  backgroundColor="#ffff"
                                  width="*"/>
+                        <control name="button" label="Tool"
+                                 id="id24ToAvoidNiftyWarning"
+                                 width="36px">
+                            <interact onRelease="perform(select tool mesh)"/>
+                        </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Local transform:  "/>
