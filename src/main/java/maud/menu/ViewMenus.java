@@ -86,10 +86,10 @@ public class ViewMenus {
                     EnumMenus.selectViewMode();
                     break;
                 case "Scene options":
-                    ShowMenus.sceneViewOptions();
+                    sceneViewOptions();
                     break;
                 case "Score options":
-                    ShowMenus.scoreViewOptions();
+                    scoreViewOptions();
                     break;
                 default:
                     handled = false;
@@ -97,6 +97,40 @@ public class ViewMenus {
         }
 
         return handled;
+    }
+
+    /**
+     * Display a "View -&gt; Scene options" menu.
+     */
+    public static void sceneViewOptions() {
+        MenuBuilder builder = new MenuBuilder();
+
+        builder.addTool("Axes");
+        builder.addTool("Background");
+        builder.addTool("Bounds");
+        builder.addTool("Camera");
+        builder.addTool("Cursor");
+        builder.addTool("Lighting");
+        builder.addTool("Physics");
+        builder.addTool("Platform");
+        builder.addTool("Render");
+        builder.addTool("Skeleton");
+        builder.addTool("Sky");
+        builder.addTool("Vertex");
+
+        builder.show("select menuItem View -> Scene options -> ");
+    }
+
+    /**
+     * Display a "View -&gt; Score options" menu.
+     */
+    public static void scoreViewOptions() {
+        MenuBuilder builder = new MenuBuilder();
+
+        builder.addTool("Tool");
+        builder.addTool("Background");
+
+        builder.show("select menuItem View -> Score options -> ");
     }
     // *************************************************************************
     // private methods
@@ -128,8 +162,8 @@ public class ViewMenus {
             case "Lighting":
                 Maud.gui.tools.select("sceneLighting");
                 break;
-            case "Mode":
-                EnumMenus.selectViewMode();
+            case "Physics":
+                Maud.gui.tools.select("physics");
                 break;
             case "Platform":
                 Maud.gui.tools.select("platform");

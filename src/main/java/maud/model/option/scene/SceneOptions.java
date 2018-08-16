@@ -76,6 +76,10 @@ public class SceneOptions implements Cloneable {
      */
     private float targetPlatformDiameter = 2f;
     /**
+     * number of iterations for the physics contact & constraint solver (&ge;1)
+     */
+    private int numPhysicsIterations = 10;
+    /**
      * options for lights with no sky simulation
      */
     private LightsOptions lightsOptions = new LightsOptions();
@@ -211,6 +215,26 @@ public class SceneOptions implements Cloneable {
     public VertexOptions getVertex() {
         assert vertexOptions != null;
         return vertexOptions;
+    }
+
+    /**
+     * Read the number of iterations to use in the physics solver.
+     *
+     * @return number (&ge;1)
+     */
+    public int numPhysicsIterations() {
+        assert numPhysicsIterations >= 1 : numPhysicsIterations;
+        return numPhysicsIterations;
+    }
+
+    /**
+     * Alter the number of iterations to use in the physics solver.
+     *
+     * @param newNumber (&ge;1)
+     */
+    public void setNumPhysicsIterations(int newNumber) {
+        Validate.positive(newNumber, "new number");
+        numPhysicsIterations = newNumber;
     }
 
     /**

@@ -118,39 +118,6 @@ public class ShowMenus {
     }
 
     /**
-     * Display a "View -&gt; Scene options" menu.
-     */
-    public static void sceneViewOptions() {
-        MenuBuilder builder = new MenuBuilder();
-
-        builder.addTool("Axes");
-        builder.addTool("Background");
-        builder.addTool("Bounds");
-        builder.addTool("Camera");
-        builder.addTool("Cursor");
-        builder.addTool("Lighting");
-        builder.addTool("Platform");
-        builder.addTool("Render");
-        builder.addTool("Skeleton");
-        builder.addTool("Sky");
-        builder.addTool("Vertex");
-
-        builder.show("select menuItem View -> Scene options -> ");
-    }
-
-    /**
-     * Display a "View -&gt; Score options" menu.
-     */
-    public static void scoreViewOptions() {
-        MenuBuilder builder = new MenuBuilder();
-
-        builder.addTool("Tool");
-        builder.addTool("Background");
-
-        builder.show("select menuItem View -> Score options -> ");
-    }
-
-    /**
      * Handle a "select boneChild" action with an argument.
      *
      * @param argument action argument (not null)

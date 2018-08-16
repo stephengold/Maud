@@ -77,6 +77,7 @@ public class EditorTools {
     final private MeshTool mesh;
     final private ObjectTool object;
     final private OverridesTool overrides;
+    final private PhysicsTool physics;
     final private PlatformTool platform;
     final private RenderTool render;
     final private RetargetTool retarget;
@@ -139,13 +140,14 @@ public class EditorTools {
         mesh = new MeshTool(screen);
         object = new ObjectTool(screen);
         overrides = new OverridesTool(screen);
+        physics = new PhysicsTool(screen);
         platform = new PlatformTool(screen);
         render = new RenderTool(screen);
         retarget = new RetargetTool(screen);
         sceneLighting = new SceneLightingTool(screen);
+
         sceneVertex = new SceneVertexTool(screen);
         score = new ScoreTool(screen);
-
         settings = new SettingsTool(screen);
         sgc = new SgcTool(screen);
         shape = new ShapeTool(screen);
@@ -154,9 +156,9 @@ public class EditorTools {
         sourceAnimation = new SourceAnimationTool(screen);
         spatialDetails = new SpatialDetailsTool(screen);
         spatialRotation = new SpatialRotationTool(screen);
+
         spatialScale = new SpatialScaleTool(screen);
         spatial = new SpatialTool(screen);
-
         spatialTranslation = new SpatialTranslationTool(screen);
         track = new TrackTool(screen);
         tweening = new TweeningTool(screen);
@@ -177,11 +179,11 @@ public class EditorTools {
                 boneScale, boneTranslation, bounds, camera, cgm, cursor,
                 displaySettings, extract, history, keyframe, joint, lightColor,
                 lightDirection, lightPosition, lights, mapping, material, mesh,
-                object, overrides, platform, render, retarget, sceneLighting,
-                sceneVertex, score, settings, sgc, shape, skeleton, sky,
-                sourceAnimation, spatial, spatialDetails, spatialRotation,
-                spatialScale, spatialTranslation, track, tweening, twist,
-                userData, vertex);
+                object, overrides, physics, platform, render, retarget,
+                sceneLighting, sceneVertex, score, settings, sgc, shape,
+                skeleton, sky, sourceAnimation, spatial, spatialDetails,
+                spatialRotation, spatialScale, spatialTranslation, track,
+                tweening, twist, userData, vertex);
     }
 
     /**

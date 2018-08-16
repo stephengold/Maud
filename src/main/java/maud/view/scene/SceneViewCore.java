@@ -100,6 +100,7 @@ import maud.model.option.MiscOptions;
 import maud.model.option.ShowBones;
 import maud.model.option.ViewMode;
 import maud.model.option.scene.RenderOptions;
+import maud.model.option.scene.SceneOptions;
 import maud.model.option.scene.SkeletonOptions;
 import maud.view.EditorView;
 import maud.view.Selection;
@@ -862,6 +863,11 @@ public class SceneViewCore
             updatePose();
             SceneUpdater.update(cgm, updateInterval);
             skyControl.setCamera(camera);
+
+            PhysicsSpace space = getPhysicsSpace();
+            SceneOptions options = Maud.getModel().getScene();
+            int numIterations = options.numPhysicsIterations();
+            space.setSolverNumIterations(numIterations);
         }
     }
 

@@ -28,7 +28,7 @@ package maud.action;
 
 import java.util.logging.Logger;
 import maud.Maud;
-import maud.menu.ShowMenus;
+import maud.menu.ViewMenus;
 import maud.view.Drag;
 import maud.view.ViewType;
 import maud.view.scene.SceneDrag;
@@ -91,9 +91,9 @@ class PickAction {
             case Action.pickViewMenu:
                 ViewType type = Maud.gui.mouseViewType();
                 if (type == ViewType.Scene) {
-                    ShowMenus.sceneViewOptions();
+                    ViewMenus.sceneViewOptions();
                 } else if (type == ViewType.Score) {
-                    ShowMenus.scoreViewOptions();
+                    ViewMenus.scoreViewOptions();
                 }
                 break;
 
