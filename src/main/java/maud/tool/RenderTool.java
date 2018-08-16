@@ -62,8 +62,8 @@ class RenderTool extends Tool {
     /**
      * Instantiate an uninitialized tool.
      *
-     * @param screenController the controller of the screen that contains the
-     * tool (not null)
+     * @param screenController the controller of the screen that will contain
+     * the tool (not null)
      */
     RenderTool(GuiScreenController screenController) {
         super(screenController, "render");
@@ -88,7 +88,7 @@ class RenderTool extends Tool {
     }
 
     /**
-     * Enumerate the tool's sliders.
+     * Enumerate this tool's sliders.
      *
      * @return a new list of names (unique id prefixes)
      */

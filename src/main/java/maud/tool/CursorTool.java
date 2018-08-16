@@ -68,8 +68,8 @@ class CursorTool extends Tool {
     /**
      * Instantiate an uninitialized tool.
      *
-     * @param screenController the controller of the screen that contains the
-     * tool (not null)
+     * @param screenController the controller of the screen that will contain
+     * the tool (not null)
      */
     CursorTool(GuiScreenController screenController) {
         super(screenController, "cursor");

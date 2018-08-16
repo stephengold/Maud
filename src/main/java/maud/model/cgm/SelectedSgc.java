@@ -376,7 +376,8 @@ public class SelectedSgc implements JmeCloneable {
     }
 
     /**
-     * Alter which C-G model contains the S-G control.
+     * Alter which C-G model contains the S-G control. (Invoked only during
+     * initialization and cloning.)
      *
      * @param newCgm (not null, aliases created)
      */

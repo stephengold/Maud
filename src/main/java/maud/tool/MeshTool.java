@@ -59,8 +59,8 @@ class MeshTool extends Tool {
     /**
      * Instantiate an uninitialized tool.
      *
-     * @param screenController the controller of the screen that contains the
-     * tool (not null)
+     * @param screenController the controller of the screen that will contain
+     * the tool (not null)
      */
     MeshTool(GuiScreenController screenController) {
         super(screenController, "mesh");

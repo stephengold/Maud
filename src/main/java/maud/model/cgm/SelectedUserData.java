@@ -186,7 +186,8 @@ public class SelectedUserData implements Cloneable {
     }
 
     /**
-     * Alter which C-G model contains the datum.
+     * Alter which C-G model contains the datum. (Invoked only during
+     * initialization and cloning.)
      *
      * @param newCgm (not null, alias created)
      */

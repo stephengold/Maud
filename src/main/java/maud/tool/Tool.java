@@ -64,9 +64,9 @@ abstract public class Tool extends GuiWindowController {
     /**
      * Instantiate an uninitialized controller.
      *
-     * @param screenController the controller of the screen that contains the
-     * tool (not null)
-     * @param name the name (unique id prefix) of the tool (not null)
+     * @param screenController the controller of the screen that will contain
+     * the tool (not null)
+     * @param name the name (unique id prefix) of this tool (not null)
      */
     Tool(GuiScreenController screenController, String name) {
         super(screenController, name + "Tool", false);
@@ -118,7 +118,7 @@ abstract public class Tool extends GuiWindowController {
     }
 
     /**
-     * Disable or enable all of the tool's sliders.
+     * Disable or enable all of this tool's sliders.
      *
      * @param newState true&rarr;enable the sliders, false&rarr;disable them
      */
@@ -131,7 +131,7 @@ abstract public class Tool extends GuiWindowController {
 
     /**
      * Callback to update this tool prior to rendering. (Invoked once per render
-     * pass while the tool is displayed.)
+     * pass while this tool is displayed.)
      */
     abstract protected void toolUpdate();
     // *************************************************************************
@@ -164,7 +164,7 @@ abstract public class Tool extends GuiWindowController {
 
     /**
      * Callback to update this tool prior to rendering. (Invoked once per render
-     * pass while the tool is displayed.)
+     * pass while this tool is displayed.)
      *
      * @param updateInterval time interval between updates (in seconds, &ge;0)
      */

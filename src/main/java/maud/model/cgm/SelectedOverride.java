@@ -259,7 +259,8 @@ public class SelectedOverride implements Cloneable {
     }
 
     /**
-     * Alter which C-G model contains the data.
+     * Alter which C-G model contains the override. (Invoked only during
+     * initialization and cloning.)
      *
      * @param newCgm (not null, alias created)
      */

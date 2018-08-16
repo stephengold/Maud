@@ -1257,7 +1257,8 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Alter which C-G model contains the spatial.
+     * Alter which C-G model contains the spatial. (Invoked only during
+     * initialization and cloning.)
      *
      * @param newCgm (not null, aliases created)
      */

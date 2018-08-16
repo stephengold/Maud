@@ -210,7 +210,8 @@ public class SelectedFrame implements Cloneable {
     }
 
     /**
-     * Alter which C-G model contains the keyframe.
+     * Alter which C-G model contains the keyframe. (Invoked only during
+     * initialization and cloning.)
      *
      * @param newCgm (not null, aliases created)
      */

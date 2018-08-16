@@ -281,7 +281,8 @@ public class SelectedVertex implements Cloneable {
     }
 
     /**
-     * Alter which C-G model contains the vertex.
+     * Alter which C-G model contains the vertex. (Invoked only during
+     * initialization and cloning.)
      *
      * @param newCgm (not null, alias created)
      */

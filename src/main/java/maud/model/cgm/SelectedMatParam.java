@@ -256,7 +256,7 @@ public class SelectedMatParam implements Cloneable {
     }
 
     /**
-     * Alter which C-G model contains the data. (Invoked only during
+     * Alter which C-G model contains the parameter. (Invoked only during
      * initialization and cloning.)
      *
      * @param newCgm (not null, alias created)

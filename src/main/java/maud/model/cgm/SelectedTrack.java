@@ -780,7 +780,8 @@ public class SelectedTrack implements JmeCloneable {
     }
 
     /**
-     * Alter which C-G model contains the track.
+     * Alter which C-G model contains the track. (Invoked only during
+     * initialization and cloning.)
      *
      * @param newCgm (not null, aliases created)
      */

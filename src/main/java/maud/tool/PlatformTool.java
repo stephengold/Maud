@@ -59,8 +59,8 @@ class PlatformTool extends Tool {
     /**
      * Instantiate an uninitialized tool.
      *
-     * @param screenController the controller of the screen that contains the
-     * tool (not null)
+     * @param screenController the controller of the screen that will contain
+     * the tool (not null)
      */
     PlatformTool(GuiScreenController screenController) {
         super(screenController, "platform");
@@ -69,7 +69,7 @@ class PlatformTool extends Tool {
     // Tool methods
 
     /**
-     * Enumerate the tool's sliders.
+     * Enumerate this tool's sliders.
      *
      * @return a new list of names (unique id prefixes)
      */
@@ -98,7 +98,7 @@ class PlatformTool extends Tool {
 
     /**
      * Callback to update this tool prior to rendering. (Invoked once per render
-     * pass while the tool is displayed.)
+     * pass while this tool is displayed.)
      */
     @Override
     protected void toolUpdate() {

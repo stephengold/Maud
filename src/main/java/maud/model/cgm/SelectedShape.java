@@ -504,7 +504,8 @@ public class SelectedShape implements Cloneable {
     }
 
     /**
-     * Alter which C-G model contains the shape.
+     * Alter which C-G model contains the shape. (Invoked only during
+     * initialization and cloning.)
      *
      * @param newCgm (not null, alias created)
      */
