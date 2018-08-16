@@ -47,6 +47,7 @@ import com.jme3.math.Matrix4f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Ray;
 import com.jme3.math.Transform;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.math.Vector4f;
 import com.jme3.scene.Geometry;
@@ -61,9 +62,18 @@ import com.jme3.scene.plugins.bvh.SkeletonMapping;
 import com.jme3.scene.plugins.ogre.MaterialLoader;
 import com.jme3.scene.plugins.ogre.MeshLoader;
 import com.jme3.shader.VarType;
+import com.jme3.texture.Image;
+import com.jme3.texture.Texture;
+import com.jme3.texture.Texture2D;
+import com.jme3.texture.Texture3D;
+import com.jme3.texture.TextureCubeMap;
+import com.jme3.texture.image.ColorSpace;
+import com.jme3.util.BufferUtils;
+import com.jme3.util.clone.Cloner;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.Buffer;
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -277,8 +287,6 @@ public class MaudUtil {
      * @param input (not null, modified)
      */
     public static void cardinalizeLocal(Vector3f input) {
-        Validate.nonNull(input, "input");
-
         input.normalizeLocal();
         /*
          * Generate each of the 6 cardinal directions.
@@ -302,16 +310,15 @@ public class MaudUtil {
 
     /**
      * Count all uses of the specified material in the specified subtree of a
-     * scene graph. Note: recursive! TODO copy to heart library
+     * scene graph. Note: recursive! TODO use heart library
      *
-     * @param subtree (not null, unaffected)
+     * @param subtree (may be null, unaffected)
      * @param material (unaffected)
      * @return the use count (&ge;0)
      */
     public static int countUses(Spatial subtree, Material material) {
-        Validate.nonNull(subtree, "subtree");
-
         int count = 0;
+
         if (subtree instanceof Geometry) {
             Geometry geometry = (Geometry) subtree;
             Material mat = geometry.getMaterial();
@@ -328,6 +335,123 @@ public class MaudUtil {
         }
 
         return count;
+    }
+
+    /**
+     * Create a deep copy of the specified object. TODO use heart library
+     *
+     * @param object input (unaffected)
+     * @return a new object, equivalent to the input
+     */
+    public static Object deepClone(Object object) {
+        Object clone;
+        if (object instanceof Boolean || object instanceof Enum) {
+            clone = object;
+        } else if (object instanceof Double) {
+            clone = (double) object;
+        } else if (object instanceof Float) {
+            clone = (float) object;
+        } else if (object instanceof Integer) {
+            clone = (int) object;
+        } else if (object instanceof Long) {
+            clone = (long) object;
+        } else if (object instanceof Short) {
+            clone = (short) object;
+        } else {
+            clone = Cloner.deepClone(object);
+        }
+
+        return clone;
+    }
+
+    /**
+     * Generate an arbitrary non-null value for a material parameter.
+     *
+     * @param varType (not null)
+     * @param parameterName name of the parameter (not null, not empty)
+     * @return a new instance (not null)
+     */
+    public static Object defaultValue(VarType varType, String parameterName) {
+        Validate.nonEmpty(parameterName, "parameter name");
+
+        Object result;
+        Image image;
+        Texture texture;
+        switch (varType) {
+            case Boolean:
+                result = false;
+                break;
+            case Float:
+                result = 0f;
+                break;
+            case FloatArray:
+                result = new float[]{0f};
+                break;
+            case Int:
+                result = 1; // PreShadow.vert crashes if NumberOfBones < 1
+                break;
+            case IntArray:
+                result = new int[]{0};
+                break;
+            case Matrix3:
+                result = new Matrix3f();
+                break;
+            case Matrix3Array:
+                result = new Matrix3f[]{new Matrix3f()};
+                break;
+            case Matrix4:
+                result = new Matrix4f();
+                break;
+            case Matrix4Array:
+                result = new Matrix4f[]{new Matrix4f()};
+                break;
+            case Texture2D:
+                image = new Image();
+                image.setFormat(Image.Format.BGRA8);
+                texture = new Texture2D();
+                texture.setImage(image);
+                result = texture;
+                break;
+            case Texture3D:
+                result = new Texture3D();
+                break;
+            case TextureCubeMap:
+                ArrayList<ByteBuffer> data = new ArrayList<>(6);
+                for (int i = 0; i < 6; i++) {
+                    ByteBuffer buffer = BufferUtils.createByteBuffer(32);
+                    data.add(buffer);
+                }
+                image = new Image(Image.Format.BGRA8, 1, 1, 1, data,
+                        ColorSpace.Linear);
+                texture = new TextureCubeMap();
+                texture.setImage(image);
+                result = texture;
+                break;
+            case Vector2:
+                result = new Vector2f();
+                break;
+            case Vector2Array:
+                result = new Vector2f[]{new Vector2f()};
+                break;
+            case Vector3:
+                result = new Vector3f();
+                break;
+            case Vector3Array:
+                result = new Vector3f[]{new Vector3f()};
+                break;
+            case Vector4:
+                result = new Vector4f();
+                break;
+            case Vector4Array:
+                result = new Vector4f[]{new Vector4f()};
+                break;
+            default:// TODO handle TextureArray, TextureBuffer
+                logger.log(Level.SEVERE, "varType={0}", varType);
+                throw new IllegalArgumentException(varType.toString());
+        }
+
+        assert result != null;
+        return result;
     }
 
     /**
@@ -375,7 +499,6 @@ public class MaudUtil {
     public static String displayRotation(Quaternion rotation,
             RotationDisplayMode mode, float[] storeValues,
             float[] storePositions) {
-        Validate.nonNull(mode, "mode");
         Validate.nonNull(rotation, "rotation");
         Validate.nonNull(storePositions, "slider positions");
         int numSliders = storePositions.length;
@@ -394,6 +517,7 @@ public class MaudUtil {
                 }
                 unitSuffix = " deg";
                 break;
+
             case QuatCoeff:
                 if (rotation.getW() < 0f) {
                     rotation.negate();
@@ -406,14 +530,16 @@ public class MaudUtil {
                 storePositions[2] = 1.571f * storeValues[2];
                 unitSuffix = "";
                 break;
+
             case Radians:
                 rotation.toAngles(storePositions);
                 System.arraycopy(storePositions, 0, storeValues, 0, numAxes);
                 unitSuffix = " rad";
                 break;
+
             default:
                 logger.log(Level.SEVERE, "mode={0}", mode);
-                throw new IllegalStateException(
+                throw new IllegalArgumentException(
                         "invalid rotation display mode");
         }
 
@@ -552,7 +678,7 @@ public class MaudUtil {
     /**
      * Access the indexed SpatialTrack in the specified animation.
      *
-     * @param animation which animation to search (not null, unaffected)
+     * @param animation which animation to search (not null, alias created)
      * @param spatialTrackIndex which spatial track (&ge;0)
      * @return the pre-existing instance, or null if not found
      */
@@ -587,7 +713,6 @@ public class MaudUtil {
      */
     public static int findSupport(Geometry geometry,
             Matrix4f[] skinningMatrices, Vector3f storeLocation) {
-        Validate.nonNull(geometry, "geometry");
         Validate.nonNull(skinningMatrices, "skinning matrices");
         Validate.nonNull(storeLocation, "store location");
 
@@ -600,8 +725,8 @@ public class MaudUtil {
         Mesh mesh = geometry.getMesh();
         int maxWeightsPerVertex = mesh.getMaxNumWeights();
 
-        VertexBuffer posBuf;
-        posBuf = mesh.getBuffer(VertexBuffer.Type.BindPosePosition);
+        VertexBuffer posBuf
+                = mesh.getBuffer(VertexBuffer.Type.BindPosePosition);
         FloatBuffer posBuffer = (FloatBuffer) posBuf.getDataReadOnly();
         posBuffer.rewind();
 
@@ -842,15 +967,14 @@ public class MaudUtil {
 
     /**
      * Enumerate all materials in the specified subtree of a scene graph. Note:
-     * recursive! TODO copy to heart library
+     * recursive! TODO use heart library
      *
-     * @param subtree (not null, unaffected)
+     * @param subtree (may be null, aliases created)
      * @param storeResult (added to if not null)
      * @return an expanded list (either storeResult or a new instance)
      */
     public static List<Material> listMaterials(Spatial subtree,
             List<Material> storeResult) {
-        Validate.nonNull(subtree, "subtree");
         if (storeResult == null) {
             storeResult = new ArrayList<>(10);
         }
@@ -875,15 +999,14 @@ public class MaudUtil {
 
     /**
      * Enumerate all meshes in the specified subtree of a scene graph. Note:
-     * recursive! TODO copy to heart library
+     * recursive! TODO use heart library
      *
-     * @param subtree (not null, unaffected)
+     * @param subtree (may be null, aliases created)
      * @param storeResult (added to if not null)
      * @return an expanded list (either storeResult or a new instance)
      */
     public static List<Mesh> listMeshes(Spatial subtree,
             List<Mesh> storeResult) {
-        Validate.nonNull(subtree, "subtree");
         if (storeResult == null) {
             storeResult = new ArrayList<>(10);
         }
@@ -1171,7 +1294,6 @@ public class MaudUtil {
     public static Matrix3f sensitivity(int boneIndex, Geometry geometry,
             int vertexIndex, Pose pose, Matrix3f storeResult) {
         Validate.nonNull(geometry, "geometry");
-        Validate.nonNull(pose, "pose");
         if (storeResult == null) {
             storeResult = new Matrix3f();
         }
@@ -1223,7 +1345,6 @@ public class MaudUtil {
      */
     public static Quaternion setFromSliders(float[] sliderPositions,
             Quaternion storeResult) {
-        Validate.nonNull(sliderPositions, "slider positions");
         int numSliders = sliderPositions.length;
         Validate.inRange(numSliders, "numSliders", 3, 3);
         Quaternion result;
@@ -1257,7 +1378,6 @@ public class MaudUtil {
      */
     public static void writePerformAction(Writer writer, String actionString)
             throws IOException {
-        Validate.nonNull(writer, "writer");
         Validate.nonNull(actionString, "action string");
 
         writer.write("Maud.perform('");
