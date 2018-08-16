@@ -64,9 +64,9 @@ import jme3utilities.math.MyVector3f;
 import jme3utilities.minie.MyControlP;
 import jme3utilities.minie.MyObject;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.PhysicsUtil;
 import maud.model.cgm.Cgm;
-import maud.model.cgm.SelectedMatParam;
 
 /**
  * An editor view containing a 3-D visualization of a loaded C-G model.
@@ -117,7 +117,8 @@ public class SceneView extends SceneViewCore {
     }
 
     /**
-     * Add a new material-parameter override to the selected spatial.
+     * Add a new, null-valued material-parameter override to the selected
+     * spatial.
      *
      * @param varType the variable type (not null)
      * @param parameterName a name for the parameter (not null)
@@ -544,19 +545,6 @@ public class SceneView extends SceneViewCore {
     }
 
     /**
-     * Alter the value of the selected material parameter.
-     *
-     * @param newValue (may be null, alias created if not null)
-     */
-    public void setMatParamValue(Object newValue) {
-        Material material = selectedMaterial();
-        SelectedMatParam matParam = getCgm().getMatParam();
-        String name = matParam.getName();
-        VarType varType = matParam.getVarType();
-        material.setParam(name, varType, newValue);
-    }
-
-    /**
      * Alter the mode of the selected mesh.
      *
      * @param newMode new value for mode (not null)
@@ -623,6 +611,24 @@ public class SceneView extends SceneViewCore {
         boolean enabled = oldMpo.isEnabled();
         newMpo.setEnabled(enabled);
         spatial.addMatParamOverride(newMpo);
+    }
+
+    /**
+     * Set a parameter in the selected material.
+     *
+     * @param parameterName parameter name (not null, not empty)
+     * @param varType type of parameter (not null)
+     * @param newValue new value (not null, unaffected)
+     */
+    public void setParam(String parameterName, VarType varType,
+            Object newValue) {
+        Validate.nonEmpty(parameterName, "parameter name");
+        Validate.nonNull(varType, "var type");
+        Validate.nonNull(newValue, "initial value");
+
+        Material material = selectedMaterial();
+        Object cloneValue = MaudUtil.deepClone(newValue);
+        material.setParam(parameterName, varType, cloneValue);
     }
 
     /**

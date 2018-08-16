@@ -1279,7 +1279,7 @@ the menu bar, status bar, and tool windows.
                         <control name="label" id="lightType"
                                  backgroundColor="#ffff"
                                  width="110px"/>
-                        <panel width="*"/>
+                        <panel/>
                         <control name="button" id="lightDeleteButton"
                                  width="60px">
                             <interact onRelease="perform(delete light)"/>
@@ -1494,7 +1494,12 @@ the menu bar, status bar, and tool windows.
                                  width="20px">
                             <interact onRelease="perform(next matParam)"/>
                         </control>
-                        <panel width="20px"/>
+                        <panel/>
+                        <control name="button" id="mpAddButton"
+                                 width="100px">
+                            <interact onRelease="perform(new matParam)"/>
+                        </control>
+                        <panel/>
                         <control name="button" id="mpSelectButton"
                                  width="110px">
                             <interact onRelease="perform(select matParam)"/>
@@ -1510,8 +1515,9 @@ the menu bar, status bar, and tool windows.
                         <control name="label" text="    Type:  "/>
                         <control name="label" id="mpType"
                                  backgroundColor="#ffff"
-                                 width="70px"/>
-                        <control name="label" text="  "/>
+                                 textHAlign="center"
+                                 width="105px"/>
+                        <panel width="20px"/>
                         <control name="button" id="mpDeleteButton"
                                  width="50px">
                             <interact onRelease="perform(delete matParam)"/>

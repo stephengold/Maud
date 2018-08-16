@@ -117,6 +117,10 @@ class NewAction {
                 model.getMap().mapBones();
                 break;
 
+            case Action.newMatParam:
+                ShowMenus.addNewMatParam();
+                break;
+
             case Action.newOverride:
                 EnumMenus.selectOverrideType();
                 break;
@@ -253,6 +257,11 @@ class NewAction {
             } else {
                 EditorDialogs.newLight(actionString + " ");
             }
+
+        } else if (actionString.startsWith(ActionPrefix.newMatParam)) {
+            String args = MyString.remainder(actionString,
+                    ActionPrefix.newMatParam);
+            target.addMatParam(args);
 
         } else if (actionString.startsWith(ActionPrefix.newOverride)) {
             String args = MyString.remainder(actionString,

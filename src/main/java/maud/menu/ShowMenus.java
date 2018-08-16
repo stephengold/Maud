@@ -47,6 +47,7 @@ import maud.model.cgm.SelectedSgc;
 import maud.model.cgm.SelectedSkeleton;
 import maud.model.cgm.SelectedSpatial;
 import maud.model.cgm.SelectedVertex;
+import maud.model.cgm.WhichParams;
 import maud.model.option.DisplaySettings;
 
 /**
@@ -77,6 +78,23 @@ public class ShowMenus {
     }
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Display a menu for adding an undefined material parameter using the "new
+     * matParam " action prefix.
+     */
+    public static void addNewMatParam() {
+        MenuBuilder builder = new MenuBuilder();
+
+        EditableCgm target = Maud.getModel().getTarget();
+        List<String> nameList
+                = target.getSpatial().listMatParamNames(WhichParams.Undefined);
+        for (String name : nameList) {
+            builder.add(name);
+        }
+
+        builder.show(ActionPrefix.newMatParam);
+    }
 
     /**
      * Display a "SGC -&gt; Add new" menu.
@@ -204,14 +222,15 @@ public class ShowMenus {
     }
 
     /**
-     * Display a menu for selecting a material parameter using the "select
-     * matParam " action prefix.
+     * Display a menu for selecting a defined material parameter using the
+     * "select matParam " action prefix.
      */
     public static void selectMatParam() {
         MenuBuilder builder = new MenuBuilder();
 
         EditableCgm target = Maud.getModel().getTarget();
-        List<String> nameList = target.getSpatial().listMatParamNames();
+        List<String> nameList
+                = target.getSpatial().listMatParamNames(WhichParams.Defined);
         String selectedName = target.getMatParam().getName();
         for (String name : nameList) {
             if (!name.equals(selectedName)) {

@@ -83,6 +83,7 @@ public class Action {
     final static String newCheckpoint = "new checkpoint";
     final static String newLight = "new light";
     final static String newMapping = "new mapping";
+    final static String newMatParam = "new matParam";
     final static String newOverride = "new override";
     final static String newSgc = "new sgc";
     final static String newSingleKeyframe = "new singleKeyframe";

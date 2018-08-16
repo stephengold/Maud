@@ -126,14 +126,15 @@ public class SelectedMatParam implements Cloneable {
     }
 
     /**
-     * Find the index of the selected parameter (in name lexical order).
+     * Find the index of the selected parameter (in name-lexical order).
      *
      * @return index, or -1 if none selected
      */
     public int findNameIndex() {
         int index = -1;
         if (isSelected()) {
-            List<String> nameList = cgm.getSpatial().listMatParamNames();
+            List<String> nameList
+                    = cgm.getSpatial().listMatParamNames(WhichParams.Defined);
             index = nameList.indexOf(selectedName);
         }
 
@@ -228,10 +229,11 @@ public class SelectedMatParam implements Cloneable {
     }
 
     /**
-     * Select the next parameter (in name lexical order).
+     * Select the next defined parameter (in name-lexical order).
      */
     public void selectNextName() {
-        List<String> nameList = cgm.getSpatial().listMatParamNames();
+        List<String> nameList
+                = cgm.getSpatial().listMatParamNames(WhichParams.Defined);
         if (isSelected() && !nameList.isEmpty()) {
             int numNames = nameList.size();
             int index = nameList.indexOf(selectedName);
@@ -242,10 +244,11 @@ public class SelectedMatParam implements Cloneable {
     }
 
     /**
-     * Select the previous parameter (in name lexical order).
+     * Select the previous defined parameter (in name-lexical order).
      */
     public void selectPreviousName() {
-        List<String> nameList = cgm.getSpatial().listMatParamNames();
+        List<String> nameList
+                = cgm.getSpatial().listMatParamNames(WhichParams.Defined);
         if (isSelected() && !nameList.isEmpty()) {
             int numNames = nameList.size();
             int index = nameList.indexOf(selectedName);

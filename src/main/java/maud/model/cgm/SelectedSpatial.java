@@ -369,36 +369,14 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Count the parameters in the material.
-     *
-     * @return count (&ge;0)
-     */
-    public int countMatParams() {
-        Spatial spatial = find();
-        int result = 0;
-        if (spatial instanceof Geometry) {
-            Material material = getMaterial();
-            Collection<MatParam> params = material.getParams();
-            result = params.size();
-        }
-
-        assert result >= 0 : result;
-        return result;
-    }
-
-    /**
      * Count uses of the material.
      *
      * @return count (&ge;0)
      */
     public int countMaterialUses() {
-        Spatial spatial = find();
-        int result = 0;
-        if (spatial instanceof Geometry) {
-            Material material = getMaterial();
-            Spatial cgmRoot = cgm.getRootSpatial();
-            result = MaudUtil.countUses(cgmRoot, material);
-        }
+        Spatial cgmRoot = cgm.getRootSpatial();
+        Material material = getMaterial();
+        int result = MaudUtil.countUses(cgmRoot, material);
 
         assert result >= 0 : result;
         return result;
@@ -854,11 +832,9 @@ public class SelectedSpatial implements JmeCloneable {
 
         Spatial spatial = find();
         Collection<String> keys = spatial.getUserDataKeys();
-        if (keys.contains(key)) {
-            return true;
-        } else {
-            return false;
-        }
+        boolean result = keys.contains(key);
+
+        return result;
     }
 
     /**
@@ -923,11 +899,8 @@ public class SelectedSpatial implements JmeCloneable {
      * @return true if it's the root, otherwise false
      */
     public boolean isCgmRoot() {
-        if (treePosition.isEmpty()) {
-            return true;
-        } else {
-            return false;
-        }
+        boolean result = treePosition.isEmpty();
+        return result;
     }
 
     /**
@@ -957,11 +930,9 @@ public class SelectedSpatial implements JmeCloneable {
      */
     public boolean isGeometry() {
         Spatial spatial = find();
-        if (spatial instanceof Geometry) {
-            return true;
-        } else {
-            return false;
-        }
+        boolean result = spatial instanceof Geometry;
+
+        return result;
     }
 
     /**
@@ -971,11 +942,9 @@ public class SelectedSpatial implements JmeCloneable {
      */
     public boolean isNode() {
         Spatial spatial = find();
-        if (spatial instanceof Node) {
-            return true;
-        } else {
-            return false;
-        }
+        boolean result = spatial instanceof Node;
+
+        return result;
     }
 
     /**
@@ -1025,20 +994,41 @@ public class SelectedSpatial implements JmeCloneable {
     /**
      * Enumerate all parameters in the material.
      *
+     * @param whichParam which parameters to include in the list (not null)
      * @return a new list of parameter names, sorted lexicographically
      */
-    public List<String> listMatParamNames() {
-        int numNames = countMatParams();
-        List<String> result = new ArrayList<>(numNames);
+    public List<String> listMatParamNames(WhichParams whichParams) {
+        List<String> result = new ArrayList<>(20);
 
-        Spatial spatial = find();
-        if (spatial instanceof Geometry) {
-            Material material = getMaterial();
-            Collection<MatParam> params = material.getParams();
-            for (MatParam param : params) {
-                String name = param.getName();
-                result.add(name);
+        Material material = getMaterial();
+        if (material != null) {
+            Collection<MatParam> definedParams = material.getParams();
+
+            switch (whichParams) {
+                case Defined:
+                    for (MatParam param : definedParams) {
+                        String name = param.getName();
+                        result.add(name);
+                    }
+                    break;
+
+                case Undefined:
+                    MaterialDef def = material.getMaterialDef();
+                    Collection<MatParam> allParams = def.getMaterialParams();
+                    for (MatParam param : allParams) {
+                        String name = param.getName();
+                        result.add(name);
+                    }
+                    for (MatParam param : definedParams) {
+                        String name = param.getName();
+                        result.remove(name);
+                    }
+                    break;
+
+                default:
+                    throw new IllegalArgumentException(whichParams.toString());
             }
+
             Collections.sort(result);
         }
 

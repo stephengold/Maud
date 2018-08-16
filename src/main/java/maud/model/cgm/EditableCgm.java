@@ -44,6 +44,7 @@ import com.jme3.light.Light;
 import com.jme3.material.MatParam;
 import com.jme3.material.MatParamOverride;
 import com.jme3.material.Material;
+import com.jme3.material.MaterialDef;
 import com.jme3.material.RenderState;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
@@ -192,7 +193,40 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Add a new material-parameter override to the selected spatial.
+     * Add a new parameter to the selected material and select that parameter.
+     *
+     * @param parameterName a name for the parameter (not null, not empty)
+     */
+    public void addMatParam(String parameterName) {
+        Validate.nonEmpty(parameterName, "parameter name");
+
+        Material material = getSpatial().getMaterial();
+        MaterialDef def = material.getMaterialDef();
+        MatParam matDefParam = def.getMaterialParam(parameterName);
+        VarType varType = matDefParam.getVarType();
+        Object defaultValue = matDefParam.getValue();
+
+        Object value;
+        if (defaultValue == null) {
+            value = MaudUtil.defaultValue(varType, parameterName);
+        } else {
+            value = MaudUtil.deepClone(defaultValue);
+        }
+
+        History.autoAdd();
+        material.setParam(parameterName, varType, value);
+        getSceneView().setParam(parameterName, varType, value);
+
+        String description = String.format("add material parameter %s",
+                MyString.quote(parameterName));
+        setEdited(description);
+
+        getMatParam().select(parameterName);
+    }
+
+    /**
+     * Add a new, null-valued material-parameter override to the selected
+     * spatial.
      *
      * @param varType the variable type (not null)
      * @param parameterName a name for the parameter (not null)
@@ -209,8 +243,7 @@ public class EditableCgm extends LoadedCgm {
         selectedSpatial.addMatParamOverride(newMpo);
         getSceneView().addOverride(varType, parameterName);
 
-        String description = String.format(
-                "add new material-parameter override %s",
+        String description = String.format("add material-parameter override %s",
                 MyString.quote(parameterName));
         setEdited(description);
 
@@ -1190,15 +1223,14 @@ public class EditableCgm extends LoadedCgm {
         Validate.nonNull(valueString, "value string");
 
         MatParam oldParam = getMatParam().find();
-        Object modelValue = MaudUtil.parseMatParam(oldParam, valueString);
-        Object viewValue = MaudUtil.parseMatParam(oldParam, valueString);
+        Object value = MaudUtil.parseMatParam(oldParam, valueString);
         String parameterName = oldParam.getName();
         Material material = getSpatial().getMaterial();
 
         History.autoAdd();
         VarType varType = oldParam.getVarType();
-        material.setParam(parameterName, varType, modelValue);
-        getSceneView().setMatParamValue(viewValue);
+        material.setParam(parameterName, varType, value);
+        getSceneView().setParam(parameterName, varType, value);
 
         String description = String.format(
                 "alter value of material parameter %s",

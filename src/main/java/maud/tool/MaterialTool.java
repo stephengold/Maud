@@ -28,6 +28,9 @@ package maud.tool;
 
 import com.jme3.animation.Bone;
 import com.jme3.material.RenderState;
+import com.jme3.math.Matrix3f;
+import com.jme3.math.Matrix4f;
+import com.jme3.math.Vector3f;
 import com.jme3.shader.VarType;
 import java.util.List;
 import java.util.logging.Logger;
@@ -39,6 +42,7 @@ import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedMatParam;
 import maud.model.cgm.SelectedSpatial;
+import maud.model.cgm.WhichParams;
 
 /**
  * The controller for the "Material" tool in Maud's editor screen.
@@ -123,11 +127,13 @@ class MaterialTool extends Tool {
     // private methods
 
     /**
-     * Update the definition name, material name, rename button, and use count.
+     * Update the definition name, material name, add/rename buttons, and use
+     * count.
      */
     private void updateNames() {
         String defText, materialText;
         String usesText = "";
+        String addButton = "";
         String renameButton = "";
 
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
@@ -144,6 +150,12 @@ class MaterialTool extends Tool {
                 materialText = "nameless";
             } else {
                 materialText = MyString.quote(materialName);
+            }
+
+            List<String> undefined
+                    = spatial.listMatParamNames(WhichParams.Undefined);
+            if (!undefined.isEmpty()) {
+                addButton = "Add parameter";
             }
 
             renameButton = "Rename";
@@ -163,6 +175,7 @@ class MaterialTool extends Tool {
         setStatusText("matDef", " " + defText);
         setStatusText("matName", " " + materialText);
         setStatusText("matUses", usesText);
+        setButtonText("mpAdd", addButton);
         setButtonText("renameMat", renameButton);
     }
 
@@ -190,33 +203,35 @@ class MaterialTool extends Tool {
     }
 
     /**
-     * Update the parameter-index status and next/previous/select-button texts.
+     * Update the parameter-index status and next/previous/select-button labels.
      */
     private void updateParameterIndex() {
         String indexText;
         String nButton = "", pButton = "", sButton = "";
 
         Cgm target = Maud.getModel().getTarget();
-        int numParams = target.getSpatial().countMatParams();
-        if (numParams > 1) {
+        List<String> defined
+                = target.getSpatial().listMatParamNames(WhichParams.Defined);
+        int numDefined = defined.size();
+        if (numDefined > 1) {
             sButton = "Select parameter";
         }
 
         int selectedIndex = target.getMatParam().findNameIndex();
         if (selectedIndex >= 0) {
             indexText = MaudUtil.formatIndex(selectedIndex);
-            indexText = String.format("%s of %d", indexText, numParams);
-            if (numParams > 1) {
+            indexText = String.format("%s of %d", indexText, numDefined);
+            if (numDefined > 1) {
                 nButton = "+";
                 pButton = "-";
             }
         } else { // no parameter selected
-            if (numParams == 0) {
+            if (numDefined == 0) {
                 indexText = "none";
-            } else if (numParams == 1) {
+            } else if (numDefined == 1) {
                 indexText = "one parameter";
             } else {
-                indexText = String.format("%d parameters", numParams);
+                indexText = String.format("%d parameters", numDefined);
             }
         }
 
@@ -227,7 +242,7 @@ class MaterialTool extends Tool {
     }
 
     /**
-     * Update the parameter-name/type statuses and delete button text.
+     * Update the parameter-name/type statuses and delete-button label.
      */
     private void updateParameterName() {
         String dButton, nameText, typeText;
@@ -246,38 +261,66 @@ class MaterialTool extends Tool {
         }
 
         setStatusText("mpName", " " + nameText);
-        setStatusText("mpType", " " + typeText);
+        setStatusText("mpType", typeText);
         setButtonText("mpDelete", dButton);
     }
 
     /**
-     * Update the parameter-value status and the edit button text.
+     * Update the parameter-value status and the edit-button label.
      */
     private void updateParameterValue() {
-        String eButton = "", valueText;
+        String editButton = "", valueStatus;
 
         SelectedMatParam param = Maud.getModel().getTarget().getMatParam();
         if (param.isSelected()) {
-            eButton = "Edit";
+            editButton = "Edit";
             if (param.isOverridden()) {
-                valueText = "(overridden)";
+                valueStatus = "(overridden)";
             } else {
-                Object data = param.getValue();
-                if (data == null || data instanceof String) {
-                    String string = (String) data;
-                    valueText = MyString.quote(string);
-                } else if (data instanceof Bone) {
-                    Bone bone = (Bone) data;
-                    valueText = bone.getName();
+                Object value = param.getValue();
+                if (value == null || value instanceof String) {
+                    String string = (String) value;
+                    valueStatus = MyString.quote(string);
+
+                } else if (value instanceof Bone) {
+                    Bone bone = (Bone) value;
+                    valueStatus = bone.getName();
+
+                } else if (value instanceof Matrix3f) {
+                    Matrix3f m = (Matrix3f) value;
+                    valueStatus = "";
+                    Vector3f row = new Vector3f();
+                    for (int i = 0; i < 3; i++) {
+                        m.getRow(i, row);
+                        valueStatus += row.toString();
+                    }
+
+                } else if (value instanceof Matrix3f[]) {
+                    Matrix3f[] ma = (Matrix3f[]) value;
+                    valueStatus = String.format("length=%d", ma.length);
+
+                } else if (value instanceof Matrix4f) {
+                    Matrix4f m = (Matrix4f) value;
+                    valueStatus = String.format("(%f %f %f %f)(%f %f %f %f)"
+                            + "(%f %f %f %f)(%f %f %f %f)",
+                            m.m00, m.m01, m.m02, m.m03,
+                            m.m10, m.m11, m.m12, m.m13,
+                            m.m20, m.m21, m.m22, m.m23,
+                            m.m30, m.m31, m.m32, m.m33);
+
+                } else if (value instanceof Matrix4f[]) {
+                    Matrix4f[] ma = (Matrix4f[]) value;
+                    valueStatus = String.format("length=%d", ma.length);
+
                 } else {
-                    valueText = data.toString();
+                    valueStatus = value.toString();
                 }
             }
         } else {
-            valueText = "none (no parameter selected)";
+            valueStatus = "none (no parameter selected)";
         }
 
-        setStatusText("mpValue", " " + valueText);
-        setButtonText("mpEdit", eButton);
+        setStatusText("mpValue", " " + valueStatus);
+        setButtonText("mpEdit", editButton);
     }
 }

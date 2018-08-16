@@ -153,6 +153,10 @@ public class ActionPrefix {
      */
     final public static String newLight = "new light ";
     /**
+     * argument is the name of a material parameter
+     */
+    final public static String newMatParam = "new matParam ";
+    /**
      * arguments are the name of the VarType and an optional parameter name
      */
     final public static String newOverride = "new override ";
