@@ -28,8 +28,7 @@ package maud.tool;
 
 import java.util.List;
 import java.util.logging.Logger;
-import static jme3utilities.TimeOfDay.minutesPerHour;
-import static jme3utilities.TimeOfDay.secondsPerMinute;
+import jme3utilities.TimeOfDay;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
@@ -63,8 +62,8 @@ class SkyTool extends Tool {
     /**
      * Instantiate an uninitialized tool.
      *
-     * @param screenController the controller of the screen that contains the
-     * tool (not null)
+     * @param screenController the controller of the screen that will contain
+     * the tool (not null)
      */
     SkyTool(GuiScreenController screenController) {
         super(screenController, "sky");
@@ -150,10 +149,10 @@ class SkyTool extends Tool {
 
         float hour = options.getHour();
         setSlider("hour", hourSt, hour);
-        int second = Math.round(hour * secondsPerMinute * minutesPerHour);
-        int minute = second / secondsPerMinute;
-        int mm = minute % minutesPerHour;
-        int hh = minute / minutesPerHour;
+        int second = Math.round(hour * 3600);
+        int minute = second / TimeOfDay.secondsPerMinute;
+        int mm = minute % TimeOfDay.minutesPerHour;
+        int hh = minute / TimeOfDay.minutesPerHour;
         String tod = String.format("solar time = %d:%02d", hh, mm);
         setStatusText("hourSliderStatus", tod);
     }
