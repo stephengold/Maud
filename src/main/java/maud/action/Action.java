@@ -144,6 +144,7 @@ public class Action {
     final static String renameAnimation = "rename animation";
     final static String renameBone = "rename bone";
     final static String renameLight = "rename light";
+    final static String renameMaterial = "rename material";
     final static String renameOverride = "rename override";
     final static String renameSpatial = "rename spatial";
     final static String renameUserKey = "rename userKey";

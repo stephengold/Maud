@@ -123,10 +123,11 @@ class MaterialTool extends Tool {
     // private methods
 
     /**
-     * Update the definition name and material name.
+     * Update the definition name, material name, and rename button.
      */
     private void updateNames() {
         String defText, materialText;
+        String renameButton = "";
 
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         if (spatial.hasMaterial()) {
@@ -136,15 +137,20 @@ class MaterialTool extends Tool {
             } else {
                 defText = MyString.quote(defName);
             }
+
             String materialName = spatial.getMaterialName();
             if (materialName == null) {
                 materialText = "nameless";
             } else {
                 materialText = MyString.quote(materialName);
             }
+
+            renameButton = "Rename";
+
         } else if (spatial.isNode()) {
             defText = "(a node is selected)";
             materialText = "(a node is selected)";
+
         } else {
             defText = "(no material)";
             materialText = "(no material)";
@@ -152,6 +158,7 @@ class MaterialTool extends Tool {
 
         setStatusText("matDef", " " + defText);
         setStatusText("matName", " " + materialText);
+        setButtonText("renameMat", renameButton);
     }
 
     /**

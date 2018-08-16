@@ -79,6 +79,10 @@ class RenameAction {
                 EditorDialogs.renameLight();
                 break;
 
+            case Action.renameMaterial:
+                EditorDialogs.renameMaterial();
+                break;
+
             case Action.renameOverride:
                 EditorDialogs.renameOverride();
                 break;
@@ -118,14 +122,18 @@ class RenameAction {
             target.getAnimation().rename(newName);
 
         } else if (actionString.startsWith(ActionPrefix.renameBone)) {
-            newName = MyString.remainder(actionString,
-                    ActionPrefix.renameBone);
+            newName = MyString.remainder(actionString, ActionPrefix.renameBone);
             target.renameBone(newName);
 
         } else if (actionString.startsWith(ActionPrefix.renameLight)) {
             newName = MyString.remainder(actionString,
                     ActionPrefix.renameLight);
             target.getLight().rename(newName);
+
+        } else if (actionString.startsWith(ActionPrefix.renameMaterial)) {
+            newName = MyString.remainder(actionString,
+                    ActionPrefix.renameMaterial);
+            target.renameMaterial(newName);
 
         } else if (actionString.startsWith(ActionPrefix.renameOverride)) {
             newName = MyString.remainder(actionString,

@@ -1455,6 +1455,10 @@ the menu bar, status bar, and tool windows.
                         <control name="label" id="matName"
                                  backgroundColor="#ffff"
                                  width="*"/>
+                        <control name="button" id="renameMatButton"
+                                 width="60px">
+                            <interact onRelease="perform(rename material)"/>
+                        </control>
                         <control name="label" text="    MatDef:  "/>
                         <control name="label" id="matDef"
                                  backgroundColor="#ffff"

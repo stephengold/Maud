@@ -541,6 +541,24 @@ public class EditorDialogs {
     }
 
     /**
+     * Display a "rename material" dialog.
+     */
+    public static void renameMaterial() {
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        if (spatial.hasMaterial()) {
+            String oldName = spatial.getMaterialName();
+            if (oldName == null) {
+                oldName = "";
+            }
+            DialogController controller = new TextEntryDialog("Rename");
+
+            Maud.gui.closeAllPopups();
+            Maud.gui.showTextEntryDialog("Enter a new name for the material:",
+                    oldName, ActionPrefix.renameMaterial, controller);
+        }
+    }
+
+    /**
      * Display a "rename override" dialog.
      */
     public static void renameOverride() {
@@ -1154,7 +1172,7 @@ public class EditorDialogs {
                     defaultText, ActionPrefix.setUserData, controller);
 
         } else if (value instanceof String) {
-            controller = new TextEntryDialog();
+            controller = new TextEntryDialog("Set");
             defaultText = (String) value;
             Maud.gui.showTextEntryDialog("Enter new string value:", defaultText,
                     "Set", ActionPrefix.setUserData, controller);

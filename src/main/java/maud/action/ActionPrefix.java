@@ -189,6 +189,10 @@ public class ActionPrefix {
      */
     final public static String renameLight = "rename light ";
     /**
+     * argument is the new name for the material
+     */
+    final public static String renameMaterial = "rename material ";
+    /**
      * argument is the new name for the material-parameter override
      */
     final public static String renameOverride = "rename override ";

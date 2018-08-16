@@ -685,6 +685,25 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
+     * Rename the selected material.
+     *
+     * @param newName new material name (may be null or duplicate)
+     */
+    public void renameMaterial(String newName) {
+        Material material = getSpatial().getMaterial();
+        String oldName = material.getName();
+        if (oldName != newName && !oldName.equals(newName)) {
+            History.autoAdd();
+            material.setName(newName);
+            // scene view not updated
+
+            String description = String.format("rename material %s to %s",
+                    MyString.quote(oldName), MyString.quote(newName));
+            setEdited(description);
+        }
+    }
+
+    /**
      * Rename the selected spatial.
      *
      * @param newName new name (not null)
