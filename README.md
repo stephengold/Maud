@@ -745,7 +745,6 @@ The following features are on my "to do" list, in no particular order:
  + advance/delay keyframe(s)
  + better support for physics controls/joints/objects/shapes
  + smoother camera motion in score views
- + tools for Keyframes/Meshes
  + select bone mappings that don't correspond to the loaded models
  + export a model to [OBJ][] format
  + export an animation to [BVH](#bvh) format
@@ -754,7 +753,6 @@ The following features are on my "to do" list, in no particular order:
  + tool tips
  + mirror an animation/pose
  + joint-angle limits for models
- + save more options to the startup script
 
 <a name="conventions"/>
 
