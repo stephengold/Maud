@@ -678,9 +678,9 @@ the menu bar, status bar, and tool windows.
 
             <control name="window" id="cgmTool" title="Model Tool"
                      hideOnClose="true"
-                     height="140px" width="520px" x="175" y="95">
+                     height="160px" width="440px" x="175" y="95">
                 <panel childLayout="vertical">
-                    <panel/>
+                    <panel height="4px"/>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Name:  "
                                  textHAlign="right"
@@ -695,7 +695,6 @@ the menu bar, status bar, and tool windows.
                             <interact onRelease="perform(load cgm)"/>
                         </control>
                     </panel>
-                    <panel/>
                     <panel childLayout="horizontal">
                         <control name="label" text="Asset location:  "
                                  textHAlign="right"
@@ -704,7 +703,6 @@ the menu bar, status bar, and tool windows.
                                  backgroundColor="#ffff"
                                  width="*"/>
                     </panel>
-                    <panel/>
                     <panel childLayout="horizontal">
                         <control name="label" text="Asset base path:  "
                                  textHAlign="right"
@@ -722,6 +720,7 @@ the menu bar, status bar, and tool windows.
                                  backgroundColor="#ffff"
                                  textHAlign="center"
                                  width="70px"/>
+                        <panel/>
                         <control name="label" text="Edit status:  "
                                  textHAlign="right"
                                  width="75px"/>
@@ -736,7 +735,28 @@ the menu bar, status bar, and tool windows.
                             <interact onRelease="perform(select tool history)"/>
                         </control>
                     </panel>
-                    <panel/>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Controls:  "/>
+                        <control name="label" id="cgmSgcs"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="40px"/>
+                        <control name="label" text="    Materials:  "/>
+                        <control name="label" id="cgmMaterials"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="40px"/>
+                        <control name="label" text="    Meshes:  "/>
+                        <control name="label" id="cgmMeshes"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="40px"/>
+                        <control name="label" text="    Skeletons:  "/>
+                        <control name="label" id="cgmSkeletons"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="40px"/>
+                    </panel>
                 </panel>
             </control>
 

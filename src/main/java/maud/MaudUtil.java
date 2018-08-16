@@ -40,6 +40,7 @@ import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.material.MatParam;
+import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Matrix4f;
@@ -64,6 +65,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
@@ -806,6 +808,72 @@ public class MaudUtil {
         }
 
         return result;
+    }
+
+    /**
+     * Enumerate all materials in the specified subtree of a scene graph. Note:
+     * recursive! TODO copy to heart library
+     *
+     * @param subtree (not null, unaffected)
+     * @param storeResult (added to if not null)
+     * @return an expanded list (either storeResult or a new instance)
+     */
+    public static List<Material> listMaterials(Spatial subtree,
+            List<Material> storeResult) {
+        Validate.nonNull(subtree, "subtree");
+        if (storeResult == null) {
+            storeResult = new ArrayList<>(10);
+        }
+
+        if (subtree instanceof Geometry) {
+            Geometry geometry = (Geometry) subtree;
+            Material material = geometry.getMaterial();
+            if (!storeResult.contains(material)) {
+                storeResult.add(material);
+            }
+
+        } else if (subtree instanceof Node) {
+            Node node = (Node) subtree;
+            List<Spatial> children = node.getChildren();
+            for (Spatial child : children) {
+                listMaterials(child, storeResult);
+            }
+        }
+
+        return storeResult;
+    }
+
+    /**
+     * Enumerate all meshes in the specified subtree of a scene graph. Note:
+     * recursive! TODO copy to heart library
+     *
+     * @param subtree (not null, unaffected)
+     * @param storeResult (added to if not null)
+     * @return an expanded list (either storeResult or a new instance)
+     */
+    public static List<Mesh> listMeshes(Spatial subtree,
+            List<Mesh> storeResult) {
+        Validate.nonNull(subtree, "subtree");
+        if (storeResult == null) {
+            storeResult = new ArrayList<>(10);
+        }
+
+        if (subtree instanceof Geometry) {
+            Geometry geometry = (Geometry) subtree;
+            Mesh mesh = geometry.getMesh();
+            if (!storeResult.contains(mesh)) {
+                storeResult.add(mesh);
+            }
+
+        } else if (subtree instanceof Node) {
+            Node node = (Node) subtree;
+            List<Spatial> children = node.getChildren();
+            for (Spatial child : children) {
+                listMeshes(child, storeResult);
+            }
+        }
+
+        return storeResult;
     }
 
     /**

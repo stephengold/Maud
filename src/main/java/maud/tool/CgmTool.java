@@ -26,6 +26,7 @@
  */
 package maud.tool;
 
+import com.jme3.scene.control.Control;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.GuiScreenController;
@@ -52,8 +53,8 @@ class CgmTool extends Tool {
     /**
      * Instantiate an uninitialized tool.
      *
-     * @param screenController the controller of the screen that contains the
-     * tool (not null)
+     * @param screenController the controller of the screen that will contain
+     * the tool (not null)
      */
     CgmTool(GuiScreenController screenController) {
         super(screenController, "cgm");
@@ -63,7 +64,7 @@ class CgmTool extends Tool {
 
     /**
      * Callback to update this tool prior to rendering. (Invoked once per render
-     * pass while the tool is displayed.)
+     * pass while this tool is displayed.)
      */
     @Override
     protected void toolUpdate() {
@@ -72,15 +73,15 @@ class CgmTool extends Tool {
          */
         EditableCgm target = Maud.getModel().getTarget();
         String name = target.getName();
-        String nameDesc = MyString.quote(name);
-        setStatusText("cgmName", " " + nameDesc);
+        String nameText = MyString.quote(name);
+        setStatusText("cgmName", " " + nameText);
         /*
          * asset base path
          */
         String assetPath = target.getAssetPath();
-        String abpDesc
+        String abpText
                 = assetPath.isEmpty() ? "unknown" : MyString.quote(assetPath);
-        setStatusText("cgmAbp", " " + abpDesc);
+        setStatusText("cgmAbp", " " + abpText);
         /*
          * asset root
          */
@@ -91,20 +92,44 @@ class CgmTool extends Tool {
         /*
          * asset/file extension
          */
-        String extDesc = target.getExtension();
-        setStatusText("cgmExt", extDesc);
+        String extText = target.getExtension();
+        setStatusText("cgmExt", extText);
         /*
          * pristine/edited status
          */
-        String pristineDesc;
+        String pristineText;
         int editCount = target.countUnsavedEdits();
         if (editCount == 0) {
-            pristineDesc = "pristine";
+            pristineText = "pristine";
         } else if (editCount == 1) {
-            pristineDesc = "one edit";
+            pristineText = "one edit";
         } else {
-            pristineDesc = String.format("%d edits", editCount);
+            pristineText = String.format("%d edits", editCount);
         }
-        setStatusText("cgmPristine", pristineDesc);
+        setStatusText("cgmPristine", pristineText);
+        /*
+         * S-G controls
+         */
+        int numSgcs = target.countSgcs(Control.class);
+        String sgcsText = Integer.toString(numSgcs);
+        setStatusText("cgmSgcs", sgcsText);
+        /*
+         * materials
+         */
+        int numMaterials = target.countMaterials();
+        String materialsText = Integer.toString(numMaterials);
+        setStatusText("cgmMaterials", materialsText);
+        /*
+         * meshes
+         */
+        int numMeshes = target.countMeshes();
+        String meshesText = Integer.toString(numMeshes);
+        setStatusText("cgmMeshes", meshesText);
+        /*
+         * skeletons
+         */
+        int numSkeletons = target.countSkeletons();
+        String skeletonsText = Integer.toString(numSkeletons);
+        setStatusText("cgmSkeletons", skeletonsText);
     }
 }

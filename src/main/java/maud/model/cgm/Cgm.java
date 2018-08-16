@@ -29,6 +29,7 @@ package maud.model.cgm;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Animation;
 import com.jme3.animation.Bone;
+import com.jme3.animation.Skeleton;
 import com.jme3.animation.SpatialTrack;
 import com.jme3.animation.Track;
 import com.jme3.bullet.PhysicsSpace;
@@ -40,6 +41,7 @@ import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.Transform;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
@@ -284,6 +286,54 @@ public class Cgm implements Cloneable {
         int count = 0;
         if (isLoaded()) {
             count = MySpatial.countControls(rootSpatial, controlType);
+        }
+
+        assert count >= 0 : count;
+        return count;
+    }
+
+    /**
+     * Count material instances in the C-G model.
+     *
+     * @return number found (&ge;0)
+     */
+    public int countMaterials() {
+        int count = 0;
+        if (isLoaded()) {
+            List<Material> list = MaudUtil.listMaterials(rootSpatial, null);
+            count = list.size();
+        }
+
+        assert count >= 0 : count;
+        return count;
+    }
+
+    /**
+     * Count mesh instances in the C-G model.
+     *
+     * @return number found (&ge;0)
+     */
+    public int countMeshes() {
+        int count = 0;
+        if (isLoaded()) {
+            List<Mesh> list = MaudUtil.listMeshes(rootSpatial, null);
+            count = list.size();
+        }
+
+        assert count >= 0 : count;
+        return count;
+    }
+
+    /**
+     * Count skeleton instances in the C-G model.
+     *
+     * @return number found (&ge;0)
+     */
+    public int countSkeletons() {
+        int count = 0;
+        if (isLoaded()) {
+            List<Skeleton> list = MySkeleton.listSkeletons(rootSpatial, null);
+            count = list.size();
         }
 
         assert count >= 0 : count;
