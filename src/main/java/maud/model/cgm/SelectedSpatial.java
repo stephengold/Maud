@@ -387,6 +387,24 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
+     * Count uses of the material.
+     *
+     * @return count (&ge;0)
+     */
+    public int countMaterialUses() {
+        Spatial spatial = find();
+        int result = 0;
+        if (spatial instanceof Geometry) {
+            Material material = getMaterial();
+            Spatial cgmRoot = cgm.getRootSpatial();
+            result = MaudUtil.countUses(cgmRoot, material);
+        }
+
+        assert result >= 0 : result;
+        return result;
+    }
+
+    /**
      * Count how many local material-parameter overrides the spatial has.
      *
      * @return count (&ge;0)

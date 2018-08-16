@@ -301,6 +301,36 @@ public class MaudUtil {
     }
 
     /**
+     * Count all uses of the specified material in the specified subtree of a
+     * scene graph. Note: recursive! TODO copy to heart library
+     *
+     * @param subtree (not null, unaffected)
+     * @param material (unaffected)
+     * @return the use count (&ge;0)
+     */
+    public static int countUses(Spatial subtree, Material material) {
+        Validate.nonNull(subtree, "subtree");
+
+        int count = 0;
+        if (subtree instanceof Geometry) {
+            Geometry geometry = (Geometry) subtree;
+            Material mat = geometry.getMaterial();
+            if (mat == material) {
+                ++count;
+            }
+
+        } else if (subtree instanceof Node) {
+            Node node = (Node) subtree;
+            List<Spatial> children = node.getChildren();
+            for (Spatial child : children) {
+                count += countUses(child, material);
+            }
+        }
+
+        return count;
+    }
+
+    /**
      * Describe a pair of display dimensions.
      *
      * @param width width in pixels (&gt;0)

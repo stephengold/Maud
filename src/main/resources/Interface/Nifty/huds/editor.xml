@@ -1465,13 +1465,18 @@ the menu bar, status bar, and tool windows.
                                  width="*"/>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="Render state:    "/>
+                        <control name="label" text="Uses:  "/>
+                        <control name="label" id="matUses"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="30px"/>
+                        <control name="label" text="    Render state:    "/>
                         <control name="checkbox" id="matDepthTestCheckBox"
                                  width="20px"/>
                         <control name="label" text="  depth test    "/>
                         <control name="checkbox" id="matWireframeCheckBox"
                                  width="20px"/>
-                        <control name="label" text="  wireframe    face cull:  "/>
+                        <control name="label" text="  wireframe    cull:  "/>
                         <control name="button" id="matFaceCullButton"
                                  width="90px">
                             <interact onRelease="perform(select faceCull)"/>
