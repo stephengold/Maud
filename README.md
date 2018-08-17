@@ -60,6 +60,8 @@ Status as of August 2018: seeking more alpha testers.
  + [The displayed pose](#pose)
  + [The skeleton map](#map)
  + [The edit history](#history)
+ + [Scripting](#scripting)
+ + [Command-line arguments](#args)
  + [Web links](#links)
  + [Wish list](#wishlist)
  + [Conventions](#conventions)
@@ -644,7 +646,7 @@ With this pseudo-animation loaded:
  + selecting a mapped target bone also selects the corresponding source bone, and
  + dragging an axis of the target bone automatically updates the twist value of the selected bone mapping.
 
-To save the loaded skeleton map, use "Map -> Save".
+To save the loaded skeleton map, select "Map -> Save".
 
 When you're ready to retarget animations between models,
 use the "Retarget Tool" ("Animations -> Add new -> Retarget").
@@ -674,6 +676,52 @@ Maud provides a "History Tool" (selected using "History -> Tool").
 
 The edit history consumes virtual memory.  To delete the history, select
 "History -> Clear".
+
+<a name="scripting"/>
+
+## Scripting
+
+Maud has a built-in JavaScript scripting capability based
+on the [Nashorn][] engine.
+
+During startup, Maud looks for a "/Scripts/startup.js" asset.
+The built-in startup script (on the classpath) simply loads the Jaime model.
+However, if Maud finds a custom script in the "Written Assets" folder,
+it executes the custom script in place of the built-in one.
+
+To auto-generate a custom startup script,
+select "Settings -> Update startup script".
+The generated script will then initialize:
+
+ + asset locations
+ + global options such as view mode, boundary position, menu-bar visibility,
+   performance debug mode, base index, and tweening techniques
+ + most scene-view and score-view options
+ + the screen positions any selected tools
+
+Note that customized hotkeys and display settings
+are not included in the startup script.
+Maud uses other mechanisms to make them persist.
+
+To remove a custom startup script,
+select "Settings -> Revert startup script to default".
+
+<a name="args"/>
+
+## Command-line arguments
+
+The following arguments can be specified on the command line (or in the Gradle
+build script) to configure Maud before it has read the startup script:
+
+ + `--forceDialog` (or `-f`)
+  to show the JME3 "Display Settings" dialog during startup.
+  This dialog can be used to edit the resolution (and other properties)
+  of the display in case they become corrupted.  If this argument is not
+  specified, Maud shows the dialog only if it believes it hasn't run before.
+ + `--skipStartup` (or `-s`)
+  to bypass Maud's startup script.  If this argument is not specified, Maud
+  looks for a startup script and attempts to execute it before displaying the
+  Editor Screen.
 
 <a name="links"/>
 
@@ -722,6 +770,7 @@ BVH resources:
 [jme]: http://jmonkeyengine.org  "jMonkeyEngine Project"
 [jme-ttf]: http://1337atr.weebly.com/jttf.html "jME-TTF Rendering System"
 [markdown]: https://daringfireball.net/projects/markdown "Markdown Project"
+[nashorn]: https://docs.oracle.com/javase/8/docs/technotes/guides/scripting/nashorn "Nashorn User Guide"
 [netbeans]: https://netbeans.org "NetBeans Project"
 [nifty]: http://nifty-gui.github.io/nifty-gui "Nifty GUI Project"
 [obj]: http://www.fileformat.info/format/wavefrontobj/egff.htm "Wavefront OBJ File Format"
