@@ -27,6 +27,7 @@
 package maud.action;
 
 import com.jme3.renderer.queue.RenderQueue;
+import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import maud.Maud;
@@ -41,6 +42,7 @@ import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedSgc;
+import maud.model.cgm.SelectedSpatial;
 import maud.model.option.PerformanceMode;
 import maud.model.option.RigidBodyParameter;
 import maud.model.option.RotationDisplayMode;
@@ -328,7 +330,14 @@ class SelectOSAction {
         } else if (actionString.startsWith(ActionPrefix.selectSpatialChild)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.selectSpatialChild);
-            Maud.gui.selectSpatialChild(arg);
+            SelectedSpatial spatial = target.getSpatial();
+            List<String> children = spatial.listNumberedChildren();
+            int childIndex = children.indexOf(arg);
+            if (childIndex >= 0) { // complete name+index
+                spatial.selectChild(childIndex);
+            } else { // prefix of name+index
+                SpatialMenus.selectSpatialChild(arg);
+            }
 
         } else if (actionString.startsWith(ActionPrefix.selectSpatial)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectSpatial);

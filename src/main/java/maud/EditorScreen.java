@@ -60,14 +60,12 @@ import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.ui.InputMode;
 import maud.action.EditorInputMode;
 import maud.menu.BuildMenus;
-import maud.menu.SpatialMenus;
 import maud.mesh.Lozenge;
 import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.LoadedAnimation;
 import maud.model.cgm.PlayOptions;
 import maud.model.cgm.Pov;
-import maud.model.cgm.SelectedSpatial;
 import maud.model.option.MiscOptions;
 import maud.model.option.PerformanceMode;
 import maud.model.option.scene.AxesOptions;
@@ -484,22 +482,6 @@ public class EditorScreen extends GuiScreenController {
             Selection selection = new Selection(mouseXY, maxDSquared);
             mouseView.considerVertices(selection);
             selection.select();
-        }
-    }
-
-    /**
-     * Handle a "select spatialChild" action with an argument. TODO move?
-     *
-     * @param argument action argument (not null)
-     */
-    public void selectSpatialChild(String argument) {
-        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
-        List<String> children = spatial.listNumberedChildren();
-        int childIndex = children.indexOf(argument);
-        if (childIndex >= 0) {
-            spatial.selectChild(childIndex);
-        } else {
-            SpatialMenus.selectSpatialChild(argument);
         }
     }
 
