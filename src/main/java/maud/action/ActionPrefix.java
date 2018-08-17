@@ -408,7 +408,7 @@ public class ActionPrefix {
      */
     final public static String selectSpatial = "select spatial ";
     /**
-     * arguments are the quoted name of a spatial and a bracketed index
+     * argument is a quoted name plus bracketed index, or a prefix thereof
      */
     final public static String selectSpatialChild = "select spatialChild ";
     /**
