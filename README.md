@@ -618,7 +618,7 @@ animations between models.
 To automate these adjustments, each bone mapping in a jME skeleton
 map includes a "twist" value.
 
-Maud has the capability to load skeleton maps from assets, edit
+Maud can load skeleton maps from assets, edit
 them, save them, and use them to retarget animations.
 A few sample skeleton maps are build into Maud, such as "SinbadToJaime" which
 maps Sinbad's skeleton to that of Jaime.
