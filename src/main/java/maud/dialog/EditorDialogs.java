@@ -44,6 +44,7 @@ import jme3utilities.Misc;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.debug.DebugVersion;
+import jme3utilities.minie.MinieVersion;
 import jme3utilities.nifty.LibraryVersion;
 import jme3utilities.nifty.dialog.BooleanDialog;
 import jme3utilities.nifty.dialog.DialogController;
@@ -125,6 +126,8 @@ public class EditorDialogs {
         text += String.format(
                 "%n   jme3-utilities-heart version %s (BSD license)",
                 MyString.quote(Misc.getVersionShort()));
+        text += String.format("%n   Minie version %s (BSD license)",
+                MyString.quote(MinieVersion.getVersionShort()));
         text += String.format("%n   SkyControl version %s (BSD license)",
                 MyString.quote(Constants.getVersionShort()));
         text += String.format("%n   Wes version %s (BSD license)",
