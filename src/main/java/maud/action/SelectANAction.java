@@ -250,7 +250,7 @@ class SelectANAction {
         } else if (actionString.startsWith(ActionPrefix.selectBoneChild)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.selectBoneChild);
-            ShowMenus.selectBoneChild(arg);
+            BoneMenus.selectBoneChild(arg);
 
         } else if (actionString.startsWith(ActionPrefix.selectBoneIndex)) {
             arg = MyString.remainder(actionString,

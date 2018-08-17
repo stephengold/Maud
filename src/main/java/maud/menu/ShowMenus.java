@@ -43,7 +43,6 @@ import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedLight;
 import maud.model.cgm.SelectedOverride;
 import maud.model.cgm.SelectedSgc;
-import maud.model.cgm.SelectedSkeleton;
 import maud.model.cgm.SelectedSpatial;
 import maud.model.cgm.WhichParams;
 import maud.model.option.DisplaySettings;
@@ -131,33 +130,6 @@ public class ShowMenus {
             builder.addFile(spec);
         }
         builder.show(ActionPrefix.deleteAssetLocationSpec);
-    }
-
-    /**
-     * Handle a "select boneChild" action with an argument.
-     *
-     * @param argument action argument (not null)
-     */
-    public static void selectBoneChild(String argument) {
-        Cgm target = Maud.getModel().getTarget();
-        if (argument.startsWith("!")) {
-            String name = argument.substring(1);
-            target.getBone().select(name);
-        } else {
-            SelectedSkeleton skeleton = target.getSkeleton();
-            List<String> names = skeleton.listChildBoneNames(argument);
-
-            MenuBuilder builder = new MenuBuilder();
-            builder.addBone("!" + argument);
-            for (String name : names) {
-                if (target.getSkeleton().isLeafBone(name)) {
-                    builder.addBone("!" + name);
-                } else {
-                    builder.add(name);
-                }
-            }
-            builder.show(ActionPrefix.selectBoneChild);
-        }
     }
 
     /**
@@ -427,52 +399,6 @@ public class ShowMenus {
             }
             builder.show(ActionPrefix.setRefreshRate);
         }
-    }
-
-    /**
-     * Display a submenu for selecting a target bone by name using the "select
-     * bone" action prefix.
-     *
-     * @param nameList list of names from which to select (not null)
-     */
-    static void showBoneSubmenu(List<String> nameList) {
-        assert nameList != null;
-
-        MyString.reduce(nameList, maxItems);
-        Collections.sort(nameList);
-
-        MenuBuilder builder = new MenuBuilder();
-        for (String name : nameList) {
-            if (Maud.getModel().getTarget().getSkeleton().hasBone(name)) {
-                builder.addBone(name);
-            } else {
-                builder.addEllipsis(name);
-            }
-        }
-        builder.show(ActionPrefix.selectBone);
-    }
-
-    /**
-     * Display a submenu for selecting a source bone by name using the "select
-     * sourceBone" action prefix.
-     *
-     * @param nameList list of names from which to select (not null)
-     */
-    static void showSourceBoneSubmenu(List<String> nameList) {
-        assert nameList != null;
-
-        MyString.reduce(nameList, maxItems);
-        Collections.sort(nameList);
-
-        MenuBuilder builder = new MenuBuilder();
-        for (String name : nameList) {
-            if (Maud.getModel().getSource().getSkeleton().hasBone(name)) {
-                builder.addBone(name);
-            } else {
-                builder.addEllipsis(name);
-            }
-        }
-        builder.show(ActionPrefix.selectSourceBone);
     }
 
     /**
