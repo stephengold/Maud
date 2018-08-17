@@ -711,13 +711,14 @@ select "Settings -> Revert startup script to default".
 ## Command-line arguments
 
 The following arguments can be specified on the command line (or in the Gradle
-build script) to configure Maud before it has read the startup script:
+build script) to configure Maud prior to executing its startup script:
 
  + `--forceDialog` (or `-f`)
   to show the JME3 "Display Settings" dialog during startup.
-  This dialog can be used to edit the resolution (and other properties)
-  of the display in case they become corrupted.  If this argument is not
-  specified, Maud shows the dialog only if it believes it hasn't run before.
+  This dialog can be used to edit display properties (such as resolution)
+  in case they become corrupted.  If this argument is not
+  specified, Maud shows the dialog only if it believes
+  (based on JME3 AppSettings) that this is the first time it has run.
  + `--skipStartup` (or `-s`)
   to bypass Maud's startup script.  If this argument is not specified, Maud
   looks for a startup script and attempts to execute it before displaying the
