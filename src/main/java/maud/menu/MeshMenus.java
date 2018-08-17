@@ -67,9 +67,17 @@ public class MeshMenus {
      */
     static void buildMeshMenu(MenuBuilder builder) {
         builder.addTool("Tool");
-        builder.addSubmenu("Select geometry");
+        builder.addSubmenu("Select");
+
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        List<String> bufferList = spatial.listBufferDescs();
+        if (!bufferList.isEmpty()) {
+            builder.addSubmenu("Select buffer");
+        }
+
         builder.addTool("Vertex tool");
-        if (Maud.getModel().getTarget().getSpatial().countVertices() > 0) {
+
+        if (spatial.countVertices() > 0) {
             builder.addSubmenu("Select vertex");
         }
     }
@@ -89,8 +97,12 @@ public class MeshMenus {
 
         } else {
             switch (remainder) {
-                case "Select geometry":
+                case "Select":
                     SpatialMenus.selectSpatial("", WhichSpatials.Geometries);
+                    break;
+
+                case "Select buffer":
+                    selectBuffer();
                     break;
 
                 case "Select vertex":
