@@ -424,8 +424,9 @@ public class Maud extends GuiApplication {
      * Process a "dump renderer" action.
      */
     private void dumpRenderer() {
-        dumper.setDumpBucket(true);
-        dumper.setDumpCull(true);
+        //dumper.setDumpBucket(true);
+        //dumper.setDumpCull(true);
+        //dumper.setDumpOverride(true);
         dumper.setDumpShadow(true);
         dumper.setDumpTransform(true);
         dumper.dump(renderManager);
@@ -435,8 +436,9 @@ public class Maud extends GuiApplication {
      * Process a "dump scene" action.
      */
     private void dumpScene() {
-        dumper.setDumpBucket(true);
-        dumper.setDumpCull(true);
+        //dumper.setDumpBucket(true);
+        //dumper.setDumpCull(true);
+        //dumper.setDumpOverride(true);
         dumper.setDumpShadow(true);
         dumper.setDumpTransform(true);
         dumper.dump(rootNode);
@@ -456,8 +458,8 @@ public class Maud extends GuiApplication {
             message = "You've made ";
             if (cgmEdits > 0) {
                 message += String.format(
-                        "%d unsaved edit%s to the target model",
-                        cgmEdits, cgmEdits == 1 ? "" : "s");
+                        "%d unsaved edit%s to the target model", cgmEdits,
+                        cgmEdits == 1 ? "" : "s");
             }
             if (cgmEdits > 0 && mapEdits > 0) {
                 message += " and ";
