@@ -38,6 +38,7 @@ import maud.menu.AnimationMenus;
 import maud.menu.BoneMenus;
 import maud.menu.EditorMenus;
 import maud.menu.EnumMenus;
+import maud.menu.MeshMenus;
 import maud.menu.PhysicsMenus;
 import maud.menu.ShowMenus;
 import maud.menu.SpatialMenus;
@@ -128,7 +129,7 @@ class SelectANAction {
                 break;
 
             case Action.selectBuffer:
-                ShowMenus.selectBuffer();
+                MeshMenus.selectBuffer();
                 break;
 
             case Action.selectBufferUsage:

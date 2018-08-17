@@ -40,13 +40,11 @@ import maud.MaudUtil;
 import maud.action.ActionPrefix;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
-import maud.model.cgm.SelectedBuffer;
 import maud.model.cgm.SelectedLight;
 import maud.model.cgm.SelectedOverride;
 import maud.model.cgm.SelectedSgc;
 import maud.model.cgm.SelectedSkeleton;
 import maud.model.cgm.SelectedSpatial;
-import maud.model.cgm.SelectedVertex;
 import maud.model.cgm.WhichParams;
 import maud.model.option.DisplaySettings;
 
@@ -160,30 +158,6 @@ public class ShowMenus {
             }
             builder.show(ActionPrefix.selectBoneChild);
         }
-    }
-
-    /**
-     * Handle a "select buffer" action without an argument.
-     */
-    public static void selectBuffer() {
-        MenuBuilder builder = new MenuBuilder();
-
-        Cgm target = Maud.getModel().getTarget();
-        SelectedBuffer buffer = target.getBuffer();
-        SelectedSpatial spatial = target.getSpatial();
-        if (buffer.isSelected()) {
-            builder.add(SelectedSpatial.noBuffer);
-        }
-
-        String currentDesc = buffer.describe();
-        List<String> bufferDescs = spatial.listBufferDescs();
-        for (String desc : bufferDescs) {
-            if (!desc.equals(currentDesc)) {
-                builder.add(desc);
-            }
-        }
-
-        builder.show(ActionPrefix.selectBuffer);
     }
 
     /**
@@ -336,29 +310,6 @@ public class ShowMenus {
     }
 
     /**
-     * Display a "Vertex -&gt; Select" menu.
-     */
-    public static void selectVertex() {
-        Cgm target = Maud.getModel().getTarget();
-        int numVertices = target.getSpatial().countVertices();
-        if (numVertices > 0) {
-            MenuBuilder builder = new MenuBuilder();
-
-            builder.addDialog("By index");
-            //builder.add("Extreme"); TODO
-            SelectedVertex vertex = target.getVertex();
-            if (vertex.isSelected()) {
-                //builder.add("Neighbor"); TODO
-                builder.add("Next");
-                builder.add("None");
-                builder.add("Previous");
-            }
-
-            builder.show("select menuItem Vertex -> Select -> ");
-        }
-    }
-
-    /**
      * Display a menu to set the color depth (bits per pixel) for the display
      * using the "set colorDepth " action prefix.
      */
@@ -428,21 +379,6 @@ public class ShowMenus {
         }
 
         builder.show(ActionPrefix.setDimensions);
-    }
-
-    /**
-     * Display a menu to configure the maximum number of weights per mesh vertex
-     * using the "set meshWeights " action prefix.
-     */
-    public static void setMeshWeights() {
-        MenuBuilder builder = new MenuBuilder();
-
-        for (int numWeights = 1; numWeights <= 4; numWeights++) {
-            String description = Integer.toString(numWeights);
-            builder.add(description);
-        }
-
-        builder.show(ActionPrefix.setMeshWeights);
     }
 
     /**

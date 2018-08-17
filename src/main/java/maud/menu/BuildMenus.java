@@ -375,6 +375,10 @@ public class BuildMenus {
                 buildMapMenu();
                 break;
 
+            case "Mesh":
+                MeshMenus.buildMeshMenu(builder);
+                break;
+
             case "Physics":
                 PhysicsMenus.buildPhysicsMenu(builder);
                 break;
@@ -393,10 +397,6 @@ public class BuildMenus {
 
             case "Track":
                 AnimationMenus.buildTrackMenu(builder);
-                break;
-
-            case "Vertex":
-                buildVertexMenu();
                 break;
 
             case "View":
@@ -703,17 +703,6 @@ public class BuildMenus {
         }
 
         builder.addDialog(otherName);
-    }
-
-    /**
-     * Build a Vertex menu.
-     */
-    private void buildVertexMenu() {
-        builder.addTool("Tool");
-        if (Maud.getModel().getTarget().getSpatial().countVertices() > 0) {
-            builder.addSubmenu("Select");
-        }
-        builder.addSubmenu("Select geometry");
     }
 
     /**

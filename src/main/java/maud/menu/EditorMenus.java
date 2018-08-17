@@ -31,7 +31,6 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 import jme3utilities.Misc;
-import jme3utilities.MyString;
 import maud.Maud;
 import maud.dialog.EditorDialogs;
 import maud.model.EditableMap;
@@ -170,6 +169,9 @@ public class EditorMenus {
             case "Map":
                 handled = menuMap(remainder);
                 break;
+            case "Mesh":
+                handled = MeshMenus.menuMesh(remainder);
+                break;
             case "Physics":
                 handled = PhysicsMenus.menuPhysics(remainder);
                 break;
@@ -184,9 +186,6 @@ public class EditorMenus {
                 break;
             case "Track":
                 handled = AnimationMenus.menuTrack(remainder);
-                break;
-            case "Vertex":
-                handled = menuVertex(remainder);
                 break;
             case "View":
                 handled = ViewMenus.menuView(remainder);
@@ -328,71 +327,6 @@ public class EditorMenus {
                 Maud.getModel().updateStartupScript();
                 break;
 
-            default:
-                handled = false;
-        }
-
-        return handled;
-    }
-
-    /**
-     * Handle a "select menuItem" action from the Vertex menu.
-     *
-     * @param remainder not-yet-parsed portion of the menu path (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private static boolean menuVertex(String remainder) {
-        boolean handled = true;
-        String selectPrefix = "Select" + menuPathSeparator;
-        if (remainder.startsWith(selectPrefix)) {
-            String arg = MyString.remainder(remainder, selectPrefix);
-            handled = menuVertexSelect(arg);
-
-        } else {
-            switch (remainder) {
-                case "Select":
-                    ShowMenus.selectVertex();
-                    break;
-
-                case "Select geometry":
-                    SpatialMenus.selectSpatial("", WhichSpatials.Geometries);
-                    break;
-
-                case "Tool":
-                    Maud.gui.tools.select("vertex");
-                    break;
-
-                default:
-                    handled = false;
-            }
-        }
-
-        return handled;
-    }
-
-    /**
-     * Handle a "select menuItem" action from the "Vertex -> Select" menu.
-     *
-     * @param remainder not-yet-parsed portion of the menu path (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private static boolean menuVertexSelect(String remainder) {
-        boolean handled = true;
-        switch (remainder) {
-            case "By index":
-                EditorDialogs.selectVertex();
-                break;
-            //case "Extreme": TODO
-            //case "Neighbor": TODO
-            case "Next":
-                Maud.getModel().getTarget().getVertex().selectNext();
-                break;
-            case "None":
-                Maud.getModel().getTarget().getVertex().deselect();
-                break;
-            case "Previous":
-                Maud.getModel().getTarget().getVertex().selectPrevious();
-                break;
             default:
                 handled = false;
         }

@@ -60,9 +60,9 @@ the menu bar, status bar, and tool windows.
                         <interact onRelease="perform(select menuItem Spatial)"/>
                     </control>
                     <panel width="2px"/>
-                    <control name="button" id="VertexButton" label="5] Vertex"
+                    <control name="button" id="MeshButton" label="5] Mesh"
                              width="65px">
-                        <interact onRelease="perform(select menuItem Vertex)"/>
+                        <interact onRelease="perform(select menuItem Mesh)"/>
                     </control>
                     <panel width="2px"/>
                     <control name="button" id="ControlButton" label="6] Control"

@@ -39,6 +39,7 @@ import maud.MaudUtil;
 import maud.dialog.DimensionsDialog;
 import maud.dialog.EditorDialogs;
 import maud.menu.EnumMenus;
+import maud.menu.MeshMenus;
 import maud.menu.ShowMenus;
 import maud.model.EditorModel;
 import maud.model.WhichCgm;
@@ -144,7 +145,7 @@ class SetAction {
                 break;
 
             case Action.setMeshWeights:
-                ShowMenus.setMeshWeights();
+                MeshMenus.setMeshWeights();
                 break;
 
             case Action.setMsaaFactor:

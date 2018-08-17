@@ -38,6 +38,7 @@ import jme3utilities.wes.TweenVectors;
 import maud.Maud;
 import maud.menu.AnimationMenus;
 import maud.menu.EnumMenus;
+import maud.menu.MeshMenus;
 import maud.menu.ShowMenus;
 import maud.model.EditorModel;
 import maud.model.TweenPreset;
@@ -112,7 +113,7 @@ class SelectTZAction {
                 break;
 
             case Action.selectVertex:
-                ShowMenus.selectVertex();
+                MeshMenus.selectVertex();
                 break;
 
             default:
