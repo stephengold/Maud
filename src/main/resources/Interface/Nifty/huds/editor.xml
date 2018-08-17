@@ -3201,7 +3201,7 @@ the menu bar, status bar, and tool windows.
                         <panel childLayout="center" height="*" width="120px">
                             <control name="button" id="vertexBufferSelectButton"
                                      width="*">
-                                <interact onRelease="perform(select vertexBuffer)"/>
+                                <interact onRelease="perform(select buffer)"/>
                             </control>
                         </panel>
                         <panel width="10px"/>
