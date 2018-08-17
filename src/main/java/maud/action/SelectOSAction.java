@@ -182,7 +182,7 @@ class SelectOSAction {
                 break;
 
             case Action.selectSpatialChild:
-                ShowMenus.selectSpatialChild("");
+                SpatialMenus.selectSpatialChild("");
                 break;
 
             case Action.selectSpatialParent:

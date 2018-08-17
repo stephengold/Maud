@@ -60,7 +60,7 @@ import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.ui.InputMode;
 import maud.action.EditorInputMode;
 import maud.menu.BuildMenus;
-import maud.menu.ShowMenus;
+import maud.menu.SpatialMenus;
 import maud.mesh.Lozenge;
 import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
@@ -488,7 +488,7 @@ public class EditorScreen extends GuiScreenController {
     }
 
     /**
-     * Handle a "select spatialChild" action with an argument.
+     * Handle a "select spatialChild" action with an argument. TODO move?
      *
      * @param argument action argument (not null)
      */
@@ -499,7 +499,7 @@ public class EditorScreen extends GuiScreenController {
         if (childIndex >= 0) {
             spatial.selectChild(childIndex);
         } else {
-            ShowMenus.selectSpatialChild(argument);
+            SpatialMenus.selectSpatialChild(argument);
         }
     }
 

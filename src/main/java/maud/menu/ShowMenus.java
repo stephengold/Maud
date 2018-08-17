@@ -227,42 +227,6 @@ public class ShowMenus {
     }
 
     /**
-     * Handle a "select spatialChild" action.
-     *
-     * @param itemPrefix prefix for filtering menu items (not null)
-     */
-    public static void selectSpatialChild(String itemPrefix) {
-        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
-        int numChildren = spatial.countChildren();
-        if (numChildren == 1) {
-            spatial.selectChild(0);
-
-        } else if (numChildren > 1) {
-            List<String> children = spatial.listNumberedChildren();
-            List<String> choices
-                    = MyString.addMatchPrefix(children, itemPrefix, null);
-            MyString.reduce(choices, maxItems);
-            Collections.sort(choices);
-
-            MenuBuilder builder = new MenuBuilder();
-            for (String choice : choices) {
-                int childIndex = children.indexOf(choice);
-                if (childIndex >= 0) {
-                    boolean isANode = spatial.isChildANode(childIndex);
-                    if (isANode) {
-                        builder.addNode(choice);
-                    } else {
-                        builder.addGeometry(choice);
-                    }
-                } else {
-                    builder.addEllipsis(choice);
-                }
-            }
-            builder.show(ActionPrefix.selectSpatialChild);
-        }
-    }
-
-    /**
      * Display a menu for selecting a user key using the "select userKey "
      * action prefix.
      */
