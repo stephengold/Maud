@@ -407,7 +407,9 @@ public class ShowMenus {
                 builder.addGeometry(name);
             } else if (target.hasNode(name)) {
                 builder.addNode(name);
-            }
+            } else {
+                builder.addEllipsis(name);
+            }       
         }
         builder.show(ActionPrefix.selectSpatial);
     }
