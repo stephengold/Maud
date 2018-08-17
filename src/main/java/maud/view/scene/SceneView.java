@@ -55,6 +55,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
+import jme3utilities.Misc;
 import jme3utilities.MyCamera;
 import jme3utilities.MyLight;
 import jme3utilities.MySpatial;
@@ -64,7 +65,6 @@ import jme3utilities.math.MyVector3f;
 import jme3utilities.minie.MyControlP;
 import jme3utilities.minie.MyObject;
 import maud.Maud;
-import maud.MaudUtil;
 import maud.PhysicsUtil;
 import maud.model.cgm.Cgm;
 
@@ -627,7 +627,7 @@ public class SceneView extends SceneViewCore {
         Validate.nonNull(newValue, "initial value");
 
         Material material = selectedMaterial();
-        Object cloneValue = MaudUtil.deepClone(newValue);
+        Object cloneValue = Misc.deepClone(newValue);
         material.setParam(parameterName, varType, cloneValue);
     }
 

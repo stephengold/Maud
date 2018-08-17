@@ -376,7 +376,7 @@ public class SelectedSpatial implements JmeCloneable {
     public int countMaterialUses() {
         Spatial cgmRoot = cgm.getRootSpatial();
         Material material = getMaterial();
-        int result = MaudUtil.countUses(cgmRoot, material);
+        int result = MySpatial.countUses(cgmRoot, material);
 
         assert result >= 0 : result;
         return result;

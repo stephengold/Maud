@@ -32,6 +32,8 @@ import com.jme3.math.Vector3f;
 import com.jme3.shader.VarType;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
+import jme3utilities.math.MyColor;
+import jme3utilities.math.MyVector3f;
 import maud.Maud;
 import maud.MaudUtil;
 import maud.dialog.DimensionsDialog;
@@ -283,7 +285,7 @@ class SetAction {
             if (args.length >= 2) {
                 int index = Integer.parseInt(args[0]);
                 String colorText = MyString.remainder(arg, args[0] + " ");
-                ColorRGBA color = MaudUtil.parseColor(colorText);
+                ColorRGBA color = MyColor.parseColor(colorText);
                 model.getScene().getCursor().setColor(index, color);
             } else {
                 handled = false;
@@ -320,7 +322,7 @@ class SetAction {
             if (args.length >= 2) {
                 Background which = Background.valueOf(args[0]);
                 String colorText = MyString.remainder(arg, args[0] + " ");
-                ColorRGBA color = MaudUtil.parseColor(colorText);
+                ColorRGBA color = MyColor.parseColor(colorText);
                 model.setBackgroundColor(which, color);
             } else {
                 handled = false;
@@ -328,7 +330,7 @@ class SetAction {
 
         } else if (actionString.startsWith(ActionPrefix.setBoundsColor)) {
             arg = MyString.remainder(actionString, ActionPrefix.setBoundsColor);
-            ColorRGBA color = MaudUtil.parseColor(arg);
+            ColorRGBA color = MyColor.parseColor(arg);
             model.getScene().getBounds().setColor(color);
 
         } else if (actionString.startsWith(ActionPrefix.setBoundsLineWidth)) {
@@ -400,7 +402,7 @@ class SetAction {
         } else if (actionString.startsWith(ActionPrefix.setMainDirection)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setMainDirection);
-            Vector3f direction = MaudUtil.parseVector3f(arg);
+            Vector3f direction = MyVector3f.parse(arg);
             model.getScene().getLights().setDirection(direction);
 
         } else if (actionString.startsWith(ActionPrefix.setMainLevel)) {
@@ -493,7 +495,7 @@ class SetAction {
             if (args.length >= 2) {
                 SkeletonColors use = SkeletonColors.valueOf(args[0]);
                 String colorText = MyString.remainder(arg, args[0] + " ");
-                ColorRGBA color = MaudUtil.parseColor(colorText);
+                ColorRGBA color = MyColor.parseColor(colorText);
                 model.getScene().getSkeleton().setColor(use, color);
             } else {
                 handled = false;
@@ -568,7 +570,7 @@ class SetAction {
 
         } else if (actionString.startsWith(ActionPrefix.setVertexColor)) {
             arg = MyString.remainder(actionString, ActionPrefix.setVertexColor);
-            ColorRGBA color = MaudUtil.parseColor(arg);
+            ColorRGBA color = MyColor.parseColor(arg);
             model.getScene().getVertex().setColor(color);
 
         } else if (actionString.startsWith(ActionPrefix.setVertexPointSize)) {

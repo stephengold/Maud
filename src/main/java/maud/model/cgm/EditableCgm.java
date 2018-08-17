@@ -68,6 +68,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.Misc;
 import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
@@ -210,7 +211,7 @@ public class EditableCgm extends LoadedCgm {
         if (defaultValue == null) {
             value = MaudUtil.defaultValue(varType, parameterName);
         } else {
-            value = MaudUtil.deepClone(defaultValue);
+            value = Misc.deepClone(defaultValue);
         }
 
         History.autoAdd();
@@ -1740,8 +1741,8 @@ public class EditableCgm extends LoadedCgm {
         int numTracksZfed = 0;
         int numTracksRred = 0;
 
-        List<AnimControl> animControls;
-        animControls = MySpatial.listControls(cgmRoot, AnimControl.class, null);
+        List<AnimControl> animControls
+                = MySpatial.listControls(cgmRoot, AnimControl.class, null);
         for (AnimControl animControl : animControls) {
             Collection<String> names = animControl.getAnimationNames();
             for (String animationName : names) {

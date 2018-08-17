@@ -44,7 +44,6 @@ import jme3utilities.MyLight;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyVector3f;
-import maud.MaudUtil;
 
 /**
  * The MVC model of the selected light in a C-G model.
@@ -132,7 +131,7 @@ public class SelectedLight implements JmeCloneable {
      */
     public void cardinalizeDirection() {
         Vector3f dir = direction();
-        MaudUtil.cardinalizeLocal(dir);
+        MyVector3f.cardinalizeLocal(dir);
         setDirection(dir);
     }
 

@@ -54,6 +54,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 import jme3utilities.MyControl;
 import jme3utilities.MyLight;
+import jme3utilities.MyMesh;
 import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
@@ -283,10 +284,7 @@ public class Cgm implements Cloneable {
      * @return number found (&ge;0)
      */
     public <T extends Control> int countSgcs(Class<T> controlType) {
-        int count = 0;
-        if (isLoaded()) {
-            count = MySpatial.countControls(rootSpatial, controlType);
-        }
+        int count = MySpatial.countControls(rootSpatial, controlType);
 
         assert count >= 0 : count;
         return count;
@@ -298,11 +296,8 @@ public class Cgm implements Cloneable {
      * @return number found (&ge;0)
      */
     public int countMaterials() {
-        int count = 0;
-        if (isLoaded()) {
-            List<Material> list = MaudUtil.listMaterials(rootSpatial, null);
-            count = list.size();
-        }
+        List<Material> list = MySpatial.listMaterials(rootSpatial, null);
+        int count = list.size();
 
         assert count >= 0 : count;
         return count;
@@ -314,11 +309,8 @@ public class Cgm implements Cloneable {
      * @return number found (&ge;0)
      */
     public int countMeshes() {
-        int count = 0;
-        if (isLoaded()) {
-            List<Mesh> list = MaudUtil.listMeshes(rootSpatial, null);
-            count = list.size();
-        }
+        List<Mesh> list = MyMesh.listMeshes(rootSpatial, null);
+        int count = list.size();
 
         assert count >= 0 : count;
         return count;

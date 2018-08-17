@@ -40,7 +40,6 @@ import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.material.MatParam;
-import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Matrix4f;
@@ -69,7 +68,6 @@ import com.jme3.texture.Texture3D;
 import com.jme3.texture.TextureCubeMap;
 import com.jme3.texture.image.ColorSpace;
 import com.jme3.util.BufferUtils;
-import com.jme3.util.clone.Cloner;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.Buffer;
@@ -114,19 +112,9 @@ public class MaudUtil {
     final private static Logger logger
             = Logger.getLogger(MaudUtil.class.getName());
     /**
-     * pattern for matching a color
-     */
-    final private static Pattern colorPattern = Pattern.compile(
-            "Color\\[\\s*([^,]+),\\s*([^,]+),\\s*([^,]+),\\s*(\\S+)\\s*]");
-    /**
      * pattern for matching the word "null"
      */
     final private static Pattern nullPattern = Pattern.compile("\\s*null\\s*");
-    /**
-     * pattern for matching a Vector3f
-     */
-    final private static Pattern vector3fPattern = Pattern.compile(
-            "\\(\\s*([^,]+),\\s+([^,]+),\\s+(\\S+)\\s*\\)");
     /**
      * local copy of {@link com.jme3.math.Transform#IDENTITY}
      */
@@ -143,17 +131,6 @@ public class MaudUtil {
      * local copy of {@link com.jme3.math.Vector3f#UNIT_Z}
      */
     final private static Vector3f zAxis = new Vector3f(0f, 0f, 1f);
-    /**
-     * array of cardinal axes
-     */
-    final private static Vector3f cardinalAxes[] = {
-        new Vector3f(1f, 0f, 0f),
-        new Vector3f(0f, 1f, 0f),
-        new Vector3f(0f, 0f, 1f),
-        new Vector3f(-1f, 0f, 0f),
-        new Vector3f(0f, -1f, 0f),
-        new Vector3f(0f, 0f, -1f)
-    };
     // *************************************************************************
     // constructors
 
@@ -278,90 +255,6 @@ public class MaudUtil {
         }
 
         return storeResult;
-    }
-
-    /**
-     * Find the cardinal direction most similar to the specified input. TODO use
-     * heart library
-     *
-     * @param input (not null, modified)
-     */
-    public static void cardinalizeLocal(Vector3f input) {
-        input.normalizeLocal();
-        /*
-         * Generate each of the 6 cardinal directions.
-         */
-        Vector3f bestCardinalDirection = new Vector3f();
-        float bestDot = -2f;
-        for (Vector3f x : cardinalAxes) {
-            /*
-             * Measure the similarity of the 2 directions
-             * using their dot product.
-             */
-            float dot = x.dot(input);
-            if (dot > bestDot) {
-                bestDot = dot;
-                bestCardinalDirection.set(x);
-            }
-        }
-
-        input.set(bestCardinalDirection);
-    }
-
-    /**
-     * Count all uses of the specified material in the specified subtree of a
-     * scene graph. Note: recursive! TODO use heart library
-     *
-     * @param subtree (may be null, unaffected)
-     * @param material (unaffected)
-     * @return the use count (&ge;0)
-     */
-    public static int countUses(Spatial subtree, Material material) {
-        int count = 0;
-
-        if (subtree instanceof Geometry) {
-            Geometry geometry = (Geometry) subtree;
-            Material mat = geometry.getMaterial();
-            if (mat == material) {
-                ++count;
-            }
-
-        } else if (subtree instanceof Node) {
-            Node node = (Node) subtree;
-            List<Spatial> children = node.getChildren();
-            for (Spatial child : children) {
-                count += countUses(child, material);
-            }
-        }
-
-        return count;
-    }
-
-    /**
-     * Create a deep copy of the specified object. TODO use heart library
-     *
-     * @param object input (unaffected)
-     * @return a new object, equivalent to the input
-     */
-    public static Object deepClone(Object object) {
-        Object clone;
-        if (object instanceof Boolean || object instanceof Enum) {
-            clone = object;
-        } else if (object instanceof Double) {
-            clone = (double) object;
-        } else if (object instanceof Float) {
-            clone = (float) object;
-        } else if (object instanceof Integer) {
-            clone = (int) object;
-        } else if (object instanceof Long) {
-            clone = (long) object;
-        } else if (object instanceof Short) {
-            clone = (short) object;
-        } else {
-            clone = Cloner.deepClone(object);
-        }
-
-        return clone;
     }
 
     /**
@@ -966,70 +859,6 @@ public class MaudUtil {
     }
 
     /**
-     * Enumerate all materials in the specified subtree of a scene graph. Note:
-     * recursive! TODO use heart library
-     *
-     * @param subtree (may be null, aliases created)
-     * @param storeResult (added to if not null)
-     * @return an expanded list (either storeResult or a new instance)
-     */
-    public static List<Material> listMaterials(Spatial subtree,
-            List<Material> storeResult) {
-        if (storeResult == null) {
-            storeResult = new ArrayList<>(10);
-        }
-
-        if (subtree instanceof Geometry) {
-            Geometry geometry = (Geometry) subtree;
-            Material material = geometry.getMaterial();
-            if (!storeResult.contains(material)) {
-                storeResult.add(material);
-            }
-
-        } else if (subtree instanceof Node) {
-            Node node = (Node) subtree;
-            List<Spatial> children = node.getChildren();
-            for (Spatial child : children) {
-                listMaterials(child, storeResult);
-            }
-        }
-
-        return storeResult;
-    }
-
-    /**
-     * Enumerate all meshes in the specified subtree of a scene graph. Note:
-     * recursive! TODO use heart library
-     *
-     * @param subtree (may be null, aliases created)
-     * @param storeResult (added to if not null)
-     * @return an expanded list (either storeResult or a new instance)
-     */
-    public static List<Mesh> listMeshes(Spatial subtree,
-            List<Mesh> storeResult) {
-        if (storeResult == null) {
-            storeResult = new ArrayList<>(10);
-        }
-
-        if (subtree instanceof Geometry) {
-            Geometry geometry = (Geometry) subtree;
-            Mesh mesh = geometry.getMesh();
-            if (!storeResult.contains(mesh)) {
-                storeResult.add(mesh);
-            }
-
-        } else if (subtree instanceof Node) {
-            Node node = (Node) subtree;
-            List<Spatial> children = node.getChildren();
-            for (Spatial child : children) {
-                listMeshes(child, storeResult);
-            }
-        }
-
-        return storeResult;
-    }
-
-    /**
      * Load a BVH asset as a C-G model.
      *
      * @param assetManager asset manager
@@ -1171,33 +1000,6 @@ public class MaudUtil {
     }
 
     /**
-     * Parse a color from the specified text string. TODO use heart library
-     *
-     * @param textString input text (not null, not empty)
-     * @return a new color instance, or null if text is invalid
-     */
-    public static ColorRGBA parseColor(String textString) {
-        Validate.nonEmpty(textString, "text string");
-
-        ColorRGBA result = null;
-        Matcher matcher = colorPattern.matcher(textString);
-        boolean valid = matcher.matches();
-        if (valid) {
-            String rText = matcher.group(1);
-            float r = Float.parseFloat(rText);
-            String gText = matcher.group(2);
-            float g = Float.parseFloat(gText);
-            String bText = matcher.group(3);
-            float b = Float.parseFloat(bText);
-            String aText = matcher.group(4);
-            float a = Float.parseFloat(aText);
-            result = new ColorRGBA(r, g, b, a);
-        }
-
-        return result;
-    }
-
-    /**
      * Parse a material parameter from the specified text string.
      *
      * @param oldParameter old parameter (not null, unaffected)
@@ -1250,31 +1052,6 @@ public class MaudUtil {
                 default: // TODO more types
                     throw new IllegalArgumentException();
             }
-        }
-
-        return result;
-    }
-
-    /**
-     * Parse a Vector3f from the specified text string. TODO use heart library
-     *
-     * @param textString input text (not null, not empty)
-     * @return a new vector, or null if the text is invalid
-     */
-    public static Vector3f parseVector3f(String textString) {
-        Validate.nonEmpty(textString, "text string");
-
-        Vector3f result = null;
-        Matcher matcher = vector3fPattern.matcher(textString);
-        boolean valid = matcher.matches();
-        if (valid) {
-            String xText = matcher.group(1);
-            float x = Float.parseFloat(xText);
-            String yText = matcher.group(2);
-            float y = Float.parseFloat(yText);
-            String zText = matcher.group(3);
-            float z = Float.parseFloat(zText);
-            result = new Vector3f(x, y, z);
         }
 
         return result;
