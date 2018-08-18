@@ -31,10 +31,8 @@ import com.jme3.scene.control.Control;
 import java.awt.DisplayMode;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
-import jme3utilities.MyString;
 import maud.Maud;
 import maud.MaudUtil;
 import maud.action.ActionPrefix;
@@ -363,55 +361,6 @@ public class ShowMenus {
             }
             builder.show(ActionPrefix.setRefreshRate);
         }
-    }
-
-    /**
-     * Display a submenu for selecting spatials by name using the "select
-     * spatial" action prefix.
-     *
-     * @param nameList list of names from which to select (not null)
-     * @param subset which kinds of spatials to include (not null)
-     */
-    static void showSpatialSubmenu(List<String> nameList,
-            WhichSpatials subset) {
-        assert nameList != null;
-        assert subset != null;
-
-        MyString.reduce(nameList, maxItems);
-        Collections.sort(nameList);
-
-        MenuBuilder builder = new MenuBuilder();
-        Cgm target = Maud.getModel().getTarget();
-        for (String name : nameList) {
-            switch (subset) {
-                case All:
-                    break;
-
-                case AttachmentsNodes:
-                    if (!target.hasAttachmentsNode(name)) {
-                        continue;
-                    }
-                    break;
-
-                case Geometries:
-                    if (!target.hasGeometry(name)) {
-                        continue;
-                    }
-                    break;
-
-                default:
-                    throw new IllegalArgumentException();
-            }
-
-            if (target.hasGeometry(name)) {
-                builder.addGeometry(name);
-            } else if (target.hasNode(name)) {
-                builder.addNode(name);
-            } else {
-                builder.addEllipsis(name);
-            }       
-        }
-        builder.show(ActionPrefix.selectSpatial);
     }
 
     /**

@@ -161,7 +161,7 @@ public class SpatialMenus {
              * Treat the argument as a spatial-name prefix.
              */
             List<String> names = target.listSpatialNames(argument, subset);
-            ShowMenus.showSpatialSubmenu(names, subset);
+            showSpatialSubmenu(names, subset);
         }
     }
 
@@ -343,5 +343,54 @@ public class SpatialMenus {
         } else {
             selectSpatial("", WhichSpatials.AttachmentsNodes);
         }
+    }
+
+    /**
+     * Display a submenu for selecting spatials by name using the "select
+     * spatial" action prefix.
+     *
+     * @param nameList list of names from which to select (not null)
+     * @param subset which kinds of spatials to include (not null)
+     */
+    private static void showSpatialSubmenu(List<String> nameList,
+            WhichSpatials subset) {
+        assert nameList != null;
+        assert subset != null;
+
+        MyString.reduce(nameList, ShowMenus.maxItems);
+        Collections.sort(nameList);
+
+        MenuBuilder builder = new MenuBuilder();
+        Cgm target = Maud.getModel().getTarget();
+        for (String name : nameList) {
+            switch (subset) {
+                case All:
+                    break;
+
+                case AttachmentsNodes:
+                    if (!target.hasAttachmentsNode(name)) {
+                        continue;
+                    }
+                    break;
+
+                case Geometries:
+                    if (!target.hasGeometry(name)) {
+                        continue;
+                    }
+                    break;
+
+                default:
+                    throw new IllegalArgumentException();
+            }
+
+            if (target.hasGeometry(name)) {
+                builder.addGeometry(name);
+            } else if (target.hasNode(name)) {
+                builder.addNode(name);
+            } else {
+                builder.addEllipsis(name);
+            }
+        }
+        builder.show(ActionPrefix.selectSpatial + subset + " ");
     }
 }
