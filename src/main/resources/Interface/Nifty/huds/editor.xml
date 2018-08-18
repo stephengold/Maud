@@ -1545,7 +1545,7 @@ the menu bar, status bar, and tool windows.
 
             <control name="window" id="meshTool" title="Mesh Tool"
                      hideOnClose="true"
-                     height="230px" width="345px" x="135" y="135">
+                     height="258px" width="345px" x="135" y="135">
                 <panel childLayout="vertical">
                     <panel height="4px"/>
                     <panel childLayout="horizontal" height="28px">
@@ -1553,10 +1553,10 @@ the menu bar, status bar, and tool windows.
                                  backgroundColor="#ffff"
                                  textHAlign="center"
                                  width="*"/>
-                        <control name="label" text="    Max weights:  "/>
-                        <control name="button" id="meshWeightsButton"
-                                 width="20px">
-                            <interact onRelease="perform(set meshWeights)"/>
+                        <panel width="20px"/>
+                        <control name="button" id="meshSelectButton"
+                                 width="50px">
+                            <interact onRelease="perform(select spatial Geometries)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
@@ -1569,6 +1569,13 @@ the menu bar, status bar, and tool windows.
                         <control name="button" id="meshBoundTypeButton"
                                  width="55px">
                             <interact onRelease="perform(toggle boundType)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Max weights:  "/>
+                        <control name="button" id="meshWeightsButton"
+                                 width="20px">
+                            <interact onRelease="perform(set meshWeights)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">

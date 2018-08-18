@@ -34,6 +34,7 @@ import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
 import maud.Maud;
 import maud.MaudUtil;
+import maud.menu.WhichSpatials;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedBuffer;
@@ -110,6 +111,7 @@ class MeshTool extends Tool {
         updateBufferInfo();
         updateBufferIndex();
         updateMeshInfo();
+        updateSelect();
     }
     // *************************************************************************
     // private methods
@@ -270,5 +272,23 @@ class MeshTool extends Tool {
         setButtonText("meshMode", modeButton);
         setStatusText("meshVertices", verticesText);
         setButtonText("meshWeights", weightsButton);
+    }
+
+    /**
+     * Update the mesh-select button.
+     */
+    private void updateSelect() {
+        String selectButton;
+
+        Cgm target = Maud.getModel().getTarget();
+        List<String> names
+                = target.listSpatialNames("", WhichSpatials.Geometries);
+        if (names.isEmpty()) {
+            selectButton = "";
+        } else {
+            selectButton = "Select";
+        }
+
+        setButtonText("meshSelect", selectButton);
     }
 }
