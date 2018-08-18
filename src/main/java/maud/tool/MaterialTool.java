@@ -38,6 +38,7 @@ import jme3utilities.MyString;
 import jme3utilities.nifty.GuiScreenController;
 import maud.Maud;
 import maud.MaudUtil;
+import maud.menu.WhichSpatials;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedMatParam;
@@ -122,6 +123,7 @@ class MaterialTool extends Tool {
         updateParameterIndex();
         updateParameterName();
         updateParameterValue();
+        updateSelect();
     }
     // *************************************************************************
     // private methods
@@ -322,5 +324,23 @@ class MaterialTool extends Tool {
 
         setStatusText("mpValue", " " + valueStatus);
         setButtonText("mpEdit", editButton);
+    }
+
+    /**
+     * Update the material-select button.
+     */
+    private void updateSelect() {
+        String selectButton;
+
+        Cgm target = Maud.getModel().getTarget();
+        List<String> names
+                = target.listSpatialNames("", WhichSpatials.Geometries);
+        if (names.isEmpty()) {
+            selectButton = "";
+        } else {
+            selectButton = "Select";
+        }
+
+        setButtonText("matSelect", selectButton);
     }
 }

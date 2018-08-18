@@ -1460,6 +1460,11 @@ the menu bar, status bar, and tool windows.
                         <control name="label" id="matDef"
                                  backgroundColor="#ffff"
                                  width="*"/>
+                        <panel width="20px"/>
+                        <control name="button" id="matSelectButton"
+                                 width="50px">
+                            <interact onRelease="perform(select spatial Geometries)"/>
+                        </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Uses:  "/>
