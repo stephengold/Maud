@@ -168,7 +168,7 @@ public class Action {
 
     final static String saveDisplaySettings = "save displaySettings";
 
-    final static String selectAnimationEditMenu = "select editAnimationMenu";
+    final static String selectAnimationEditMenu = "select editAnimationMenu"; // TODO
     final static String selectAnimControl = "select animControl";
     final static String selectAxesDragEffect = "select axesDragEffect";
     final static String selectAxesSubject = "select axesSubject";
@@ -191,6 +191,7 @@ public class Action {
     final static String selectLightOwner = "select lightOwner";
     final static String selectMapSourceBone = "select mapSourceBone";
     final static String selectMapTargetBone = "select mapTargetBone";
+    final static String selectMaterialEditMenu = "select materialEditMenu";
     final static String selectMatParam = "select matParam";
     final static String selectMeshMode = "select meshMode";
     final static String selectOrbitCenter = "select orbitCenter";

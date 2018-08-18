@@ -1216,6 +1216,24 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
+     * Apply the specified material to the selected spatial.
+     *
+     * @param newMaterial replacement material (not null)
+     * @param eventDescription description for the edit history (not null)
+     */
+    void setMaterial(Material newMaterial, String eventDescription) {
+        assert newMaterial != null;
+        assert eventDescription != null;
+
+        Spatial spatial = getSpatial().find();
+
+        History.autoAdd();
+        spatial.setMaterial(newMaterial);
+        getSceneView().setMaterial(newMaterial);
+        setEdited(eventDescription);
+    }
+
+    /**
      * Alter the value of the selected material parameter.
      *
      * @param valueString string representation of the new value (not null)

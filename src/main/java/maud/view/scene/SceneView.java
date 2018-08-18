@@ -545,6 +545,20 @@ public class SceneView extends SceneViewCore {
     }
 
     /**
+     * Apply the specified material to the selected spatial.
+     *
+     * @param modelMaterial MVC model's material (not null, unaffected)
+     */
+    public void setMaterial(Material modelMaterial) {
+        assert modelMaterial != null;
+
+        Spatial spatial = selectedSpatial();
+        Geometry geometry = (Geometry) spatial;
+        Material newMaterial = modelMaterial.clone();
+        geometry.setMaterial(newMaterial);
+    }
+
+    /**
      * Alter the mode of the selected mesh.
      *
      * @param newMode new value for mode (not null)

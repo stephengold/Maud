@@ -63,6 +63,25 @@ public class SpatialMenus {
     // new methods exposed
 
     /**
+     * Display a "Spatial -> Edit material" menu.
+     */
+    public static void editMaterial() {
+        MenuBuilder builder = new MenuBuilder();
+
+        Cgm target = Maud.getModel().getTarget();
+        int uses = target.getSpatial().countMaterialUses();
+        if (uses > 1) {
+            builder.addEdit("Clone");
+        }
+
+        builder.addEdit("Replace with debug");
+        builder.addEdit("Replace with lit");
+        builder.addEdit("Replace with unshaded");
+
+        builder.show("select menuItem Spatial -> Edit material -> ");
+    }
+
+    /**
      * Handle a "select menuItem" action from the Spatial menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
@@ -71,10 +90,15 @@ public class SpatialMenus {
     static boolean menuSpatial(String remainder) {
         boolean handled = true;
         String addPrefix = "Add new" + EditorMenus.menuPathSeparator;
+        String edmatPrefix = "Edit material" + EditorMenus.menuPathSeparator;
         String selectPrefix = "Select" + EditorMenus.menuPathSeparator;
         if (remainder.startsWith(addPrefix)) {
             String arg = MyString.remainder(remainder, addPrefix);
             handled = menuSpatialAdd(arg);
+
+        } else if (remainder.startsWith(edmatPrefix)) {
+            String arg = MyString.remainder(remainder, edmatPrefix);
+            handled = menuEditMaterial(arg);
 
         } else if (remainder.startsWith(selectPrefix)) {
             String arg = MyString.remainder(remainder, selectPrefix);
@@ -96,6 +120,10 @@ public class SpatialMenus {
 
                 case "Details":
                     Maud.gui.tools.select("spatialDetails");
+                    break;
+
+                case "Edit material":
+                    editMaterial();
                     break;
 
                 case "Lights":
@@ -216,6 +244,40 @@ public class SpatialMenus {
         builder.addDialog("Parent");
 
         builder.show("select menuItem Spatial -> Add new -> ");
+    }
+
+    /**
+     * Handle a "select menuItem" action from the "Spatial -> Edit material"
+     * menu.
+     *
+     * @param remainder not-yet-parsed portion of the menu path (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private static boolean menuEditMaterial(String remainder) {
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        boolean handled = true;
+        switch (remainder) {
+            case "Clone":
+                spatial.cloneMaterial();
+                break;
+
+            case "Replace with debug":
+                spatial.applyDebugMaterial();
+                break;
+
+            case "Replace with lit":
+                spatial.applyLitMaterial();
+                break;
+
+            case "Replace with unshaded":
+                spatial.applyUnshadedMaterial();
+                break;
+
+            default:
+                handled = false;
+        }
+
+        return handled;
     }
 
     /**

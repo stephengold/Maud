@@ -41,6 +41,7 @@ import maud.menu.EnumMenus;
 import maud.menu.MeshMenus;
 import maud.menu.PhysicsMenus;
 import maud.menu.ShowMenus;
+import maud.menu.SpatialMenus;
 import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
@@ -180,6 +181,10 @@ class SelectANAction {
 
             case Action.selectMapTargetBone:
                 model.getMap().selectFromTarget();
+                break;
+
+            case Action.selectMaterialEditMenu:
+                SpatialMenus.editMaterial();
                 break;
 
             case Action.selectMatParam:

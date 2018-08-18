@@ -1444,7 +1444,7 @@ the menu bar, status bar, and tool windows.
 
             <control name="window" id="materialTool" title="Material Tool"
                      hideOnClose="true"
-                     height="173px" width="500px" x="135" y="135">
+                     height="173px" width="525px" x="135" y="135">
                 <panel childLayout="vertical">
                     <panel height="4px"/>
                     <panel childLayout="horizontal" height="28px">
@@ -1452,7 +1452,11 @@ the menu bar, status bar, and tool windows.
                         <control name="label" id="matName"
                                  backgroundColor="#ffff"
                                  width="*"/>
-                        <control name="button" id="renameMatButton"
+                        <control name="button" id="matEditButton"
+                                 width="37px">
+                            <interact onRelease="perform(select materialEditMenu)"/>
+                        </control>
+                        <control name="button" id="matRenameButton"
                                  width="60px">
                             <interact onRelease="perform(rename material)"/>
                         </control>

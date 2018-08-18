@@ -660,6 +660,9 @@ public class BuildMenus {
         if (target.hasExtraSpatials()) {
             builder.addEdit("Delete extras");
         }
+        if (target.getSpatial().hasMaterial()) {
+            builder.addSubmenu("Edit material");
+        }
     }
 
     /**

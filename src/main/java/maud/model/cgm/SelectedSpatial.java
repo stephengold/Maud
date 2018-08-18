@@ -31,6 +31,7 @@ import com.jme3.animation.Bone;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.SkeletonControl;
 import com.jme3.animation.SpatialTrack;
+import com.jme3.asset.AssetManager;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bounding.BoundingSphere;
 import com.jme3.bounding.BoundingVolume;
@@ -48,6 +49,7 @@ import com.jme3.material.MatParamOverride;
 import com.jme3.material.Material;
 import com.jme3.material.MaterialDef;
 import com.jme3.material.RenderState;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
@@ -66,12 +68,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import jme3utilities.MyAsset;
 import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyQuaternion;
 import jme3utilities.math.MyVector3f;
+import jme3utilities.ui.Locators;
 import maud.Maud;
 import maud.MaudUtil;
 import maud.PhysicsUtil;
@@ -95,6 +99,10 @@ public class SelectedSpatial implements JmeCloneable {
      */
     final private static Logger logger
             = Logger.getLogger(SelectedSpatial.class.getName());
+    /**
+     * local copy of {@link com.jme3.math.ColorRGBA#White}
+     */
+    final private static ColorRGBA white = new ColorRGBA(1f, 1f, 1f, 1f);
     /**
      * dummy buffer description, used to indicate that no buffer is selected
      */
@@ -243,6 +251,34 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
+     * Apply normal-debugging material to the selected geometry.
+     */
+    public void applyDebugMaterial() {
+        AssetManager am = Locators.getAssetManager();
+        Material newMaterial
+                = new Material(am, "Common/MatDefs/Misc/ShowNormals.j3md");
+        editableCgm.setMaterial(newMaterial, "apply debug material");
+    }
+
+    /**
+     * Apply a lit material to the selected geometry.
+     */
+    public void applyLitMaterial() {
+        AssetManager am = Locators.getAssetManager();
+        Material newMaterial = MyAsset.createShinyMaterial(am, white);
+        editableCgm.setMaterial(newMaterial, "apply lit material");
+    }
+
+    /**
+     * Apply an unshaded material to the selected geometry.
+     */
+    public void applyUnshadedMaterial() {
+        AssetManager am = Locators.getAssetManager();
+        Material newMaterial = MyAsset.createUnshadedMaterial(am);
+        editableCgm.setMaterial(newMaterial, "apply unshaded material");
+    }
+
+    /**
      * Attach a clone of the source C-G model to the selected scene-graph node.
      */
     public void attachClone() {
@@ -283,6 +319,16 @@ public class SelectedSpatial implements JmeCloneable {
         Quaternion localRotation = localRotation(null);
         MyQuaternion.cardinalizeLocal(localRotation);
         editableCgm.setSpatialRotation(localRotation);
+    }
+
+    /**
+     * Clone the material and apply it to the selected spatial, in order to
+     * eliminate any sharing of the material.)
+     */
+    public void cloneMaterial() {
+        Material oldMaterial = getMaterial();
+        Material clone = oldMaterial.clone();
+        editableCgm.setMaterial(clone, "clone material");
     }
 
     /**
@@ -994,7 +1040,7 @@ public class SelectedSpatial implements JmeCloneable {
     /**
      * Enumerate all parameters in the material.
      *
-     * @param whichParam which parameters to include in the list (not null)
+     * @param whichParams which parameters to include in the list (not null)
      * @return a new list of parameter names, sorted lexicographically
      */
     public List<String> listMatParamNames(WhichParams whichParams) {
