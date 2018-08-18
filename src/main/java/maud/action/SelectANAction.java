@@ -41,8 +41,6 @@ import maud.menu.EnumMenus;
 import maud.menu.MeshMenus;
 import maud.menu.PhysicsMenus;
 import maud.menu.ShowMenus;
-import maud.menu.SpatialMenus;
-import maud.menu.WhichSpatials;
 import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
@@ -291,10 +289,6 @@ class SelectANAction {
             RenderState.FaceCullMode newMode
                     = RenderState.FaceCullMode.valueOf(arg);
             target.setFaceCullMode(newMode);
-
-        } else if (actionString.startsWith(ActionPrefix.selectGeometry)) {
-            arg = MyString.remainder(actionString, ActionPrefix.selectGeometry);
-            SpatialMenus.selectSpatial(arg, WhichSpatials.Geometries);
 
         } else if (actionString.startsWith(ActionPrefix.selectIndexBase)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectIndexBase);

@@ -341,7 +341,13 @@ class SelectOSAction {
 
         } else if (actionString.startsWith(ActionPrefix.selectSpatial)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectSpatial);
-            SpatialMenus.selectSpatial(arg, WhichSpatials.All);
+            String whichName = arg.split(" ")[0];
+            WhichSpatials which = WhichSpatials.valueOf(whichName);
+            String name = "";
+            if (arg.contains(" ")) {
+                name = MyString.remainder(arg, whichName + " ");
+            }
+            SpatialMenus.selectSpatial(name, which);
 
         } else {
             handled = false;

@@ -289,10 +289,6 @@ public class ActionPrefix {
      */
     final public static String selectFaceCull = "select faceCull ";
     /**
-     * argument is the name of a geometry or a prefix thereof
-     */
-    final public static String selectGeometry = "select geometry ";
-    /**
      * argument is 0 or 1
      */
     final public static String selectIndexBase = "select indexBase ";
@@ -404,7 +400,8 @@ public class ActionPrefix {
      */
     final public static String selectSourceBone = "select sourceBone ";
     /**
-     * argument is the name of a spatial or a prefix thereof
+     * arguments are the name of a WhichSpatials value and an optional spatial
+     * name or prefix thereof
      */
     final public static String selectSpatial = "select spatial ";
     /**
