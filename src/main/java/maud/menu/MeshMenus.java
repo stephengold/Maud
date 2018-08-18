@@ -67,7 +67,13 @@ public class MeshMenus {
      */
     static void buildMeshMenu(MenuBuilder builder) {
         builder.addTool("Tool");
-        builder.addSubmenu("Select");
+        
+        Cgm target = Maud.getModel().getTarget();
+        List<String> meshList
+                = target.listSpatialNames("", WhichSpatials.Geometries);
+        if (!meshList.isEmpty()) {
+            builder.addSubmenu("Select");
+        }
 
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         List<String> bufferList = spatial.listBufferDescs();
