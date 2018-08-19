@@ -100,6 +100,9 @@ public class BuildMenus {
      */
     void addAssetLocation() {
         Map<String, File> fileMap = Misc.driveMap();
+        /*
+         * Add working directory.
+         */
         String workPath = System.getProperty("user.dir");
         File work = new File(workPath);
         if (work.isDirectory()) {
@@ -108,6 +111,18 @@ public class BuildMenus {
             File oldFile = fileMap.put(absoluteDirPath, work);
             assert oldFile == null : oldFile;
         }
+        /*
+         * Add home directory.
+         */
+        String homePath = System.getProperty("user.home");
+        File home = new File(homePath);
+        if (home.isDirectory()) {
+            String absoluteDirPath = home.getAbsolutePath();
+            absoluteDirPath = absoluteDirPath.replaceAll("\\\\", "/");
+            File oldFile = fileMap.put(absoluteDirPath, home);
+            assert oldFile == null : oldFile;
+        }
+
         buildFolderMenu(fileMap);
         builder.show(ActionPrefix.newAssetLocation);
     }
