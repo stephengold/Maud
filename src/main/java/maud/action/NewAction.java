@@ -118,7 +118,7 @@ class NewAction {
                 break;
 
             case Action.newMatParam:
-                ShowMenus.addNewMatParam();
+                ShowMenus.addNewMatParam("");
                 break;
 
             case Action.newOverride:
@@ -259,9 +259,9 @@ class NewAction {
             }
 
         } else if (actionString.startsWith(ActionPrefix.newMatParam)) {
-            String args = MyString.remainder(actionString,
+            String namePrefix = MyString.remainder(actionString,
                     ActionPrefix.newMatParam);
-            target.addMatParam(args);
+            ShowMenus.addNewMatParam(namePrefix);
 
         } else if (actionString.startsWith(ActionPrefix.newOverride)) {
             String args = MyString.remainder(actionString,

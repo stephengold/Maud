@@ -184,7 +184,7 @@ class MeshTool extends Tool {
         String deleteButton = "", selectButton = "";
 
         Cgm target = Maud.getModel().getTarget();
-        List<String> list = target.getSpatial().listBufferDescs();
+        List<String> list = target.getSpatial().listBufferDescs("");
         int numBuffers = list.size();
         if (numBuffers > 0) {
             selectButton = "Select buffer";

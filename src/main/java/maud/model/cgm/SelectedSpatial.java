@@ -588,7 +588,7 @@ public class SelectedSpatial implements JmeCloneable {
         assert index >= 0 : index;
 
         VertexBuffer result = null;
-        List<String> bufferDescs = listBufferDescs();
+        List<String> bufferDescs = listBufferDescs("");
         int numBuffers = bufferDescs.size();
         if (index < numBuffers) {
             String desc = bufferDescs.get(index);
@@ -1006,21 +1006,22 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Enumerate all data-bearing vertex buffers in the mesh.
+     * Enumerate data-bearing vertex buffers in the mesh whose descriptions have
+     * the specified prefix.
      *
+     * @param descPrefix (not null)
      * @return a new list of vertex buffer descriptions, in standard order, with
      * LoDs at the end
      */
-    public List<String> listBufferDescs() {
-        int numBuffers = countBuffers();
-        List<String> result = new ArrayList<>(numBuffers);
+    public List<String> listBufferDescs(String descPrefix) {
+        List<String> result = new ArrayList<>(20);
 
         Mesh mesh = getMesh();
         if (mesh != null) {
             SafeArrayList<VertexBuffer> buffers = mesh.getBufferList();
             for (VertexBuffer buffer : buffers) {
                 String desc = buffer.getBufferType().toString();
-                if (buffer.getData() != null) {
+                if (desc.startsWith(descPrefix) && buffer.getData() != null) {
                     result.add(desc);
                 }
             }
@@ -1028,22 +1029,26 @@ public class SelectedSpatial implements JmeCloneable {
             int numLodLevels = mesh.getNumLodLevels();
             for (int iLevel = 0; iLevel < numLodLevels; iLevel++) {
                 String desc = "LoD" + Integer.toString(iLevel);
-                result.add(desc);
+                VertexBuffer buffer = mesh.getLodLevel(iLevel);
+                if (desc.startsWith(descPrefix) && buffer.getData() != null) {
+                    result.add(desc);
+                }
             }
         }
 
-        int size = result.size();
-        assert size <= numBuffers : size;
         return result;
     }
 
     /**
-     * Enumerate all parameters in the material.
+     * Enumerate all parameters in the material whose names have the specified
+     * prefix.
      *
+     * @param namePrefix (not null)
      * @param whichParams which parameters to include in the list (not null)
      * @return a new list of parameter names, sorted lexicographically
      */
-    public List<String> listMatParamNames(WhichParams whichParams) {
+    public List<String> listMatParamNames(String namePrefix,
+            WhichParams whichParams) {
         List<String> result = new ArrayList<>(20);
 
         Material material = getMaterial();
@@ -1054,7 +1059,9 @@ public class SelectedSpatial implements JmeCloneable {
                 case Defined:
                     for (MatParam param : definedParams) {
                         String name = param.getName();
-                        result.add(name);
+                        if (name.startsWith(namePrefix)) {
+                            result.add(name);
+                        }
                     }
                     break;
 
@@ -1063,7 +1070,9 @@ public class SelectedSpatial implements JmeCloneable {
                     Collection<MatParam> allParams = def.getMaterialParams();
                     for (MatParam param : allParams) {
                         String name = param.getName();
-                        result.add(name);
+                        if (name.startsWith(namePrefix)) {
+                            result.add(name);
+                        }
                     }
                     for (MatParam param : definedParams) {
                         String name = param.getName();
@@ -1468,24 +1477,6 @@ public class SelectedSpatial implements JmeCloneable {
     }
     // *************************************************************************
     // private methods
-
-    /**
-     * Count how many buffers are in the spatial's mesh, including LoDs and
-     * buffers without data.
-     *
-     * @return count (&ge;0)
-     */
-    private int countBuffers() {
-        int result = 0;
-        Mesh mesh = getMesh();
-        if (mesh != null) {
-            SafeArrayList<VertexBuffer> buffers = mesh.getBufferList();
-            result = buffers.size() + mesh.getNumLodLevels();
-        }
-
-        assert result >= 0 : result;
-        return result;
-    }
 
     /**
      * Access the described buffer.

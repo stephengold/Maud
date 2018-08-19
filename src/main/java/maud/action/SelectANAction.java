@@ -128,7 +128,7 @@ class SelectANAction {
                 break;
 
             case Action.selectBuffer:
-                MeshMenus.selectBuffer();
+                MeshMenus.selectBuffer("");
                 break;
 
             case Action.selectBufferUsage:
@@ -188,7 +188,7 @@ class SelectANAction {
                 break;
 
             case Action.selectMatParam:
-                ShowMenus.selectMatParam();
+                ShowMenus.selectMatParam("");
                 break;
 
             case Action.selectMeshMode:
@@ -264,7 +264,7 @@ class SelectANAction {
 
         } else if (actionString.startsWith(ActionPrefix.selectBuffer)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectBuffer);
-            target.getBuffer().select(arg);
+            MeshMenus.selectBuffer(arg);
 
         } else if (actionString.startsWith(ActionPrefix.selectBufferUsage)) {
             arg = MyString.remainder(actionString,
@@ -317,26 +317,25 @@ class SelectANAction {
 
         } else if (actionString.startsWith(ActionPrefix.selectMatParam)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectMatParam);
-            target.getMatParam().select(arg);
+            ShowMenus.selectMatParam(arg);
 
-        } else if (actionString.startsWith(ActionPrefix.selectMovement)) {
-            arg = MyString.remainder(actionString, ActionPrefix.selectMovement);
-            MovementMode mode = MovementMode.valueOf(arg);
-            model.getScene().getCamera().setMode(mode);
+        } else if (actionString.startsWith(ActionPrefix.selectMenuItem)) {
+            String menuPath = MyString.remainder(actionString,
+                    ActionPrefix.selectMenuItem);
+            handled = EditorMenus.selectMenuItem(menuPath);
 
         } else if (actionString.startsWith(ActionPrefix.selectMeshMode)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectMeshMode);
             Mesh.Mode mode = Mesh.Mode.valueOf(arg);
             target.setMeshMode(mode);
 
+        } else if (actionString.startsWith(ActionPrefix.selectMovement)) {
+            arg = MyString.remainder(actionString, ActionPrefix.selectMovement);
+            MovementMode mode = MovementMode.valueOf(arg);
+            model.getScene().getCamera().setMode(mode);
+
         } else {
             handled = false;
-        }
-
-        if (!handled && actionString.startsWith(ActionPrefix.selectMenuItem)) {
-            String menuPath = MyString.remainder(actionString,
-                    ActionPrefix.selectMenuItem);
-            handled = EditorMenus.selectMenuItem(menuPath);
         }
 
         return handled;

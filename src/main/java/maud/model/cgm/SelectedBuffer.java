@@ -137,7 +137,7 @@ public class SelectedBuffer implements Cloneable {
     public String describe() {
         String result = SelectedSpatial.noBuffer;
         if (isSelected()) {
-            List<String> list = cgm.getSpatial().listBufferDescs();
+            List<String> list = cgm.getSpatial().listBufferDescs("");
             result = list.get(selectedIndex);
         }
 
@@ -294,7 +294,7 @@ public class SelectedBuffer implements Cloneable {
     public void select(String description) {
         Validate.nonEmpty(description, "description");
 
-        List<String> list = cgm.getSpatial().listBufferDescs();
+        List<String> list = cgm.getSpatial().listBufferDescs("");
         int newIndex = list.indexOf(description);
         select(newIndex);
     }
@@ -316,7 +316,7 @@ public class SelectedBuffer implements Cloneable {
     public void selectNext() {
         assert isSelected();
 
-        List<String> buffers = cgm.getSpatial().listBufferDescs();
+        List<String> buffers = cgm.getSpatial().listBufferDescs("");
         int numBuffers = buffers.size();
         if (numBuffers > 1) {
             int nextIndex = MyMath.modulo(selectedIndex + 1, numBuffers);
@@ -330,7 +330,7 @@ public class SelectedBuffer implements Cloneable {
     public void selectPrevious() {
         assert isSelected();
 
-        List<String> buffers = cgm.getSpatial().listBufferDescs();
+        List<String> buffers = cgm.getSpatial().listBufferDescs("");
         int numBuffers = buffers.size();
         if (numBuffers > 1) {
             int prevIndex = MyMath.modulo(selectedIndex - 1, numBuffers);

@@ -153,7 +153,7 @@ public class ActionPrefix {
      */
     final public static String newLight = "new light ";
     /**
-     * argument is the name of a material parameter
+     * argument is the name of a material parameter or a prefix thereof
      */
     final public static String newMatParam = "new matParam ";
     /**
@@ -265,7 +265,7 @@ public class ActionPrefix {
      */
     final public static String selectBoneIndex = "select boneIndex ";
     /**
-     * argument is a buffer description
+     * argument is a buffer description or a prefix thereof
      */
     final public static String selectBuffer = "select buffer ";
     /**
@@ -305,7 +305,8 @@ public class ActionPrefix {
      */
     final public static String selectLight = "select light ";
     /**
-     * argument is the name of a pre-existing material parameter
+     * argument is the name of a pre-existing material parameter or a prefix
+     * thereof
      */
     final public static String selectMatParam = "select matParam ";
     /**

@@ -26,14 +26,16 @@
  */
 package maud.menu;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
+import jme3utilities.Validate;
 import maud.Maud;
 import maud.action.ActionPrefix;
 import maud.dialog.EditorDialogs;
 import maud.model.cgm.Cgm;
-import maud.model.cgm.SelectedBuffer;
 import maud.model.cgm.SelectedSpatial;
 import maud.model.cgm.SelectedVertex;
 
@@ -67,7 +69,7 @@ public class MeshMenus {
      */
     static void buildMeshMenu(MenuBuilder builder) {
         builder.addTool("Tool");
-        
+
         Cgm target = Maud.getModel().getTarget();
         List<String> meshList
                 = target.listSpatialNames("", WhichSpatials.Geometries);
@@ -76,8 +78,11 @@ public class MeshMenus {
         }
 
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
-        List<String> bufferList = spatial.listBufferDescs();
-        if (!bufferList.isEmpty()) {
+        List<String> bufferList = spatial.listBufferDescs("");
+        int size = bufferList.size();
+        if (size == 1) {
+            builder.add("Select buffer");
+        } else if (size > 1) {
             builder.addSubmenu("Select buffer");
         }
 
@@ -108,7 +113,7 @@ public class MeshMenus {
                     break;
 
                 case "Select buffer":
-                    selectBuffer();
+                    selectBuffer("");
                     break;
 
                 case "Select vertex":
@@ -132,23 +137,33 @@ public class MeshMenus {
     }
 
     /**
-     * Handle a "select buffer" action without an argument.
+     * Handle a "select buffer" action with a prefix.
+     *
+     * @param prefix (not null)
      */
-    public static void selectBuffer() {
-        MenuBuilder builder = new MenuBuilder();
+    public static void selectBuffer(String prefix) {
+        Validate.nonNull(prefix, "prefix");
 
         Cgm target = Maud.getModel().getTarget();
-        SelectedBuffer buffer = target.getBuffer();
-        SelectedSpatial spatial = target.getSpatial();
-        if (buffer.isSelected()) {
-            builder.add(SelectedSpatial.noBuffer);
+        List<String> bufferDescs = target.getSpatial().listBufferDescs(prefix);
+        if (bufferDescs.contains(prefix)) {
+            target.getBuffer().select(prefix);
+            return;
         }
-
-        String currentDesc = buffer.describe();
-        List<String> bufferDescs = spatial.listBufferDescs();
-        for (String desc : bufferDescs) {
-            if (!desc.equals(currentDesc)) {
-                builder.add(desc);
+        /*
+         * Build a reduced menu.
+         */
+        List<String> prefixList = new ArrayList<>(bufferDescs);
+        String currentDesc = target.getBuffer().describe();
+        prefixList.remove(currentDesc);
+        MyString.reduce(prefixList, ShowMenus.maxItems);
+        Collections.sort(prefixList);
+        MenuBuilder builder = new MenuBuilder();
+        for (String listItem : prefixList) {
+            if (bufferDescs.contains(listItem)) {
+                builder.add(listItem);
+            } else {
+                builder.addEllipsis(listItem);
             }
         }
 

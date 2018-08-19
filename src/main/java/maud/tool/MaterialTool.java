@@ -156,7 +156,7 @@ class MaterialTool extends Tool {
             }
 
             List<String> undefined
-                    = spatial.listMatParamNames(WhichParams.Undefined);
+                    = spatial.listMatParamNames("", WhichParams.Undefined);
             if (!undefined.isEmpty()) {
                 addButton = "Add parameter";
             }
@@ -215,8 +215,9 @@ class MaterialTool extends Tool {
         String nButton = "", pButton = "", sButton = "";
 
         Cgm target = Maud.getModel().getTarget();
+        SelectedSpatial spatial = target.getSpatial();
         List<String> defined
-                = target.getSpatial().listMatParamNames(WhichParams.Defined);
+                = spatial.listMatParamNames("", WhichParams.Defined);
         int numDefined = defined.size();
         if (numDefined > 1) {
             sButton = "Select parameter";

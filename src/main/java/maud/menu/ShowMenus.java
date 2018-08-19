@@ -31,8 +31,12 @@ import com.jme3.scene.control.Control;
 import java.awt.DisplayMode;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
+import jme3utilities.MyString;
+import jme3utilities.Validate;
 import maud.Maud;
 import maud.MaudUtil;
 import maud.action.ActionPrefix;
@@ -55,7 +59,8 @@ public class ShowMenus {
     // constants and loggers
 
     /**
-     * maximum number of items in a menu, determined by minimum screen height
+     * maximum number of items in a menu, derived from the minimum display
+     * height of 480 pixels TODO calculate based on actual height
      */
     final public static int maxItems = 19;
     /**
@@ -77,15 +82,33 @@ public class ShowMenus {
     /**
      * Display a menu for adding an undefined material parameter using the "new
      * matParam " action prefix.
+     *
+     * @param namePrefix (not null)
      */
-    public static void addNewMatParam() {
-        MenuBuilder builder = new MenuBuilder();
+    public static void addNewMatParam(String namePrefix) {
+        Validate.nonNull(namePrefix, "name prefix");
 
         EditableCgm target = Maud.getModel().getTarget();
-        List<String> nameList
-                = target.getSpatial().listMatParamNames(WhichParams.Undefined);
-        for (String name : nameList) {
-            builder.add(name);
+        SelectedSpatial spatial = target.getSpatial();
+        List<String> matParamNames
+                = spatial.listMatParamNames(namePrefix, WhichParams.Undefined);
+        if (matParamNames.contains(namePrefix)) {
+            target.addMatParam(namePrefix);
+            return;
+        }
+        /*
+         * Build a reduced menu.
+         */
+        List<String> reducedList = new ArrayList<>(matParamNames);
+        MyString.reduce(reducedList, ShowMenus.maxItems);
+        Collections.sort(reducedList);
+        MenuBuilder builder = new MenuBuilder();
+        for (String listItem : reducedList) {
+            if (matParamNames.contains(listItem)) {
+                builder.addEdit(listItem);
+            } else {
+                builder.addEllipsis(listItem);
+            }
         }
 
         builder.show(ActionPrefix.newMatParam);
@@ -168,17 +191,34 @@ public class ShowMenus {
     /**
      * Display a menu for selecting a defined material parameter using the
      * "select matParam " action prefix.
+     *
+     * @param namePrefix (not null)
      */
-    public static void selectMatParam() {
-        MenuBuilder builder = new MenuBuilder();
+    public static void selectMatParam(String namePrefix) {
+        Validate.nonNull(namePrefix, "name prefix");
 
         EditableCgm target = Maud.getModel().getTarget();
-        List<String> nameList
-                = target.getSpatial().listMatParamNames(WhichParams.Defined);
-        String selectedName = target.getMatParam().getName();
-        for (String name : nameList) {
-            if (!name.equals(selectedName)) {
-                builder.add(name);
+        SelectedSpatial spatial = target.getSpatial();
+        List<String> matParamNames
+                = spatial.listMatParamNames(namePrefix, WhichParams.Defined);
+        String currentName = target.getMatParam().getName();
+        matParamNames.remove(currentName);
+        if (matParamNames.contains(namePrefix)) {
+            target.getMatParam().select(namePrefix);
+            return;
+        }
+        /*
+         * Build a reduced menu.
+         */
+        List<String> reducedList = new ArrayList<>(matParamNames);
+        MyString.reduce(reducedList, ShowMenus.maxItems);
+        Collections.sort(reducedList);
+        MenuBuilder builder = new MenuBuilder();
+        for (String listItem : reducedList) {
+            if (matParamNames.contains(listItem)) {
+                builder.add(listItem);
+            } else {
+                builder.addEllipsis(listItem);
             }
         }
 
