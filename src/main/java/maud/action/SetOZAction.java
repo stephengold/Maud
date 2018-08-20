@@ -28,18 +28,13 @@ package maud.action;
 
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Vector3f;
 import com.jme3.shader.VarType;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.math.MyColor;
-import jme3utilities.math.MyVector3f;
 import maud.Maud;
-import maud.MaudUtil;
-import maud.dialog.DimensionsDialog;
 import maud.dialog.EditorDialogs;
 import maud.menu.EnumMenus;
-import maud.menu.MeshMenus;
 import maud.menu.ShowMenus;
 import maud.model.EditorModel;
 import maud.model.WhichCgm;
@@ -47,20 +42,18 @@ import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.PlayOptions;
 import maud.model.cgm.PlayTimes;
-import maud.model.cgm.SelectedMatParam;
 import maud.model.cgm.SelectedOverride;
-import maud.model.option.Background;
 import maud.model.option.DisplaySettings;
 import maud.model.option.RigidBodyParameter;
 import maud.model.option.ShapeParameter;
 import maud.model.option.scene.SkeletonColors;
 
 /**
- * Process actions that start with the word "set".
+ * Process actions that start with the word "set" and a letter in the o-z range.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SetAction {
+class SetOZAction {
     // *************************************************************************
     // constants and loggers
 
@@ -68,20 +61,21 @@ class SetAction {
      * message logger for this class
      */
     final private static Logger logger
-            = Logger.getLogger(SetAction.class.getName());
+            = Logger.getLogger(SetOZAction.class.getName());
     // *************************************************************************
     // constructors
 
     /**
      * A private constructor to inhibit instantiation of this class.
      */
-    private SetAction() {
+    private SetOZAction() {
     }
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Process an ongoing action that starts with the word "set".
+     * Process an ongoing action that starts with the word "set" and a letter in
+     * the o-z range.
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -92,66 +86,6 @@ class SetAction {
         EditorModel model = Maud.getModel();
         EditableCgm target = model.getTarget();
         switch (actionString) {
-            case Action.setBatchHint:
-                EnumMenus.setBatchHint();
-                break;
-
-            case Action.setBufferInstanceSpan:
-                EditorDialogs.setBufferInstanceSpan();
-                break;
-
-            case Action.setBufferLimit:
-                EditorDialogs.setBufferLimit();
-                break;
-
-            case Action.setBufferStride:
-                EditorDialogs.setBufferStride();
-                break;
-
-            case Action.setColorDepth:
-                ShowMenus.setColorDepth();
-                break;
-
-            case Action.setCullHint:
-                EnumMenus.setCullHint();
-                break;
-
-            case Action.setDimensions:
-                if (DisplaySettings.isFullscreen()) {
-                    ShowMenus.setDimensions();
-                } else {
-                    EditorDialogs.setDimensions();
-                }
-                break;
-
-            case Action.setLightDirCardinal:
-                target.getLight().cardinalizeDirection();
-                break;
-
-            case Action.setLightDirReverse:
-                target.getLight().reverseDirection();
-                break;
-
-            case Action.setMatParamValue:
-                SelectedMatParam matParam = target.getMatParam();
-                if (matParam.isSelected()) {
-                    String parameterName = matParam.getName();
-                    VarType varType = matParam.getVarType();
-                    Object oldValue = matParam.getValue();
-                    boolean allowNull = false;
-                    EditorDialogs.setMatParamValue(parameterName, varType,
-                            oldValue, allowNull, ActionPrefix.setMatParamValue);
-                }
-                break;
-
-            case Action.setMeshWeights:
-                MeshMenus.setMeshWeights();
-                break;
-
-            case Action.setMsaaFactor:
-                ShowMenus.setMsaaFactor();
-                break;
-
             case Action.setOverrideValue:
                 SelectedOverride override = target.getOverride();
                 if (override.isSelected()) {
@@ -267,8 +201,8 @@ class SetAction {
     // private methods
 
     /**
-     * Process an ongoing action that starts with the word "set" -- 2nd part:
-     * test for prefixes.
+     * Process an ongoing action that starts with the word "set" and a letter in
+     * the o-z range -- 2nd part: test for prefixes.
      *
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
@@ -279,171 +213,7 @@ class SetAction {
         EditorModel model = Maud.getModel();
         EditableCgm target = model.getTarget();
         String arg;
-        if (actionString.startsWith(ActionPrefix.set3DCursorColor)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.set3DCursorColor);
-            String[] args = arg.split(" ");
-            if (args.length >= 2) {
-                int index = Integer.parseInt(args[0]);
-                String colorText = MyString.remainder(arg, args[0] + " ");
-                ColorRGBA color = MyColor.parseColor(colorText);
-                model.getScene().getCursor().setColor(index, color);
-            } else {
-                handled = false;
-            }
-
-        } else if (actionString.startsWith(ActionPrefix.set3DCursorCycleTime)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.set3DCursorCycleTime);
-            float cycleTime = Float.valueOf(arg);
-            model.getScene().getCursor().setCycleTime(cycleTime);
-
-        } else if (actionString.startsWith(ActionPrefix.set3DCursorSize)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.set3DCursorSize);
-            float size = Float.valueOf(arg);
-            model.getScene().getCursor().setSize(size);
-
-        } else if (actionString.startsWith(ActionPrefix.setAmbientLevel)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.setAmbientLevel);
-            float level = Float.valueOf(arg);
-            model.getScene().getLights().setAmbientLevel(level);
-
-        } else if (actionString.startsWith(ActionPrefix.setAxesLineWidth)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.setAxesLineWidth);
-            float width = Float.valueOf(arg);
-            model.getScene().getAxes().setLineWidth(width);
-
-        } else if (actionString.startsWith(ActionPrefix.setBackgroundColor)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.setBackgroundColor);
-            String[] args = arg.split(" ");
-            if (args.length >= 2) {
-                Background which = Background.valueOf(args[0]);
-                String colorText = MyString.remainder(arg, args[0] + " ");
-                ColorRGBA color = MyColor.parseColor(colorText);
-                model.setBackgroundColor(which, color);
-            } else {
-                handled = false;
-            }
-
-        } else if (actionString.startsWith(ActionPrefix.setBoundsColor)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setBoundsColor);
-            ColorRGBA color = MyColor.parseColor(arg);
-            model.getScene().getBounds().setColor(color);
-
-        } else if (actionString.startsWith(ActionPrefix.setBoundsLineWidth)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.setBoundsLineWidth);
-            float width = Float.valueOf(arg);
-            model.getScene().getBounds().setLineWidth(width);
-
-        } else if (actionString.startsWith(
-                ActionPrefix.setBufferInstanceSpan)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.setBufferInstanceSpan);
-            int span = Integer.parseInt(arg);
-            target.setBufferInstanceSpan(span);
-
-        } else if (actionString.startsWith(ActionPrefix.setBufferLimit)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setBufferLimit);
-            int limit = Integer.parseInt(arg);
-            target.setBufferLimit(limit);
-
-        } else if (actionString.startsWith(ActionPrefix.setBufferStride)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.setBufferStride);
-            int stride = Integer.parseInt(arg);
-            target.setBufferStride(stride);
-
-        } else if (actionString.startsWith(ActionPrefix.setCloudiness)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setCloudiness);
-            float fraction = Float.parseFloat(arg);
-            model.getScene().getRender().setCloudiness(fraction);
-
-        } else if (actionString.startsWith(ActionPrefix.setColorDepth)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setColorDepth);
-            int bitsPerPixel = Integer.parseInt(arg);
-            DisplaySettings.setColorDepth(bitsPerPixel);
-
-        } else if (actionString.startsWith(ActionPrefix.setDimensions)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setDimensions);
-            int[] wh = DimensionsDialog.parseDimensions(arg);
-            if (wh == null) {
-                handled = false;
-            } else {
-                DisplaySettings.setDimensions(wh[0], wh[1]);
-            }
-
-        } else if (actionString.startsWith(
-                ActionPrefix.setDurationProportional)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.setDurationProportional);
-            float value = Float.parseFloat(arg);
-            target.getAnimation().setDurationProportional(value);
-
-        } else if (actionString.startsWith(ActionPrefix.setDurationSame)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.setDurationSame);
-            float value = Float.parseFloat(arg);
-            target.getAnimation().setDurationSame(value);
-
-        } else if (actionString.startsWith(ActionPrefix.setFrameTime)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setFrameTime);
-            float value = Float.parseFloat(arg);
-            target.getFrame().setTime(value);
-
-        } else if (actionString.startsWith(ActionPrefix.setHour)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setHour);
-            float hour = Float.valueOf(arg);
-            model.getScene().getRender().setHour(hour);
-
-        } else if (actionString.startsWith(ActionPrefix.setMainDirection)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.setMainDirection);
-            Vector3f direction = MyVector3f.parse(arg);
-            model.getScene().getLights().setDirection(direction);
-
-        } else if (actionString.startsWith(ActionPrefix.setMainLevel)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setMainLevel);
-            float level = Float.valueOf(arg);
-            model.getScene().getLights().setMainLevel(level);
-
-        } else if (actionString.startsWith(ActionPrefix.setMapSize)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setMapSize);
-            int mapSize = Integer.parseInt(arg);
-            model.getScene().getRender().setShadowMapSize(mapSize);
-
-        } else if (actionString.startsWith(ActionPrefix.setMatParamValue)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.setMatParamValue);
-            target.setMatParamValue(arg);
-
-        } else if (actionString.startsWith(ActionPrefix.setMeshWeights)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setMeshWeights);
-            int mnwpv = Integer.parseInt(arg);
-            target.setMeshWeights(mnwpv);
-
-        } else if (actionString.startsWith(ActionPrefix.setMsaaFactor)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setMsaaFactor);
-            int factor = 16;
-            for (int f : new int[]{1, 2, 4, 6, 8}) {
-                String aaDescription = MaudUtil.describeMsaaFactor(f);
-                if (arg.equals(aaDescription)) {
-                    factor = f;
-                    break;
-                }
-            }
-            DisplaySettings.setMsaaFactor(factor);
-
-        } else if (actionString.startsWith(ActionPrefix.setNumSplits)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setNumSplits);
-            int numSplits = Integer.parseInt(arg);
-            model.getScene().getRender().setNumSplits(numSplits);
-
-        } else if (actionString.startsWith(ActionPrefix.setOverrideValue)) {
+        if (actionString.startsWith(ActionPrefix.setOverrideValue)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setOverrideValue);
             target.setOverrideValue(arg);

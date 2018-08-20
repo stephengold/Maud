@@ -214,7 +214,14 @@ public class EditorInputMode extends InputMode {
                     break;
 
                 case "set":
-                    handled = SetAction.process(actionString);
+                    if (words.length > 1) {
+                        char w1c0 = words[1].charAt(0);
+                        if (w1c0 < 'o') {
+                            handled = SetANAction.process(actionString);
+                        } else {
+                            handled = SetOZAction.process(actionString);
+                        }
+                    }
                     break;
 
                 case "setFlag":
