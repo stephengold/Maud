@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -24,47 +24,38 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud.tool;
+package maud.tool.option;
 
-import com.jme3.math.Vector3f;
+import com.jme3.math.ColorRGBA;
 import java.util.List;
 import java.util.logging.Logger;
-import jme3utilities.math.MyVector3f;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
-import maud.model.option.scene.LightsOptions;
+import maud.model.EditorModel;
+import maud.model.option.Background;
+import maud.model.option.ScoreOptions;
+import maud.model.option.scene.RenderOptions;
+import maud.tool.Tool;
 
 /**
- * The controller for the "Scene Lighting" tool in Maud's editor screen.
+ * The controller for the "Background" tool in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SceneLightingTool extends Tool {
+public class BackgroundTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
     /**
-     * number of coordinate axes
-     */
-    final private static int numAxes = 3;
-    /**
      * message logger for this class
      */
     final private static Logger logger
-            = Logger.getLogger(SceneLightingTool.class.getName());
-    /**
-     * transform for the direction sliders
-     */
-    final private static SliderTransform directionSt = SliderTransform.Reversed;
+            = Logger.getLogger(BackgroundTool.class.getName());
     /**
      * transform for the color sliders
      */
-    final private static SliderTransform levelSt = SliderTransform.None;
-    /**
-     * names of the coordinate axes
-     */
-    final private static String[] axisNames = {"x", "y", "z"};
+    final private static SliderTransform colorSt = SliderTransform.Reversed;
     // *************************************************************************
     // constructors
 
@@ -74,8 +65,8 @@ class SceneLightingTool extends Tool {
      * @param screenController the controller of the screen that will contain
      * the tool (not null)
      */
-    SceneLightingTool(GuiScreenController screenController) {
-        super(screenController, "sceneLighting");
+    public BackgroundTool(GuiScreenController screenController) {
+        super(screenController, "background");
     }
     // *************************************************************************
     // Tool methods
@@ -88,12 +79,9 @@ class SceneLightingTool extends Tool {
     @Override
     protected List<String> listSliders() {
         List<String> result = super.listSliders();
-        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-            String sliderName = axisNames[iAxis] + "Dir";
-            result.add(sliderName);
-        }
-        result.add("ambientLevel");
-        result.add("mainLevel");
+        result.add("bgR");
+        result.add("bgG");
+        result.add("bgB");
 
         return result;
     }
@@ -103,19 +91,32 @@ class SceneLightingTool extends Tool {
      */
     @Override
     public void onSliderChanged() {
-        LightsOptions options = Maud.getModel().getScene().getLights();
+        EditorModel editorModel = Maud.getModel();
+        RenderOptions forScenes = editorModel.getScene().getRender();
+        ScoreOptions forScores = editorModel.getScore();
 
-        Vector3f direction = readVectorBank("Dir", directionSt, null);
-        if (MyVector3f.isZero(direction)) {
-            direction.set(0f, -1f, 0f);
+        ColorRGBA color = readColorBank("bg", colorSt, null);
+        Background background = Maud.getModel().getMisc().getBackground();
+        switch (background) {
+            case SourceScenesWithNoSky:
+                forScenes.setSourceBackgroundColor(color);
+                break;
+
+            case SourceScores:
+                forScores.setSourceBackgroundColor(color);
+                break;
+
+            case TargetScenesWithNoSky:
+                forScenes.setTargetBackgroundColor(color);
+                break;
+
+            case TargetScores:
+                forScores.setTargetBackgroundColor(color);
+                break;
+
+            default:
+                throw new IllegalStateException();
         }
-        options.setDirection(direction);
-
-        float ambientLevel = readSlider("ambientLevel", levelSt);
-        options.setAmbientLevel(ambientLevel);
-
-        float mainLevel = readSlider("mainLevel", levelSt);
-        options.setMainLevel(mainLevel);
     }
 
     /**
@@ -124,23 +125,35 @@ class SceneLightingTool extends Tool {
      */
     @Override
     protected void toolUpdate() {
-        LightsOptions options = Maud.getModel().getScene().getLights();
+        EditorModel editorModel = Maud.getModel();
+        RenderOptions forScenes = editorModel.getScene().getRender();
+        ScoreOptions forScores = editorModel.getScore();
 
-        Vector3f direction = options.direction(null);
-        float[] components = direction.toArray(null);
-        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
-            String sliderName = axisNames[iAxis] + "Dir";
-            float value = components[iAxis];
-            setSlider(sliderName, directionSt, value);
-            updateSliderStatus(sliderName, value, "");
+        ColorRGBA color;
+        Background background = Maud.getModel().getMisc().getBackground();
+        switch (background) {
+            case SourceScenesWithNoSky:
+                color = forScenes.sourceBackgroundColor(null);
+                break;
+
+            case SourceScores:
+                color = forScores.sourceBackgroundColor(null);
+                break;
+
+            case TargetScenesWithNoSky:
+                color = forScenes.targetBackgroundColor(null);
+                break;
+
+            case TargetScores:
+                color = forScores.targetBackgroundColor(null);
+                break;
+
+            default:
+                throw new IllegalStateException();
         }
+        setColorBank("bg", colorSt, color);
 
-        float ambientLevel = options.getAmbientLevel();
-        setSlider("ambientLevel", levelSt, ambientLevel);
-        updateSliderStatus("ambientLevel", ambientLevel, "");
-
-        float mainLevel = options.getMainLevel();
-        setSlider("mainLevel", levelSt, mainLevel);
-        updateSliderStatus("mainLevel", mainLevel, "");
+        String buttonText = background.toString();
+        setButtonText("bgSelect", buttonText);
     }
 }

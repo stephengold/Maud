@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -24,21 +24,23 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud.tool;
+package maud.tool.option;
 
+import com.jme3.math.ColorRGBA;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
-import maud.model.option.scene.SceneOptions;
+import maud.model.option.scene.BoundsOptions;
+import maud.tool.Tool;
 
 /**
- * The controller for the "Physics" tool in Maud's editor screen.
+ * The controller for the "Bounds" tool in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class PhysicsTool extends Tool {
+public class BoundsTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -46,11 +48,15 @@ class PhysicsTool extends Tool {
      * message logger for this class
      */
     final private static Logger logger
-            = Logger.getLogger(PhysicsTool.class.getName());
+            = Logger.getLogger(BoundsTool.class.getName());
     /**
-     * transform for the max iterations slider
+     * transform for the color sliders
      */
-    final private static SliderTransform iterSt = SliderTransform.None;
+    final private static SliderTransform colorSt = SliderTransform.Reversed;
+    /**
+     * transform for the width slider
+     */
+    final private static SliderTransform widthSt = SliderTransform.None;
     // *************************************************************************
     // constructors
 
@@ -60,8 +66,8 @@ class PhysicsTool extends Tool {
      * @param screenController the controller of the screen that will contain
      * the tool (not null)
      */
-    PhysicsTool(GuiScreenController screenController) {
-        super(screenController, "physics");
+    public BoundsTool(GuiScreenController screenController) {
+        super(screenController, "bounds");
     }
     // *************************************************************************
     // Tool methods
@@ -74,7 +80,7 @@ class PhysicsTool extends Tool {
     @Override
     protected List<String> listCheckBoxes() {
         List<String> result = super.listCheckBoxes();
-        result.add("physics2");
+        result.add("boundsDepthTest");
 
         return result;
     }
@@ -87,7 +93,10 @@ class PhysicsTool extends Tool {
     @Override
     protected List<String> listSliders() {
         List<String> result = super.listSliders();
-        result.add("maxIterations");
+        result.add("boundsR");
+        result.add("boundsG");
+        result.add("boundsB");
+        result.add("boundsLineWidth");
 
         return result;
     }
@@ -101,10 +110,10 @@ class PhysicsTool extends Tool {
      */
     @Override
     public void onCheckBoxChanged(String name, boolean isChecked) {
-        SceneOptions options = Maud.getModel().getScene();
+        BoundsOptions options = Maud.getModel().getScene().getBounds();
         switch (name) {
-            case "physics2":
-                options.getRender().setPhysicsRendered(isChecked);
+            case "boundsDepthTest":
+                options.setDepthTestFlag(isChecked);
                 break;
 
             default:
@@ -117,11 +126,13 @@ class PhysicsTool extends Tool {
      */
     @Override
     public void onSliderChanged() {
-        SceneOptions options = Maud.getModel().getScene();
+        BoundsOptions options = Maud.getModel().getScene().getBounds();
 
-        float floatMax = readSlider("maxIterations", iterSt);
-        int intMax = Math.round(floatMax);
-        options.setNumPhysicsIterations(intMax);
+        float lineWidth = readSlider("boundsLineWidth", widthSt);
+        options.setLineWidth(lineWidth);
+
+        ColorRGBA color = readColorBank("bounds", colorSt, null);
+        options.setColor(color);
     }
 
     /**
@@ -130,13 +141,17 @@ class PhysicsTool extends Tool {
      */
     @Override
     protected void toolUpdate() {
-        SceneOptions options = Maud.getModel().getScene();
+        BoundsOptions options = Maud.getModel().getScene().getBounds();
 
-        boolean isRendered = options.getRender().isPhysicsRendered();
-        setChecked("physics2", isRendered);
+        ColorRGBA color = options.copyColor(null);
+        setColorBank("bounds", colorSt, color);
 
-        int maxIterations = options.numPhysicsIterations();
-        setSlider("maxIterations", iterSt, maxIterations);
-        updateSliderStatus("maxIterations", maxIterations, "");
+        boolean depthTestFlag = options.getDepthTestFlag();
+        setChecked("boundsDepthTest", depthTestFlag);
+
+        float lineWidth = options.getLineWidth();
+        setSlider("boundsLineWidth", widthSt, lineWidth);
+        lineWidth = Math.round(lineWidth);
+        updateSliderStatus("boundsLineWidth", lineWidth, " pixels");
     }
 }

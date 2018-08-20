@@ -32,6 +32,22 @@ import jme3utilities.MyString;
 import jme3utilities.Validate;
 import maud.EditorScreen;
 import maud.Maud;
+import maud.tool.option.AxesTool;
+import maud.tool.option.BackgroundTool;
+import maud.tool.option.BoundsTool;
+import maud.tool.option.CameraTool;
+import maud.tool.option.CursorTool;
+import maud.tool.option.DisplaySettingsTool;
+import maud.tool.option.PhysicsTool;
+import maud.tool.option.PlatformTool;
+import maud.tool.option.RenderTool;
+import maud.tool.option.SceneLightingTool;
+import maud.tool.option.SceneVertexTool;
+import maud.tool.option.ScoreTool;
+import maud.tool.option.SettingsTool;
+import maud.tool.option.SkeletonTool;
+import maud.tool.option.SkyTool;
+import maud.tool.option.TweeningTool;
 
 /**
  * Tools in Maud's editor screen.

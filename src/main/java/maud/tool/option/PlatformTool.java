@@ -24,25 +24,24 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud.tool;
+package maud.tool.option;
 
-import com.jme3.math.ColorRGBA;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
-import maud.model.EditorModel;
-import maud.model.option.Background;
-import maud.model.option.ScoreOptions;
-import maud.model.option.scene.RenderOptions;
+import maud.model.WhichCgm;
+import maud.model.option.scene.PlatformType;
+import maud.model.option.scene.SceneOptions;
+import maud.tool.Tool;
 
 /**
- * The controller for the "Background" tool in Maud's editor screen.
+ * The controller for the "Platform" tool in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class BackgroundTool extends Tool {
+public class PlatformTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -50,11 +49,11 @@ class BackgroundTool extends Tool {
      * message logger for this class
      */
     final private static Logger logger
-            = Logger.getLogger(BackgroundTool.class.getName());
+            = Logger.getLogger(PlatformTool.class.getName());
     /**
-     * transform for the color sliders
+     * transform for the diameter sliders
      */
-    final private static SliderTransform colorSt = SliderTransform.Reversed;
+    final private static SliderTransform diameterSt = SliderTransform.Log10;
     // *************************************************************************
     // constructors
 
@@ -64,8 +63,8 @@ class BackgroundTool extends Tool {
      * @param screenController the controller of the screen that will contain
      * the tool (not null)
      */
-    BackgroundTool(GuiScreenController screenController) {
-        super(screenController, "background");
+    public PlatformTool(GuiScreenController screenController) {
+        super(screenController, "platform");
     }
     // *************************************************************************
     // Tool methods
@@ -78,9 +77,8 @@ class BackgroundTool extends Tool {
     @Override
     protected List<String> listSliders() {
         List<String> result = super.listSliders();
-        result.add("bgR");
-        result.add("bgG");
-        result.add("bgB");
+        result.add("sourcePlatformDiameter");
+        result.add("targetPlatformDiameter");
 
         return result;
     }
@@ -90,32 +88,13 @@ class BackgroundTool extends Tool {
      */
     @Override
     public void onSliderChanged() {
-        EditorModel editorModel = Maud.getModel();
-        RenderOptions forScenes = editorModel.getScene().getRender();
-        ScoreOptions forScores = editorModel.getScore();
+        SceneOptions options = Maud.getModel().getScene();
 
-        ColorRGBA color = readColorBank("bg", colorSt, null);
-        Background background = Maud.getModel().getMisc().getBackground();
-        switch (background) {
-            case SourceScenesWithNoSky:
-                forScenes.setSourceBackgroundColor(color);
-                break;
+        float sourceDiameter = readSlider("sourcePlatformDiameter", diameterSt);
+        options.setPlatformDiameter(WhichCgm.Source, sourceDiameter);
 
-            case SourceScores:
-                forScores.setSourceBackgroundColor(color);
-                break;
-
-            case TargetScenesWithNoSky:
-                forScenes.setTargetBackgroundColor(color);
-                break;
-
-            case TargetScores:
-                forScores.setTargetBackgroundColor(color);
-                break;
-
-            default:
-                throw new IllegalStateException();
-        }
+        float targetDiameter = readSlider("targetPlatformDiameter", diameterSt);
+        options.setPlatformDiameter(WhichCgm.Target, targetDiameter);
     }
 
     /**
@@ -124,35 +103,18 @@ class BackgroundTool extends Tool {
      */
     @Override
     protected void toolUpdate() {
-        EditorModel editorModel = Maud.getModel();
-        RenderOptions forScenes = editorModel.getScene().getRender();
-        ScoreOptions forScores = editorModel.getScore();
+        SceneOptions options = Maud.getModel().getScene();
 
-        ColorRGBA color;
-        Background background = Maud.getModel().getMisc().getBackground();
-        switch (background) {
-            case SourceScenesWithNoSky:
-                color = forScenes.sourceBackgroundColor(null);
-                break;
+        PlatformType type = options.getPlatformType();
+        String tButton = type.toString();
+        setButtonText("platformType", tButton);
 
-            case SourceScores:
-                color = forScores.sourceBackgroundColor(null);
-                break;
+        float sourceDiameter = options.getPlatformDiameter(WhichCgm.Source);
+        setSlider("sourcePlatformDiameter", diameterSt, sourceDiameter);
+        updateSliderStatus("sourcePlatformDiameter", sourceDiameter, " wu");
 
-            case TargetScenesWithNoSky:
-                color = forScenes.targetBackgroundColor(null);
-                break;
-
-            case TargetScores:
-                color = forScores.targetBackgroundColor(null);
-                break;
-
-            default:
-                throw new IllegalStateException();
-        }
-        setColorBank("bg", colorSt, color);
-
-        String buttonText = background.toString();
-        setButtonText("bgSelect", buttonText);
+        float targetDiameter = options.getPlatformDiameter(WhichCgm.Target);
+        setSlider("targetPlatformDiameter", diameterSt, targetDiameter);
+        updateSliderStatus("targetPlatformDiameter", targetDiameter, " wu");
     }
 }

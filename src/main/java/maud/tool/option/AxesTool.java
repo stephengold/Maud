@@ -24,22 +24,24 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud.tool;
+package maud.tool.option;
 
-import com.jme3.math.ColorRGBA;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
-import maud.model.option.scene.VertexOptions;
+import maud.model.option.scene.AxesDragEffect;
+import maud.model.option.scene.AxesOptions;
+import maud.model.option.scene.AxesSubject;
+import maud.tool.Tool;
 
 /**
- * The controller for the "Scene Vertex" tool in Maud's editor screen.
+ * The controller for the "Axes" tool in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SceneVertexTool extends Tool {
+public class AxesTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -47,15 +49,11 @@ class SceneVertexTool extends Tool {
      * message logger for this class
      */
     final private static Logger logger
-            = Logger.getLogger(SceneVertexTool.class.getName());
+            = Logger.getLogger(AxesTool.class.getName());
     /**
-     * transform for the color sliders
+     * transform for the width slider
      */
-    final private static SliderTransform colorSt = SliderTransform.Reversed;
-    /**
-     * transform for the point-size sliders
-     */
-    final private static SliderTransform sizeSt = SliderTransform.None;
+    final private static SliderTransform widthSt = SliderTransform.None;
     // *************************************************************************
     // constructors
 
@@ -65,11 +63,24 @@ class SceneVertexTool extends Tool {
      * @param screenController the controller of the screen that will contain
      * the tool (not null)
      */
-    SceneVertexTool(GuiScreenController screenController) {
-        super(screenController, "sceneVertex");
+    public AxesTool(GuiScreenController screenController) {
+        super(screenController, "axes");
     }
     // *************************************************************************
     // Tool methods
+
+    /**
+     * Enumerate this tool's check boxes.
+     *
+     * @return a new list of names (unique id prefixes)
+     */
+    @Override
+    protected List<String> listCheckBoxes() {
+        List<String> result = super.listCheckBoxes();
+        result.add("axesDepthTest");
+
+        return result;
+    }
 
     /**
      * Enumerate this tool's sliders.
@@ -79,26 +90,38 @@ class SceneVertexTool extends Tool {
     @Override
     protected List<String> listSliders() {
         List<String> result = super.listSliders();
-        result.add("svR");
-        result.add("svG");
-        result.add("svB");
-        result.add("svPointSize");
+        result.add("axesLineWidth");
 
         return result;
     }
 
     /**
-     * Update the MVC model based on the sliders.
+     * Update the MVC model based on a check-box event.
+     *
+     * @param name the name (unique id prefix) of the check box
+     * @param isChecked the new state of the check box (true&rarr;checked,
+     * false&rarr;unchecked)
+     */
+    @Override
+    public void onCheckBoxChanged(String name, boolean isChecked) {
+        AxesOptions options = Maud.getModel().getScene().getAxes();
+        switch (name) {
+            case "axesDepthTest":
+                options.setDepthTestFlag(isChecked);
+                break;
+
+            default:
+                super.onCheckBoxChanged(name, isChecked);
+        }
+    }
+
+    /**
+     * Update the MVC model based on the slider.
      */
     @Override
     public void onSliderChanged() {
-        VertexOptions options = Maud.getModel().getScene().getVertex();
-
-        ColorRGBA color = readColorBank("sv", colorSt, null);
-        options.setColor(color);
-
-        float pointSize = readSlider("svPointSize", sizeSt);
-        options.setPointSize(pointSize);
+        float lineWidth = readSlider("axesLineWidth", widthSt);
+        Maud.getModel().getScene().getAxes().setLineWidth(lineWidth);
     }
 
     /**
@@ -107,14 +130,34 @@ class SceneVertexTool extends Tool {
      */
     @Override
     protected void toolUpdate() {
-        VertexOptions options = Maud.getModel().getScene().getVertex();
+        AxesOptions options = Maud.getModel().getScene().getAxes();
+        boolean depthTestFlag = options.getDepthTestFlag();
+        setChecked("axesDepthTest", depthTestFlag);
 
-        ColorRGBA color = options.copyColor(null);
-        setColorBank("sv", colorSt, color);
+        float lineWidth = options.getLineWidth();
+        setSlider("axesLineWidth", widthSt, lineWidth);
 
-        float pointSize = options.getPointSize();
-        setSlider("svPointSize", sizeSt, pointSize);
-        pointSize = Math.round(pointSize);
-        updateSliderStatus("svPointSize", pointSize, " pixels");
+        updateLabels();
+    }
+    // *************************************************************************
+    // private methods
+
+    /**
+     * Update buttons and status labels based on the MVC model.
+     */
+    private void updateLabels() {
+        AxesOptions options = Maud.getModel().getScene().getAxes();
+
+        float lineWidth = options.getLineWidth();
+        lineWidth = Math.round(lineWidth);
+        updateSliderStatus("axesLineWidth", lineWidth, " pixels");
+
+        AxesSubject subject = options.getSubject();
+        String buttonLabel = subject.toString();
+        setButtonText("axesSubject", buttonLabel);
+
+        AxesDragEffect effect = options.getDragEffect();
+        buttonLabel = effect.toString();
+        setButtonText("axesDrag", buttonLabel);
     }
 }

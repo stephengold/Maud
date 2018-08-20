@@ -24,22 +24,23 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud.tool;
+package maud.tool.option;
 
-import com.jme3.math.ColorRGBA;
 import java.util.List;
 import java.util.logging.Logger;
+import jme3utilities.TimeOfDay;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
-import maud.model.option.scene.BoundsOptions;
+import maud.model.option.scene.RenderOptions;
+import maud.tool.Tool;
 
 /**
- * The controller for the "Bounds" tool in Maud's editor screen.
+ * The controller for the "Sky" tool in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class BoundsTool extends Tool {
+public class SkyTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -47,15 +48,15 @@ class BoundsTool extends Tool {
      * message logger for this class
      */
     final private static Logger logger
-            = Logger.getLogger(BoundsTool.class.getName());
+            = Logger.getLogger(SkyTool.class.getName());
     /**
-     * transform for the color sliders
+     * transform for the cloudiness slider
      */
-    final private static SliderTransform colorSt = SliderTransform.Reversed;
+    final private static SliderTransform cloudinessSt = SliderTransform.None;
     /**
-     * transform for the width slider
+     * transform for the hour slider
      */
-    final private static SliderTransform widthSt = SliderTransform.None;
+    final private static SliderTransform hourSt = SliderTransform.None;
     // *************************************************************************
     // constructors
 
@@ -65,8 +66,8 @@ class BoundsTool extends Tool {
      * @param screenController the controller of the screen that will contain
      * the tool (not null)
      */
-    BoundsTool(GuiScreenController screenController) {
-        super(screenController, "bounds");
+    public SkyTool(GuiScreenController screenController) {
+        super(screenController, "sky");
     }
     // *************************************************************************
     // Tool methods
@@ -79,7 +80,7 @@ class BoundsTool extends Tool {
     @Override
     protected List<String> listCheckBoxes() {
         List<String> result = super.listCheckBoxes();
-        result.add("boundsDepthTest");
+        result.add("sky");
 
         return result;
     }
@@ -92,10 +93,8 @@ class BoundsTool extends Tool {
     @Override
     protected List<String> listSliders() {
         List<String> result = super.listSliders();
-        result.add("boundsR");
-        result.add("boundsG");
-        result.add("boundsB");
-        result.add("boundsLineWidth");
+        result.add("cloudiness");
+        result.add("hour");
 
         return result;
     }
@@ -109,10 +108,10 @@ class BoundsTool extends Tool {
      */
     @Override
     public void onCheckBoxChanged(String name, boolean isChecked) {
-        BoundsOptions options = Maud.getModel().getScene().getBounds();
+        RenderOptions options = Maud.getModel().getScene().getRender();
         switch (name) {
-            case "boundsDepthTest":
-                options.setDepthTestFlag(isChecked);
+            case "sky":
+                options.setSkySimulated(isChecked);
                 break;
 
             default:
@@ -125,13 +124,13 @@ class BoundsTool extends Tool {
      */
     @Override
     public void onSliderChanged() {
-        BoundsOptions options = Maud.getModel().getScene().getBounds();
+        RenderOptions options = Maud.getModel().getScene().getRender();
 
-        float lineWidth = readSlider("boundsLineWidth", widthSt);
-        options.setLineWidth(lineWidth);
+        float cloudiness = readSlider("cloudiness", cloudinessSt);
+        options.setCloudiness(cloudiness);
 
-        ColorRGBA color = readColorBank("bounds", colorSt, null);
-        options.setColor(color);
+        float hour = readSlider("hour", hourSt);
+        options.setHour(hour);
     }
 
     /**
@@ -140,17 +139,22 @@ class BoundsTool extends Tool {
      */
     @Override
     protected void toolUpdate() {
-        BoundsOptions options = Maud.getModel().getScene().getBounds();
+        RenderOptions options = Maud.getModel().getScene().getRender();
 
-        ColorRGBA color = options.copyColor(null);
-        setColorBank("bounds", colorSt, color);
+        boolean isSkySimulated = options.isSkySimulated();
+        setChecked("sky", isSkySimulated);
 
-        boolean depthTestFlag = options.getDepthTestFlag();
-        setChecked("boundsDepthTest", depthTestFlag);
+        float cloudiness = options.getCloudiness();
+        setSlider("cloudiness", cloudinessSt, cloudiness);
+        updateSliderStatus("cloudiness", 100f * cloudiness, "%");
 
-        float lineWidth = options.getLineWidth();
-        setSlider("boundsLineWidth", widthSt, lineWidth);
-        lineWidth = Math.round(lineWidth);
-        updateSliderStatus("boundsLineWidth", lineWidth, " pixels");
+        float hour = options.getHour();
+        setSlider("hour", hourSt, hour);
+        int second = Math.round(hour * 3600);
+        int minute = second / TimeOfDay.secondsPerMinute;
+        int mm = minute % TimeOfDay.minutesPerHour;
+        int hh = minute / TimeOfDay.minutesPerHour;
+        String tod = String.format("solar time = %d:%02d", hh, mm);
+        setStatusText("hourSliderStatus", tod);
     }
 }

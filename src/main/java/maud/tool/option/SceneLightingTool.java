@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -24,35 +24,48 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud.tool;
+package maud.tool.option;
 
+import com.jme3.math.Vector3f;
 import java.util.List;
 import java.util.logging.Logger;
+import jme3utilities.math.MyVector3f;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
-import maud.model.option.scene.AxesDragEffect;
-import maud.model.option.scene.AxesOptions;
-import maud.model.option.scene.AxesSubject;
+import maud.model.option.scene.LightsOptions;
+import maud.tool.Tool;
 
 /**
- * The controller for the "Axes" tool in Maud's editor screen.
+ * The controller for the "Scene Lighting" tool in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class AxesTool extends Tool {
+public class SceneLightingTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
     /**
+     * number of coordinate axes
+     */
+    final private static int numAxes = 3;
+    /**
      * message logger for this class
      */
     final private static Logger logger
-            = Logger.getLogger(AxesTool.class.getName());
+            = Logger.getLogger(SceneLightingTool.class.getName());
     /**
-     * transform for the width slider
+     * transform for the direction sliders
      */
-    final private static SliderTransform widthSt = SliderTransform.None;
+    final private static SliderTransform directionSt = SliderTransform.Reversed;
+    /**
+     * transform for the color sliders
+     */
+    final private static SliderTransform levelSt = SliderTransform.None;
+    /**
+     * names of the coordinate axes
+     */
+    final private static String[] axisNames = {"x", "y", "z"};
     // *************************************************************************
     // constructors
 
@@ -62,24 +75,11 @@ class AxesTool extends Tool {
      * @param screenController the controller of the screen that will contain
      * the tool (not null)
      */
-    AxesTool(GuiScreenController screenController) {
-        super(screenController, "axes");
+    public SceneLightingTool(GuiScreenController screenController) {
+        super(screenController, "sceneLighting");
     }
     // *************************************************************************
     // Tool methods
-
-    /**
-     * Enumerate this tool's check boxes.
-     *
-     * @return a new list of names (unique id prefixes)
-     */
-    @Override
-    protected List<String> listCheckBoxes() {
-        List<String> result = super.listCheckBoxes();
-        result.add("axesDepthTest");
-
-        return result;
-    }
 
     /**
      * Enumerate this tool's sliders.
@@ -89,38 +89,34 @@ class AxesTool extends Tool {
     @Override
     protected List<String> listSliders() {
         List<String> result = super.listSliders();
-        result.add("axesLineWidth");
+        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
+            String sliderName = axisNames[iAxis] + "Dir";
+            result.add(sliderName);
+        }
+        result.add("ambientLevel");
+        result.add("mainLevel");
 
         return result;
     }
 
     /**
-     * Update the MVC model based on a check-box event.
-     *
-     * @param name the name (unique id prefix) of the check box
-     * @param isChecked the new state of the check box (true&rarr;checked,
-     * false&rarr;unchecked)
-     */
-    @Override
-    public void onCheckBoxChanged(String name, boolean isChecked) {
-        AxesOptions options = Maud.getModel().getScene().getAxes();
-        switch (name) {
-            case "axesDepthTest":
-                options.setDepthTestFlag(isChecked);
-                break;
-
-            default:
-                super.onCheckBoxChanged(name, isChecked);
-        }
-    }
-
-    /**
-     * Update the MVC model based on the slider.
+     * Update the MVC model based on the sliders.
      */
     @Override
     public void onSliderChanged() {
-        float lineWidth = readSlider("axesLineWidth", widthSt);
-        Maud.getModel().getScene().getAxes().setLineWidth(lineWidth);
+        LightsOptions options = Maud.getModel().getScene().getLights();
+
+        Vector3f direction = readVectorBank("Dir", directionSt, null);
+        if (MyVector3f.isZero(direction)) {
+            direction.set(0f, -1f, 0f);
+        }
+        options.setDirection(direction);
+
+        float ambientLevel = readSlider("ambientLevel", levelSt);
+        options.setAmbientLevel(ambientLevel);
+
+        float mainLevel = readSlider("mainLevel", levelSt);
+        options.setMainLevel(mainLevel);
     }
 
     /**
@@ -129,34 +125,23 @@ class AxesTool extends Tool {
      */
     @Override
     protected void toolUpdate() {
-        AxesOptions options = Maud.getModel().getScene().getAxes();
-        boolean depthTestFlag = options.getDepthTestFlag();
-        setChecked("axesDepthTest", depthTestFlag);
+        LightsOptions options = Maud.getModel().getScene().getLights();
 
-        float lineWidth = options.getLineWidth();
-        setSlider("axesLineWidth", widthSt, lineWidth);
+        Vector3f direction = options.direction(null);
+        float[] components = direction.toArray(null);
+        for (int iAxis = 0; iAxis < numAxes; iAxis++) {
+            String sliderName = axisNames[iAxis] + "Dir";
+            float value = components[iAxis];
+            setSlider(sliderName, directionSt, value);
+            updateSliderStatus(sliderName, value, "");
+        }
 
-        updateLabels();
-    }
-    // *************************************************************************
-    // private methods
+        float ambientLevel = options.getAmbientLevel();
+        setSlider("ambientLevel", levelSt, ambientLevel);
+        updateSliderStatus("ambientLevel", ambientLevel, "");
 
-    /**
-     * Update buttons and status labels based on the MVC model.
-     */
-    private void updateLabels() {
-        AxesOptions options = Maud.getModel().getScene().getAxes();
-
-        float lineWidth = options.getLineWidth();
-        lineWidth = Math.round(lineWidth);
-        updateSliderStatus("axesLineWidth", lineWidth, " pixels");
-
-        AxesSubject subject = options.getSubject();
-        String buttonLabel = subject.toString();
-        setButtonText("axesSubject", buttonLabel);
-
-        AxesDragEffect effect = options.getDragEffect();
-        buttonLabel = effect.toString();
-        setButtonText("axesDrag", buttonLabel);
+        float mainLevel = options.getMainLevel();
+        setSlider("mainLevel", levelSt, mainLevel);
+        updateSliderStatus("mainLevel", mainLevel, "");
     }
 }

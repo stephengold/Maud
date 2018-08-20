@@ -24,22 +24,23 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud.tool;
+package maud.tool.option;
 
+import com.jme3.math.ColorRGBA;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
-import maud.model.option.MiscOptions;
-import maud.model.option.RotationDisplayMode;
+import maud.model.option.scene.VertexOptions;
+import maud.tool.Tool;
 
 /**
- * The controller for the "Settings" tool in Maud's editor screen.
+ * The controller for the "Scene Vertex" tool in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SettingsTool extends Tool {
+public class SceneVertexTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -47,11 +48,15 @@ class SettingsTool extends Tool {
      * message logger for this class
      */
     final private static Logger logger
-            = Logger.getLogger(SettingsTool.class.getName());
+            = Logger.getLogger(SceneVertexTool.class.getName());
     /**
-     * transform for the submenu-warp sliders
+     * transform for the color sliders
      */
-    final private static SliderTransform submenuSt = SliderTransform.None;
+    final private static SliderTransform colorSt = SliderTransform.Reversed;
+    /**
+     * transform for the point-size sliders
+     */
+    final private static SliderTransform sizeSt = SliderTransform.None;
     // *************************************************************************
     // constructors
 
@@ -61,24 +66,11 @@ class SettingsTool extends Tool {
      * @param screenController the controller of the screen that will contain
      * the tool (not null)
      */
-    SettingsTool(GuiScreenController screenController) {
-        super(screenController, "settings");
+    public SceneVertexTool(GuiScreenController screenController) {
+        super(screenController, "sceneVertex");
     }
     // *************************************************************************
     // Tool methods
-
-    /**
-     * Enumerate this tool's check boxes.
-     *
-     * @return a new list of names (unique id prefixes)
-     */
-    @Override
-    protected List<String> listCheckBoxes() {
-        List<String> result = super.listCheckBoxes();
-        result.add("settingsDiagnose");
-
-        return result;
-    }
 
     /**
      * Enumerate this tool's sliders.
@@ -88,29 +80,12 @@ class SettingsTool extends Tool {
     @Override
     protected List<String> listSliders() {
         List<String> result = super.listSliders();
-        result.add("submenuWarpX");
-        result.add("submenuWarpY");
+        result.add("svR");
+        result.add("svG");
+        result.add("svB");
+        result.add("svPointSize");
 
         return result;
-    }
-
-    /**
-     * Update the MVC model based on a check-box event.
-     *
-     * @param name the name (unique id prefix) of the check box
-     * @param isChecked the new state of the check box (true&rarr;checked,
-     * false&rarr;unchecked)
-     */
-    @Override
-    public void onCheckBoxChanged(String name, boolean isChecked) {
-        switch (name) {
-            case "settingsDiagnose":
-                Maud.getModel().getMisc().setDiagnoseLoads(isChecked);
-                break;
-
-            default:
-                super.onCheckBoxChanged(name, isChecked);
-        }
     }
 
     /**
@@ -118,11 +93,13 @@ class SettingsTool extends Tool {
      */
     @Override
     public void onSliderChanged() {
-        MiscOptions options = Maud.getModel().getMisc();
+        VertexOptions options = Maud.getModel().getScene().getVertex();
 
-        float x = readSlider("submenuWarpX", submenuSt);
-        float y = readSlider("submenuWarpY", submenuSt);
-        options.setSubmenuWarp(x, y);
+        ColorRGBA color = readColorBank("sv", colorSt, null);
+        options.setColor(color);
+
+        float pointSize = readSlider("svPointSize", sizeSt);
+        options.setPointSize(pointSize);
     }
 
     /**
@@ -131,29 +108,14 @@ class SettingsTool extends Tool {
      */
     @Override
     protected void toolUpdate() {
-        MiscOptions options = Maud.getModel().getMisc();
+        VertexOptions options = Maud.getModel().getScene().getVertex();
 
-        RotationDisplayMode mode = options.getRotationDisplay();
-        String description = mode.toString();
-        setButtonText("settingsRotationDisplay", description);
+        ColorRGBA color = options.copyColor(null);
+        setColorBank("sv", colorSt, color);
 
-        int indexBase = options.getIndexBase();
-        description = Integer.toString(indexBase);
-        setButtonText("settingsIndexBase", description);
-
-        boolean zUpFlag = options.getLoadZup();
-        description = zUpFlag ? "+Z up" : "+Y up";
-        setButtonText("settingsLoadOrientation", description);
-
-        boolean diagnoseFlag = options.getDiagnoseLoads();
-        setChecked("settingsDiagnose", diagnoseFlag);
-
-        float x = options.getSubmenuWarpX();
-        setSlider("submenuWarpX", submenuSt, x);
-        updateSliderStatus("submenuWarpX", x, "");
-
-        float y = options.getSubmenuWarpY();
-        setSlider("submenuWarpY", submenuSt, y);
-        updateSliderStatus("submenuWarpY", y, "");
+        float pointSize = options.getPointSize();
+        setSlider("svPointSize", sizeSt, pointSize);
+        pointSize = Math.round(pointSize);
+        updateSliderStatus("svPointSize", pointSize, " pixels");
     }
 }

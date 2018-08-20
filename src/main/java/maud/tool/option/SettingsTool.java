@@ -24,26 +24,23 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud.tool;
+package maud.tool.option;
 
-import com.jme3.shadow.EdgeFilteringMode;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
-import maud.model.EditorModel;
-import maud.model.option.scene.RenderOptions;
-import maud.model.option.scene.SceneOptions;
-import maud.model.option.scene.TriangleMode;
-import maud.view.scene.SceneView;
+import maud.model.option.MiscOptions;
+import maud.model.option.RotationDisplayMode;
+import maud.tool.Tool;
 
 /**
- * The controller for the "Render" tool in Maud's editor screen.
+ * The controller for the "Settings" tool in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class RenderTool extends Tool {
+public class SettingsTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -51,11 +48,11 @@ class RenderTool extends Tool {
      * message logger for this class
      */
     final private static Logger logger
-            = Logger.getLogger(RenderTool.class.getName());
+            = Logger.getLogger(SettingsTool.class.getName());
     /**
-     * transform for the scale sliders
+     * transform for the submenu-warp sliders
      */
-    final private static SliderTransform scaleSt = SliderTransform.Log10;
+    final private static SliderTransform submenuSt = SliderTransform.None;
     // *************************************************************************
     // constructors
 
@@ -65,8 +62,8 @@ class RenderTool extends Tool {
      * @param screenController the controller of the screen that will contain
      * the tool (not null)
      */
-    RenderTool(GuiScreenController screenController) {
-        super(screenController, "render");
+    public SettingsTool(GuiScreenController screenController) {
+        super(screenController, "settings");
     }
     // *************************************************************************
     // Tool methods
@@ -79,10 +76,7 @@ class RenderTool extends Tool {
     @Override
     protected List<String> listCheckBoxes() {
         List<String> result = super.listCheckBoxes();
-        result.add("3DCursor2");
-        result.add("shadows");
-        result.add("sky2");
-        result.add("physics");
+        result.add("settingsDiagnose");
 
         return result;
     }
@@ -95,8 +89,8 @@ class RenderTool extends Tool {
     @Override
     protected List<String> listSliders() {
         List<String> result = super.listSliders();
-        result.add("sourceScale");
-        result.add("targetScale");
+        result.add("submenuWarpX");
+        result.add("submenuWarpY");
 
         return result;
     }
@@ -110,22 +104,9 @@ class RenderTool extends Tool {
      */
     @Override
     public void onCheckBoxChanged(String name, boolean isChecked) {
-        SceneOptions options = Maud.getModel().getScene();
         switch (name) {
-            case "3DCursor2":
-                options.getCursor().setVisible(isChecked);
-                break;
-
-            case "physics":
-                options.getRender().setPhysicsRendered(isChecked);
-                break;
-
-            case "shadows":
-                options.getRender().setShadowsRendered(isChecked);
-                break;
-
-            case "sky2":
-                options.getRender().setSkySimulated(isChecked);
+            case "settingsDiagnose":
+                Maud.getModel().getMisc().setDiagnoseLoads(isChecked);
                 break;
 
             default:
@@ -138,13 +119,11 @@ class RenderTool extends Tool {
      */
     @Override
     public void onSliderChanged() {
-        EditorModel model = Maud.getModel();
+        MiscOptions options = Maud.getModel().getMisc();
 
-        float sourceScale = readSlider("sourceScale", scaleSt);
-        model.getSource().getSceneView().getTransform().setScale(sourceScale);
-
-        float targetScale = readSlider("targetScale", scaleSt);
-        model.getTarget().getSceneView().getTransform().setScale(targetScale);
+        float x = readSlider("submenuWarpX", submenuSt);
+        float y = readSlider("submenuWarpY", submenuSt);
+        options.setSubmenuWarp(x, y);
     }
 
     /**
@@ -153,38 +132,29 @@ class RenderTool extends Tool {
      */
     @Override
     protected void toolUpdate() {
-        EditorModel model = Maud.getModel();
-        SceneOptions sceneOptions = model.getScene();
-        RenderOptions options = sceneOptions.getRender();
+        MiscOptions options = Maud.getModel().getMisc();
 
-        boolean isCursorVisible = sceneOptions.getCursor().isVisible();
-        setChecked("3DCursor2", isCursorVisible);
+        RotationDisplayMode mode = options.getRotationDisplay();
+        String description = mode.toString();
+        setButtonText("settingsRotationDisplay", description);
 
-        boolean isSkySimulated = options.isSkySimulated();
-        setChecked("sky2", isSkySimulated);
+        int indexBase = options.getIndexBase();
+        description = Integer.toString(indexBase);
+        setButtonText("settingsIndexBase", description);
 
-        boolean shadowsFlag = options.areShadowsRendered();
-        setChecked("shadows", shadowsFlag);
+        boolean zUpFlag = options.getLoadZup();
+        description = zUpFlag ? "+Z up" : "+Y up";
+        setButtonText("settingsLoadOrientation", description);
 
-        boolean renderFlag = options.isPhysicsRendered();
-        setChecked("physics", renderFlag);
+        boolean diagnoseFlag = options.getDiagnoseLoads();
+        setChecked("settingsDiagnose", diagnoseFlag);
 
-        TriangleMode mode = options.getTriangleMode();
-        String modeName = mode.toString();
-        setButtonText("triangles", modeName);
+        float x = options.getSubmenuWarpX();
+        setSlider("submenuWarpX", submenuSt, x);
+        updateSliderStatus("submenuWarpX", x, "");
 
-        EdgeFilteringMode edgeFilter = options.getEdgeFilter();
-        modeName = edgeFilter.toString();
-        setButtonText("edgeFilter", modeName);
-
-        SceneView sourceView = model.getSource().getSceneView();
-        float sourceScale = sourceView.getTransform().getScale();
-        setSlider("sourceScale", scaleSt, sourceScale);
-        updateSliderStatus("sourceScale", sourceScale, "x");
-
-        SceneView targetView = model.getTarget().getSceneView();
-        float targetScale = targetView.getTransform().getScale();
-        setSlider("targetScale", scaleSt, targetScale);
-        updateSliderStatus("targetScale", targetScale, "x");
+        float y = options.getSubmenuWarpY();
+        setSlider("submenuWarpY", submenuSt, y);
+        updateSliderStatus("submenuWarpY", y, "");
     }
 }

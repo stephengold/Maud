@@ -24,22 +24,25 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud.tool;
+package maud.tool.option;
 
+import com.jme3.math.ColorRGBA;
 import java.util.List;
 import java.util.logging.Logger;
-import jme3utilities.TimeOfDay;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
-import maud.model.option.scene.RenderOptions;
+import maud.model.option.ShowBones;
+import maud.model.option.scene.SkeletonColors;
+import maud.model.option.scene.SkeletonOptions;
+import maud.tool.Tool;
 
 /**
- * The controller for the "Sky" tool in Maud's editor screen.
+ * The controller for the "Skeleton" tool in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SkyTool extends Tool {
+public class SkeletonTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -47,15 +50,19 @@ class SkyTool extends Tool {
      * message logger for this class
      */
     final private static Logger logger
-            = Logger.getLogger(SkyTool.class.getName());
+            = Logger.getLogger(SkeletonTool.class.getName());
     /**
-     * transform for the cloudiness slider
+     * transform for the color sliders
      */
-    final private static SliderTransform cloudinessSt = SliderTransform.None;
+    final private static SliderTransform colorSt = SliderTransform.Reversed;
     /**
-     * transform for the hour slider
+     * transform for the point-size sliders
      */
-    final private static SliderTransform hourSt = SliderTransform.None;
+    final private static SliderTransform sizeSt = SliderTransform.None;
+    /**
+     * transform for the width slider
+     */
+    final private static SliderTransform widthSt = SliderTransform.None;
     // *************************************************************************
     // constructors
 
@@ -65,24 +72,11 @@ class SkyTool extends Tool {
      * @param screenController the controller of the screen that will contain
      * the tool (not null)
      */
-    SkyTool(GuiScreenController screenController) {
-        super(screenController, "sky");
+    public SkeletonTool(GuiScreenController screenController) {
+        super(screenController, "skeleton");
     }
     // *************************************************************************
     // Tool methods
-
-    /**
-     * Enumerate this tool's check boxes.
-     *
-     * @return a new list of names (unique id prefixes)
-     */
-    @Override
-    protected List<String> listCheckBoxes() {
-        List<String> result = super.listCheckBoxes();
-        result.add("sky");
-
-        return result;
-    }
 
     /**
      * Enumerate this tool's sliders.
@@ -92,30 +86,13 @@ class SkyTool extends Tool {
     @Override
     protected List<String> listSliders() {
         List<String> result = super.listSliders();
-        result.add("cloudiness");
-        result.add("hour");
+        result.add("skeletonLineWidth");
+        result.add("skeletonPointSize");
+        result.add("skeR");
+        result.add("skeG");
+        result.add("skeB");
 
         return result;
-    }
-
-    /**
-     * Update the MVC model based on a check-box event.
-     *
-     * @param name the name (unique id prefix) of the check box
-     * @param isChecked the new state of the check box (true&rarr;checked,
-     * false&rarr;unchecked)
-     */
-    @Override
-    public void onCheckBoxChanged(String name, boolean isChecked) {
-        RenderOptions options = Maud.getModel().getScene().getRender();
-        switch (name) {
-            case "sky":
-                options.setSkySimulated(isChecked);
-                break;
-
-            default:
-                super.onCheckBoxChanged(name, isChecked);
-        }
     }
 
     /**
@@ -123,13 +100,17 @@ class SkyTool extends Tool {
      */
     @Override
     public void onSliderChanged() {
-        RenderOptions options = Maud.getModel().getScene().getRender();
+        SkeletonOptions options = Maud.getModel().getScene().getSkeleton();
 
-        float cloudiness = readSlider("cloudiness", cloudinessSt);
-        options.setCloudiness(cloudiness);
+        float lineWidth = readSlider("skeletonLineWidth", widthSt);
+        options.setLineWidth(lineWidth);
 
-        float hour = readSlider("hour", hourSt);
-        options.setHour(hour);
+        float pointSize = readSlider("skeletonPointSize", sizeSt);
+        options.setPointSize(pointSize);
+
+        ColorRGBA color = readColorBank("ske", colorSt, null);
+        SkeletonColors use = options.getEditColor();
+        options.setColor(use, color);
     }
 
     /**
@@ -138,22 +119,27 @@ class SkyTool extends Tool {
      */
     @Override
     protected void toolUpdate() {
-        RenderOptions options = Maud.getModel().getScene().getRender();
+        SkeletonOptions options = Maud.getModel().getScene().getSkeleton();
 
-        boolean isSkySimulated = options.isSkySimulated();
-        setChecked("sky", isSkySimulated);
+        ShowBones showBones = options.getShowBones();
+        String showBonesStatus = showBones.toString();
+        setButtonText("skeletonShowBones", showBonesStatus);
 
-        float cloudiness = options.getCloudiness();
-        setSlider("cloudiness", cloudinessSt, cloudiness);
-        updateSliderStatus("cloudiness", 100f * cloudiness, "%");
+        float lineWidth = options.getLineWidth();
+        setSlider("skeletonLineWidth", widthSt, lineWidth);
+        lineWidth = Math.round(lineWidth);
+        updateSliderStatus("skeletonLineWidth", lineWidth, " px");
 
-        float hour = options.getHour();
-        setSlider("hour", hourSt, hour);
-        int second = Math.round(hour * 3600);
-        int minute = second / TimeOfDay.secondsPerMinute;
-        int mm = minute % TimeOfDay.minutesPerHour;
-        int hh = minute / TimeOfDay.minutesPerHour;
-        String tod = String.format("solar time = %d:%02d", hh, mm);
-        setStatusText("hourSliderStatus", tod);
+        float pointSize = options.getPointSize();
+        setSlider("skeletonPointSize", sizeSt, pointSize);
+        pointSize = Math.round(pointSize);
+        updateSliderStatus("skeletonPointSize", pointSize, " px");
+
+        SkeletonColors editColor = options.getEditColor();
+        String colorSelectButton = editColor.toString();
+        setButtonText("skeletonColorSelect", colorSelectButton);
+
+        ColorRGBA color = options.copyColor(editColor, null);
+        setColorBank("ske", colorSt, color);
     }
 }

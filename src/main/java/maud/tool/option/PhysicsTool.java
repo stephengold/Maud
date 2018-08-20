@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -24,21 +24,22 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud.tool;
+package maud.tool.option;
 
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
-import maud.model.option.ScoreOptions;
-import maud.model.option.ShowBones;
+import maud.model.option.scene.SceneOptions;
+import maud.tool.Tool;
 
 /**
- * The controller for the "Score" tool in Maud's editor screen.
+ * The controller for the "Physics" tool in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class ScoreTool extends Tool {
+public class PhysicsTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -46,7 +47,11 @@ class ScoreTool extends Tool {
      * message logger for this class
      */
     final private static Logger logger
-            = Logger.getLogger(ScoreTool.class.getName());
+            = Logger.getLogger(PhysicsTool.class.getName());
+    /**
+     * transform for the max iterations slider
+     */
+    final private static SliderTransform iterSt = SliderTransform.None;
     // *************************************************************************
     // constructors
 
@@ -56,8 +61,8 @@ class ScoreTool extends Tool {
      * @param screenController the controller of the screen that will contain
      * the tool (not null)
      */
-    ScoreTool(GuiScreenController screenController) {
-        super(screenController, "score");
+    public PhysicsTool(GuiScreenController screenController) {
+        super(screenController, "physics");
     }
     // *************************************************************************
     // Tool methods
@@ -70,9 +75,20 @@ class ScoreTool extends Tool {
     @Override
     protected List<String> listCheckBoxes() {
         List<String> result = super.listCheckBoxes();
-        result.add("scoreTranslations");
-        result.add("scoreRotations");
-        result.add("scoreScales");
+        result.add("physics2");
+
+        return result;
+    }
+
+    /**
+     * Enumerate this tool's sliders.
+     *
+     * @return a new list of names (unique id prefixes)
+     */
+    @Override
+    protected List<String> listSliders() {
+        List<String> result = super.listSliders();
+        result.add("maxIterations");
 
         return result;
     }
@@ -86,18 +102,10 @@ class ScoreTool extends Tool {
      */
     @Override
     public void onCheckBoxChanged(String name, boolean isChecked) {
-        ScoreOptions options = Maud.getModel().getScore();
+        SceneOptions options = Maud.getModel().getScene();
         switch (name) {
-            case "scoreRotations":
-                options.setShowRotations(isChecked);
-                break;
-
-            case "scoreScales":
-                options.setShowScales(isChecked);
-                break;
-
-            case "scoreTranslations":
-                options.setShowTranslations(isChecked);
+            case "physics2":
+                options.getRender().setPhysicsRendered(isChecked);
                 break;
 
             default:
@@ -106,28 +114,30 @@ class ScoreTool extends Tool {
     }
 
     /**
+     * Update the MVC model based on the sliders.
+     */
+    @Override
+    public void onSliderChanged() {
+        SceneOptions options = Maud.getModel().getScene();
+
+        float floatMax = readSlider("maxIterations", iterSt);
+        int intMax = Math.round(floatMax);
+        options.setNumPhysicsIterations(intMax);
+    }
+
+    /**
      * Callback to update this tool prior to rendering. (Invoked once per render
      * pass while this tool is displayed.)
      */
     @Override
     protected void toolUpdate() {
-        ScoreOptions scoreOptions = Maud.getModel().getScore();
+        SceneOptions options = Maud.getModel().getScene();
 
-        boolean translations = scoreOptions.showsTranslations();
-        setChecked("scoreTranslations", translations);
+        boolean isRendered = options.getRender().isPhysicsRendered();
+        setChecked("physics2", isRendered);
 
-        boolean rotations = scoreOptions.showsRotations();
-        setChecked("scoreRotations", rotations);
-
-        boolean scales = scoreOptions.showsScales();
-        setChecked("scoreScales", scales);
-
-        ShowBones showNoneSelected = scoreOptions.getShowNoneSelected();
-        String noneButton = showNoneSelected.toString();
-        setButtonText("scoreShowNoneSelected", noneButton);
-
-        ShowBones showWhenSelected = scoreOptions.getShowWhenSelected();
-        String whenButton = showWhenSelected.toString();
-        setButtonText("scoreShowWhenSelected", whenButton);
+        int maxIterations = options.numPhysicsIterations();
+        setSlider("maxIterations", iterSt, maxIterations);
+        updateSliderStatus("maxIterations", maxIterations, "");
     }
 }

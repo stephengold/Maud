@@ -68,7 +68,7 @@ abstract public class Tool extends GuiWindowController {
      * the tool (not null)
      * @param name the name (unique id prefix) of this tool (not null)
      */
-    Tool(GuiScreenController screenController, String name) {
+    public Tool(GuiScreenController screenController, String name) {
         super(screenController, name + "Tool", false);
         toolName = name;
     }

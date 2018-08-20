@@ -24,24 +24,21 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud.tool;
+package maud.tool.option;
 
-import com.jme3.math.ColorRGBA;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
-import jme3utilities.nifty.SliderTransform;
-import maud.Maud;
 import maud.MaudUtil;
-import maud.model.option.scene.DddCursorOptions;
+import maud.model.option.DisplaySettings;
+import maud.tool.Tool;
 
 /**
- * The controller for the "Cursor" tool in Maud's editor screen. The tool
- * controls the appearance of 3-D cursors displayed in "scene" views.
+ * The controller for the "Display-Settings" tool in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class CursorTool extends Tool {
+public class DisplaySettingsTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -49,19 +46,7 @@ class CursorTool extends Tool {
      * message logger for this class
      */
     final private static Logger logger
-            = Logger.getLogger(CursorTool.class.getName());
-    /**
-     * transform for the color sliders
-     */
-    final private static SliderTransform colorSt = SliderTransform.Reversed;
-    /**
-     * transform for the cycle slider
-     */
-    final private static SliderTransform cycleSt = SliderTransform.Log10;
-    /**
-     * transform for the size slider
-     */
-    final private static SliderTransform sizeSt = SliderTransform.Log10;
+            = Logger.getLogger(DisplaySettingsTool.class.getName());
     // *************************************************************************
     // constructors
 
@@ -71,8 +56,8 @@ class CursorTool extends Tool {
      * @param screenController the controller of the screen that will contain
      * the tool (not null)
      */
-    CursorTool(GuiScreenController screenController) {
-        super(screenController, "cursor");
+    public DisplaySettingsTool(GuiScreenController screenController) {
+        super(screenController, "displaySettings");
     }
     // *************************************************************************
     // Tool methods
@@ -85,24 +70,9 @@ class CursorTool extends Tool {
     @Override
     protected List<String> listCheckBoxes() {
         List<String> result = super.listCheckBoxes();
-        result.add("3DCursor");
-
-        return result;
-    }
-
-    /**
-     * Enumerate this tool's sliders.
-     *
-     * @return a new list of names (unique id prefixes)
-     */
-    @Override
-    protected List<String> listSliders() {
-        List<String> result = super.listSliders();
-        result.add("cursorR");
-        result.add("cursorG");
-        result.add("cursorB");
-        result.add("cursorCycle");
-        result.add("cursorSize");
+        result.add("fullscreen");
+        result.add("gammaCorrection");
+        result.add("vSync");
 
         return result;
     }
@@ -116,10 +86,17 @@ class CursorTool extends Tool {
      */
     @Override
     public void onCheckBoxChanged(String name, boolean isChecked) {
-        DddCursorOptions options = Maud.getModel().getScene().getCursor();
         switch (name) {
-            case "3DCursor":
-                options.setVisible(isChecked);
+            case "fullscreen":
+                DisplaySettings.setFullscreen(isChecked);
+                break;
+
+            case "gammaCorrection":
+                DisplaySettings.setGammaCorrection(isChecked);
+                break;
+
+            case "vSync":
+                DisplaySettings.setVSync(isChecked);
                 break;
 
             default:
@@ -128,47 +105,52 @@ class CursorTool extends Tool {
     }
 
     /**
-     * Update the MVC model based on the sliders.
-     */
-    @Override
-    public void onSliderChanged() {
-        DddCursorOptions options = Maud.getModel().getScene().getCursor();
-
-        int colorIndex = Maud.getModel().getMisc().getColorIndex();
-        ColorRGBA color = readColorBank("cursor", colorSt, null);
-        options.setColor(colorIndex, color);
-
-        float cycleTime = readSlider("cursorCycle", cycleSt);
-        options.setCycleTime(cycleTime);
-
-        float size = readSlider("cursorSize", sizeSt);
-        options.setSize(size);
-    }
-
-    /**
      * Callback to update this tool prior to rendering. (Invoked once per render
      * pass while this tool is displayed.)
      */
     @Override
     protected void toolUpdate() {
-        DddCursorOptions options = Maud.getModel().getScene().getCursor();
+        boolean fullscreen = DisplaySettings.isFullscreen();
+        setChecked("fullscreen", fullscreen);
+        boolean gamma = DisplaySettings.isGammaCorrection();
+        setChecked("gammaCorrection", gamma);
+        boolean vSync = DisplaySettings.isVSync();
+        setChecked("vSync", vSync);
 
-        boolean visible = options.isVisible();
-        setChecked("3DCursor", visible);
+        int width = DisplaySettings.getWidth();
+        int height = DisplaySettings.getHeight();
+        String dimensionsButton = MaudUtil.describeDimensions(width, height);
+        setButtonText("displayDimensions", dimensionsButton);
 
-        int colorIndex = Maud.getModel().getMisc().getColorIndex();
-        String indexText = MaudUtil.formatIndex(colorIndex);
-        setButtonText("cursorColorIndex", indexText);
+        int msaaFactor = DisplaySettings.getMsaaFactor();
+        String msaaButton = MaudUtil.describeMsaaFactor(msaaFactor);
+        setButtonText("displayMsaa", msaaButton);
 
-        ColorRGBA color = options.copyColor(colorIndex, null);
-        setColorBank("cursor", colorSt, color);
+        String refreshRateButton = "";
+        if (fullscreen) {
+            int refreshRate = DisplaySettings.getRefreshRate();
+            if (refreshRate <= 0) {
+                refreshRateButton = "unknown";
+            } else {
+                refreshRateButton = String.format("%d Hz", refreshRate);
+            }
+        }
+        setButtonText("refreshRate", refreshRateButton);
 
-        float cycleTime = options.getCycleTime();
-        setSlider("cursorCycle", cycleSt, cycleTime);
-        updateSliderStatus("cursorCycle", cycleTime, " seconds");
+        int colorDepth = DisplaySettings.getColorDepth();
+        String colorDepthButton = String.format("%d bpp", colorDepth);
+        setButtonText("colorDepth", colorDepthButton);
 
-        float size = options.getSize();
-        setSlider("cursorSize", sizeSt, size);
-        updateSliderStatus("cursorSize", size, "");
+        String applyButton = "";
+        if (DisplaySettings.canApply() && !DisplaySettings.areApplied()) {
+            applyButton = "Apply";
+        }
+        setButtonText("applyDisplaySettings", applyButton);
+
+        String saveButton = "";
+        if (DisplaySettings.areValid() && !DisplaySettings.areSaved()) {
+            saveButton = "Save";
+        }
+        setButtonText("saveDisplaySettings", saveButton);
     }
 }

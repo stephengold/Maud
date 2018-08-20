@@ -24,21 +24,28 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud.tool;
+package maud.tool.option;
 
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
-import jme3utilities.wes.TweenRotations;
-import jme3utilities.wes.TweenTransforms;
-import jme3utilities.wes.TweenVectors;
 import maud.Maud;
+import maud.model.option.scene.CameraOptions;
+import maud.model.option.scene.MovementMode;
+import maud.model.option.scene.OrbitCenter;
+import maud.model.option.scene.ProjectionMode;
+import maud.tool.Tool;
 
 /**
- * The controller for the "Tweening" tool in Maud's editor screen.
+ * The controller for the "Camera" tool in Maud's editor screen. The camera tool
+ * controls camera modes used in "scene" views.
+ * <p>
+ * In scene views, there are 2 movement modes: "orbit" mode, in which the camera
+ * always faces the 3-D cursor (or other central point) and "fly" mode, in which
+ * the camera turns freely.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class TweeningTool extends Tool {
+public class CameraTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -46,18 +53,18 @@ class TweeningTool extends Tool {
      * message logger for this class
      */
     final private static Logger logger
-            = Logger.getLogger(TweeningTool.class.getName());
+            = Logger.getLogger(CameraTool.class.getName());
     // *************************************************************************
     // constructors
 
     /**
      * Instantiate an uninitialized tool.
      *
-     * @param screenController the controller of the screen that will contain
+     * @param screenController the controller of the screen that will contains
      * the tool (not null)
      */
-    TweeningTool(GuiScreenController screenController) {
-        super(screenController, "tweening");
+    public CameraTool(GuiScreenController screenController) {
+        super(screenController, "camera");
     }
     // *************************************************************************
     // Tool methods
@@ -68,17 +75,21 @@ class TweeningTool extends Tool {
      */
     @Override
     protected void toolUpdate() {
-        TweenTransforms techniques = Maud.getModel().getTweenTransforms();
-        TweenVectors tweenTranslations = techniques.getTweenTranslations();
-        String desc = tweenTranslations.toString();
-        setButtonText("tweenTranslations", desc);
+        CameraOptions options = Maud.getModel().getScene().getCamera();
 
-        TweenRotations tweenRotations = techniques.getTweenRotations();
-        desc = tweenRotations.toString();
-        setButtonText("tweenRotations", desc);
+        MovementMode movement = options.getMovementMode();
+        String mButton = movement.toString();
+        setButtonText("cameraMovement", mButton);
 
-        TweenVectors tweenScales = techniques.getTweenScales();
-        desc = tweenScales.toString();
-        setButtonText("tweenScales", desc);
+        ProjectionMode projection = options.getProjectionMode();
+        String pButton = projection.toString();
+        setButtonText("cameraProjection", pButton);
+
+        String ocButton = "";
+        if (options.isOrbitMode()) {
+            OrbitCenter orbitCenter = options.getOrbitCenter();
+            ocButton = orbitCenter.toString();
+        }
+        setButtonText("orbitCenter", ocButton);
     }
 }

@@ -25,6 +25,6 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * Controllers for history/map/CGM-related tools in Maud's editor screen.
+ * Controllers for option-related tools in Maud's editor screen.
  */
-package maud.tool;
+package maud.tool.option;

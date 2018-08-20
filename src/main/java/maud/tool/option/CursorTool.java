@@ -24,7 +24,7 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud.tool;
+package maud.tool.option;
 
 import com.jme3.math.ColorRGBA;
 import java.util.List;
@@ -32,16 +32,17 @@ import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
-import maud.model.option.ShowBones;
-import maud.model.option.scene.SkeletonColors;
-import maud.model.option.scene.SkeletonOptions;
+import maud.MaudUtil;
+import maud.model.option.scene.DddCursorOptions;
+import maud.tool.Tool;
 
 /**
- * The controller for the "Skeleton" tool in Maud's editor screen.
+ * The controller for the "Cursor" tool in Maud's editor screen. The tool
+ * controls the appearance of 3-D cursors displayed in "scene" views.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SkeletonTool extends Tool {
+public class CursorTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -49,19 +50,19 @@ class SkeletonTool extends Tool {
      * message logger for this class
      */
     final private static Logger logger
-            = Logger.getLogger(SkeletonTool.class.getName());
+            = Logger.getLogger(CursorTool.class.getName());
     /**
      * transform for the color sliders
      */
     final private static SliderTransform colorSt = SliderTransform.Reversed;
     /**
-     * transform for the point-size sliders
+     * transform for the cycle slider
      */
-    final private static SliderTransform sizeSt = SliderTransform.None;
+    final private static SliderTransform cycleSt = SliderTransform.Log10;
     /**
-     * transform for the width slider
+     * transform for the size slider
      */
-    final private static SliderTransform widthSt = SliderTransform.None;
+    final private static SliderTransform sizeSt = SliderTransform.Log10;
     // *************************************************************************
     // constructors
 
@@ -71,11 +72,24 @@ class SkeletonTool extends Tool {
      * @param screenController the controller of the screen that will contain
      * the tool (not null)
      */
-    SkeletonTool(GuiScreenController screenController) {
-        super(screenController, "skeleton");
+    public CursorTool(GuiScreenController screenController) {
+        super(screenController, "cursor");
     }
     // *************************************************************************
     // Tool methods
+
+    /**
+     * Enumerate this tool's check boxes.
+     *
+     * @return a new list of names (unique id prefixes)
+     */
+    @Override
+    protected List<String> listCheckBoxes() {
+        List<String> result = super.listCheckBoxes();
+        result.add("3DCursor");
+
+        return result;
+    }
 
     /**
      * Enumerate this tool's sliders.
@@ -85,13 +99,33 @@ class SkeletonTool extends Tool {
     @Override
     protected List<String> listSliders() {
         List<String> result = super.listSliders();
-        result.add("skeletonLineWidth");
-        result.add("skeletonPointSize");
-        result.add("skeR");
-        result.add("skeG");
-        result.add("skeB");
+        result.add("cursorR");
+        result.add("cursorG");
+        result.add("cursorB");
+        result.add("cursorCycle");
+        result.add("cursorSize");
 
         return result;
+    }
+
+    /**
+     * Update the MVC model based on a check-box event.
+     *
+     * @param name the name (unique id prefix) of the check box
+     * @param isChecked the new state of the check box (true&rarr;checked,
+     * false&rarr;unchecked)
+     */
+    @Override
+    public void onCheckBoxChanged(String name, boolean isChecked) {
+        DddCursorOptions options = Maud.getModel().getScene().getCursor();
+        switch (name) {
+            case "3DCursor":
+                options.setVisible(isChecked);
+                break;
+
+            default:
+                super.onCheckBoxChanged(name, isChecked);
+        }
     }
 
     /**
@@ -99,17 +133,17 @@ class SkeletonTool extends Tool {
      */
     @Override
     public void onSliderChanged() {
-        SkeletonOptions options = Maud.getModel().getScene().getSkeleton();
+        DddCursorOptions options = Maud.getModel().getScene().getCursor();
 
-        float lineWidth = readSlider("skeletonLineWidth", widthSt);
-        options.setLineWidth(lineWidth);
+        int colorIndex = Maud.getModel().getMisc().getColorIndex();
+        ColorRGBA color = readColorBank("cursor", colorSt, null);
+        options.setColor(colorIndex, color);
 
-        float pointSize = readSlider("skeletonPointSize", sizeSt);
-        options.setPointSize(pointSize);
+        float cycleTime = readSlider("cursorCycle", cycleSt);
+        options.setCycleTime(cycleTime);
 
-        ColorRGBA color = readColorBank("ske", colorSt, null);
-        SkeletonColors use = options.getEditColor();
-        options.setColor(use, color);
+        float size = readSlider("cursorSize", sizeSt);
+        options.setSize(size);
     }
 
     /**
@@ -118,27 +152,24 @@ class SkeletonTool extends Tool {
      */
     @Override
     protected void toolUpdate() {
-        SkeletonOptions options = Maud.getModel().getScene().getSkeleton();
+        DddCursorOptions options = Maud.getModel().getScene().getCursor();
 
-        ShowBones showBones = options.getShowBones();
-        String showBonesStatus = showBones.toString();
-        setButtonText("skeletonShowBones", showBonesStatus);
+        boolean visible = options.isVisible();
+        setChecked("3DCursor", visible);
 
-        float lineWidth = options.getLineWidth();
-        setSlider("skeletonLineWidth", widthSt, lineWidth);
-        lineWidth = Math.round(lineWidth);
-        updateSliderStatus("skeletonLineWidth", lineWidth, " px");
+        int colorIndex = Maud.getModel().getMisc().getColorIndex();
+        String indexText = MaudUtil.formatIndex(colorIndex);
+        setButtonText("cursorColorIndex", indexText);
 
-        float pointSize = options.getPointSize();
-        setSlider("skeletonPointSize", sizeSt, pointSize);
-        pointSize = Math.round(pointSize);
-        updateSliderStatus("skeletonPointSize", pointSize, " px");
+        ColorRGBA color = options.copyColor(colorIndex, null);
+        setColorBank("cursor", colorSt, color);
 
-        SkeletonColors editColor = options.getEditColor();
-        String colorSelectButton = editColor.toString();
-        setButtonText("skeletonColorSelect", colorSelectButton);
+        float cycleTime = options.getCycleTime();
+        setSlider("cursorCycle", cycleSt, cycleTime);
+        updateSliderStatus("cursorCycle", cycleTime, " seconds");
 
-        ColorRGBA color = options.copyColor(editColor, null);
-        setColorBank("ske", colorSt, color);
+        float size = options.getSize();
+        setSlider("cursorSize", sizeSt, size);
+        updateSliderStatus("cursorSize", size, "");
     }
 }

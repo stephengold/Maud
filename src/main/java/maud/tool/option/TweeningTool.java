@@ -24,23 +24,22 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud.tool;
+package maud.tool.option;
 
-import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
-import jme3utilities.nifty.SliderTransform;
+import jme3utilities.wes.TweenRotations;
+import jme3utilities.wes.TweenTransforms;
+import jme3utilities.wes.TweenVectors;
 import maud.Maud;
-import maud.model.WhichCgm;
-import maud.model.option.scene.PlatformType;
-import maud.model.option.scene.SceneOptions;
+import maud.tool.Tool;
 
 /**
- * The controller for the "Platform" tool in Maud's editor screen.
+ * The controller for the "Tweening" tool in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class PlatformTool extends Tool {
+public class TweeningTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -48,11 +47,7 @@ class PlatformTool extends Tool {
      * message logger for this class
      */
     final private static Logger logger
-            = Logger.getLogger(PlatformTool.class.getName());
-    /**
-     * transform for the diameter sliders
-     */
-    final private static SliderTransform diameterSt = SliderTransform.Log10;
+            = Logger.getLogger(TweeningTool.class.getName());
     // *************************************************************************
     // constructors
 
@@ -62,39 +57,11 @@ class PlatformTool extends Tool {
      * @param screenController the controller of the screen that will contain
      * the tool (not null)
      */
-    PlatformTool(GuiScreenController screenController) {
-        super(screenController, "platform");
+    public TweeningTool(GuiScreenController screenController) {
+        super(screenController, "tweening");
     }
     // *************************************************************************
     // Tool methods
-
-    /**
-     * Enumerate this tool's sliders.
-     *
-     * @return a new list of names (unique id prefixes)
-     */
-    @Override
-    protected List<String> listSliders() {
-        List<String> result = super.listSliders();
-        result.add("sourcePlatformDiameter");
-        result.add("targetPlatformDiameter");
-
-        return result;
-    }
-
-    /**
-     * Update the MVC model based on the sliders.
-     */
-    @Override
-    public void onSliderChanged() {
-        SceneOptions options = Maud.getModel().getScene();
-
-        float sourceDiameter = readSlider("sourcePlatformDiameter", diameterSt);
-        options.setPlatformDiameter(WhichCgm.Source, sourceDiameter);
-
-        float targetDiameter = readSlider("targetPlatformDiameter", diameterSt);
-        options.setPlatformDiameter(WhichCgm.Target, targetDiameter);
-    }
 
     /**
      * Callback to update this tool prior to rendering. (Invoked once per render
@@ -102,18 +69,17 @@ class PlatformTool extends Tool {
      */
     @Override
     protected void toolUpdate() {
-        SceneOptions options = Maud.getModel().getScene();
+        TweenTransforms techniques = Maud.getModel().getTweenTransforms();
+        TweenVectors tweenTranslations = techniques.getTweenTranslations();
+        String desc = tweenTranslations.toString();
+        setButtonText("tweenTranslations", desc);
 
-        PlatformType type = options.getPlatformType();
-        String tButton = type.toString();
-        setButtonText("platformType", tButton);
+        TweenRotations tweenRotations = techniques.getTweenRotations();
+        desc = tweenRotations.toString();
+        setButtonText("tweenRotations", desc);
 
-        float sourceDiameter = options.getPlatformDiameter(WhichCgm.Source);
-        setSlider("sourcePlatformDiameter", diameterSt, sourceDiameter);
-        updateSliderStatus("sourcePlatformDiameter", sourceDiameter, " wu");
-
-        float targetDiameter = options.getPlatformDiameter(WhichCgm.Target);
-        setSlider("targetPlatformDiameter", diameterSt, targetDiameter);
-        updateSliderStatus("targetPlatformDiameter", targetDiameter, " wu");
+        TweenVectors tweenScales = techniques.getTweenScales();
+        desc = tweenScales.toString();
+        setButtonText("tweenScales", desc);
     }
 }

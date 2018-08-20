@@ -24,20 +24,22 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package maud.tool;
+package maud.tool.option;
 
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
-import maud.MaudUtil;
-import maud.model.option.DisplaySettings;
+import maud.Maud;
+import maud.model.option.ScoreOptions;
+import maud.model.option.ShowBones;
+import maud.tool.Tool;
 
 /**
- * The controller for the "Display-Settings" tool in Maud's editor screen.
+ * The controller for the "Score" tool in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class DisplaySettingsTool extends Tool {
+public class ScoreTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -45,7 +47,7 @@ class DisplaySettingsTool extends Tool {
      * message logger for this class
      */
     final private static Logger logger
-            = Logger.getLogger(DisplaySettingsTool.class.getName());
+            = Logger.getLogger(ScoreTool.class.getName());
     // *************************************************************************
     // constructors
 
@@ -55,8 +57,8 @@ class DisplaySettingsTool extends Tool {
      * @param screenController the controller of the screen that will contain
      * the tool (not null)
      */
-    DisplaySettingsTool(GuiScreenController screenController) {
-        super(screenController, "displaySettings");
+    public ScoreTool(GuiScreenController screenController) {
+        super(screenController, "score");
     }
     // *************************************************************************
     // Tool methods
@@ -69,9 +71,9 @@ class DisplaySettingsTool extends Tool {
     @Override
     protected List<String> listCheckBoxes() {
         List<String> result = super.listCheckBoxes();
-        result.add("fullscreen");
-        result.add("gammaCorrection");
-        result.add("vSync");
+        result.add("scoreTranslations");
+        result.add("scoreRotations");
+        result.add("scoreScales");
 
         return result;
     }
@@ -85,17 +87,18 @@ class DisplaySettingsTool extends Tool {
      */
     @Override
     public void onCheckBoxChanged(String name, boolean isChecked) {
+        ScoreOptions options = Maud.getModel().getScore();
         switch (name) {
-            case "fullscreen":
-                DisplaySettings.setFullscreen(isChecked);
+            case "scoreRotations":
+                options.setShowRotations(isChecked);
                 break;
 
-            case "gammaCorrection":
-                DisplaySettings.setGammaCorrection(isChecked);
+            case "scoreScales":
+                options.setShowScales(isChecked);
                 break;
 
-            case "vSync":
-                DisplaySettings.setVSync(isChecked);
+            case "scoreTranslations":
+                options.setShowTranslations(isChecked);
                 break;
 
             default:
@@ -109,47 +112,23 @@ class DisplaySettingsTool extends Tool {
      */
     @Override
     protected void toolUpdate() {
-        boolean fullscreen = DisplaySettings.isFullscreen();
-        setChecked("fullscreen", fullscreen);
-        boolean gamma = DisplaySettings.isGammaCorrection();
-        setChecked("gammaCorrection", gamma);
-        boolean vSync = DisplaySettings.isVSync();
-        setChecked("vSync", vSync);
+        ScoreOptions scoreOptions = Maud.getModel().getScore();
 
-        int width = DisplaySettings.getWidth();
-        int height = DisplaySettings.getHeight();
-        String dimensionsButton = MaudUtil.describeDimensions(width, height);
-        setButtonText("displayDimensions", dimensionsButton);
+        boolean translations = scoreOptions.showsTranslations();
+        setChecked("scoreTranslations", translations);
 
-        int msaaFactor = DisplaySettings.getMsaaFactor();
-        String msaaButton = MaudUtil.describeMsaaFactor(msaaFactor);
-        setButtonText("displayMsaa", msaaButton);
+        boolean rotations = scoreOptions.showsRotations();
+        setChecked("scoreRotations", rotations);
 
-        String refreshRateButton = "";
-        if (fullscreen) {
-            int refreshRate = DisplaySettings.getRefreshRate();
-            if (refreshRate <= 0) {
-                refreshRateButton = "unknown";
-            } else {
-                refreshRateButton = String.format("%d Hz", refreshRate);
-            }
-        }
-        setButtonText("refreshRate", refreshRateButton);
+        boolean scales = scoreOptions.showsScales();
+        setChecked("scoreScales", scales);
 
-        int colorDepth = DisplaySettings.getColorDepth();
-        String colorDepthButton = String.format("%d bpp", colorDepth);
-        setButtonText("colorDepth", colorDepthButton);
+        ShowBones showNoneSelected = scoreOptions.getShowNoneSelected();
+        String noneButton = showNoneSelected.toString();
+        setButtonText("scoreShowNoneSelected", noneButton);
 
-        String applyButton = "";
-        if (DisplaySettings.canApply() && !DisplaySettings.areApplied()) {
-            applyButton = "Apply";
-        }
-        setButtonText("applyDisplaySettings", applyButton);
-
-        String saveButton = "";
-        if (DisplaySettings.areValid() && !DisplaySettings.areSaved()) {
-            saveButton = "Save";
-        }
-        setButtonText("saveDisplaySettings", saveButton);
+        ShowBones showWhenSelected = scoreOptions.getShowWhenSelected();
+        String whenButton = showWhenSelected.toString();
+        setButtonText("scoreShowWhenSelected", whenButton);
     }
 }
