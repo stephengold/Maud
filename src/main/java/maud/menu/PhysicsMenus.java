@@ -36,6 +36,7 @@ import jme3utilities.MyString;
 import jme3utilities.minie.MyObject;
 import maud.Maud;
 import maud.PhysicsUtil;
+import maud.ShapeType;
 import maud.action.ActionPrefix;
 import maud.dialog.EditorDialogs;
 import maud.model.cgm.Cgm;
@@ -319,7 +320,7 @@ public class PhysicsMenus {
         assert !actionPrefix.isEmpty();
 
         MenuBuilder builder = new MenuBuilder();
-        for (PhysicsUtil.ShapeType shapeType : PhysicsUtil.ShapeType.values()) {
+        for (ShapeType shapeType : ShapeType.values()) {
             String string = shapeType.toString();
             builder.add(string);
         }

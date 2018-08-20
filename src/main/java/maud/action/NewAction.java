@@ -31,7 +31,7 @@ import com.jme3.shader.VarType;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import maud.Maud;
-import maud.PhysicsUtil;
+import maud.ShapeType;
 import maud.dialog.EditorDialogs;
 import maud.menu.AnimationMenus;
 import maud.menu.EnumMenus;
@@ -233,8 +233,7 @@ class NewAction {
         } else if (actionString.startsWith(ActionPrefix.newGhostControl)) {
             String shapeName = MyString.remainder(actionString,
                     ActionPrefix.newGhostControl);
-            PhysicsUtil.ShapeType shapeType
-                    = PhysicsUtil.ShapeType.valueOf(shapeName);
+            ShapeType shapeType = ShapeType.valueOf(shapeName);
             target.getSpatial().addGhostControl(shapeType);
 
         } else if (actionString.startsWith(ActionPrefix.newLeafNode)) {
@@ -283,8 +282,7 @@ class NewAction {
         } else if (actionString.startsWith(ActionPrefix.newRbc)) {
             String shapeName
                     = MyString.remainder(actionString, ActionPrefix.newRbc);
-            PhysicsUtil.ShapeType shapeType
-                    = PhysicsUtil.ShapeType.valueOf(shapeName);
+            ShapeType shapeType = ShapeType.valueOf(shapeName);
             target.getSpatial().addRigidBodyControl(shapeType);
 
         } else if (actionString.startsWith(ActionPrefix.newUserKey)) {

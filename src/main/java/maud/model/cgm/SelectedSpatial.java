@@ -79,6 +79,7 @@ import jme3utilities.ui.Locators;
 import maud.Maud;
 import maud.MaudUtil;
 import maud.PhysicsUtil;
+import maud.ShapeType;
 import maud.view.scene.SceneView;
 
 /**
@@ -146,7 +147,7 @@ public class SelectedSpatial implements JmeCloneable {
      *
      * @param shapeType desired type of shape (not null)
      */
-    public void addGhostControl(PhysicsUtil.ShapeType shapeType) {
+    public void addGhostControl(ShapeType shapeType) {
         Validate.nonNull(shapeType, "shape type");
 
         SceneView sceneView = cgm.getSceneView();
@@ -210,7 +211,7 @@ public class SelectedSpatial implements JmeCloneable {
      *
      * @param shapeType desired type of shape (not null)
      */
-    public void addRigidBodyControl(PhysicsUtil.ShapeType shapeType) {
+    public void addRigidBodyControl(ShapeType shapeType) {
         Validate.nonNull(shapeType, "shape type");
 
         SceneView sceneView = cgm.getSceneView();

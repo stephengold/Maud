@@ -66,51 +66,6 @@ import jme3utilities.math.MyVector3f;
  */
 public class PhysicsUtil {
     // *************************************************************************
-    // enums
-
-    /**
-     * Enumerate the types of collision shapes that makeShape() knows how to
-     * make.
-     */
-    public enum ShapeType {
-        /**
-         * BoxCollisionShape
-         */
-        Box,
-        /**
-         * CapsuleCollisionShape
-         */
-        Capsule,
-        /**
-         * ConeCollisionShape on X axis
-         */
-        ConeX,
-        /**
-         * ConeCollisionShape on Y axis
-         */
-        ConeY,
-        /**
-         * ConeCollisionShape on Z axis
-         */
-        ConeZ,
-        /**
-         * CylinderCollisionShape on X axis
-         */
-        CylinderX,
-        /**
-         * CylinderCollisionShape on Y axis
-         */
-        CylinderY,
-        /**
-         * CylinderCollisionShape on Z axis
-         */
-        CylinderZ,
-        /**
-         * SphereCollisionShape
-         */
-        Sphere;
-    }
-    // *************************************************************************
     // constants and loggers
 
     /**
