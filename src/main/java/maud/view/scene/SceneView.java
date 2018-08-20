@@ -638,7 +638,7 @@ public class SceneView extends SceneViewCore {
             Object newValue) {
         Validate.nonEmpty(parameterName, "parameter name");
         Validate.nonNull(varType, "var type");
-        Validate.nonNull(newValue, "initial value");
+        Validate.nonNull(newValue, "new value");
 
         Material material = selectedMaterial();
         Object cloneValue = Misc.deepClone(newValue);

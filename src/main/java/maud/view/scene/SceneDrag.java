@@ -152,7 +152,7 @@ public class SceneDrag {
      * @param farSideFlag true &rarr; drag on the far side of the axis origin,
      * false to drag on near side
      */
-    static public void start(int axisIndex, float initialLength, Cgm cgm,
+    public static void start(int axisIndex, float initialLength, Cgm cgm,
             boolean farSideFlag) {
         Validate.inRange(axisIndex, "axis index", MyVector3f.firstAxis,
                 MyVector3f.lastAxis);

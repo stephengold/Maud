@@ -53,13 +53,13 @@ class MenuBuilder {
     // fields
 
     /**
-     * list of menu items
+     * list of menu items TODO specify maxItems in the constructor
      */
-    final private List<String> items = new ArrayList<>(20);
+    final private List<String> items = new ArrayList<>(40);
     /**
      * list of menu icon asset paths
      */
-    final private List<String> icons = new ArrayList<>(20);
+    final private List<String> icons = new ArrayList<>(40);
     // *************************************************************************
     // new methods exposed
 
@@ -214,7 +214,7 @@ class MenuBuilder {
 
     /**
      * Reduce a collection of filenames (or zip entry names) to the specified
-     * number and add them to the menu.
+     * number, sort them, and add them to the menu.
      *
      * @param names the collection of filenames (not null, unaffected)
      * @param maxItems maximum number of menu items to add (&ge;2)
@@ -226,9 +226,9 @@ class MenuBuilder {
          * Generate the list of names and prefixes to add.
          */
         List<String> menuList = new ArrayList<>(names);
+
         MyString.reduce(menuList, maxItems);
         Collections.sort(menuList);
-
         for (String menuItems : menuList) {
             if (names.contains(menuItems)) {
                 addFile(menuItems);

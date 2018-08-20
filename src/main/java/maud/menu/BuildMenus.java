@@ -60,11 +60,6 @@ public class BuildMenus {
      */
     final private static boolean haveTestdata = false;
     /**
-     * maximum number of items in a menu, derived from the minimum display
-     * height of 480 pixels
-     */
-    final private static int maxItems = 19;
-    /**
      * message logger for this class
      */
     final private static Logger logger
@@ -540,11 +535,11 @@ public class BuildMenus {
          */
         Set<String> nameSet = fileMap.keySet();
         List<String> nameList = new ArrayList<>(nameSet);
-        MyString.reduce(nameList, maxItems);
-        Collections.sort(nameList);
         /*
-         * Build the menu.
+         * Build a reduced menu.
          */
+        MyString.reduce(nameList, ShowMenus.maxItems);
+        Collections.sort(nameList);
         builder.reset();
         for (String name : nameList) {
             if (fileMap.containsKey(name)) {
@@ -554,7 +549,7 @@ public class BuildMenus {
                 } else {
                     builder.addFile(name);
                 }
-            } else {
+            } else { // prefix
                 builder.addEllipsis(name);
             }
         }

@@ -480,6 +480,7 @@ public class DisplaySettings {
      */
     public static void setRefreshRate(int newRate) {
         Validate.positive(newRate, "new rate");
+
         int oldRate = getRefreshRate();
         if (newRate != oldRate) {
             cachedSettings.setFrequency(newRate);
