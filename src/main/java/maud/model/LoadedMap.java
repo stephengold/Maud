@@ -41,8 +41,8 @@ import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import jme3utilities.ui.Locators;
 import jme3utilities.wes.Pose;
+import maud.LoadUtil;
 import maud.Maud;
-import maud.MaudUtil;
 import maud.dialog.EditorDialogs;
 import maud.menu.BuildMenus;
 import maud.model.cgm.Cgm;
@@ -699,7 +699,7 @@ public class LoadedMap implements Cloneable {
         }
 
         SkeletonMapping loaded
-                = MaudUtil.loadMapAsset(assetManager, key, diagnose);
+                = LoadUtil.loadMapAsset(assetManager, key, diagnose);
         if (loaded == null) {
             logger.log(Level.SEVERE, "Failed to load map from asset {0}",
                     MyString.quote(path));
