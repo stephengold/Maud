@@ -191,7 +191,7 @@ the menu bar, status bar, and tool windows.
                                  width="*"/>
                         <control name="button" id="animationEditButton"
                                  width="37px">
-                            <interact onRelease="perform(select editAnimationMenu)"/>
+                            <interact onRelease="perform(select animationEditMenu)"/>
                         </control>
                         <control name="button" id="animationRenameButton"
                                  width="60px">

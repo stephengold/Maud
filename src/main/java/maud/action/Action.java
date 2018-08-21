@@ -168,7 +168,7 @@ public class Action {
 
     final static String saveDisplaySettings = "save displaySettings";
 
-    final static String selectAnimationEditMenu = "select editAnimationMenu"; // TODO
+    final static String selectAnimationEditMenu = "select animationEditMenu";
     final static String selectAnimControl = "select animControl";
     final static String selectAxesDragEffect = "select axesDragEffect";
     final static String selectAxesSubject = "select axesSubject";
