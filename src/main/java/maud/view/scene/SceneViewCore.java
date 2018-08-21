@@ -1077,6 +1077,33 @@ public class SceneViewCore
     }
 
     /**
+     * Configure the transform based on the ranges of vertex coordinates in the
+     * C-G model and the skeleton visualization subtree.
+     *
+     * @return max extent of the model along any axis (&gt;0)
+     */
+    private float configureTransform() {
+        parent.setLocalTransform(transformIdentity);
+        Vector3f[] minMax = MySpatial.findMinMaxCoords(cgmRoot);
+        Node subtree = skeletonVisualizer.getSubtree();
+        if (subtree != null) {
+            Vector3f[] subtreeMinMax = MySpatial.findMinMaxCoords(subtree);
+            MyVector3f.accumulateMinima(minMax[0], subtreeMinMax[0]);
+            MyVector3f.accumulateMaxima(minMax[1], subtreeMinMax[1]);
+        }
+        Vector3f center = MyVector3f.midpoint(minMax[0], minMax[1]);
+        boolean zUp = Maud.getModel().getMisc().getLoadZup();
+        float baseElevation = zUp ? minMax[0].z : minMax[0].y;
+        cgmTransform.loadCgm(center, baseElevation, zUp);
+
+        Vector3f extent = minMax[1].subtract(minMax[0]);
+        float maxExtent = MyMath.max(extent.x, extent.y, extent.z);
+
+        assert maxExtent > 0f : maxExtent;
+        return maxExtent;
+    }
+
+    /**
      * Add an axes visualizer to the base scene graph.
      */
     private void createAxes() {
@@ -1235,8 +1262,7 @@ public class SceneViewCore
     }
 
     /**
-     * Alter a newly loaded C-G model to prepare it for visualization. TODO
-     * refactor into simpler methods
+     * Alter a newly loaded C-G model to prepare it for visualization.
      */
     private void prepareForViewing() {
         /*
@@ -1261,27 +1287,12 @@ public class SceneViewCore
          */
         setSkeleton(selectedSkeleton, false);
         /*
-         * Configure the transform based on the ranges of vertex coordinates
-         * in the C-G model and the skeleton visualization subtree.
+         * Configure the transform.
          */
-        parent.setLocalTransform(transformIdentity);
-        Vector3f[] minMax = MySpatial.findMinMaxCoords(cgmRoot);
-        Node subtree = skeletonVisualizer.getSubtree();
-        if (subtree != null) {
-            Vector3f[] subtreeMinMax = MySpatial.findMinMaxCoords(subtree);
-            MyVector3f.accumulateMinima(minMax[0], subtreeMinMax[0]);
-            MyVector3f.accumulateMaxima(minMax[1], subtreeMinMax[1]);
-        }
-        Vector3f center = MyVector3f.midpoint(minMax[0], minMax[1]);
-        EditorModel model = Maud.getModel();
-        boolean zUp = model.getMisc().getLoadZup();
-        float baseElevation = zUp ? minMax[0].z : minMax[0].y;
-        cgmTransform.loadCgm(center, baseElevation, zUp);
+        float maxExtent = configureTransform();
         /*
          * Reset the camera limits/rate/position.
          */
-        Vector3f extent = minMax[1].subtract(minMax[0]);
-        float maxExtent = MyMath.max(extent.x, extent.y, extent.z);
         ScenePov pov = getPov();
         pov.setCgmSize(maxExtent);
         pov.setLocation(cameraStartLocation.mult(maxExtent));
@@ -1292,6 +1303,7 @@ public class SceneViewCore
         /*
          * Reset the platform size.
          */
+        EditorModel model = Maud.getModel();
         WhichCgm whichCgm = model.whichCgm(cgm);
         model.getScene().setPlatformDiameter(whichCgm, maxExtent);
 
