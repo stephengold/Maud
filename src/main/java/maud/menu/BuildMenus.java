@@ -194,6 +194,9 @@ public class BuildMenus {
                 File parent = file.getParentFile();
                 String parentPath = parent.getAbsolutePath();
                 parentPath = parentPath.replaceAll("\\\\", "/");
+                if (!parentPath.endsWith("/")) {
+                    parentPath += "/";
+                }
                 String prefix = file.getName();
                 buildFolderMenu(parentPath, prefix);
                 parentPath = MyString.remainder(parentPath, rootPath);
