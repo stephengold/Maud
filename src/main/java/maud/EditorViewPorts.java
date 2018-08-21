@@ -315,24 +315,6 @@ public class EditorViewPorts {
     }
 
     /**
-     * Instantiate a new camera with a partial-width view port. TODO rename
-     *
-     * @param side which side of the boundary to put the viewport on (not null)
-     * @return a new instance with perspective projection
-     */
-    private static Camera createHalfCamera(Side side) {
-        assert side != null;
-
-        Camera cam = Maud.getApplication().getCamera();
-        Camera newCamera = cam.clone();
-        updateSideCamera(newCamera, side);
-
-        assert !MyCamera.isFullWidth(newCamera);
-        assert !newCamera.isParallelProjection();
-        return newCamera;
-    }
-
-    /**
      * Create an overlay for a pre-existing view port.
      *
      * @param base base view port (not null, unaffected)
@@ -353,13 +335,31 @@ public class EditorViewPorts {
     }
 
     /**
+     * Instantiate a new camera with a partial-width view port.
+     *
+     * @param side which side of the boundary to put the viewport on (not null)
+     * @return a new instance with perspective projection
+     */
+    private static Camera createSideCamera(Side side) {
+        assert side != null;
+
+        Camera cam = Maud.getApplication().getCamera();
+        Camera newCamera = cam.clone();
+        updateSideCamera(newCamera, side);
+
+        assert !MyCamera.isFullWidth(newCamera);
+        assert !newCamera.isParallelProjection();
+        return newCamera;
+    }
+
+    /**
      * Create a left-side view port for the source scene.
      *
      * @return the attachment point (a new instance)
      */
     private static Node createSourceSceneViewPort() {
         String name = "Source Scene Left";
-        Camera camera = createHalfCamera(Side.Left);
+        Camera camera = createSideCamera(Side.Left);
         camera.setName(name);
         RenderManager renderManager = Maud.getApplication().getRenderManager();
         sourceSceneBase = renderManager.createMainView(name, camera);
@@ -383,7 +383,7 @@ public class EditorViewPorts {
      * Create a left-side view port for the source score.
      */
     private static void createSourceScoreViewPort() {
-        Camera camera = createHalfCamera(Side.Left);
+        Camera camera = createSideCamera(Side.Left);
         camera.setName("Source Score Left");
         camera.setParallelProjection(true);
         RenderManager renderManager = Maud.getApplication().getRenderManager();
@@ -404,7 +404,7 @@ public class EditorViewPorts {
      */
     private static Node createTargetSceneViewPort() {
         String name = "Target Scene Right";
-        Camera camera = createHalfCamera(Side.Right);
+        Camera camera = createSideCamera(Side.Right);
         camera.setName(name);
         Maud application = Maud.getApplication();
         RenderManager renderManager = application.getRenderManager();
@@ -430,7 +430,7 @@ public class EditorViewPorts {
      */
     private static void createTargetScoreLeftViewPort() {
         String name = "Target Score Left";
-        Camera camera = createHalfCamera(Side.Left);
+        Camera camera = createSideCamera(Side.Left);
         camera.setName(name);
         camera.setParallelProjection(true);
         RenderManager renderManager = Maud.getApplication().getRenderManager();
@@ -449,7 +449,7 @@ public class EditorViewPorts {
      */
     private static void createTargetScoreRightViewPort() {
         String name = "Target Score Right";
-        Camera camera = createHalfCamera(Side.Right);
+        Camera camera = createSideCamera(Side.Right);
         camera.setName(name);
         camera.setParallelProjection(true);
         RenderManager renderManager = Maud.getApplication().getRenderManager();
