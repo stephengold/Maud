@@ -51,6 +51,12 @@ import maud.view.scene.SceneView;
  */
 public class EditorViewPorts {
     // *************************************************************************
+    // enums
+
+    private enum Side {
+        Left, Right;
+    }
+    // *************************************************************************
     // constants and loggers
 
     /**
@@ -275,13 +281,13 @@ public class EditorViewPorts {
         boolean split = isSplitScreen();
         if (split) {
             float xBoundary = misc.getXBoundary();
-            updateSideViewPort(sourceSceneBase, false, xBoundary);
-            updateSideViewPort(sourceSceneOverlay, false, xBoundary);
-            updateSideViewPort(sourceScore, false, xBoundary);
-            updateSideViewPort(targetSceneRightBase, true, xBoundary);
-            updateSideViewPort(targetSceneRightOverlay, true, xBoundary);
-            updateSideViewPort(targetScoreLeft, false, xBoundary);
-            updateSideViewPort(targetScoreRight, true, xBoundary);
+            updateSideViewPort(sourceSceneBase, Side.Left, xBoundary);
+            updateSideViewPort(sourceSceneOverlay, Side.Left, xBoundary);
+            updateSideViewPort(sourceScore, Side.Left, xBoundary);
+            updateSideViewPort(targetSceneRightBase, Side.Right, xBoundary);
+            updateSideViewPort(targetSceneRightOverlay, Side.Right, xBoundary);
+            updateSideViewPort(targetScoreLeft, Side.Left, xBoundary);
+            updateSideViewPort(targetScoreRight, Side.Right, xBoundary);
         }
     }
     // *************************************************************************
@@ -311,15 +317,16 @@ public class EditorViewPorts {
     /**
      * Instantiate a new camera with a half-width view port.
      *
-     * @param onRightSide which side of the boundary the viewport is on (false
-     * &rarr; left, true &rarr; right)
+     * @param side which side of the boundary the viewport is on (not null)
      * @return a new instance with perspective projection
      */
-    private static Camera createHalfCamera(boolean onRightSide) {
+    private static Camera createHalfCamera(Side side) {
+        assert side != null;
+
         Camera cam = Maud.getApplication().getCamera();
         Camera camera = cam.clone();
-        float xBoundary = 0.5f;
-        updateSideCamera(camera, onRightSide, xBoundary);
+        float xBoundary = 0.5f; // TODO constant
+        updateSideCamera(camera, side, xBoundary);
 
         return camera;
     }
@@ -351,7 +358,7 @@ public class EditorViewPorts {
      */
     private static Node createSourceSceneViewPort() {
         String name = "Source Scene Left";
-        Camera camera = createHalfCamera(false);
+        Camera camera = createHalfCamera(Side.Left);
         camera.setName(name);
         RenderManager renderManager = Maud.getApplication().getRenderManager();
         sourceSceneBase = renderManager.createMainView(name, camera);
@@ -375,7 +382,7 @@ public class EditorViewPorts {
      * Create a left-half view port for the source score.
      */
     private static void createSourceScoreViewPort() {
-        Camera camera = createHalfCamera(false);
+        Camera camera = createHalfCamera(Side.Left);
         camera.setName("Source Score Left");
         camera.setParallelProjection(true);
         RenderManager renderManager = Maud.getApplication().getRenderManager();
@@ -396,7 +403,7 @@ public class EditorViewPorts {
      */
     private static Node createTargetSceneViewPort() {
         String name = "Target Scene Right";
-        Camera camera = createHalfCamera(true);
+        Camera camera = createHalfCamera(Side.Right);
         camera.setName(name);
         Maud application = Maud.getApplication();
         RenderManager renderManager = application.getRenderManager();
@@ -422,7 +429,7 @@ public class EditorViewPorts {
      */
     private static void createTargetScoreLeftViewPort() {
         String name = "Target Score Left";
-        Camera camera = createHalfCamera(false);
+        Camera camera = createHalfCamera(Side.Left);
         camera.setName(name);
         camera.setParallelProjection(true);
         RenderManager renderManager = Maud.getApplication().getRenderManager();
@@ -441,7 +448,7 @@ public class EditorViewPorts {
      */
     private static void createTargetScoreRightViewPort() {
         String name = "Target Score Right";
-        Camera camera = createHalfCamera(true);
+        Camera camera = createHalfCamera(Side.Right);
         camera.setName(name);
         camera.setParallelProjection(true);
         RenderManager renderManager = Maud.getApplication().getRenderManager();
@@ -480,23 +487,27 @@ public class EditorViewPorts {
      * Update the partial-width view port of the specified camera.
      *
      * @param camera the camera to update (not null)
-     * @param onRightSide which side of the boundary the viewport is on (false
-     * &rarr; left, true &rarr; right)
+     * @param side which side of the boundary the viewport is on (not null)
      * @param xBoundary the display X-coordinate of the left-right boundary
      * (&gt;0, &lt;1)
      */
-    private static void updateSideCamera(Camera camera, boolean onRightSide,
+    private static void updateSideCamera(Camera camera, Side side,
             float xBoundary) {
         assert xBoundary > 0f : xBoundary;
         assert xBoundary < 1f : xBoundary;
 
         float leftEdge, rightEdge;
-        if (onRightSide) {
-            leftEdge = xBoundary;
-            rightEdge = 1f;
-        } else {
-            leftEdge = 0f;
-            rightEdge = xBoundary;
+        switch (side) {
+            case Left:
+                leftEdge = 0f;
+                rightEdge = xBoundary;
+                break;
+            case Right:
+                leftEdge = xBoundary;
+                rightEdge = 1f;
+                break;
+            default:
+                throw new IllegalArgumentException(side.toString());
         }
         float bottomEdge = 0f;
         float topEdge = 1f;
@@ -507,19 +518,19 @@ public class EditorViewPorts {
      * Update the specified partial-width view port unless it's disabled.
      *
      * @param vp the view port to update (not null)
-     * @param onRightSide which side of the boundary the viewport is on (false
-     * &rarr; left, true &rarr; right) TODO enum
+     * @param side which side of the boundary the viewport is on (not null)
      * @param xBoundary the display X-coordinate of the left-right boundary
-     * (&gt;0, &lt;1)
+     * (&gt;0, &lt;1) TODO read from options
      */
-    private static void updateSideViewPort(ViewPort vp, boolean onRightSide,
+    private static void updateSideViewPort(ViewPort vp, Side side,
             float xBoundary) {
+        assert side != null;
         assert xBoundary > 0f : xBoundary;
         assert xBoundary < 1f : xBoundary;
 
         if (vp.isEnabled()) {
             Camera camera = vp.getCamera();
-            updateSideCamera(camera, onRightSide, xBoundary);
+            updateSideCamera(camera, side, xBoundary);
         }
     }
 }
