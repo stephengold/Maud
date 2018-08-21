@@ -34,11 +34,13 @@ import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.ModelKey;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
+import com.jme3.material.Material;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.plugins.blender.meshes.Face;
 import com.jme3.scene.plugins.bvh.BVHAnimData;
 import com.jme3.scene.plugins.bvh.SkeletonMapping;
+import com.jme3.scene.plugins.gltf.CustomContentManager;
 import com.jme3.scene.plugins.ogre.MaterialLoader;
 import com.jme3.scene.plugins.ogre.MeshLoader;
 import java.util.logging.Level;
@@ -123,11 +125,18 @@ public class LoadUtil {
             return null;
         }
 
+        Logger customLogger
+                = Logger.getLogger(CustomContentManager.class.getName());
+        Level customLevel = customLogger.getLevel();
+
         Logger faceLogger = Logger.getLogger(Face.class.getName());
         Level faceLevel = faceLogger.getLevel();
 
         Logger meshLoaderLogger = Logger.getLogger(MeshLoader.class.getName());
         Level meshLoaderLevel = meshLoaderLogger.getLevel();
+
+        Logger materialLogger = Logger.getLogger(Material.class.getName());
+        Level materialLevel = materialLogger.getLevel();
 
         Logger materialLoaderLogger
                 = Logger.getLogger(MaterialLoader.class.getName());
@@ -151,8 +160,10 @@ public class LoadUtil {
              * vertices with >4 weights, shapes that can't be scaled, and
              * unsupported pass directives.
              */
+            customLogger.setLevel(Level.SEVERE);
             faceLogger.setLevel(Level.SEVERE);
             meshLoaderLogger.setLevel(Level.SEVERE);
+            materialLogger.setLevel(Level.SEVERE);
             materialLoaderLogger.setLevel(Level.SEVERE);
             compoundCollisionShapeLogger.setLevel(Level.SEVERE);
             xbufLoaderLogger.setLevel(ch.qos.logback.classic.Level.ERROR);
@@ -173,8 +184,10 @@ public class LoadUtil {
             /*
              * Restore logging levels.
              */
+            customLogger.setLevel(customLevel);
             faceLogger.setLevel(faceLevel);
             meshLoaderLogger.setLevel(meshLoaderLevel);
+            materialLogger.setLevel(materialLevel);
             materialLoaderLogger.setLevel(materialLoaderLevel);
             compoundCollisionShapeLogger.setLevel(compoundCollisionShapeLevel);
             xbufLoaderLogger.setLevel(xbufLoaderLevel);
