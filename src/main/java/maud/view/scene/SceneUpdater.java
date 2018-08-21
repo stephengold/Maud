@@ -40,6 +40,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.shadow.EdgeFilteringMode;
+import com.jme3.system.AppSettings;
 import java.util.BitSet;
 import java.util.logging.Logger;
 import jme3utilities.MySpatial;
@@ -429,6 +430,11 @@ class SceneUpdater {
         visualizer.setLineWidth(lineWidth);
 
         float pointSize = options.getPointSize();
+        AppSettings current = Maud.getSettings();
+        int msaaSamples = current.getSamples();
+        if (msaaSamples == 16) { // workaround for JME issue #878
+            pointSize *= 2;
+        }
         visualizer.setHeadSize(pointSize);
 
         ColorRGBA color = options.copyColor(SkeletonColors.Links, null);
