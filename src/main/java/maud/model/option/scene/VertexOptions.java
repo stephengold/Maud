@@ -58,7 +58,7 @@ public class VertexOptions implements Cloneable {
     /**
      * point size for selected vertices (in pixels, &ge;0, 0&rarr;hidden)
      */
-    private float pointSize = 20f;
+    private float pointSize = 10f;
     // *************************************************************************
     // new methods exposed
 

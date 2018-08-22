@@ -1190,7 +1190,6 @@ public class SceneViewCore
         AssetManager assetManager = Locators.getAssetManager();
         Material material = new Material(assetManager,
                 "MatDefs/wireframe/multicolor2.j3md");
-        material.setFloat("PointSize", vertexSize);
         Texture poseShape = MyAsset.loadTexture(assetManager,
                 "Textures/shapes/saltire.png");
         material.setTexture("PointShape", poseShape);
@@ -1233,7 +1232,7 @@ public class SceneViewCore
     private BulletAppState makeBullet(ViewPort viewPort1, ViewPort viewPort2) {
         assert viewPort2 != null;
 
-        float radius = 100f;
+        float radius = 100f; // TODO adjust based on CGM size
         Vector3f worldMin = new Vector3f(-radius, -radius, -radius);
         Vector3f worldMax = new Vector3f(radius, radius, radius);
         BulletAppState result = new BulletAppState(worldMin, worldMax,

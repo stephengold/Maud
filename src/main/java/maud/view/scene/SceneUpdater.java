@@ -432,8 +432,8 @@ class SceneUpdater {
         float pointSize = options.getPointSize();
         AppSettings current = Maud.getSettings();
         int msaaSamples = current.getSamples();
-        if (msaaSamples == 16) { // workaround for JME issue #878
-            pointSize *= 2;
+        if (msaaSamples == 16) { // work around JME issue #878
+            pointSize *= 2f;
         }
         visualizer.setHeadSize(pointSize);
 
@@ -514,7 +514,13 @@ class SceneUpdater {
             VertexOptions options = Maud.getModel().getScene().getVertex();
             ColorRGBA color = options.copyColor(null);
             material.setColor("Color", color);
+
             float pointSize = options.getPointSize();
+            AppSettings current = Maud.getSettings();
+            int msaaSamples = current.getSamples();
+            if (msaaSamples == 16) { // work around JME issue #878
+                pointSize *= 2f;
+            }
             material.setFloat("PointSize", pointSize);
 
             spatial.setCullHint(Spatial.CullHint.Never);

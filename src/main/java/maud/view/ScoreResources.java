@@ -44,12 +44,14 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Line;
+import com.jme3.system.AppSettings;
 import com.jme3.texture.Texture;
 import java.util.logging.Logger;
 import jme3utilities.MyAsset;
 import jme3utilities.mesh.RectangleOutlineMesh;
 import jme3utilities.mesh.RoundedRectangle;
 import jme3utilities.ui.Locators;
+import maud.Maud;
 
 /**
  * Constants, fonts, materials, and meshes used for 2-D visualization of
@@ -195,6 +197,11 @@ public class ScoreResources {
          * wireframe materials for axes
          */
         float pointSize = 3f;
+        AppSettings current = Maud.getSettings();
+        int msaaSamples = current.getSamples();
+        if (msaaSamples == 16) { // work around JME issue #878
+            pointSize *= 2f;
+        }
         wMaterial = MyAsset.createWireframeMaterial(assetManager, wColor,
                 pointSize);
         xMaterial = MyAsset.createWireframeMaterial(assetManager, xColor,
