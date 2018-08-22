@@ -1,0 +1,230 @@
+/*
+ Copyright (c) 2017-2018, Stephen Gold
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+ * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+ notice, this list of conditions and the following disclaimer in the
+ documentation and/or other materials provided with the distribution.
+ * Neither the name of the copyright holder nor the names of its contributors
+ may be used to endorse or promote products derived from this software without
+ specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+package maud.model;
+
+import com.jme3.bullet.collision.shapes.CollisionShape;
+import java.util.logging.Logger;
+import jme3utilities.MyString;
+
+/**
+ * MVC model for edit state: keeps track of edits made to a skeleton map or C-G
+ * model.
+ *
+ * @author Stephen Gold sgold@sonic.net
+ */
+public class EditState implements Cloneable {
+    // *************************************************************************
+    // constants and loggers
+
+    /**
+     * message logger for this class
+     */
+    final private static Logger logger
+            = Logger.getLogger(EditState.class.getName());
+    // *************************************************************************
+    // fields
+
+    /**
+     * count of unsaved edits (&ge;0)
+     */
+    private int editCount = 0;
+    /**
+     * indicates which model state is being edited continuously, either:
+     * <ul>
+     * <li> "lc" + light being recolored, or
+     * <li> "lpd" + light being repositioned/redirected, or
+     * <li> "pp" + physics collision object being repositioned, or
+     * <li> "ss" + physics collision shape being resized, or
+     * <li> "st" + tree position of the spatial being transformed, or
+     * <li> "" for no continuous edits
+     * </ul>
+     */
+    private String continousEditState = "";
+    // *************************************************************************
+    // new methods exposed
+
+    /**
+     * Count unsaved edits.
+     *
+     * @return count (&ge;0)
+     */
+    public int countUnsavedEdits() {
+        return editCount;
+    }
+
+    /**
+     * Callback before a checkpoint is created.
+     */
+    public void preCheckpoint() {
+        /*
+         * Potentially new continuous edits.
+         */
+        continousEditState = "";
+    }
+
+    /**
+     * Update which physics collision shape is being resized without triggering
+     * a history event.
+     *
+     * @param oldShape shape to replace (not null, unaffected)
+     * @param newShape replacement shape (not null, unaffected)
+     */
+    public void replaceForResize(CollisionShape oldShape,
+            CollisionShape newShape) {
+        assert newShape != null;
+
+        String oldState = "ss" + oldShape.toString();
+        if (oldState.equals(continousEditState)) {
+            String newState = "ss" + newShape.toString();
+            continousEditState = newState;
+        }
+    }
+
+    /**
+     * Increment the count of unsaved edits.
+     *
+     * @param eventDescription description of causative event (not null)
+     */
+    public void setEdited(String eventDescription) {
+        assert eventDescription != null;
+
+        ++editCount;
+        continousEditState = "";
+        History.addEvent(eventDescription);
+    }
+
+    /**
+     * If not a continuation of the previous light-color edit, update the edit
+     * count.
+     *
+     * @param lightName name of the light being recolored (not null)
+     */
+    public void setEditedLightColor(String lightName) {
+        String newState = "lc" + lightName;
+        if (!newState.equals(continousEditState)) {
+            History.autoAdd();
+            ++editCount;
+            continousEditState = newState;
+            String description = String.format("recolor light named %s",
+                    MyString.quote(lightName));
+            History.addEvent(description);
+        }
+    }
+
+    /**
+     * If not a continuation of the previous light-position/direction edit,
+     * update the edit count.
+     *
+     * @param lightName name of the light being moved (not null)
+     */
+    public void setEditedLightPosDir(String lightName) {
+        String newState = "lpd" + lightName;
+        if (!newState.equals(continousEditState)) {
+            History.autoAdd();
+            ++editCount;
+            continousEditState = newState;
+            String description = String.format(
+                    "reposition and/or redirect light named %s",
+                    MyString.quote(lightName));
+            History.addEvent(description);
+        }
+    }
+
+    /**
+     * If not a continuation of the previous object-position edit, update the
+     * edit count.
+     *
+     * @param objectName name of the physics object being resized (not null)
+     */
+    public void setEditedPhysicsPosition(String objectName) {
+        String newState = "pp" + objectName;
+        if (!newState.equals(continousEditState)) {
+            History.autoAdd();
+            ++editCount;
+            continousEditState = newState;
+            History.addEvent("reposition collision object " + objectName);
+        }
+    }
+
+    /**
+     * If not a continuation of the previous shape-size edit, update the edit
+     * count.
+     *
+     * @param shapeName name of the shape being resized (not null)
+     */
+    public void setEditedShapeSize(String shapeName) {
+        String newState = "ss" + shapeName;
+        if (!newState.equals(continousEditState)) {
+            History.autoAdd();
+            ++editCount;
+            continousEditState = newState;
+            History.addEvent("resize collision shape " + shapeName);
+        }
+    }
+
+    /**
+     * If not a continuation of the previous spatial-transform edit, update the
+     * edit count.
+     *
+     * @param spatialPosition tree position of the spatial being transformed
+     * (not null)
+     */
+    public void setEditedSpatialTransform(String spatialPosition) {
+        String newState = "st" + spatialPosition;
+        if (!newState.equals(continousEditState)) {
+            History.autoAdd();
+            ++editCount;
+            continousEditState = newState;
+            History.addEvent("transform spatial " + spatialPosition);
+        }
+    }
+
+    /**
+     * Mark the skeleton map or C-G model as pristine.
+     *
+     * @param eventDescription description of causative event (not null)
+     */
+    public void setPristine(String eventDescription) {
+        editCount = 0;
+        continousEditState = "";
+        History.addEvent(eventDescription);
+    }
+    // *************************************************************************
+    // Cloneable methods
+
+    /**
+     * Create a deep copy of this object.
+     *
+     * @return a new object, equivalent to this one
+     * @throws CloneNotSupportedException if the superclass isn't cloneable
+     */
+    @Override
+    public EditState clone() throws CloneNotSupportedException {
+        EditState clone = (EditState) super.clone();
+        return clone;
+    }
+}

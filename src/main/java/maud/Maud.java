@@ -51,6 +51,7 @@ import jme3utilities.nifty.bind.BindScreen;
 import jme3utilities.ui.ActionApplication;
 import jme3utilities.ui.InputMode;
 import maud.dialog.QuitDialog;
+import maud.model.EditState;
 import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
@@ -429,6 +430,7 @@ public class Maud extends GuiApplication {
         //dumper.setDumpOverride(true);
         dumper.setDumpShadow(true);
         dumper.setDumpTransform(true);
+        //dumper.setDumpUser(true);
         dumper.dump(renderManager);
     }
 
@@ -441,6 +443,7 @@ public class Maud extends GuiApplication {
         //dumper.setDumpOverride(true);
         dumper.setDumpShadow(true);
         dumper.setDumpTransform(true);
+        //dumper.setDumpUser(true);
         dumper.dump(rootNode);
     }
 
@@ -448,7 +451,8 @@ public class Maud extends GuiApplication {
      * If confirmed, terminate the application.
      */
     private void quitUnconfirmed() {
-        int cgmEdits = editorModel.getTarget().countUnsavedEdits();
+        EditState cgmEditState = editorModel.getTarget().getEditState();
+        int cgmEdits = cgmEditState.countUnsavedEdits();
         int mapEdits = editorModel.getMap().countUnsavedEdits();
 
         String message;

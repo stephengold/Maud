@@ -98,7 +98,7 @@ class CgmTool extends Tool {
          * pristine/edited status
          */
         String pristineText;
-        int editCount = target.countUnsavedEdits();
+        int editCount = target.getEditState().countUnsavedEdits();
         if (editCount == 0) {
             pristineText = "pristine";
         } else if (editCount == 1) {

@@ -81,6 +81,7 @@ import jme3utilities.wes.TrackEdit;
 import maud.Maud;
 import maud.MaudUtil;
 import maud.PhysicsUtil;
+import maud.model.EditState;
 import maud.model.History;
 import maud.model.option.RigidBodyParameter;
 import maud.model.option.ShapeParameter;
@@ -105,21 +106,9 @@ public class EditableCgm extends LoadedCgm {
     // fields
 
     /**
-     * count of unsaved edits (&ge;0)
+     * count of unsaved edits and continuous-edit state
      */
-    private int editCount = 0;
-    /**
-     * indicates which model state is being edited continuously, either:
-     * <ul>
-     * <li> "lc" + light being recolored, or
-     * <li> "lpd" + light being repositioned/redirected, or
-     * <li> "pp" + physics collision object being repositioned, or
-     * <li> "ss" + physics collision shape being resized, or
-     * <li> "st" + tree position of the spatial being transformed, or
-     * <li> "" for no continuous edits
-     * </ul>
-     */
-    private String continousEditState = "";
+    private EditState editState = new EditState();
     // *************************************************************************
     // new methods exposed
 
@@ -149,7 +138,7 @@ public class EditableCgm extends LoadedCgm {
         control.addAnim(newAnimation);
         String description
                 = "add animation " + MyString.quote(newAnimationName);
-        setEdited(description);
+        editState.setEdited(description);
     }
 
     /**
@@ -169,7 +158,7 @@ public class EditableCgm extends LoadedCgm {
         String boneName = selectedBone.getName();
         String description
                 = "add attachments node for " + MyString.quote(boneName);
-        setEdited(description);
+        editState.setEdited(description);
 
         assert selectedBone.hasAttachmentsNode();
     }
@@ -190,7 +179,7 @@ public class EditableCgm extends LoadedCgm {
         Spatial selectedSpatial = getSpatial().find();
         selectedSpatial.addLight(newLight);
         getSceneView().addLight(newLight);
-        setEdited(eventDescription);
+        editState.setEdited(eventDescription);
     }
 
     /**
@@ -220,7 +209,7 @@ public class EditableCgm extends LoadedCgm {
 
         String description = String.format("add material parameter %s",
                 MyString.quote(parameterName));
-        setEdited(description);
+        editState.setEdited(description);
 
         getMatParam().select(parameterName);
     }
@@ -246,7 +235,7 @@ public class EditableCgm extends LoadedCgm {
 
         String description = String.format("add material-parameter override %s",
                 MyString.quote(parameterName));
-        setEdited(description);
+        editState.setEdited(description);
 
         getOverride().selectParameter(parameterName);
     }
@@ -269,7 +258,7 @@ public class EditableCgm extends LoadedCgm {
             sceneView.addPhysicsControl(physicsControl);
         }
         selectedSpatial.addControl(newSgc);
-        setEdited(eventDescription);
+        editState.setEdited(eventDescription);
     }
 
     /**
@@ -286,7 +275,7 @@ public class EditableCgm extends LoadedCgm {
 
         History.autoAdd();
         animation.addTrack(newTrack);
-        setEdited(eventDescription);
+        editState.setEdited(eventDescription);
     }
 
     /**
@@ -309,7 +298,7 @@ public class EditableCgm extends LoadedCgm {
 
         String description
                 = String.format("add user key %s", MyString.quote(key));
-        setEdited(description);
+        editState.setEdited(description);
         getUserData().selectKey(key);
     }
 
@@ -331,12 +320,12 @@ public class EditableCgm extends LoadedCgm {
         History.autoAdd();
         sceneView.attachSpatial(parentPosition, child);
         parent.attachChild(child);
-        setEdited(eventDescription);
+        editState.setEdited(eventDescription);
     }
 
     /**
      * Determine the default base path for writing the C-G model to the
-     * filesystem.
+     * filesystem. TODO move to Cgm class
      *
      * @return absolute filesystem path less extension (not null, not empty)
      */
@@ -354,15 +343,6 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Count unsaved edits.
-     *
-     * @return count (&ge;0)
-     */
-    public int countUnsavedEdits() {
-        return editCount;
-    }
-
-    /**
      * Delete the loaded animation. The invoker is responsible for loading a
      * different animation.
      */
@@ -373,7 +353,7 @@ public class EditableCgm extends LoadedCgm {
         History.autoAdd();
         animControl.removeAnim(anim);
         // scene view not updated
-        setEdited("delete animation");
+        editState.setEdited("delete animation");
     }
 
     /**
@@ -404,7 +384,7 @@ public class EditableCgm extends LoadedCgm {
         String boneName = selectedBone.getName();
         String description = "delete attachments node for "
                 + MyString.quote(boneName);
-        setEdited(description);
+        editState.setEdited(description);
 
         assert !selectedBone.hasAttachmentsNode();
     }
@@ -429,7 +409,7 @@ public class EditableCgm extends LoadedCgm {
         if (type == VertexBuffer.Type.BoneIndex) {
             mesh.clearBuffer(VertexBuffer.Type.HWBoneIndex);
         }
-        setEdited(description);
+        editState.setEdited(description);
 
         buffer.deselect();
     }
@@ -453,7 +433,7 @@ public class EditableCgm extends LoadedCgm {
             int numDeleted = oldNumSpatials - newNumSpatials;
             String description = String.format("delete %d extra spatial%s",
                     numDeleted, numDeleted == 1 ? "" : "s");
-            setEdited(description);
+            editState.setEdited(description);
         }
     }
 
@@ -472,7 +452,7 @@ public class EditableCgm extends LoadedCgm {
 
         String description = String.format(
                 "delete material parameter %s", MyString.quote(parameterName));
-        setEdited(description);
+        editState.setEdited(description);
     }
 
     /**
@@ -491,7 +471,7 @@ public class EditableCgm extends LoadedCgm {
         String description = String.format(
                 "delete material-parameter override %s",
                 MyString.quote(parameterName));
-        setEdited(description);
+        editState.setEdited(description);
     }
 
     /**
@@ -533,7 +513,7 @@ public class EditableCgm extends LoadedCgm {
 
         boolean success = controlled.removeControl(selectedSgc);
         assert success;
-        setEdited("delete control");
+        editState.setEdited("delete control");
     }
 
     /**
@@ -571,7 +551,7 @@ public class EditableCgm extends LoadedCgm {
         SceneView sceneView = getSceneView();
         sceneView.deleteSubtree();
 
-        setEdited("delete subtree");
+        editState.setEdited("delete subtree");
     }
 
     /**
@@ -586,7 +566,17 @@ public class EditableCgm extends LoadedCgm {
         selectedSpatial.setUserData(key, null);
         String description
                 = String.format("delete user data %s", MyString.quote(key));
-        setEdited(description);
+        editState.setEdited(description);
+    }
+
+    /**
+     * Access the edit state for this C-G model.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public EditState getEditState() {
+        assert editState != null;
+        return editState;
     }
 
     /**
@@ -631,17 +621,7 @@ public class EditableCgm extends LoadedCgm {
 
         String eventDescription = String.format("insert parent %s",
                 MyString.quote(newNodeName));
-        setEdited(eventDescription);
-    }
-
-    /**
-     * Callback before a checkpoint is created.
-     */
-    public void preCheckpoint() {
-        /*
-         * Potentially new continuous edits.
-         */
-        continousEditState = "";
+        editState.setEdited(eventDescription);
     }
 
     /**
@@ -680,7 +660,7 @@ public class EditableCgm extends LoadedCgm {
 
         if (success) {
             Maud.getModel().getMap().renameBone(oldName, newName);
-            setEdited("rename bone");
+            editState.setEdited("rename bone");
         }
 
         return success;
@@ -713,7 +693,7 @@ public class EditableCgm extends LoadedCgm {
         String description = String.format(
                 "rename material-parameter override %s to %s",
                 MyString.quote(oldName), MyString.quote(newName));
-        setEdited(description);
+        editState.setEdited(description);
 
         override.selectParameter(newName);
     }
@@ -733,7 +713,7 @@ public class EditableCgm extends LoadedCgm {
 
             String description = String.format("rename material %s to %s",
                     MyString.quote(oldName), MyString.quote(newName));
-            setEdited(description);
+            editState.setEdited(description);
         }
     }
 
@@ -764,7 +744,7 @@ public class EditableCgm extends LoadedCgm {
             History.autoAdd();
             selectedSpatial.setName(newName);
             success = true;
-            setEdited("rename spatial");
+            editState.setEdited("rename spatial");
         }
 
         return success;
@@ -789,7 +769,7 @@ public class EditableCgm extends LoadedCgm {
 
         String description = String.format("rename user-data key %s to %s",
                 MyString.quote(oldKey), MyString.quote(newKey));
-        setEdited(description);
+        editState.setEdited(description);
 
         getUserData().selectKey(newKey);
     }
@@ -817,25 +797,8 @@ public class EditableCgm extends LoadedCgm {
         if (getPlay().getTime() > duration) {
             getPlay().setTime(duration); // keep animation time in range
         }
-        setEdited(eventDescription);
+        editState.setEdited(eventDescription);
         getTrack().select(newSelectedTrack);
-    }
-
-    /**
-     * Update which physics collision shape is being resized without triggering
-     * a history event.
-     *
-     * @param oldShape shape to replace (not null, unaffected)
-     * @param newShape replacement shape (not null)
-     */
-    void replaceForResize(CollisionShape oldShape, CollisionShape newShape) {
-        assert newShape != null;
-
-        String oldState = "ss" + oldShape.toString();
-        if (oldState.equals(continousEditState)) {
-            String newState = "ss" + newShape.toString();
-            continousEditState = newState;
-        }
     }
 
     /**
@@ -857,7 +820,7 @@ public class EditableCgm extends LoadedCgm {
         PhysicsSpace space = getSceneView().getPhysicsSpace();
         History.autoAdd();
         PhysicsUtil.replaceInObjects(space, oldShape, newShape);
-        setEdited(eventDescription);
+        editState.setEdited(eventDescription);
     }
 
     /**
@@ -884,7 +847,7 @@ public class EditableCgm extends LoadedCgm {
             owner.addLight(newLight);
         }
         getSceneView().replaceLight(oldName, newLight);
-        setEdited(eventDescription);
+        editState.setEdited(eventDescription);
     }
 
     /**
@@ -905,7 +868,7 @@ public class EditableCgm extends LoadedCgm {
         owner.addLight(newLight);
         getSceneView().replaceLight(oldName, newLight);
         selectedLight.select(newLight);
-        setEditedLightColor();
+        editState.setEditedLightColor(oldName);
     }
 
     /**
@@ -926,7 +889,7 @@ public class EditableCgm extends LoadedCgm {
         owner.addLight(newLight);
         getSceneView().replaceLight(oldName, newLight);
         selectedLight.select(newLight);
-        setEditedLightPosDir();
+        editState.setEditedLightPosDir(oldName);
     }
 
     /**
@@ -945,7 +908,8 @@ public class EditableCgm extends LoadedCgm {
             Vector3f he = shape.halfExtents(null);
             he.multLocal(factors);
             shape.setHalfExtents(he);
-            setEditedShapeSize();
+            String shapeName = shape.find().toString();
+            editState.setEditedShapeSize(shapeName);
         }
     }
 
@@ -972,9 +936,9 @@ public class EditableCgm extends LoadedCgm {
                         newSetting);
 
                 if (newSetting) {
-                    setEdited("enable local physics");
+                    editState.setEdited("enable local physics");
                 } else {
-                    setEdited("disable local physics");
+                    editState.setEdited("disable local physics");
                 }
             }
         }
@@ -996,7 +960,7 @@ public class EditableCgm extends LoadedCgm {
             // scene view not updated
             String description = String.format(
                     "set batch hint of spatial to %s", newHint);
-            setEdited(description);
+            editState.setEdited(description);
         }
     }
 
@@ -1017,7 +981,7 @@ public class EditableCgm extends LoadedCgm {
             getSceneView().setBufferInstanceSpan(newSpan);
             String description = String.format(
                     "set instance span of buffer to %d", newSpan);
-            setEdited(description);
+            editState.setEdited(description);
         }
     }
 
@@ -1038,7 +1002,7 @@ public class EditableCgm extends LoadedCgm {
             getSceneView().setBufferLimit(newLimit);
             String description
                     = String.format("set limit of buffer to %d", newLimit);
-            setEdited(description);
+            editState.setEdited(description);
         }
     }
 
@@ -1056,7 +1020,7 @@ public class EditableCgm extends LoadedCgm {
             getSceneView().setBufferNormalized(newSetting);
             String description = String.format(
                     "set normalized flag of buffer to %s", newSetting);
-            setEdited(description);
+            editState.setEdited(description);
         }
     }
 
@@ -1076,7 +1040,7 @@ public class EditableCgm extends LoadedCgm {
             getSceneView().setBufferStride(newStride);
             String description = String.format(
                     "set stride of buffer to %d", newStride);
-            setEdited(description);
+            editState.setEdited(description);
         }
     }
 
@@ -1096,7 +1060,7 @@ public class EditableCgm extends LoadedCgm {
             getSceneView().setBufferUsage(newUsage);
             String description = String.format(
                     "set usage of buffer to %s", newUsage);
-            setEdited(description);
+            editState.setEdited(description);
         }
     }
 
@@ -1116,7 +1080,7 @@ public class EditableCgm extends LoadedCgm {
             getSceneView().setCullHint(newHint);
             String description = String.format(
                     "set cull hint of spatial to %s", newHint);
-            setEdited(description);
+            editState.setEdited(description);
         }
     }
 
@@ -1137,7 +1101,7 @@ public class EditableCgm extends LoadedCgm {
 
                 String description = String.format(
                         "set depth test flag of material to %s", newState);
-                setEdited(description);
+                editState.setEdited(description);
             }
         }
     }
@@ -1161,7 +1125,7 @@ public class EditableCgm extends LoadedCgm {
 
                 String description = String.format(
                         "set face-cull mode of material to %s", newMode);
-                setEdited(description);
+                editState.setEdited(description);
             }
         }
     }
@@ -1181,9 +1145,9 @@ public class EditableCgm extends LoadedCgm {
                 geometry.setIgnoreTransform(newSetting);
                 getSceneView().setIgnoreTransform(newSetting);
                 if (newSetting) {
-                    setEdited("ignore transform");
+                    editState.setEdited("ignore transform");
                 } else {
-                    setEdited("stop ignoring transform");
+                    editState.setEdited("stop ignoring transform");
                 }
             }
         }
@@ -1212,7 +1176,7 @@ public class EditableCgm extends LoadedCgm {
             SpatialTrack spatialTrack = (SpatialTrack) track;
             spatialTrack.setKeyframes(times, translations, rotations, scales);
         }
-        setEdited("replace keyframes");
+        editState.setEdited("replace keyframes");
     }
 
     /**
@@ -1230,7 +1194,7 @@ public class EditableCgm extends LoadedCgm {
         History.autoAdd();
         spatial.setMaterial(newMaterial);
         getSceneView().setMaterial(newMaterial);
-        setEdited(eventDescription);
+        editState.setEdited(eventDescription);
     }
 
     /**
@@ -1254,7 +1218,7 @@ public class EditableCgm extends LoadedCgm {
         String description = String.format(
                 "alter value of material parameter %s",
                 MyString.quote(parameterName));
-        setEdited(description);
+        editState.setEdited(description);
     }
 
     /**
@@ -1275,7 +1239,7 @@ public class EditableCgm extends LoadedCgm {
 
             String description = String.format("set mode of mesh to %s",
                     newMode);
-            setEdited(description);
+            editState.setEdited(description);
         }
     }
 
@@ -1295,7 +1259,7 @@ public class EditableCgm extends LoadedCgm {
             getSceneView().setMeshWeights(newLimit);
             String description = String.format(
                     "set max weights of mesh to %d", newLimit);
-            setEdited(description);
+            editState.setEdited(description);
         }
     }
 
@@ -1318,7 +1282,7 @@ public class EditableCgm extends LoadedCgm {
                 String description = String.format(
                         "%s material-parameter override %s",
                         verb, MyString.quote(parameterName));
-                setEdited(description);
+                editState.setEdited(description);
             }
         }
     }
@@ -1348,11 +1312,11 @@ public class EditableCgm extends LoadedCgm {
         String description = String.format(
                 "alter value of material-parameter override %s",
                 MyString.quote(parameterName));
-        setEdited(description);
+        editState.setEdited(description);
     }
 
     /**
-     * Relocate the selected physics object.
+     * Relocate the selected physics object. TODO move to SelectedObject
      *
      * @param newLocation (not null, unaffected)
      */
@@ -1360,7 +1324,8 @@ public class EditableCgm extends LoadedCgm {
         Validate.nonNull(newLocation, "new location");
 
         getObject().setLocation(newLocation);
-        setEditedPhysicsPosition();
+        String objectName = getObject().getName();
+        editState.setEditedPhysicsPosition(objectName);
     }
 
     /**
@@ -1372,7 +1337,8 @@ public class EditableCgm extends LoadedCgm {
         Validate.nonNull(newOrientation, "new orientation");
 
         getObject().setOrientation(newOrientation);
-        setEditedPhysicsPosition();
+        String objectName = getObject().getName();
+        editState.setEditedPhysicsPosition(objectName);
     }
 
     /**
@@ -1389,7 +1355,7 @@ public class EditableCgm extends LoadedCgm {
             History.autoAdd();
             modelSpatial.setQueueBucket(newBucket);
             getSceneView().setQueueBucket(newBucket);
-            setEdited("change render-queue bucket");
+            editState.setEdited("change render-queue bucket"); // TODO details
         }
     }
 
@@ -1410,7 +1376,7 @@ public class EditableCgm extends LoadedCgm {
             selected.set(parameter, newValue);
             String eventDescription = String.format(
                     "set %s of rigid body to %f", parameter, newValue);
-            setEdited(eventDescription);
+            editState.setEdited(eventDescription);
         }
     }
 
@@ -1437,9 +1403,9 @@ public class EditableCgm extends LoadedCgm {
                             newSetting);
                 }
                 if (newSetting) {
-                    setEdited("enable control");
+                    editState.setEdited("enable control");
                 } else {
-                    setEdited("disable control");
+                    editState.setEdited("disable control");
                 }
             }
         }
@@ -1461,7 +1427,7 @@ public class EditableCgm extends LoadedCgm {
             getSceneView().setShadowMode(newMode);
             String description = String.format(
                     "change spatial's shadow mode to %s", newMode);
-            setEdited(description);
+            editState.setEdited(description);
         }
     }
 
@@ -1483,10 +1449,11 @@ public class EditableCgm extends LoadedCgm {
                 shape.set(parameter, newValue);
                 String description = String.format(
                         "change shape's margin to %f", newValue);
-                setEdited(description);
+                editState.setEdited(description);
             } else {
                 shape.set(parameter, newValue);
-                setEditedShapeSize();
+                String shapeName = shape.find().toString();
+                editState.setEditedShapeSize(shapeName);
             }
         }
     }
@@ -1501,7 +1468,8 @@ public class EditableCgm extends LoadedCgm {
 
         Spatial selectedSpatial = getSpatial().find();
         selectedSpatial.setLocalRotation(rotation);
-        setEditedSpatialTransform();
+        String spatialPosition = selectedSpatial.toString();
+        editState.setEditedSpatialTransform(spatialPosition);
     }
 
     /**
@@ -1517,7 +1485,8 @@ public class EditableCgm extends LoadedCgm {
 
         Spatial selectedSpatial = getSpatial().find();
         selectedSpatial.setLocalScale(scale);
-        setEditedSpatialTransform();
+        String position = selectedSpatial.toString();
+        editState.setEditedSpatialTransform(position);
     }
 
     /**
@@ -1530,7 +1499,8 @@ public class EditableCgm extends LoadedCgm {
 
         Spatial selectedSpatial = getSpatial().find();
         selectedSpatial.setLocalTranslation(translation);
-        setEditedSpatialTransform();
+        String position = selectedSpatial.toString();
+        editState.setEditedSpatialTransform(position);
     }
 
     /**
@@ -1550,7 +1520,7 @@ public class EditableCgm extends LoadedCgm {
 
                 String description = String.format(
                         "set wireframe flag of material to %s", newState);
-                setEdited(description);
+                editState.setEdited(description);
             }
         }
     }
@@ -1600,7 +1570,7 @@ public class EditableCgm extends LoadedCgm {
 
         String description = String.format("alter value of user datum %s",
                 MyString.quote(key));
-        setEdited(description);
+        editState.setEdited(description);
     }
 
     /**
@@ -1611,7 +1581,7 @@ public class EditableCgm extends LoadedCgm {
         if (ss.isGeometry()) {
             History.autoAdd();
             ss.toggleBoundType();
-            setEdited("alter bound type");
+            editState.setEdited("alter bound type");
         }
     }
 
@@ -1657,7 +1627,7 @@ public class EditableCgm extends LoadedCgm {
 
             extension = "j3o";
             String eventDescription = "write model to " + filePath;
-            setPristine(eventDescription);
+            editState.setPristine(eventDescription);
             logger.log(Level.INFO, "Wrote model to file {0}",
                     MyString.quote(filePath));
         } else {
@@ -1693,7 +1663,7 @@ public class EditableCgm extends LoadedCgm {
         assert cgmRoot != null;
 
         String eventDescription = "load model named " + MyString.quote(name);
-        setPristine(eventDescription);
+        editState.setPristine(eventDescription);
 
         repair(cgmRoot);
 
@@ -1777,7 +1747,7 @@ public class EditableCgm extends LoadedCgm {
             } else {
                 description += String.format("%d tracks", numTracksZfed);
             }
-            setEdited(description);
+            editState.setEdited(description);
         }
 
         if (numTracksRred > 0) {
@@ -1787,108 +1757,7 @@ public class EditableCgm extends LoadedCgm {
             } else {
                 description += String.format("%d tracks", numTracksRred);
             }
-            setEdited(description);
+            editState.setEdited(description);
         }
-    }
-
-    /**
-     * Increment the count of unsaved edits.
-     *
-     * @param eventDescription description of causative event (not null)
-     */
-    private void setEdited(String eventDescription) {
-        assert eventDescription != null;
-
-        ++editCount;
-        continousEditState = "";
-        History.addEvent(eventDescription);
-    }
-
-    /**
-     * If not a continuation of the previous light-color edit, update the edit
-     * count.
-     */
-    private void setEditedLightColor() {
-        String lightName = getLight().name();
-        String newState = "lc" + lightName;
-        if (!newState.equals(continousEditState)) {
-            History.autoAdd();
-            ++editCount;
-            continousEditState = newState;
-            String description = String.format("recolor light named %s",
-                    MyString.quote(lightName));
-            History.addEvent(description);
-        }
-    }
-
-    /**
-     * If not a continuation of the previous light-position/direction edit,
-     * update the edit count.
-     */
-    private void setEditedLightPosDir() {
-        String lightName = getLight().name();
-        String newState = "lpd" + lightName;
-        if (!newState.equals(continousEditState)) {
-            History.autoAdd();
-            ++editCount;
-            continousEditState = newState;
-            String description = String.format(
-                    "reposition and/or redirect light named %s",
-                    MyString.quote(lightName));
-            History.addEvent(description);
-        }
-    }
-
-    /**
-     * If not a continuation of the previous object-position edit, update the
-     * edit count.
-     */
-    private void setEditedPhysicsPosition() {
-        String newState = "pp" + getObject().getName();
-        if (!newState.equals(continousEditState)) {
-            History.autoAdd();
-            ++editCount;
-            continousEditState = newState;
-            History.addEvent("reposition collision object");
-        }
-    }
-
-    /**
-     * If not a continuation of the previous shape-size edit, update the edit
-     * count.
-     */
-    private void setEditedShapeSize() {
-        String newState = "ss" + getShape().find().toString();
-        if (!newState.equals(continousEditState)) {
-            History.autoAdd();
-            ++editCount;
-            continousEditState = newState;
-            History.addEvent("resize collision shape");
-        }
-    }
-
-    /**
-     * If not a continuation of the previous spatial-transform edit, update the
-     * edit count.
-     */
-    private void setEditedSpatialTransform() {
-        String newState = "st" + getSpatial().toString();
-        if (!newState.equals(continousEditState)) {
-            History.autoAdd();
-            ++editCount;
-            continousEditState = newState;
-            History.addEvent("transform spatial");
-        }
-    }
-
-    /**
-     * Mark the C-G model as pristine.
-     *
-     * @param eventDescription description of causative event (not null)
-     */
-    private void setPristine(String eventDescription) {
-        editCount = 0;
-        continousEditState = "";
-        History.addEvent(eventDescription);
     }
 }

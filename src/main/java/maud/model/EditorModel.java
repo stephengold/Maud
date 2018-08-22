@@ -265,7 +265,7 @@ public class EditorModel {
      */
     void preCheckpoint() {
         mapLoadSlot.preCheckpoint();
-        targetCgmLoadSlot.preCheckpoint();
+        targetCgmLoadSlot.getEditState().preCheckpoint();
     }
 
     /**

@@ -648,7 +648,7 @@ public class SelectedShape implements Cloneable {
         PhysicsUtil.replaceInCompounds(space, shape, newShape);
 
         EditableCgm editableCgm = (EditableCgm) cgm;
-        editableCgm.replaceForResize(shape, newShape);
+        editableCgm.getEditState().replaceForResize(shape, newShape);
 
         long newShapeId = newShape.getObjectId();
         selectedId = newShapeId;
