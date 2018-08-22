@@ -127,14 +127,14 @@ public class EditorDialogs {
                 "%n   jme3-utilities-heart version %s (BSD license)",
                 MyString.quote(Misc.getVersionShort()));
         text += String.format("%n   Minie version %s (BSD license)",
-                MyString.quote(MinieVersion.getVersionShort()));
+                MyString.quote(MinieVersion.versionShort()));
         text += String.format("%n   SkyControl version %s (BSD license)",
                 MyString.quote(Constants.getVersionShort()));
         text += String.format("%n   Wes version %s (BSD license)",
                 MyString.quote(WesVersion.getVersionShort()));
         text += String.format(
                 "%n   jme3-utilities-debug version %s (BSD license)",
-                MyString.quote(DebugVersion.getVersionShort()));
+                MyString.quote(DebugVersion.versionShort()));
         text += String.format("%n   jme3-utilities-ui version %s (BSD license)",
                 MyString.quote(UiVersion.getVersionShort()));
         text += String.format(
