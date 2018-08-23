@@ -78,7 +78,6 @@ import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import jme3utilities.math.MyVector3f;
 import jme3utilities.nifty.dialog.VectorDialog;
-import jme3utilities.wes.Pose;
 import maud.model.option.RotationDisplayMode;
 
 /**
@@ -107,18 +106,6 @@ public class MaudUtil {
      * local copy of {@link com.jme3.math.Transform#IDENTITY}
      */
     final private static Transform transformIdentity = new Transform();
-    /**
-     * local copy of {@link com.jme3.math.Vector3f#UNIT_X}
-     */
-    final private static Vector3f xAxis = new Vector3f(1f, 0f, 0f);
-    /**
-     * local copy of {@link com.jme3.math.Vector3f#UNIT_Y}
-     */
-    final private static Vector3f yAxis = new Vector3f(0f, 1f, 0f);
-    /**
-     * local copy of {@link com.jme3.math.Vector3f#UNIT_Z}
-     */
-    final private static Vector3f zAxis = new Vector3f(0f, 0f, 1f);
     // *************************************************************************
     // constructors
 
@@ -583,136 +570,6 @@ public class MaudUtil {
     }
 
     /**
-     * Find the point of vertical support (minimum Y coordinate) for the
-     * specified geometry transformed by the specified skinning matrices.
-     *
-     * @param geometry (not null)
-     * @param skinningMatrices (not null, unaffected)
-     * @param storeLocation point in world coordinates (not null, modified)
-     * @return index of vertex in the geometry's mesh (&ge;0) or -1 if none
-     * found
-     */
-    public static int findSupport(Geometry geometry,
-            Matrix4f[] skinningMatrices, Vector3f storeLocation) {
-        Validate.nonNull(skinningMatrices, "skinning matrices");
-        Validate.nonNull(storeLocation, "store location");
-
-        int bestIndex = -1;
-        float bestY = Float.POSITIVE_INFINITY;
-
-        Vector3f meshLoc = new Vector3f();
-        Vector3f worldLoc = new Vector3f();
-
-        Mesh mesh = geometry.getMesh();
-        int maxWeightsPerVertex = mesh.getMaxNumWeights();
-
-        VertexBuffer posBuf
-                = mesh.getBuffer(VertexBuffer.Type.BindPosePosition);
-        FloatBuffer posBuffer = (FloatBuffer) posBuf.getDataReadOnly();
-        posBuffer.rewind();
-
-        VertexBuffer wBuf = mesh.getBuffer(VertexBuffer.Type.BoneWeight);
-        FloatBuffer weightBuffer = (FloatBuffer) wBuf.getDataReadOnly();
-        weightBuffer.rewind();
-
-        VertexBuffer biBuf = mesh.getBuffer(VertexBuffer.Type.BoneIndex);
-        Buffer boneIndexBuffer = biBuf.getData();
-        boneIndexBuffer.rewind();
-
-        int numVertices = posBuffer.remaining() / MyVector3f.numAxes;
-        for (int vertexIndex = 0; vertexIndex < numVertices; vertexIndex++) {
-            float bx = posBuffer.get(); // bind position
-            float by = posBuffer.get();
-            float bz = posBuffer.get();
-
-            meshLoc.zero();
-            for (int wIndex = 0; wIndex < maxWeightsPerVertex; wIndex++) {
-                float weight = weightBuffer.get();
-                int boneIndex = MyMesh.readIndex(boneIndexBuffer);
-                if (weight != 0f) {
-                    Matrix4f s = skinningMatrices[boneIndex];
-                    float xOff = s.m00 * bx + s.m01 * by + s.m02 * bz + s.m03;
-                    float yOff = s.m10 * bx + s.m11 * by + s.m12 * bz + s.m13;
-                    float zOff = s.m20 * bx + s.m21 * by + s.m22 * bz + s.m23;
-                    meshLoc.x += weight * xOff;
-                    meshLoc.y += weight * yOff;
-                    meshLoc.z += weight * zOff;
-                }
-            }
-
-            if (geometry.isIgnoreTransform()) {
-                worldLoc.set(meshLoc);
-            } else {
-                geometry.localToWorld(meshLoc, worldLoc);
-            }
-            if (worldLoc.y < bestY) {
-                bestIndex = vertexIndex;
-                bestY = worldLoc.y;
-                storeLocation.set(worldLoc);
-            }
-
-            for (int wIndex = maxWeightsPerVertex; wIndex < 4; wIndex++) {
-                weightBuffer.get();
-                MyMesh.readIndex(boneIndexBuffer);
-            }
-        }
-
-        return bestIndex;
-    }
-
-    /**
-     * Find the point of vertical support (minimum Y coordinate) for the meshes
-     * in the specified subtree, each transformed by the specified skinning
-     * matrices.
-     *
-     * @param subtree (may be null)
-     * @param skinningMatrices (not null, unaffected)
-     * @param storeLocation point in world coordinates (not null, modified)
-     * @param storeGeometry (not null, modified)
-     * @return index of vertex in storeGeometry's mesh (&ge;0) or -1 if none
-     * found
-     */
-    public static int findSupport(Spatial subtree, Matrix4f[] skinningMatrices,
-            Vector3f storeLocation, Geometry[] storeGeometry) {
-        Validate.nonNull(skinningMatrices, "skinning matrices");
-        Validate.nonNull(storeLocation, "store location");
-        Validate.nonNull(storeGeometry, "store geometry");
-        assert storeGeometry.length == 1 : storeGeometry.length;
-
-        int bestIndex = -1;
-        storeGeometry[0] = null;
-        float bestY = Float.POSITIVE_INFINITY;
-        Vector3f tmpLocation = new Vector3f();
-
-        if (subtree instanceof Geometry) {
-            Geometry geometry = (Geometry) subtree;
-            int index = findSupport(geometry, skinningMatrices, tmpLocation);
-            if (tmpLocation.y < bestY) {
-                bestIndex = index;
-                storeGeometry[0] = geometry;
-                storeLocation.set(tmpLocation);
-            }
-
-        } else if (subtree instanceof Node) {
-            Node node = (Node) subtree;
-            List<Spatial> children = node.getChildren();
-            Geometry[] tmpGeometry = new Geometry[1];
-            for (Spatial child : children) {
-                int index = findSupport(child, skinningMatrices, tmpLocation,
-                        tmpGeometry);
-                if (tmpLocation.y < bestY) {
-                    bestIndex = index;
-                    bestY = tmpLocation.y;
-                    storeGeometry[0] = tmpGeometry[0];
-                    storeLocation.set(tmpLocation);
-                }
-            }
-        }
-
-        return bestIndex;
-    }
-
-    /**
      * Format an index value for the current index base.
      *
      * @param index zero-base index value (&ge;0)
@@ -902,61 +759,6 @@ public class MaudUtil {
         }
 
         return result;
-    }
-
-    /**
-     * Calculate the sensitivity of the indexed vertex to translations of the
-     * indexed bone in the specified pose.
-     *
-     * @param boneIndex which bone to translate (&ge;0)
-     * @param geometry (not null)
-     * @param vertexIndex index into the geometry's vertices (&ge;0)
-     * @param pose (not null, unaffected)
-     * @param storeResult (modified if not null)
-     * @return sensitivity matrix (either storeResult or a new instance)
-     */
-    public static Matrix3f sensitivity(int boneIndex, Geometry geometry,
-            int vertexIndex, Pose pose, Matrix3f storeResult) {
-        Validate.nonNull(geometry, "geometry");
-        if (storeResult == null) {
-            storeResult = new Matrix3f();
-        }
-
-        Vector3f testWorld = new Vector3f();
-        Vector3f baseWorld = new Vector3f();
-        int numBones = pose.countBones();
-        Matrix4f[] matrices = new Matrix4f[numBones];
-        Pose testPose = pose.clone();
-
-        pose.userTranslation(boneIndex, testWorld);
-        testPose.skin(matrices);
-        MyMesh.vertexWorldLocation(geometry, vertexIndex, matrices, baseWorld);
-
-        pose.userTranslation(boneIndex, testWorld);
-        testWorld.addLocal(xAxis);
-        testPose.setTranslation(boneIndex, testWorld);
-        testPose.skin(matrices);
-        MyMesh.vertexWorldLocation(geometry, vertexIndex, matrices, testWorld);
-        testWorld.subtractLocal(baseWorld);
-        storeResult.setColumn(0, testWorld);
-
-        pose.userTranslation(boneIndex, testWorld);
-        testWorld.addLocal(yAxis);
-        testPose.setTranslation(boneIndex, testWorld);
-        testPose.skin(matrices);
-        MyMesh.vertexWorldLocation(geometry, vertexIndex, matrices, testWorld);
-        testWorld.subtractLocal(baseWorld);
-        storeResult.setColumn(1, testWorld);
-
-        pose.userTranslation(boneIndex, testWorld);
-        testWorld.addLocal(zAxis);
-        testPose.setTranslation(boneIndex, testWorld);
-        testPose.skin(matrices);
-        MyMesh.vertexWorldLocation(geometry, vertexIndex, matrices, testWorld);
-        testWorld.subtractLocal(baseWorld);
-        storeResult.setColumn(2, testWorld);
-
-        return storeResult;
     }
 
     /**

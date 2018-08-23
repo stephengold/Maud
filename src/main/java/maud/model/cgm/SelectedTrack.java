@@ -60,7 +60,7 @@ import jme3utilities.wes.SmoothVectors;
 import jme3utilities.wes.TrackEdit;
 import jme3utilities.wes.TweenTransforms;
 import maud.Maud;
-import maud.MaudUtil;
+import maud.SupportUtil;
 
 /**
  * The MVC model of the selected track in a loaded animation.
@@ -927,7 +927,7 @@ public class SelectedTrack implements JmeCloneable {
 
         Vector3f vertexLocation = new Vector3f();
         Geometry[] geometryRef = new Geometry[1];
-        int vertexIndex = MaudUtil.findSupport(subtree, skinningMatrices,
+        int vertexIndex = SupportUtil.findSupport(subtree, skinningMatrices,
                 vertexLocation, geometryRef);
         assert vertexIndex != -1;
 
@@ -985,7 +985,7 @@ public class SelectedTrack implements JmeCloneable {
                 /*
                  * Convert the world offset to a bone offset.
                  */
-                MaudUtil.sensitivity(boneIndex, previousGeometryRef[0],
+                SupportUtil.sensitivity(boneIndex, previousGeometryRef[0],
                         previousVertexIndex, tempPose, sensMat);
                 float determinant = sensMat.determinant();
                 if (FastMath.abs(determinant) <= FastMath.FLT_EPSILON) {
@@ -1003,7 +1003,7 @@ public class SelectedTrack implements JmeCloneable {
              * Using the original skinning matrices, pick a vertex to serve as
              * a reference for the next frame.
              */
-            previousVertexIndex = MaudUtil.findSupport(subtree,
+            previousVertexIndex = SupportUtil.findSupport(subtree,
                     skinningMatrices, previousWorld, previousGeometryRef);
             assert previousVertexIndex != -1;
             assert previousGeometryRef[0] != null;
@@ -1209,7 +1209,7 @@ public class SelectedTrack implements JmeCloneable {
             float trackTime = times[frameIndex];
             tempPose.setToAnimation(oldAnimation, trackTime, techniques);
             tempPose.skin(skinningMatrices);
-            int vertexIndex = MaudUtil.findSupport(subtree, skinningMatrices,
+            int vertexIndex = SupportUtil.findSupport(subtree, skinningMatrices,
                     world, geometryRef);
             assert vertexIndex != -1;
             world.x = 0f;
@@ -1219,7 +1219,7 @@ public class SelectedTrack implements JmeCloneable {
              * Convert the world offset to a bone offset.
              */
             Geometry geometry = geometryRef[0];
-            MaudUtil.sensitivity(boneIndex, geometry, vertexIndex, tempPose,
+            SupportUtil.sensitivity(boneIndex, geometry, vertexIndex, tempPose,
                     sensMat);
             float det = sensMat.determinant();
             if (FastMath.abs(det) <= FastMath.FLT_EPSILON) {
