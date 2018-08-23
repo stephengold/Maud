@@ -27,8 +27,6 @@
 package maud;
 
 import com.jme3.animation.Animation;
-import com.jme3.animation.Bone;
-import com.jme3.animation.Skeleton;
 import com.jme3.animation.SpatialTrack;
 import com.jme3.animation.Track;
 import com.jme3.collision.CollisionResult;
@@ -43,7 +41,6 @@ import com.jme3.math.Transform;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.math.Vector4f;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -59,11 +56,8 @@ import com.jme3.texture.image.ColorSpace;
 import com.jme3.util.BufferUtils;
 import java.io.IOException;
 import java.io.Writer;
-import java.nio.Buffer;
 import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -72,7 +66,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import jme3utilities.MyMesh;
 import jme3utilities.MySpatial;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
@@ -116,121 +109,6 @@ public class MaudUtil {
     }
     // *************************************************************************
     // new methods exposed
-
-    /**
-     * Add indices to the result for bones that influence (directly or
-     * indirectly) vertices in the specified subtree of the scene graph. Note:
-     * recursive!
-     *
-     * @param subtree subtree to traverse (may be null, unaffected)
-     * @param skeleton skeleton (not null, unaffected)
-     * @param storeResult (modified if not null)
-     * @return the set of bones with influence (either storeResult or a new
-     * instance)
-     */
-    public static BitSet addAllInfluencers(Spatial subtree, Skeleton skeleton,
-            BitSet storeResult) {
-        int numBones = skeleton.getBoneCount();
-        if (storeResult == null) {
-            storeResult = new BitSet(numBones);
-        }
-
-        addDirectInfluencers(subtree, storeResult);
-
-        for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
-            if (storeResult.get(boneIndex)) {
-                Bone bone = skeleton.getBone(boneIndex);
-                for (Bone parent = bone.getParent();
-                        parent != null;
-                        parent = parent.getParent()) {
-                    int parentIndex = skeleton.getBoneIndex(parent);
-                    storeResult.set(parentIndex);
-                }
-            }
-        }
-
-        return storeResult;
-    }
-
-    /**
-     * Add indices to the result for bones that directly influence vertices in
-     * the specified mesh.
-     *
-     * @param mesh animated mesh to analyze (not null, unaffected)
-     * @param storeResult (modified if not null)
-     * @return the set of bones with influence (either storeResult or a new
-     * instance)
-     */
-    public static BitSet addDirectInfluencers(Mesh mesh, BitSet storeResult) {
-        if (storeResult == null) {
-            storeResult = new BitSet(120);
-        }
-
-        int maxWeightsPerVert = mesh.getMaxNumWeights();
-        if (maxWeightsPerVert <= 0) {
-            maxWeightsPerVert = 1;
-        }
-        assert maxWeightsPerVert > 0 : maxWeightsPerVert;
-        assert maxWeightsPerVert <= 4 : maxWeightsPerVert;
-
-        VertexBuffer biBuf = mesh.getBuffer(VertexBuffer.Type.BoneIndex);
-        Buffer boneIndexBuffer = biBuf.getDataReadOnly();
-        boneIndexBuffer.rewind();
-        int numBoneIndices = boneIndexBuffer.remaining();
-        assert numBoneIndices % 4 == 0 : numBoneIndices;
-        int numVertices = boneIndexBuffer.remaining() / 4;
-
-        VertexBuffer wBuf = mesh.getBuffer(VertexBuffer.Type.BoneWeight);
-        FloatBuffer weightBuffer = (FloatBuffer) wBuf.getDataReadOnly();
-        weightBuffer.rewind();
-        int numWeights = weightBuffer.remaining();
-        assert numWeights == numVertices * 4 : numWeights;
-
-        for (int vIndex = 0; vIndex < numVertices; vIndex++) {
-            for (int wIndex = 0; wIndex < 4; wIndex++) {
-                float weight = weightBuffer.get();
-                int boneIndex = MyMesh.readIndex(boneIndexBuffer);
-                if (wIndex < maxWeightsPerVert && weight > 0f) {
-                    storeResult.set(boneIndex);
-                }
-            }
-        }
-
-        return storeResult;
-    }
-
-    /**
-     * Add indices to the result for bones that directly influence vertices in
-     * the specified subtree of the scene graph. Note: recursive!
-     *
-     * @param subtree subtree to traverse (may be null, unaffected)
-     * @param storeResult (modified if not null)
-     * @return the set of bones with influence (either storeResult or a new
-     * instance)
-     */
-    public static BitSet addDirectInfluencers(Spatial subtree,
-            BitSet storeResult) {
-        if (storeResult == null) {
-            storeResult = new BitSet(120);
-        }
-
-        if (subtree instanceof Geometry) {
-            Geometry geometry = (Geometry) subtree;
-            Mesh mesh = geometry.getMesh();
-            if (isAnimated(mesh)) {
-                addDirectInfluencers(mesh, storeResult);
-            }
-
-        } else if (subtree instanceof Node) {
-            Node node = (Node) subtree;
-            List<Spatial> children = node.getChildren();
-            for (Spatial child : children) {
-                addDirectInfluencers(child, storeResult);
-            }
-        }
-
-        return storeResult;
-    }
 
     /**
      * Generate an arbitrary non-null value for a material parameter.

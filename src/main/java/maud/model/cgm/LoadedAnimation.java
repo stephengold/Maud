@@ -46,6 +46,7 @@ import jme3utilities.math.MyMath;
 import jme3utilities.wes.Pose;
 import jme3utilities.wes.TrackEdit;
 import jme3utilities.wes.TweenTransforms;
+import maud.InfluenceUtil;
 import maud.Maud;
 import maud.MaudUtil;
 import maud.model.EditableMap;
@@ -1126,7 +1127,7 @@ public class LoadedAnimation implements Cloneable {
         if (ss.isSelected()) {
             Skeleton skeleton = ss.find();
             Spatial subtree = ss.findSpatial();
-            influencers = MaudUtil.addAllInfluencers(subtree, skeleton, null);
+            influencers = InfluenceUtil.addAllInfluencers(subtree, skeleton, null);
         }
 
         float duration = getDuration();
