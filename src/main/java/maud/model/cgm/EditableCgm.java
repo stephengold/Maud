@@ -34,8 +34,6 @@ import com.jme3.animation.Skeleton;
 import com.jme3.animation.SkeletonControl;
 import com.jme3.animation.SpatialTrack;
 import com.jme3.animation.Track;
-import com.jme3.bullet.PhysicsSpace;
-import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.export.binary.BinaryExporter;
 import com.jme3.light.Light;
@@ -71,7 +69,6 @@ import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
-import jme3utilities.math.MyVector3f;
 import jme3utilities.minie.MyControlP;
 import jme3utilities.nifty.dialog.VectorDialog;
 import jme3utilities.ui.ActionApplication;
@@ -81,7 +78,6 @@ import maud.MaudUtil;
 import maud.PhysicsUtil;
 import maud.model.EditState;
 import maud.model.History;
-import maud.model.option.ShapeParameter;
 import maud.view.scene.SceneView;
 
 /**
@@ -799,28 +795,6 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Replace the specified physics collision shape with a completely different
-     * shape, but only in objects, not in compound shapes.
-     *
-     * @param oldAnimation animation to replace (not null)
-     * @param newAnimation replacement animation (not null)
-     * @param eventDescription description for the edit history (not null, not
-     * empty)
-     */
-    void replaceInObjects(CollisionShape oldShape, CollisionShape newShape,
-            String eventDescription) {
-        assert oldShape != null;
-        assert newShape != null;
-        assert eventDescription != null;
-        assert !eventDescription.isEmpty();
-
-        PhysicsSpace space = getSceneView().getPhysicsSpace();
-        History.autoAdd();
-        PhysicsUtil.replaceInObjects(space, oldShape, newShape);
-        editState.setEdited(eventDescription);
-    }
-
-    /**
      * Remove the selected light, and optionally replace it with the specified
      * light. The invoker is responsible for updating the selection.
      *
@@ -887,27 +861,6 @@ public class EditableCgm extends LoadedCgm {
         getSceneView().replaceLight(oldName, newLight);
         selectedLight.select(newLight);
         editState.setEditedLightPosDir(oldName);
-    }
-
-    /**
-     * Resize the selected physics collision shape by the specified factors
-     * without altering its scale. Has no effect on compound shapes. TODO
-     * implement for compound shapes
-     *
-     * @param factors size factor to apply each local axis (not null,
-     * unaffected)
-     */
-    public void resizeShape(Vector3f factors) {
-        Validate.nonNull(factors, "factors");
-
-        SelectedShape shape = getShape();
-        if (!MyVector3f.isScaleIdentity(factors) && !shape.isCompound()) {
-            Vector3f he = shape.halfExtents(null);
-            he.multLocal(factors);
-            shape.setHalfExtents(he);
-            String shapeName = shape.find().toString();
-            editState.setEditedShapeSize(shapeName);
-        }
     }
 
     /**
@@ -1378,33 +1331,6 @@ public class EditableCgm extends LoadedCgm {
             String description = String.format(
                     "change spatial's shadow mode to %s", newMode);
             editState.setEdited(description);
-        }
-    }
-
-    /**
-     * Alter the specified parameter of the selected physics collision shape.
-     *
-     * @param parameter which parameter to alter (not null)
-     * @param newValue new parameter value
-     */
-    public void setShapeParameter(ShapeParameter parameter, float newValue) {
-        Validate.nonNull(parameter, "parameter");
-
-        SelectedShape shape = getShape();
-        assert shape.canSet(parameter);
-        float oldValue = shape.getValue(parameter);
-        if (newValue != oldValue) {
-            if (parameter.equals(ShapeParameter.Margin)) {
-                History.autoAdd();
-                shape.set(parameter, newValue);
-                String description = String.format(
-                        "change shape's margin to %f", newValue);
-                editState.setEdited(description);
-            } else {
-                shape.set(parameter, newValue);
-                String shapeName = shape.find().toString();
-                editState.setEditedShapeSize(shapeName);
-            }
         }
     }
 

@@ -254,7 +254,7 @@ class SetOZAction {
             if (args.length == 2) {
                 ShapeParameter parm = ShapeParameter.valueOf(args[0]);
                 float value = Float.parseFloat(args[1]);
-                target.setShapeParameter(parm, value);
+                target.getShape().setParameter(parm, value);
             } else {
                 handled = false;
             }

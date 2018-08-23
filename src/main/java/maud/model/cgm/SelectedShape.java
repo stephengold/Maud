@@ -50,6 +50,7 @@ import jme3utilities.math.MyMath;
 import jme3utilities.math.MyVector3f;
 import jme3utilities.minie.MyShape;
 import maud.PhysicsUtil;
+import maud.model.History;
 import maud.model.option.ShapeParameter;
 import maud.view.scene.SceneView;
 
@@ -74,6 +75,11 @@ public class SelectedShape implements Cloneable {
      * C-G model containing the selected shape (set by {@link #setCgm(Cgm)})
      */
     private Cgm cgm = null;
+    /**
+     * editable C-G model, if any, containing the selected shape (set by
+     * {@link #setCgm(Cgm)})
+     */
+    private EditableCgm editableCgm = null;
     /**
      * id of the selected shape, or -1L for none
      */
@@ -395,6 +401,25 @@ public class SelectedShape implements Cloneable {
     }
 
     /**
+     * Resize the shape by the specified factors without altering its scale. Has
+     * no effect on compound shapes. TODO implement for compound shapes
+     *
+     * @param factors size factor to apply each local axis (not null,
+     * unaffected)
+     */
+    public void resize(Vector3f factors) {
+        Validate.nonNull(factors, "factors");
+
+        if (!MyVector3f.isScaleIdentity(factors) && !isCompound()) {
+            Vector3f he = halfExtents(null);
+            he.multLocal(factors);
+            setHalfExtents(he);
+            String shapeName = find().toString();
+            editableCgm.getEditState().setEditedShapeSize(shapeName);
+        }
+    }
+
+    /**
      * Select the identified shape.
      *
      * @param shapeId which shape
@@ -504,16 +529,21 @@ public class SelectedShape implements Cloneable {
     }
 
     /**
-     * Alter which C-G model contains the shape. (Invoked only during
+     * Alter which C-G model contains the selected shape. (Invoked only during
      * initialization and cloning.)
      *
-     * @param newCgm (not null, alias created)
+     * @param newCgm (not null, aliases created)
      */
     void setCgm(Cgm newCgm) {
         assert newCgm != null;
         assert newCgm.getShape() == this;
 
         cgm = newCgm;
+        if (newCgm instanceof EditableCgm) {
+            editableCgm = (EditableCgm) newCgm;
+        } else {
+            editableCgm = null;
+        }
     }
 
     /**
@@ -529,6 +559,32 @@ public class SelectedShape implements Cloneable {
         CollisionShape newShape = MyShape.setHalfExtents(shape, newHalfExtents);
         if (newShape != null) {
             replaceForResize(newShape);
+        }
+    }
+
+    /**
+     * Alter the specified parameter of the selected physics collision shape.
+     *
+     * @param parameter which parameter to alter (not null)
+     * @param newValue new parameter value
+     */
+    public void setParameter(ShapeParameter parameter, float newValue) {
+        Validate.nonNull(parameter, "parameter");
+
+        assert canSet(parameter);
+        float oldValue = getValue(parameter);
+        if (newValue != oldValue) {
+            if (parameter.equals(ShapeParameter.Margin)) {
+                History.autoAdd();
+                set(parameter, newValue);
+                String description = String.format(
+                        "change shape's margin to %f", newValue);
+                editableCgm.getEditState().setEdited(description);
+            } else {
+                set(parameter, newValue);
+                String shapeName = find().toString();
+                editableCgm.getEditState().setEditedShapeSize(shapeName);
+            }
         }
     }
 
@@ -669,8 +725,11 @@ public class SelectedShape implements Cloneable {
         assert !eventDescription.isEmpty();
 
         CollisionShape shape = find();
-        EditableCgm editableCgm = (EditableCgm) cgm;
-        editableCgm.replaceInObjects(shape, newShape, eventDescription);
+        PhysicsSpace space = cgm.getSceneView().getPhysicsSpace();
+
+        History.autoAdd();
+        PhysicsUtil.replaceInObjects(space, shape, newShape);
+        editableCgm.getEditState().setEdited(eventDescription);
         long newShapeId = newShape.getObjectId();
         selectedId = newShapeId;
     }

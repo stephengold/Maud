@@ -478,7 +478,7 @@ public class SceneDrag {
             case SelectedShape:
                 if (editableCgm != null) {
                     Vector3f scale = new Vector3f(factor, factor, factor);
-                    editableCgm.resizeShape(scale);
+                    editableCgm.getShape().resize(scale);
                 }
                 break;
 
@@ -529,7 +529,7 @@ public class SceneDrag {
 
             case SelectedShape: // won't work on all shapes
                 if (editableCgm != null) {
-                    editableCgm.resizeShape(scale);
+                    editableCgm.getShape().resize(scale);
                 }
                 break;
 
