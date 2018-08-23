@@ -167,14 +167,14 @@ public class SelectedSkeleton implements JmeCloneable {
     /**
      * Find the selected skeleton.
      *
-     * @param storeSelectedSpatialFlag if not null, set the 1st element to true
-     * if the skeleton came from the selected spatial, false if it came from the
-     * C-G model root
+     * @param storeSelectedSgcFlag if not null, set the 1st element to true if
+     * the skeleton came from the selected S-G control, false if it came from
+     * the C-G model root
      * @return the pre-existing instance, or null if none
      */
-    Skeleton find(boolean[] storeSelectedSpatialFlag) {
+    Skeleton find(boolean[] storeSelectedSgcFlag) {
         AnimControl animControl;
-        boolean selectedSpatialFlag;
+        boolean selectedSgcFlag;
         SkeletonControl skeletonControl;
         Skeleton skeleton = null;
         /*
@@ -191,9 +191,9 @@ public class SelectedSkeleton implements JmeCloneable {
             skeleton = skeletonControl.getSkeleton();
         }
         if (skeleton != null) {
-            selectedSpatialFlag = true;
+            selectedSgcFlag = true;
         } else {
-            selectedSpatialFlag = false;
+            selectedSgcFlag = false;
         }
         /*
          * If not, use the skeleton from the first AnimControl or
@@ -215,8 +215,8 @@ public class SelectedSkeleton implements JmeCloneable {
             }
         }
 
-        if (storeSelectedSpatialFlag != null) {
-            storeSelectedSpatialFlag[0] = selectedSpatialFlag; // side-effect
+        if (storeSelectedSgcFlag != null) {
+            storeSelectedSgcFlag[0] = selectedSgcFlag; // side-effect
         }
         return skeleton;
     }
@@ -253,11 +253,11 @@ public class SelectedSkeleton implements JmeCloneable {
      * @return the pre-existing instance (not null)
      */
     Spatial findSpatial() {
-        boolean[] selectedSpatialFlag = {false};
-        find(selectedSpatialFlag);
+        boolean[] selectedSgcFlag = {false};
+        find(selectedSgcFlag);
         Spatial spatial;
-        if (selectedSpatialFlag[0]) {
-            spatial = cgm.getSpatial().find();
+        if (selectedSgcFlag[0]) {
+            spatial = cgm.getSgc().getControlled();
         } else {
             spatial = cgm.getRootSpatial();
         }
@@ -679,13 +679,13 @@ public class SelectedSkeleton implements JmeCloneable {
      * Update after (for instance) selecting a different spatial or S-G control.
      */
     void postSelect() {
-        boolean[] selectedSpatialFlag = {false};
-        Skeleton foundSkeleton = find(selectedSpatialFlag);
+        boolean[] selectedSgcFlag = {false};
+        Skeleton foundSkeleton = find(selectedSgcFlag);
         if (foundSkeleton != last) {
             cgm.getBone().deselect();
             cgm.getPose().resetToBind(foundSkeleton);
             SceneView view = cgm.getSceneView();
-            view.setSkeleton(foundSkeleton, selectedSpatialFlag[0]);
+            view.setSkeleton(foundSkeleton, selectedSgcFlag[0]);
             last = foundSkeleton;
         }
     }

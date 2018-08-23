@@ -102,6 +102,21 @@ public class SelectedSgc implements JmeCloneable {
     }
 
     /**
+     * Calculate the position of the controlled spatial.
+     *
+     * @return tree position the controlled spatial, or null if none
+     */
+    public List<Integer> controlledPosition() {
+        List<Integer> result = null;
+        if (isSelected()) {
+            assert controlled != null;
+            result = cgm.findSpatial(controlled);
+        }
+
+        return result;
+    }
+
+    /**
      * Delete the S-G control.
      */
     public void delete() {

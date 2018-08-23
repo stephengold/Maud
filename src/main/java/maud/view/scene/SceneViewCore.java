@@ -597,17 +597,22 @@ public class SceneViewCore
      * Visualize using a different skeleton, or none.
      *
      * @param selectedSkeleton (may be null, unaffected)
-     * @param selectedSpatialFlag where to add controls: false&rarr;C-G model
-     * root, true&rarr;selected spatial
+     * @param selectedSgcFlag where to add controls: false&rarr;C-G model root,
+     * true&rarr;spatial controlled by the selected scene-graph control
      */
     public void setSkeleton(Skeleton selectedSkeleton,
-            boolean selectedSpatialFlag) {
+            boolean selectedSgcFlag) {
         clearSkeleton();
 
         if (selectedSkeleton != null) {
             Spatial controlled;
-            if (selectedSpatialFlag) {
-                controlled = selectedSpatial();
+            if (selectedSgcFlag) {
+                List<Integer> treePosition = cgm.getSgc().controlledPosition();
+                controlled = cgmRoot;
+                for (int childPosition : treePosition) {
+                    Node node = (Node) controlled;
+                    controlled = node.getChild(childPosition);
+                }
             } else {
                 controlled = cgmRoot;
             }
