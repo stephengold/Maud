@@ -398,7 +398,7 @@ public class SceneDrag {
                         Quaternion orientation = object.orientation(null);
                         orientation.multLocal(rotation);
                         orientation.normalizeLocal();
-                        editableCgm.setPhysicsOrientation(orientation);
+                        object.setOrientation(orientation);
                     }
                 }
                 break;
@@ -633,7 +633,7 @@ public class SceneDrag {
                      */
                     Vector3f location = object.location(null);
                     location.addLocal(offset);
-                    editableCgm.setPhysicsLocation(location);
+                    object.setLocation(location);
                 }
                 break;
 

@@ -41,6 +41,7 @@ import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import jme3utilities.minie.MyShape;
 import maud.PhysicsUtil;
+import maud.model.History;
 import maud.model.option.RigidBodyParameter;
 
 /**
@@ -64,6 +65,11 @@ public class SelectedObject implements Cloneable {
      * C-G model containing the selected object (set by {@link #setCgm(Cgm)})
      */
     private Cgm cgm = null;
+    /**
+     * editable C-G model, if any, containing the selected object (set by
+     * {@link #setCgm(Cgm)})
+     */
+    private EditableCgm editableCgm = null;
     /**
      * constructed name for the selected object (not null)
      */
@@ -335,71 +341,21 @@ public class SelectedObject implements Cloneable {
     }
 
     /**
-     * Alter the specified rigid body parameter.
-     *
-     * @param parameter which parameter to alter (not null)
-     * @param newValue new parameter value
-     */
-    void set(RigidBodyParameter parameter, float newValue) {
-        assert parameter != null;
-
-        PhysicsCollisionObject object = find();
-        PhysicsRigidBody prb = (PhysicsRigidBody) object;
-        Vector3f vector;
-
-        switch (parameter) {
-            case AngularDamping:
-                prb.setAngularDamping(newValue);
-                break;
-            case AngularSleep:
-                prb.setAngularSleepingThreshold(newValue);
-                break;
-            case Friction:
-                prb.setFriction(newValue);
-                break;
-            case GravityX:
-                vector = prb.getGravity();
-                vector.x = newValue;
-                prb.setGravity(vector);
-                break;
-            case GravityY:
-                vector = prb.getGravity();
-                vector.y = newValue;
-                prb.setGravity(vector);
-                break;
-            case GravityZ:
-                vector = prb.getGravity();
-                vector.z = newValue;
-                prb.setGravity(vector);
-                break;
-            case LinearDamping:
-                prb.setLinearDamping(newValue);
-                break;
-            case LinearSleep:
-                prb.setLinearSleepingThreshold(newValue);
-                break;
-            case Mass:
-                prb.setMass(newValue);
-                break;
-            case Restitution:
-                prb.setRestitution(newValue);
-                break;
-            default:
-                throw new IllegalArgumentException();
-        }
-    }
-
-    /**
      * Alter which C-G model contains the selected object. (Invoked only during
      * initialization and cloning.)
      *
-     * @param newCgm (not null, alias created)
+     * @param newCgm (not null, aliases created)
      */
     void setCgm(Cgm newCgm) {
         assert newCgm != null;
         assert newCgm.getObject() == this;
 
         cgm = newCgm;
+        if (newCgm instanceof EditableCgm) {
+            editableCgm = (EditableCgm) newCgm;
+        } else {
+            editableCgm = null;
+        }
     }
 
     /**
@@ -412,6 +368,7 @@ public class SelectedObject implements Cloneable {
 
         PhysicsCollisionObject object = find();
         PhysicsUtil.setLocation(object, newLocation);
+        editableCgm.getEditState().setEditedPhysicsPosition(selectedName);
     }
 
     /**
@@ -424,6 +381,27 @@ public class SelectedObject implements Cloneable {
 
         PhysicsCollisionObject object = find();
         PhysicsUtil.setOrientation(object, newOrientation);
+        editableCgm.getEditState().setEditedPhysicsPosition(selectedName);
+    }
+
+    /**
+     * Alter the specified parameter of the selected rigid body.
+     *
+     * @param parameter which parameter to alter (not null)
+     * @param newValue new parameter value
+     */
+    public void setRigidBodyParameter(RigidBodyParameter parameter,
+            float newValue) {
+        Validate.nonNull(parameter, "parameter");
+
+        PhysicsCollisionObject pco = find();
+        if (pco instanceof PhysicsRigidBody) {
+            History.autoAdd();
+            set(parameter, newValue);
+            String eventDescription = String.format(
+                    "set %s of rigid body to %f", parameter, newValue);
+            editableCgm.getEditState().setEdited(eventDescription);
+        }
     }
 
     /**
@@ -486,5 +464,60 @@ public class SelectedObject implements Cloneable {
         }
 
         return result;
+    }
+
+    /**
+     * Alter the specified rigid-body parameter.
+     *
+     * @param parameter which parameter to alter (not null)
+     * @param newValue new parameter value
+     */
+    private void set(RigidBodyParameter parameter, float newValue) {
+        assert parameter != null;
+
+        PhysicsCollisionObject object = find();
+        PhysicsRigidBody prb = (PhysicsRigidBody) object;
+        Vector3f vector;
+
+        switch (parameter) {
+            case AngularDamping:
+                prb.setAngularDamping(newValue);
+                break;
+            case AngularSleep:
+                prb.setAngularSleepingThreshold(newValue);
+                break;
+            case Friction:
+                prb.setFriction(newValue);
+                break;
+            case GravityX:
+                vector = prb.getGravity();
+                vector.x = newValue;
+                prb.setGravity(vector);
+                break;
+            case GravityY:
+                vector = prb.getGravity();
+                vector.y = newValue;
+                prb.setGravity(vector);
+                break;
+            case GravityZ:
+                vector = prb.getGravity();
+                vector.z = newValue;
+                prb.setGravity(vector);
+                break;
+            case LinearDamping:
+                prb.setLinearDamping(newValue);
+                break;
+            case LinearSleep:
+                prb.setLinearSleepingThreshold(newValue);
+                break;
+            case Mass:
+                prb.setMass(newValue);
+                break;
+            case Restitution:
+                prb.setRestitution(newValue);
+                break;
+            default:
+                throw new IllegalArgumentException();
+        }
     }
 }

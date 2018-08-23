@@ -35,10 +35,8 @@ import com.jme3.animation.SkeletonControl;
 import com.jme3.animation.SpatialTrack;
 import com.jme3.animation.Track;
 import com.jme3.bullet.PhysicsSpace;
-import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.PhysicsControl;
-import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.export.binary.BinaryExporter;
 import com.jme3.light.Light;
 import com.jme3.material.MatParam;
@@ -83,7 +81,6 @@ import maud.MaudUtil;
 import maud.PhysicsUtil;
 import maud.model.EditState;
 import maud.model.History;
-import maud.model.option.RigidBodyParameter;
 import maud.model.option.ShapeParameter;
 import maud.view.scene.SceneView;
 
@@ -1316,32 +1313,6 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Relocate the selected physics object. TODO move to SelectedObject
-     *
-     * @param newLocation (not null, unaffected)
-     */
-    public void setPhysicsLocation(Vector3f newLocation) {
-        Validate.nonNull(newLocation, "new location");
-
-        getObject().setLocation(newLocation);
-        String objectName = getObject().getName();
-        editState.setEditedPhysicsPosition(objectName);
-    }
-
-    /**
-     * Reorient the selected physics object.
-     *
-     * @param newOrientation (not null, unaffected)
-     */
-    public void setPhysicsOrientation(Quaternion newOrientation) {
-        Validate.nonNull(newOrientation, "new orientation");
-
-        getObject().setOrientation(newOrientation);
-        String objectName = getObject().getName();
-        editState.setEditedPhysicsPosition(objectName);
-    }
-
-    /**
      * Alter the render-queue bucket of the selected spatial.
      *
      * @param newBucket new value for queue bucket (not null)
@@ -1356,27 +1327,6 @@ public class EditableCgm extends LoadedCgm {
             modelSpatial.setQueueBucket(newBucket);
             getSceneView().setQueueBucket(newBucket);
             editState.setEdited("change render-queue bucket"); // TODO details
-        }
-    }
-
-    /**
-     * Alter the specified parameter of the selected rigid body.
-     *
-     * @param parameter which parameter to alter (not null)
-     * @param newValue new parameter value
-     */
-    public void setRigidBodyParameter(RigidBodyParameter parameter,
-            float newValue) {
-        Validate.nonNull(parameter, "parameter");
-
-        SelectedObject selected = getObject();
-        PhysicsCollisionObject pco = selected.find();
-        if (pco instanceof PhysicsRigidBody) {
-            History.autoAdd();
-            selected.set(parameter, newValue);
-            String eventDescription = String.format(
-                    "set %s of rigid body to %f", parameter, newValue);
-            editState.setEdited(eventDescription);
         }
     }
 
