@@ -50,6 +50,7 @@ import maud.Maud;
 import maud.model.EditorModel;
 import maud.model.LoadedMap;
 import maud.model.option.ShowBones;
+import maud.view.scene.SceneView;
 
 /**
  * The MVC model of a selected skeleton in the Maud application.
@@ -166,11 +167,12 @@ public class SelectedSkeleton implements JmeCloneable {
     /**
      * Find the selected skeleton.
      *
-     * @param storeSelectedSpatialFlag if not null, set to true if the skeleton
-     * came from the selected spatial, false if it came from the C-G model root
+     * @param storeSelectedSpatialFlag if not null, set the 1st element to true
+     * if the skeleton came from the selected spatial, false if it came from the
+     * C-G model root
      * @return the pre-existing instance, or null if none
      */
-    Skeleton find(Boolean storeSelectedSpatialFlag) {
+    Skeleton find(boolean[] storeSelectedSpatialFlag) {
         AnimControl animControl;
         boolean selectedSpatialFlag;
         SkeletonControl skeletonControl;
@@ -214,7 +216,7 @@ public class SelectedSkeleton implements JmeCloneable {
         }
 
         if (storeSelectedSpatialFlag != null) {
-            storeSelectedSpatialFlag = selectedSpatialFlag; // side-effect
+            storeSelectedSpatialFlag[0] = selectedSpatialFlag; // side-effect
         }
         return skeleton;
     }
@@ -251,10 +253,10 @@ public class SelectedSkeleton implements JmeCloneable {
      * @return the pre-existing instance (not null)
      */
     Spatial findSpatial() {
-        Boolean selectedSpatialFlag = false;
+        boolean[] selectedSpatialFlag = {false};
         find(selectedSpatialFlag);
         Spatial spatial;
-        if (selectedSpatialFlag) {
+        if (selectedSpatialFlag[0]) {
             spatial = cgm.getSpatial().find();
         } else {
             spatial = cgm.getRootSpatial();
@@ -677,12 +679,13 @@ public class SelectedSkeleton implements JmeCloneable {
      * Update after (for instance) selecting a different spatial or S-G control.
      */
     void postSelect() {
-        Boolean selectedSpatialFlag = false;
+        boolean[] selectedSpatialFlag = {false};
         Skeleton foundSkeleton = find(selectedSpatialFlag);
         if (foundSkeleton != last) {
             cgm.getBone().deselect();
             cgm.getPose().resetToBind(foundSkeleton);
-            cgm.getSceneView().setSkeleton(foundSkeleton, selectedSpatialFlag);
+            SceneView view = cgm.getSceneView();
+            view.setSkeleton(foundSkeleton, selectedSpatialFlag[0]);
             last = foundSkeleton;
         }
     }

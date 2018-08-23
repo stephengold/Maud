@@ -604,12 +604,12 @@ public class EditableCgm extends LoadedCgm {
         /*
          * Check whether the selected skeleton has changed.
          */
-        Boolean selectedSpatialFlag = false;
+        boolean[] selectedSpatialFlag = {false};
         Skeleton newSkeleton = getSkeleton().find(selectedSpatialFlag);
         if (newSkeleton != oldSkeleton) {
             getBone().deselect();
             getPose().resetToBind(newSkeleton);
-            getSceneView().setSkeleton(newSkeleton, selectedSpatialFlag);
+            getSceneView().setSkeleton(newSkeleton, selectedSpatialFlag[0]);
         }
 
         String eventDescription = String.format("insert parent %s",
