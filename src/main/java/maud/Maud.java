@@ -453,7 +453,9 @@ public class Maud extends GuiApplication {
     private void quitUnconfirmed() {
         EditState cgmEditState = editorModel.getTarget().getEditState();
         int cgmEdits = cgmEditState.countUnsavedEdits();
-        int mapEdits = editorModel.getMap().countUnsavedEdits();
+
+        EditState mapEditState = editorModel.getMap().getEditState();
+        int mapEdits = mapEditState.countUnsavedEdits();
 
         String message;
         if (cgmEdits + mapEdits == 0) {

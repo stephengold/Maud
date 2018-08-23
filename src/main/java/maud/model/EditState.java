@@ -29,6 +29,7 @@ package maud.model;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
+import jme3utilities.Validate;
 
 /**
  * MVC model for edit state: keeps track of edits made to a skeleton map or C-G
@@ -60,7 +61,8 @@ public class EditState implements Cloneable {
      * <li> "pp" + physics collision object being repositioned, or
      * <li> "ss" + physics collision shape being resized, or
      * <li> "st" + tree position of the spatial being transformed, or
-     * <li> "" for no continuous edits
+     * <li> "tw" + name of target bone being twisted in the skeleton map
+     * <li> "" for no continuous edit in progress
      * </ul>
      */
     private String continousEditState = "";
@@ -95,7 +97,7 @@ public class EditState implements Cloneable {
      */
     public void replaceForResize(CollisionShape oldShape,
             CollisionShape newShape) {
-        assert newShape != null;
+        Validate.nonNull(newShape, "new shape");
 
         String oldState = "ss" + oldShape.toString();
         if (oldState.equals(continousEditState)) {
@@ -105,12 +107,13 @@ public class EditState implements Cloneable {
     }
 
     /**
-     * Increment the count of unsaved edits.
+     * Create a checkpoint and increment the edit count for a non-continuous
+     * edit.
      *
      * @param eventDescription description of causative event (not null)
      */
     public void setEdited(String eventDescription) {
-        assert eventDescription != null;
+        Validate.nonNull(eventDescription, "event description");
 
         ++editCount;
         continousEditState = "";
@@ -118,8 +121,8 @@ public class EditState implements Cloneable {
     }
 
     /**
-     * If not a continuation of the previous light-color edit, update the edit
-     * count.
+     * If not a continuation of the previous light-color edit, create a
+     * checkpoint and update the edit count.
      *
      * @param lightName name of the light being recolored (not null)
      */
@@ -137,7 +140,7 @@ public class EditState implements Cloneable {
 
     /**
      * If not a continuation of the previous light-position/direction edit,
-     * update the edit count.
+     * create a checkpoint and update the edit count.
      *
      * @param lightName name of the light being moved (not null)
      */
@@ -155,8 +158,8 @@ public class EditState implements Cloneable {
     }
 
     /**
-     * If not a continuation of the previous object-position edit, update the
-     * edit count.
+     * If not a continuation of the previous object-position edit, create a
+     * checkpoint and update the edit count.
      *
      * @param objectName name of the physics object being resized (not null)
      */
@@ -171,8 +174,8 @@ public class EditState implements Cloneable {
     }
 
     /**
-     * If not a continuation of the previous shape-size edit, update the edit
-     * count.
+     * If not a continuation of the previous shape-size edit, create a
+     * checkpoint and update the edit count.
      *
      * @param shapeName name of the shape being resized (not null)
      */
@@ -187,8 +190,8 @@ public class EditState implements Cloneable {
     }
 
     /**
-     * If not a continuation of the previous spatial-transform edit, update the
-     * edit count.
+     * If not a continuation of the previous spatial-transform edit, create a
+     * checkpoint and update the edit count.
      *
      * @param spatialPosition tree position of the spatial being transformed
      * (not null)
@@ -200,6 +203,23 @@ public class EditState implements Cloneable {
             ++editCount;
             continousEditState = newState;
             History.addEvent("transform spatial " + spatialPosition);
+        }
+    }
+
+    /**
+     * If not a continuation of the previous twist edit, create a checkpoint and
+     * update the edit count.
+     *
+     * @param targetBoneName name of the target bone (not null)
+     */
+    public void setEditedTwist(String targetBoneName) {
+        String newState = "tw" + targetBoneName;
+        if (!newState.equals(continousEditState)) {
+            History.autoAdd();
+            ++editCount;
+            continousEditState = newState;
+            String event = "set twist for " + MyString.quote(targetBoneName);
+            History.addEvent(event);
         }
     }
 

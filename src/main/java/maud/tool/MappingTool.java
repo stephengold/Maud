@@ -32,6 +32,7 @@ import jme3utilities.MyString;
 import jme3utilities.nifty.GuiScreenController;
 import maud.Maud;
 import maud.MaudUtil;
+import maud.model.EditableMap;
 import maud.model.EditorModel;
 import maud.model.LoadedMap;
 import maud.model.cgm.Cgm;
@@ -141,7 +142,8 @@ class MappingTool extends Tool {
         /*
          * asset-path status
          */
-        String assetPath = Maud.getModel().getMap().getAssetPath();
+        EditableMap map = Maud.getModel().getMap();
+        String assetPath = map.getAssetPath();
         String assetDesc;
         if (assetPath.isEmpty()) {
             assetDesc = "unknown";
@@ -153,7 +155,7 @@ class MappingTool extends Tool {
          * pristine/edited status
          */
         String pristineDesc;
-        int editCount = Maud.getModel().getMap().countUnsavedEdits();
+        int editCount = map.getEditState().countUnsavedEdits();
         if (editCount == 0) {
             pristineDesc = "pristine";
         } else if (editCount == 1) {

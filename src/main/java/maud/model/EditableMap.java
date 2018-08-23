@@ -61,13 +61,9 @@ public class EditableMap extends LoadedMap {
     // fields
 
     /**
-     * count of unsaved edits to the map (&ge;0)
+     * count of unsaved edits and continuous-edit state
      */
-    private int editCount = 0;
-    /**
-     * name of the target bone whose twist is being edited, or null for none
-     */
-    private String editedTwist = null;
+    private EditState editState = new EditState();
     // *************************************************************************
     // new methods exposed
 
@@ -96,16 +92,9 @@ public class EditableMap extends LoadedMap {
         BoneMapping boneMapping = selectedMapping();
         Quaternion twist = boneMapping.getTwist();
         MyQuaternion.cardinalizeLocal(twist);
-        setEditedTwist();
-    }
 
-    /**
-     * Count unsaved edits.
-     *
-     * @return count (&ge;0)
-     */
-    public int countUnsavedEdits() {
-        return editCount;
+        String targetBoneName = boneMapping.getTargetName();
+        editState.setEditedTwist(targetBoneName);
     }
 
     /**
@@ -116,7 +105,7 @@ public class EditableMap extends LoadedMap {
         if (boneMapping != null) {
             History.autoAdd();
             map.removeMapping(boneMapping);
-            setEdited("delete bone mapping");
+            editState.setEdited("delete bone mapping");
         }
     }
 
@@ -159,11 +148,22 @@ public class EditableMap extends LoadedMap {
                     }
                 }
             }
+
             String description = String.format(
                     "delete %d invalid bone mapping%s", numDeleted,
                     numDeleted == 1 ? "" : "s");
-            setEdited(description);
+            editState.setEdited(description);
         }
+    }
+
+    /**
+     * Access the edit state for this map.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public EditState getEditState() {
+        assert editState != null;
+        return editState;
     }
 
     /**
@@ -174,7 +174,7 @@ public class EditableMap extends LoadedMap {
             History.autoAdd();
             map = map.inverse();
             baseAssetPath = "";
-            setEdited("invert the skeleton map");
+            editState.setEdited("invert the skeleton map");
         }
     }
 
@@ -198,7 +198,7 @@ public class EditableMap extends LoadedMap {
         int numBones = boneNames.size();
         String event = String.format("load an identity map with %d bone%s",
                 numBones, numBones == 1 ? "" : "s");
-        setEdited(event);
+        editState.setEdited(event);
     }
 
     /**
@@ -231,18 +231,8 @@ public class EditableMap extends LoadedMap {
             map.map(targetBoneName, sourceBoneName, twist);
 
             String event = "map bone " + targetBoneName;
-            setEdited(event);
+            editState.setEdited(event);
         }
-    }
-
-    /**
-     * Callback before a checkpoint is created.
-     */
-    void preCheckpoint() {
-        /*
-         * Potentially a new twist edit.
-         */
-        editedTwist = null;
     }
 
     /**
@@ -276,7 +266,9 @@ public class EditableMap extends LoadedMap {
         } else {
             twist.set(newTwist);
         }
-        setEditedTwist();
+
+        String targetBoneName = boneMapping.getTargetName();
+        editState.setEditedTwist(targetBoneName);
     }
 
     /**
@@ -291,7 +283,9 @@ public class EditableMap extends LoadedMap {
         BoneMapping boneMapping = selectedMapping();
         Quaternion twist = boneMapping.getTwist();
         MyQuaternion.snapLocal(twist, axisIndex);
-        setEditedTwist();
+
+        String targetBoneName = boneMapping.getTargetName();
+        editState.setEditedTwist(targetBoneName);
     }
 
     /**
@@ -302,7 +296,7 @@ public class EditableMap extends LoadedMap {
         map.clear();
         assetRootPath = "";
         baseAssetPath = "";
-        setEdited("unload map");
+        editState.setEdited("unload map");
     }
 
     /**
@@ -346,7 +340,7 @@ public class EditableMap extends LoadedMap {
             }
 
             String eventDescription = "write map to " + filePath;
-            setPristine(eventDescription);
+            editState.setPristine(eventDescription);
             logger.log(Level.INFO, "Wrote map to file {0}",
                     MyString.quote(filePath));
         } else {
@@ -369,6 +363,7 @@ public class EditableMap extends LoadedMap {
     @Override
     public EditableMap clone() throws CloneNotSupportedException {
         EditableMap clone = (EditableMap) super.clone();
+        editState = editState.clone();
         return clone;
     }
 
@@ -387,7 +382,7 @@ public class EditableMap extends LoadedMap {
         if (success) {
             String eventDescription = String.format("load map %s %s",
                     MyString.quote(spec), MyString.quote(assetPath));
-            setPristine(eventDescription);
+            editState.setPristine(eventDescription);
         }
 
         return success;
@@ -407,7 +402,7 @@ public class EditableMap extends LoadedMap {
         if (success) {
             String eventDescription = String.format("load map named %s",
                     MyString.quote(mapName));
-            setPristine(eventDescription);
+            editState.setPristine(eventDescription);
         }
 
         return success;
@@ -446,43 +441,5 @@ public class EditableMap extends LoadedMap {
         MyQuaternion.cardinalizeLocal(twist);
 
         return twist;
-    }
-
-    /**
-     * Increment the count of unsaved edits and update the edit history.
-     *
-     * @param eventDescription description of causative event (not null)
-     */
-    private void setEdited(String eventDescription) {
-        ++editCount;
-        editedTwist = null;
-        History.addEvent(eventDescription);
-    }
-
-    /**
-     * If not a continuation of the previous edit, update the edit count and the
-     * edit history.
-     */
-    private void setEditedTwist() {
-        String newName = Maud.getModel().getTarget().getBone().getName();
-        if (!newName.equals(editedTwist)) {
-            History.autoAdd();
-            ++editCount;
-            editedTwist = newName;
-            String event = String.format("set twist for %s",
-                    MyString.quote(newName));
-            History.addEvent(event);
-        }
-    }
-
-    /**
-     * Mark the map as pristine (no unsaved edits).
-     *
-     * @param eventDescription description of causative event (not null)
-     */
-    private void setPristine(String eventDescription) {
-        editCount = 0;
-        editedTwist = null;
-        History.addEvent(eventDescription);
     }
 }

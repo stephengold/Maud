@@ -264,7 +264,7 @@ public class EditorModel {
      * Callback invoked before creating a checkpoint.
      */
     void preCheckpoint() {
-        mapLoadSlot.preCheckpoint();
+        mapLoadSlot.getEditState().preCheckpoint();
         targetCgmLoadSlot.getEditState().preCheckpoint();
     }
 
