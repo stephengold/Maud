@@ -1526,6 +1526,7 @@ public class EditableCgm extends LoadedCgm {
     @Override
     public EditableCgm clone() throws CloneNotSupportedException {
         EditableCgm clone = (EditableCgm) super.clone();
+        editState = editState.clone();
         return clone;
     }
 
