@@ -51,17 +51,19 @@ import jme3utilities.MySpatial;
 import maud.PhysicsUtil;
 
 /**
- * A GhostControl moves with the spatial it is attached to and can be used to check
- * overlaps with other physics objects (e.g. aggro radius).
+ * A GhostControl moves with the spatial it is attached to and can be used to
+ * check overlaps with other physics objects (e.g. aggro radius).
+ *
  * @author normenhansen
  */
-public class GhostControl extends PhysicsGhostObject implements PhysicsControl, JmeCloneable {
+public class GhostControl extends PhysicsGhostObject
+        implements PhysicsControl, JmeCloneable {
 
     protected Spatial spatial;
     protected boolean enabled = true;
     protected boolean added = false;
     protected PhysicsSpace space = null;
-    protected boolean applyLocal = false;
+    private boolean applyLocal = false;
 
     public GhostControl() {
     }
@@ -77,7 +79,9 @@ public class GhostControl extends PhysicsGhostObject implements PhysicsControl, 
     /**
      * When set to true, the physics coordinates will be applied to the local
      * translation of the Spatial
-     * @param applyPhysicsLocal
+     *
+     * @param applyPhysicsLocal true&rarr;apply to local, false&rarr;apply to
+     * world
      */
     public void setApplyPhysicsLocal(boolean applyPhysicsLocal) {
         applyLocal = applyPhysicsLocal;
@@ -123,7 +127,7 @@ public class GhostControl extends PhysicsGhostObject implements PhysicsControl, 
         return control;
     }
 
-    @Override   
+    @Override
     public Object jmeClone() {
         GhostControl control = new GhostControl(collisionShape);
         control.setCcdMotionThreshold(getCcdMotionThreshold());
@@ -135,13 +139,14 @@ public class GhostControl extends PhysicsGhostObject implements PhysicsControl, 
         control.setApplyPhysicsLocal(isApplyPhysicsLocal());
         control.spatial = this.spatial;
         return control;
-    }     
+    }
 
-    @Override   
-    public void cloneFields( Cloner cloner, Object original ) { 
+    @Override
+    public void cloneFields(Cloner cloner, Object original) {
         this.spatial = cloner.clone(spatial);
     }
-         
+
+    @Override
     public void setSpatial(Spatial spatial) {
         this.spatial = spatial;
         setUserObject(spatial);
@@ -152,6 +157,7 @@ public class GhostControl extends PhysicsGhostObject implements PhysicsControl, 
         setPhysicsRotation(getSpatialRotation());
     }
 
+    @Override
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
         if (space != null) {
@@ -169,10 +175,12 @@ public class GhostControl extends PhysicsGhostObject implements PhysicsControl, 
         }
     }
 
+    @Override
     public boolean isEnabled() {
         return enabled;
     }
 
+    @Override
     public void update(float tpf) {
         if (!enabled) {
             return;
@@ -186,9 +194,11 @@ public class GhostControl extends PhysicsGhostObject implements PhysicsControl, 
         }
     }
 
+    @Override
     public void render(RenderManager rm, ViewPort vp) {
     }
 
+    @Override
     public void setPhysicsSpace(PhysicsSpace space) {
         if (space == null) {
             if (this.space != null) {
@@ -205,6 +215,7 @@ public class GhostControl extends PhysicsGhostObject implements PhysicsControl, 
         this.space = space;
     }
 
+    @Override
     public PhysicsSpace getPhysicsSpace() {
         return space;
     }

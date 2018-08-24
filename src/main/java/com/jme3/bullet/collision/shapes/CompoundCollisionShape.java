@@ -53,7 +53,7 @@ import java.util.logging.Logger;
  */
 public class CompoundCollisionShape extends CollisionShape {
 
-    protected ArrayList<ChildCollisionShape> children = new ArrayList<>();
+    private ArrayList<ChildCollisionShape> children = new ArrayList<>();
 
     public CompoundCollisionShape() {
         objectId = createShape();//new CompoundShape();
