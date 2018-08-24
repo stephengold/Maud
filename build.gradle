@@ -51,7 +51,7 @@ dependencies {
 
     // from jcenter (or mavenLocal) repositories:
     compile "org.jmonkeyengine:jme3-blender:$jmonkeyengineVersion"
-    runtime "org.jmonkeyengine:jme3-bullet-native:$jmonkeyengineVersion"
+    runtime "org.jmonkeyengine:jme3-bullet-native:3.1.0-stable"
     compile "org.jmonkeyengine:jme3-lwjgl:$jmonkeyengineVersion"
     compile "org.jmonkeyengine:jme3-plugins:$jmonkeyengineVersion"
     compile 'ch.qos.logback:logback-classic:1.2.3'
