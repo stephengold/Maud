@@ -51,11 +51,6 @@ public class HistoryTool extends Tool {
     // constants and loggers
 
     /**
-     * formatter for timestamps
-     */
-    final private static DateFormat timestampFormatter
-            = DateFormat.getTimeInstance();
-    /**
      * message logger for this class
      */
     final private static Logger logger
@@ -188,7 +183,7 @@ public class HistoryTool extends Tool {
     // private methods
 
     /**
-     * Add a checkpoint to the scroll panel content.
+     * Add a checkpoint to the scroll-panel content.
      */
     private void addCheckpoint(int cpIndex, String bgColor) {
         Checkpoint checkpoint = History.getCheckpoint(cpIndex);
@@ -199,6 +194,7 @@ public class HistoryTool extends Tool {
 
         String id = MaudUtil.formatIndex(cpIndex);
         Date creationDate = checkpoint.copyTimestamp();
+        DateFormat timestampFormatter = DateFormat.getTimeInstance();
         String creationTime = timestampFormatter.format(creationDate);
         String text = String.format("checkpoint%s added at %s", id,
                 creationTime);
