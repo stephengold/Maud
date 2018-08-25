@@ -119,7 +119,7 @@ public class AnimationMenus {
         if (source.isLoaded() && source.getSkeleton().countBones() > 0) {
             builder.addSubmenu("Load source");
         }
-        builder.addTool("Tweening");
+        builder.addTool("Tweening tool");
     }
 
     /**
@@ -287,7 +287,7 @@ public class AnimationMenus {
                     Maud.gui.tools.select("animation");
                     break;
 
-                case "Tweening":
+                case "Tweening tool":
                     Maud.gui.tools.select("tweening");
                     break;
 

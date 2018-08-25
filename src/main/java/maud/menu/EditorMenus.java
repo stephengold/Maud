@@ -319,7 +319,7 @@ public class EditorMenus {
                 Maud.gui.tools.select("settings");
                 break;
 
-            case "Tweening":
+            case "Tweening tool":
                 Maud.gui.tools.select("tweening");
                 break;
 
