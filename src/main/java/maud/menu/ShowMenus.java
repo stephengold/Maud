@@ -37,8 +37,8 @@ import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
+import maud.DescribeUtil;
 import maud.Maud;
-import maud.MaudUtil;
 import maud.action.ActionPrefix;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
@@ -345,7 +345,7 @@ public class ShowMenus {
                     && modeWidth >= DisplaySettings.minWidth
                     && (modeHeight != height || modeWidth != width)) {
                 String modeItem
-                        = MaudUtil.describeDimensions(modeWidth, modeHeight);
+                        = DescribeUtil.displayDimensions(modeWidth, modeHeight);
                 if (!builder.hasItem(modeItem)) {
                     builder.add(modeItem);
                 }
@@ -365,7 +365,7 @@ public class ShowMenus {
         int selectedFactor = DisplaySettings.getMsaaFactor();
         for (int factor : new int[]{1, 2, 4, 6, 8, 16}) {
             if (factor != selectedFactor) {
-                String description = MaudUtil.describeMsaaFactor(factor);
+                String description = DescribeUtil.msaaFactor(factor);
                 builder.add(description);
             }
         }

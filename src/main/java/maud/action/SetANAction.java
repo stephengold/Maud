@@ -33,8 +33,8 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.math.MyColor;
 import jme3utilities.math.MyVector3f;
+import maud.DescribeUtil;
 import maud.Maud;
-import maud.MaudUtil;
 import maud.dialog.DimensionsDialog;
 import maud.dialog.EditorDialogs;
 import maud.menu.EnumMenus;
@@ -317,7 +317,7 @@ class SetANAction {
             arg = MyString.remainder(actionString, ActionPrefix.setMsaaFactor);
             int factor = 16;
             for (int f : new int[]{1, 2, 4, 6, 8}) {
-                String aaDescription = MaudUtil.describeMsaaFactor(f);
+                String aaDescription = DescribeUtil.msaaFactor(f);
                 if (arg.equals(aaDescription)) {
                     factor = f;
                     break;

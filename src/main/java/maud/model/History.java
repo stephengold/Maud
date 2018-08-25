@@ -30,8 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
+import maud.DescribeUtil;
 import maud.Maud;
-import maud.MaudUtil;
 import maud.tool.HistoryTool;
 
 /**
@@ -91,7 +91,7 @@ public class History {
         while (hasVulnerable()) {
             int lastIndex = checkpoints.size() - 1;
             checkpoints.remove(lastIndex);
-            message = "discard checkpoint" + MaudUtil.formatIndex(lastIndex);
+            message = "discard checkpoint" + DescribeUtil.index(lastIndex);
             logger.info(message);
         }
 
@@ -99,7 +99,7 @@ public class History {
         checkpoints.add(newbie);
         eventDescriptions.clear();
 
-        String id = MaudUtil.formatIndex(nextIndex);
+        String id = DescribeUtil.index(nextIndex);
         message = "add new checkpoint" + id;
         logger.info(message);
 
@@ -215,7 +215,7 @@ public class History {
             Checkpoint next = checkpoints.get(nextIndex);
             next.restore();
             eventDescriptions.clear();
-            message = "redo to checkpoint" + MaudUtil.formatIndex(nextIndex);
+            message = "redo to checkpoint" + DescribeUtil.index(nextIndex);
             logger.info(message);
             ++nextIndex;
         } else {
@@ -238,7 +238,7 @@ public class History {
             eventDescriptions.clear();
             nextIndex = checkpoints.size();
 
-            message = "redo to checkpoint" + MaudUtil.formatIndex(lastIndex);
+            message = "redo to checkpoint" + DescribeUtil.index(lastIndex);
             logger.info(message);
 
         } else {
@@ -281,7 +281,7 @@ public class History {
                 checkpoints.add(newbie);
 
                 message = "add precautionary checkpoint"
-                        + MaudUtil.formatIndex(nextIndex);
+                        + DescribeUtil.index(nextIndex);
                 logger.info(message);
 
             } else {
@@ -292,7 +292,7 @@ public class History {
             previous.restore();
             eventDescriptions.clear();
 
-            message = "undo to checkpoint" + MaudUtil.formatIndex(getIndex);
+            message = "undo to checkpoint" + DescribeUtil.index(getIndex);
             logger.info(message);
 
         } else {

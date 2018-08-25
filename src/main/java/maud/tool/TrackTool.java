@@ -28,8 +28,8 @@ package maud.tool;
 
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
+import maud.DescribeUtil;
 import maud.Maud;
-import maud.MaudUtil;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedTrack;
 
@@ -127,8 +127,7 @@ class TrackTool extends Tool {
         int numTracks = target.getAnimation().countTracks();
         if (target.getTrack().isSelected()) {
             int selectedIndex = target.getTrack().index();
-            indexStatus = MaudUtil.formatIndex(selectedIndex);
-            indexStatus = String.format("%s of %d", indexStatus, numTracks);
+            indexStatus = DescribeUtil.index(selectedIndex, numTracks);
             nextButton = "+";
             previousButton = "-";
         } else {

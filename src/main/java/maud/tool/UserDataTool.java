@@ -30,8 +30,8 @@ import com.jme3.animation.Bone;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.GuiScreenController;
+import maud.DescribeUtil;
 import maud.Maud;
-import maud.MaudUtil;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedUserData;
@@ -84,14 +84,13 @@ class UserDataTool extends Tool {
      */
     private void updateIndex() {
         String indexText;
-        String nButton = "", pButton = "", sButton = "";
+        String nButton = "", pButton = "", sButton = ""; // TODO rename
 
         EditableCgm target = Maud.getModel().getTarget();
         int numKeys = target.getSpatial().countUserData();
         int selectedIndex = target.getUserData().findKeyIndex();
         if (selectedIndex >= 0) {
-            indexText = MaudUtil.formatIndex(selectedIndex);
-            indexText = String.format("%s of %d", indexText, numKeys);
+            indexText = DescribeUtil.index(selectedIndex, numKeys);
             if (numKeys > 1) {
                 nButton = "+";
                 pButton = "-";

@@ -28,8 +28,8 @@ package maud.tool;
 
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
+import maud.DescribeUtil;
 import maud.Maud;
-import maud.MaudUtil;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedTrack;
@@ -70,7 +70,7 @@ class KeyframeTool extends Tool {
      */
     @Override
     protected void toolUpdate() {
-        String indexText, timeText;
+        String indexText, timeText; // TODO rename
 
         EditableCgm target = Maud.getModel().getTarget();
         float time = target.getPlay().getTime();
@@ -92,8 +92,7 @@ class KeyframeTool extends Tool {
                     indexText = String.format("%d keyframes", numKeyframes);
                 }
             } else {
-                indexText = MaudUtil.formatIndex(index);
-                indexText = String.format("%s of %d", indexText, numKeyframes);
+                indexText = DescribeUtil.index(index, numKeyframes);
             }
             timeText = String.format("%.3f", time);
         }

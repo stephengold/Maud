@@ -36,8 +36,8 @@ import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.nifty.GuiScreenController;
+import maud.DescribeUtil;
 import maud.Maud;
-import maud.MaudUtil;
 import maud.model.Checkpoint;
 import maud.model.History;
 
@@ -192,7 +192,7 @@ public class HistoryTool extends Tool {
             addLabel(". " + event, bgColor);
         }
 
-        String id = MaudUtil.formatIndex(cpIndex);
+        String id = DescribeUtil.index(cpIndex);
         Date creationDate = checkpoint.copyTimestamp();
         DateFormat timestampFormatter = DateFormat.getTimeInstance();
         String creationTime = timestampFormatter.format(creationDate);

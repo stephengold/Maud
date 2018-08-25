@@ -29,8 +29,8 @@ package maud.tool;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.GuiScreenController;
+import maud.DescribeUtil;
 import maud.Maud;
-import maud.MaudUtil;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.LoadedAnimation;
@@ -150,8 +150,7 @@ class BoneTool extends Tool {
         int numBones = target.getSkeleton().countBones();
         if (target.getBone().isSelected()) {
             int selectedIndex = target.getBone().getIndex();
-            indexStatus = MaudUtil.formatIndex(selectedIndex);
-            indexStatus = String.format("%s of %d", indexStatus, numBones);
+            indexStatus = DescribeUtil.index(selectedIndex, numBones);
             nextButton = "+";
             previousButton = "-";
         } else {

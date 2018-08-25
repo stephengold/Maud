@@ -57,8 +57,8 @@ import jme3utilities.sky.Constants;
 import jme3utilities.ui.Locators;
 import jme3utilities.ui.UiVersion;
 import jme3utilities.wes.WesVersion;
+import maud.DescribeUtil;
 import maud.Maud;
-import maud.MaudUtil;
 import maud.action.Action;
 import maud.action.ActionPrefix;
 import maud.model.EditorModel;
@@ -778,7 +778,7 @@ public class EditorDialogs {
         int minWidth = DisplaySettings.minWidth;
         int width = DisplaySettings.getWidth();
 
-        String defaultText = MaudUtil.describeDimensions(width, height);
+        String defaultText = DescribeUtil.displayDimensions(width, height);
         DialogController controller = new DimensionsDialog("Set", minWidth,
                 minHeight, maxWidth, maxHeight);
 

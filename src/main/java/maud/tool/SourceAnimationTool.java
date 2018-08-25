@@ -32,8 +32,8 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.SliderTransform;
+import maud.DescribeUtil;
 import maud.Maud;
-import maud.MaudUtil;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.LoadedAnimation;
 import maud.model.cgm.PlayOptions;
@@ -189,8 +189,7 @@ class SourceAnimationTool extends Tool {
             SelectedAnimControl animControl = cgm.getAnimControl();
             if (animControl.isSelected()) {
                 int selectedIndex = animControl.findIndex();
-                indexStatus = MaudUtil.formatIndex(selectedIndex);
-                indexStatus = String.format("%s of %d", indexStatus,
+                indexStatus = DescribeUtil.index(selectedIndex,
                         numAnimControls);
                 if (numAnimControls > 1) {
                     nextButton = "+";
@@ -234,9 +233,7 @@ class SourceAnimationTool extends Tool {
             int numAnimations = animControl.countAnimations();
             if (cgm.getAnimation().isReal()) {
                 int selectedIndex = cgm.getAnimation().findIndex();
-                indexStatus = MaudUtil.formatIndex(selectedIndex);
-                indexStatus
-                        = String.format("%s of %d", indexStatus, numAnimations);
+                indexStatus = DescribeUtil.index(selectedIndex, numAnimations);
                 if (numAnimations > 1) {
                     nextButton = "+";
                     previousButton = "-";

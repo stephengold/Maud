@@ -32,8 +32,8 @@ import com.jme3.scene.VertexBuffer;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
+import maud.DescribeUtil;
 import maud.Maud;
-import maud.MaudUtil;
 import maud.menu.WhichSpatials;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
@@ -179,7 +179,7 @@ class MeshTool extends Tool {
      * Update the buffer-index status and next/previous/delete/select texts.
      */
     private void updateBufferIndex() {
-        String indexText;
+        String indexText; // TODO rename
         String nextButton = "", previousButton = "";
         String deleteButton = "", selectButton = "";
 
@@ -193,8 +193,7 @@ class MeshTool extends Tool {
         SelectedBuffer buffer = target.getBuffer();
         int selectedIndex = buffer.index();
         if (selectedIndex >= 0) {
-            indexText = MaudUtil.formatIndex(selectedIndex);
-            indexText = String.format("%s of %d", indexText, numBuffers);
+            indexText = DescribeUtil.index(selectedIndex, numBuffers);
             if (numBuffers > 1) {
                 nextButton = "+";
                 previousButton = "-";

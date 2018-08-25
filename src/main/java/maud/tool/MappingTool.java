@@ -30,8 +30,8 @@ import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.GuiScreenController;
+import maud.DescribeUtil;
 import maud.Maud;
-import maud.MaudUtil;
 import maud.model.EditableMap;
 import maud.model.EditorModel;
 import maud.model.LoadedMap;
@@ -218,14 +218,13 @@ class MappingTool extends Tool {
      */
     private void updateIndex() {
         String indexText;
-        String nButton, pButton;
+        String nButton, pButton; // TODO rename
 
         LoadedMap map = Maud.getModel().getMap();
         int numBoneMappings = map.countMappings();
         if (map.isBoneMappingSelected()) {
             int index = map.findIndex();
-            indexText = MaudUtil.formatIndex(index);
-            indexText = String.format("%s of %d", indexText, numBoneMappings);
+            indexText = DescribeUtil.index(index, numBoneMappings);
             nButton = "+";
             pButton = "-";
 

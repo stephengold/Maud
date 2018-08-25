@@ -35,8 +35,8 @@ import java.util.logging.Logger;
 import jme3utilities.minie.MyObject;
 import jme3utilities.minie.MyShape;
 import jme3utilities.nifty.GuiScreenController;
+import maud.DescribeUtil;
 import maud.Maud;
-import maud.MaudUtil;
 import maud.PhysicsUtil;
 import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
@@ -129,7 +129,7 @@ class ShapeTool extends Tool {
      */
     private void updateIndex() {
         String indexText;
-        String nButton = "", pButton = "", sButton = "";
+        String nButton = "", pButton = "", sButton = ""; // TODO rename
 
         Cgm target = Maud.getModel().getTarget();
         int numShapes = target.getSceneView().shapeMap().size();
@@ -140,8 +140,7 @@ class ShapeTool extends Tool {
         SelectedShape shape = target.getShape();
         if (shape.isSelected()) {
             int selectedIndex = shape.index();
-            indexText = MaudUtil.formatIndex(selectedIndex);
-            indexText = String.format("%s of %d", indexText, numShapes);
+            indexText = DescribeUtil.index(selectedIndex, numShapes);
             if (numShapes > 1) {
                 nButton = "+";
                 pButton = "-";

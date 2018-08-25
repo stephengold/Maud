@@ -34,7 +34,7 @@ import java.util.logging.Logger;
 import jme3utilities.Validate;
 import jme3utilities.wes.Pose;
 import jme3utilities.wes.TrackEdit;
-import maud.MaudUtil;
+import maud.DescribeUtil;
 
 /**
  * The MVC model of the selected keyframe in a selected track.
@@ -259,7 +259,7 @@ public class SelectedFrame implements Cloneable {
         String trackName = sTrack.describe();
         String eventDescription = String.format(
                 "adjust the timing of frame%s in track %s",
-                MaudUtil.formatIndex(frameIndex), trackName);
+                DescribeUtil.index(frameIndex), trackName);
         editableCgm.replace(oldAnimation, newAnimation, eventDescription,
                 newSelected);
     }

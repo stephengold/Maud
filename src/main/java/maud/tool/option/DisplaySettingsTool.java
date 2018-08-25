@@ -29,7 +29,7 @@ package maud.tool.option;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
-import maud.MaudUtil;
+import maud.DescribeUtil;
 import maud.model.option.DisplaySettings;
 import maud.tool.Tool;
 
@@ -119,11 +119,11 @@ public class DisplaySettingsTool extends Tool {
 
         int width = DisplaySettings.getWidth();
         int height = DisplaySettings.getHeight();
-        String dimensionsButton = MaudUtil.describeDimensions(width, height);
+        String dimensionsButton = DescribeUtil.displayDimensions(width, height);
         setButtonText("displayDimensions", dimensionsButton);
 
         int msaaFactor = DisplaySettings.getMsaaFactor();
-        String msaaButton = MaudUtil.describeMsaaFactor(msaaFactor);
+        String msaaButton = DescribeUtil.msaaFactor(msaaFactor);
         setButtonText("displayMsaa", msaaButton);
 
         String refreshRateButton = "";

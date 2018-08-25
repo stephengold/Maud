@@ -201,38 +201,6 @@ public class MaudUtil {
     }
 
     /**
-     * Describe a pair of display dimensions.
-     *
-     * @param width width in pixels (&gt;0)
-     * @param height height in pixels (&gt;0)
-     * @return a textual description (not null, not empty)
-     */
-    public static String describeDimensions(int width, int height) {
-        Validate.positive(width, "width");
-        Validate.positive(height, "height");
-
-        String description = String.format("%d x %d", width, height);
-        return description;
-    }
-
-    /**
-     * Describe an MSAA sampling factor.
-     *
-     * @param factor samples per pixel (&ge;0, &le;16)
-     * @return a textual description (not null, not empty)
-     */
-    public static String describeMsaaFactor(int factor) {
-        String description;
-        if (factor <= 1) {
-            description = "disabled";
-        } else {
-            description = String.format("%dx", factor);
-        }
-
-        return description;
-    }
-
-    /**
      * Calculate the slider positions and status values to display the specified
      * rotation in the specified display mode.
      *
@@ -445,30 +413,6 @@ public class MaudUtil {
         }
 
         return null;
-    }
-
-    /**
-     * Format an index value for the current index base.
-     *
-     * @param index zero-base index value (&ge;0)
-     * @return formatted text string (not null, not empty)
-     */
-    public static String formatIndex(int index) {
-        Validate.nonNegative(index, "index");
-
-        String result;
-        int indexBase = Maud.getModel().getMisc().getIndexBase();
-        if (indexBase == 0) {
-            result = String.format("[%d]", index);
-        } else if (indexBase == 1) {
-            result = String.format("#%d", index + 1);
-        } else {
-            throw new IllegalStateException();
-        }
-
-        assert result != null;
-        assert !result.isEmpty();
-        return result;
     }
 
     /**

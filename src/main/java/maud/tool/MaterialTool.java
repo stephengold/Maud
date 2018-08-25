@@ -36,8 +36,8 @@ import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.GuiScreenController;
+import maud.DescribeUtil;
 import maud.Maud;
-import maud.MaudUtil;
 import maud.menu.WhichSpatials;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
@@ -212,7 +212,7 @@ class MaterialTool extends Tool {
      */
     private void updateParameterIndex() {
         String indexText;
-        String nButton = "", pButton = "", sButton = "";
+        String nButton = "", pButton = "", sButton = ""; // TODO rename
 
         Cgm target = Maud.getModel().getTarget();
         SelectedSpatial spatial = target.getSpatial();
@@ -225,8 +225,7 @@ class MaterialTool extends Tool {
 
         int selectedIndex = target.getMatParam().findNameIndex();
         if (selectedIndex >= 0) {
-            indexText = MaudUtil.formatIndex(selectedIndex);
-            indexText = String.format("%s of %d", indexText, numDefined);
+            indexText = DescribeUtil.index(selectedIndex, numDefined);
             if (numDefined > 1) {
                 nButton = "+";
                 pButton = "-";

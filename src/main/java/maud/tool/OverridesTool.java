@@ -32,8 +32,8 @@ import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.GuiScreenController;
+import maud.DescribeUtil;
 import maud.Maud;
-import maud.MaudUtil;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedOverride;
 
@@ -117,14 +117,13 @@ class OverridesTool extends Tool {
      */
     private void updateIndex() {
         String indexText;
-        String nButton = "", pButton = "", sButton = "";
+        String nButton = "", pButton = "", sButton = ""; // TODO rename
 
         Cgm target = Maud.getModel().getTarget();
         int numMpos = target.getSpatial().countOverrides();
         int selectedIndex = target.getOverride().findNameIndex();
         if (selectedIndex >= 0) {
-            indexText = MaudUtil.formatIndex(selectedIndex);
-            indexText = String.format("%s of %d", indexText, numMpos);
+            indexText = DescribeUtil.index(selectedIndex, numMpos);
             if (numMpos > 1) {
                 nButton = "+";
                 pButton = "-";

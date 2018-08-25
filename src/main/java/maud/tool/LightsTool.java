@@ -33,8 +33,8 @@ import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.GuiScreenController;
+import maud.DescribeUtil;
 import maud.Maud;
-import maud.MaudUtil;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedLight;
 
@@ -160,8 +160,7 @@ class LightsTool extends Tool {
             nextButton = "+";
             previousButton = "-";
             int selectedIndex = light.findIndex();
-            indexStatus = MaudUtil.formatIndex(selectedIndex);
-            indexStatus = String.format("%s of %d", indexStatus, numLights);
+            indexStatus = DescribeUtil.index(selectedIndex, numLights);
         } else {
             nextButton = "";
             previousButton = "";

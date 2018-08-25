@@ -28,8 +28,8 @@ package maud.tool;
 
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
+import maud.DescribeUtil;
 import maud.Maud;
-import maud.MaudUtil;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedJoint;
 
@@ -89,7 +89,7 @@ class JointTool extends Tool {
      */
     private void updateIndex() {
         String indexText;
-        String nButton = "", pButton = "", sButton = "";
+        String nButton = "", pButton = "", sButton = ""; // TODO rename
 
         Cgm target = Maud.getModel().getTarget();
         int numJoints = target.countJoints();
@@ -100,8 +100,7 @@ class JointTool extends Tool {
         SelectedJoint joint = target.getJoint();
         if (joint.isSelected()) {
             int selectedIndex = joint.index();
-            indexText = MaudUtil.formatIndex(selectedIndex);
-            indexText = String.format("%s of %d", indexText, numJoints);
+            indexText = DescribeUtil.index(selectedIndex, numJoints);
             if (numJoints > 1) {
                 nButton = "+";
                 pButton = "-";

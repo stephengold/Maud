@@ -29,8 +29,8 @@ package maud.tool;
 import com.jme3.animation.AnimControl;
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
+import maud.DescribeUtil;
 import maud.Maud;
-import maud.MaudUtil;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.LoadedAnimation;
 import maud.model.cgm.LoadedCgm;
@@ -155,13 +155,13 @@ class ExtractTool extends Tool {
                 int startIndex = track.findKeyframeIndex(startTime);
                 if (startIndex >= 0) {
                     startFrameButton
-                            = "frame " + MaudUtil.formatIndex(startIndex);
+                            = "frame " + DescribeUtil.index(startIndex);
                 } else {
                     startFrameButton = "not a keyframe";
                 }
                 int endIndex = track.findKeyframeIndex(endTime);
                 if (endIndex >= 0) {
-                    endFrameButton = "frame " + MaudUtil.formatIndex(endIndex);
+                    endFrameButton = "frame " + DescribeUtil.index(endIndex);
                 } else {
                     endFrameButton = "not a keyframe";
                 }

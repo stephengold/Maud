@@ -34,8 +34,8 @@ import com.jme3.scene.VertexBuffer;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.GuiScreenController;
+import maud.DescribeUtil;
 import maud.Maud;
-import maud.MaudUtil;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedBuffer;
 import maud.model.cgm.SelectedSkeleton;
@@ -117,7 +117,7 @@ class VertexTool extends Tool {
                     boneStatus = skeleton.getBoneName(boneIndex);
                     boneStatus = MyString.quote(boneStatus);
                 } else {
-                    boneStatus = "bone" + MaudUtil.formatIndex(boneIndex);
+                    boneStatus = "bone" + DescribeUtil.index(boneIndex);
                 }
             }
         }
@@ -258,8 +258,7 @@ class VertexTool extends Tool {
         int numVertices = target.getSpatial().countVertices();
         if (target.getVertex().isSelected()) {
             int selectedIndex = target.getVertex().getIndex();
-            indexStatus = MaudUtil.formatIndex(selectedIndex);
-            indexStatus = String.format("%s of %d", indexStatus, numVertices);
+            indexStatus = DescribeUtil.index(selectedIndex, numVertices);
             nextButton = "+";
             previousButton = "-";
 

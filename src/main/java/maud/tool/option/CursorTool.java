@@ -31,8 +31,8 @@ import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.SliderTransform;
+import maud.DescribeUtil;
 import maud.Maud;
-import maud.MaudUtil;
 import maud.model.option.scene.DddCursorOptions;
 import maud.tool.Tool;
 
@@ -158,7 +158,7 @@ public class CursorTool extends Tool {
         setChecked("3DCursor", visible);
 
         int colorIndex = Maud.getModel().getMisc().getColorIndex();
-        String indexText = MaudUtil.formatIndex(colorIndex);
+        String indexText = DescribeUtil.index(colorIndex);
         setButtonText("cursorColorIndex", indexText);
 
         ColorRGBA color = options.copyColor(colorIndex, null);

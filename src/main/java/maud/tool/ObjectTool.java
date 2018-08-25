@@ -28,8 +28,8 @@ package maud.tool;
 
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
+import maud.DescribeUtil;
 import maud.Maud;
-import maud.MaudUtil;
 import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedObject;
@@ -83,7 +83,7 @@ class ObjectTool extends Tool {
      */
     private void updateIndex() {
         String indexText;
-        String nButton = "", pButton = "", sButton = "";
+        String nButton = "", pButton = "", sButton = ""; // TODO rename
 
         Cgm target = Maud.getModel().getTarget();
         int numObjects = target.getSceneView().objectMap().size();
@@ -94,8 +94,7 @@ class ObjectTool extends Tool {
         SelectedObject object = target.getObject();
         if (object.isSelected()) {
             int selectedIndex = object.index();
-            indexText = MaudUtil.formatIndex(selectedIndex);
-            indexText = String.format("%s of %d", indexText, numObjects);
+            indexText = DescribeUtil.index(selectedIndex, numObjects);
             if (numObjects > 1) {
                 nButton = "+";
                 pButton = "-";
