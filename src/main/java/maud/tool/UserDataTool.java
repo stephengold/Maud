@@ -152,31 +152,26 @@ class UserDataTool extends Tool {
     }
 
     /**
-     * Update the value label.
+     * Update the value button.
      */
     private void updateValue() {
-        String eButton, valueText;
+        String valueButton = "";
 
         SelectedUserData datum = Maud.getModel().getTarget().getUserData();
         String key = datum.getKey();
-        if (key == null) {
-            eButton = "";
-            valueText = "";
-        } else {
-            eButton = "Alter";
+        if (key != null) {
             Object value = datum.getValue();
             if (value instanceof String) {
                 String string = (String) value;
-                valueText = MyString.quote(string);
+                valueButton = MyString.quote(string);
             } else if (value instanceof Bone) {
                 Bone bone = (Bone) value;
-                valueText = bone.getName();
+                valueButton = bone.getName();
             } else {
-                valueText = value.toString();
+                valueButton = value.toString();
             }
         }
 
-        setStatusText("userValue", " " + valueText);
-        setButtonText("userDataEdit", eButton);
+        setButtonText("userValue", valueButton);
     }
 }

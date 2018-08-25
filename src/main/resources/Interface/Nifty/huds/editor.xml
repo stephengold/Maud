@@ -3173,11 +3173,8 @@ the menu bar, status bar, and tool windows.
                         <control name="label" text="Value:  "
                                  textHAlign="right"
                                  width="42px"/>
-                        <control name="label" id="userValue"
-                                 backgroundColor="#ffff"
-                                 width="*"/>
-                        <control name="button" id="userDataEditButton"
-                                 width="60px">
+                        <control name="button" id="userValueButton"
+                                 width="*">
                             <interact onRelease="perform(set userData)"/>
                         </control>
                     </panel>
