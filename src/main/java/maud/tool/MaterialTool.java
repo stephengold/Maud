@@ -294,12 +294,13 @@ class MaterialTool extends Tool {
 
                 } else if (value instanceof Matrix3f) {
                     Matrix3f m = (Matrix3f) value;
-                    valueStatus = "";
+                    StringBuilder builder = new StringBuilder(100);
                     Vector3f row = new Vector3f();
                     for (int i = 0; i < 3; i++) {
                         m.getRow(i, row);
-                        valueStatus += row.toString();
+                        builder.append(row);
                     }
+                    valueStatus = builder.toString();
 
                 } else if (value instanceof Matrix3f[]) {
                     Matrix3f[] ma = (Matrix3f[]) value;
