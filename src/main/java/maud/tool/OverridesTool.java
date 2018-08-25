@@ -198,27 +198,25 @@ class OverridesTool extends Tool {
     }
 
     /**
-     * Update the value status and the edit button text.
+     * Update the value-button text.
      */
     private void updateValue() {
-        String eButton = "", valueText = "";
+        String valueButton = "";
 
         SelectedOverride override = Maud.getModel().getTarget().getOverride();
         if (override.isSelected()) {
-            eButton = "Edit";
             Object data = override.getValue();
             if (data == null || data instanceof String) {
                 String string = (String) data;
-                valueText = MyString.quote(string);
+                valueButton = MyString.quote(string);
             } else if (data instanceof Bone) {
                 Bone bone = (Bone) data;
-                valueText = bone.getName();
+                valueButton = bone.getName();
             } else {
-                valueText = data.toString();
+                valueButton = data.toString();
             }
         }
 
-        setStatusText("mpoValue", " " + valueText);
-        setButtonText("mpoEdit", eButton);
+        setButtonText("mpoValue", valueButton);
     }
 }

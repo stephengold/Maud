@@ -1782,11 +1782,8 @@ the menu bar, status bar, and tool windows.
                         <control name="label" text="Value:  "
                                  textHAlign="right"
                                  width="42px"/>
-                        <control name="label" id="mpoValue"
-                                 backgroundColor="#ffff"
-                                 width="*"/>
-                        <control name="button" id="mpoEditButton"
-                                 width="60px">
+                        <control name="button" id="mpoValueButton"
+                                 width="*">
                             <interact onRelease="perform(set overrideValue)"/>
                         </control>
                     </panel>
