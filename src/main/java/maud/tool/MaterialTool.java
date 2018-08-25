@@ -272,25 +272,25 @@ class MaterialTool extends Tool {
     }
 
     /**
-     * Update the parameter-value status and the edit-button label.
+     * Update the parameter-value button.
      */
     private void updateParameterValue() {
-        String editButton = "", valueStatus;
+        String valueButton = "";
 
         SelectedMatParam param = Maud.getModel().getTarget().getMatParam();
         if (param.isSelected()) {
-            editButton = "Edit";
             if (param.isOverridden()) {
-                valueStatus = "(overridden)";
+                valueButton = "(overridden)";
+
             } else {
-                Object value = param.getValue();
+                Object value = param.getValue(); // TODO create utility method
                 if (value == null || value instanceof String) {
                     String string = (String) value;
-                    valueStatus = MyString.quote(string);
+                    valueButton = MyString.quote(string);
 
                 } else if (value instanceof Bone) {
                     Bone bone = (Bone) value;
-                    valueStatus = bone.getName();
+                    valueButton = bone.getName();
 
                 } else if (value instanceof Matrix3f) {
                     Matrix3f m = (Matrix3f) value;
@@ -300,15 +300,15 @@ class MaterialTool extends Tool {
                         m.getRow(i, row);
                         builder.append(row);
                     }
-                    valueStatus = builder.toString();
+                    valueButton = builder.toString();
 
                 } else if (value instanceof Matrix3f[]) {
                     Matrix3f[] ma = (Matrix3f[]) value;
-                    valueStatus = String.format("length=%d", ma.length);
+                    valueButton = String.format("length=%d", ma.length);
 
                 } else if (value instanceof Matrix4f) {
                     Matrix4f m = (Matrix4f) value;
-                    valueStatus = String.format("(%f %f %f %f)(%f %f %f %f)"
+                    valueButton = String.format("(%f %f %f %f)(%f %f %f %f)"
                             + "(%f %f %f %f)(%f %f %f %f)",
                             m.m00, m.m01, m.m02, m.m03,
                             m.m10, m.m11, m.m12, m.m13,
@@ -317,18 +317,15 @@ class MaterialTool extends Tool {
 
                 } else if (value instanceof Matrix4f[]) {
                     Matrix4f[] ma = (Matrix4f[]) value;
-                    valueStatus = String.format("length=%d", ma.length);
+                    valueButton = String.format("length=%d", ma.length);
 
                 } else {
-                    valueStatus = value.toString();
+                    valueButton = value.toString();
                 }
             }
-        } else {
-            valueStatus = "none (no parameter selected)";
         }
 
-        setStatusText("mpValue", " " + valueStatus);
-        setButtonText("mpEdit", editButton);
+        setButtonText("mpValue", valueButton);
     }
 
     /**

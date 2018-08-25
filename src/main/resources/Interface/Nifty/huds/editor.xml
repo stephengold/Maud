@@ -1536,11 +1536,8 @@ the menu bar, status bar, and tool windows.
                         <control name="label" text="Value:  "
                                  textHAlign="right"
                                  width="42px"/>
-                        <control name="label" id="mpValue"
-                                 backgroundColor="#ffff"
-                                 width="*"/>
-                        <control name="button" id="mpEditButton"
-                                 width="30px">
+                        <control name="button" id="mpValueButton"
+                                 width="*">
                             <interact onRelease="perform(set matParamValue)"/>
                         </control>
                     </panel>

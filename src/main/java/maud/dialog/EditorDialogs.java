@@ -882,14 +882,22 @@ public class EditorDialogs {
         String defaultValue, promptMessage;
         switch (varType) {
             case Boolean:
-                if (oldValue == null) {
-                    defaultValue = "null";
-                } else {
-                    boolean booleanValue = (boolean) oldValue;
-                    defaultValue = Boolean.toString(booleanValue);
+                if (allowNull) {
+                    if (oldValue == null) {
+                        defaultValue = "null";
+                    } else {
+                        boolean booleanValue = (boolean) oldValue;
+                        defaultValue = Boolean.toString(booleanValue);
+                    }
+                    controller = new BooleanDialog("Set", allowNull);
+                    promptMessage = "Enter new boolean value:";
+
+                } else { // only 2 possible values, so toggle immediately
+                    boolean newValue = !(boolean) oldValue;
+                    String action = actionPrefix + newValue;
+                    Maud.perform(action);
+                    return;
                 }
-                controller = new BooleanDialog("Set", allowNull);
-                promptMessage = "Enter new boolean value:";
                 break;
 
             case Float:
