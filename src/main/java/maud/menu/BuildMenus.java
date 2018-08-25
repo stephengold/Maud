@@ -656,15 +656,15 @@ public class BuildMenus {
         builder.addSubmenu("Select");
         builder.addSubmenu("Add new");
 
-        builder.addTool("Details");
-        builder.addTool("Lights");
-        builder.addTool("Material");
-        builder.addTool("Mesh");
-        builder.addTool("Overrides");
-        builder.addTool("Rotate");
-        builder.addTool("Scale");
-        builder.addTool("Translate");
-        builder.addTool("User-Data");
+        builder.addTool("Details tool");
+        builder.addTool("Lights tool");
+        builder.addTool("Material tool");
+        builder.addTool("Mesh tool");
+        builder.addTool("Overrides tool");
+        builder.addTool("Rotate tool");
+        builder.addTool("Scale tool");
+        builder.addTool("Translate tool");
+        builder.addTool("User-Data tool");
 
         Cgm target = Maud.getModel().getTarget();
         if (!target.getSpatial().isCgmRoot()) {

@@ -118,7 +118,7 @@ public class SpatialMenus {
                     Maud.getModel().getTarget().deleteExtraSpatials();
                     break;
 
-                case "Details":
+                case "Details tool":
                     Maud.gui.tools.select("spatialDetails");
                     break;
 
@@ -126,27 +126,27 @@ public class SpatialMenus {
                     editMaterial();
                     break;
 
-                case "Lights":
+                case "Lights tool":
                     Maud.gui.tools.select("lights");
                     break;
 
-                case "Material":
+                case "Material tool":
                     Maud.gui.tools.select("material");
                     break;
 
-                case "Mesh":
+                case "Mesh tool":
                     Maud.gui.tools.select("mesh");
                     break;
 
-                case "Overrides":
+                case "Overrides tool":
                     Maud.gui.tools.select("overrides");
                     break;
 
-                case "Rotate":
+                case "Rotate tool":
                     Maud.gui.tools.select("spatialRotation");
                     break;
 
-                case "Scale":
+                case "Scale tool":
                     Maud.gui.tools.select("spatialScale");
                     break;
 
@@ -158,11 +158,11 @@ public class SpatialMenus {
                     Maud.gui.tools.select("spatial");
                     break;
 
-                case "Translate":
+                case "Translate tool":
                     Maud.gui.tools.select("spatialTranslation");
                     break;
 
-                case "User-Data":
+                case "User-Data tool":
                     Maud.gui.tools.select("userData");
                     break;
 
