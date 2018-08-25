@@ -725,12 +725,14 @@ public class BuildMenus {
      * Build a View menu.
      */
     private void buildViewMenu() {
-        builder.addSubmenu("Mode"); // TODO Select mode
+        builder.addSubmenu("Select mode");
+
         ViewMode viewMode = Maud.getModel().getMisc().getViewMode();
         if (viewMode.equals(ViewMode.Scene)
                 || viewMode.equals(ViewMode.Hybrid)) {
             builder.addSubmenu("Scene options");
         }
+
         if (viewMode.equals(ViewMode.Score)
                 || viewMode.equals(ViewMode.Hybrid)) {
             builder.addSubmenu("Score options");

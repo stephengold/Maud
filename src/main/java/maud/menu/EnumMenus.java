@@ -448,7 +448,7 @@ public class EnumMenus {
             }
         }
 
-        builder.show("select menuItem View -> Mode -> ");
+        builder.show("select menuItem View -> Select mode -> ");
     }
 
     /**

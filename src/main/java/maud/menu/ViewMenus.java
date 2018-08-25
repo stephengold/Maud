@@ -64,7 +64,7 @@ public class ViewMenus {
      */
     static boolean menuView(String remainder) {
         boolean handled = true;
-        String modePrefix = "Mode" + EditorMenus.menuPathSeparator;
+        String modePrefix = "Select mode" + EditorMenus.menuPathSeparator;
         String scenesPrefix = "Scene options" + EditorMenus.menuPathSeparator;
         String scoresPrefix = "Score options" + EditorMenus.menuPathSeparator;
         if (remainder.startsWith(modePrefix)) {
@@ -82,7 +82,7 @@ public class ViewMenus {
 
         } else {
             switch (remainder) {
-                case "Mode":
+                case "Select mode":
                     EnumMenus.selectViewMode();
                     break;
                 case "Scene options":
@@ -210,7 +210,7 @@ public class ViewMenus {
     }
 
     /**
-     * Handle a "select menuItem" action from the "View -> Mode" menu.
+     * Handle a "select menuItem" action from the "View -> Select mode" menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
      * @return true if the action is handled, otherwise false
