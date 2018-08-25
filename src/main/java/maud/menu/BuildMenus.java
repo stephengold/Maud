@@ -628,6 +628,8 @@ public class BuildMenus {
         builder.addTool("Display-settings tool");
         builder.add("Hotkeys");
         //builder.add("Locale"); TODO
+        builder.addSubmenu("Scene-view options");
+        builder.addSubmenu("Score-view options");
         builder.addTool("Tweening tool");
         builder.add("Update startup script");
         if (Maud.isStartupScriptCustomized()) {

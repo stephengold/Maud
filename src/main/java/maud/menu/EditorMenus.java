@@ -33,6 +33,7 @@ import java.util.logging.Logger;
 import jme3utilities.Misc;
 import maud.Maud;
 import maud.dialog.EditorDialogs;
+import static maud.menu.ViewMenus.sceneViewOptions;
 import maud.model.EditableMap;
 import maud.model.History;
 
@@ -313,6 +314,14 @@ public class EditorMenus {
 
             case "Revert startup script to default":
                 Maud.revertStartupScript();
+                break;
+
+            case "Scene-view options":
+                sceneViewOptions();
+                break;
+
+            case "Score-view options":
+                sceneViewOptions();
                 break;
 
             case "Tool":
