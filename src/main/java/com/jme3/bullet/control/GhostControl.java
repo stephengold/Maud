@@ -47,17 +47,36 @@ import com.jme3.scene.control.Control;
 import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
 import java.io.IOException;
+import java.util.logging.Logger;
 import jme3utilities.MySpatial;
 import maud.PhysicsUtil;
 
 /**
- * A GhostControl moves with the spatial it is attached to and can be used to
- * check overlaps with other physics objects (e.g. aggro radius).
+ * A physics control to link a PhysicsGhostObject to a spatial.
+ * <p>
+ * The ghost object moves with the spatial it is attached to and can be used to
+ * detect overlaps with other physics objects (e.g. aggro radius).
+ * <p>
+ * This class is shared between JBullet and Native Bullet.
  *
  * @author normenhansen
  */
 public class GhostControl extends PhysicsGhostObject
         implements PhysicsControl, JmeCloneable {
+
+    /**
+     * message logger for this class
+     */
+    final private static Logger logger
+            = Logger.getLogger(GhostControl.class.getName());
+    /**
+     * local copy of {@link com.jme3.math.Quaternion#IDENTITY}
+     */
+    final private static Quaternion rotateIdentity = new Quaternion();
+    /**
+     * local copy of {@link com.jme3.math.Vector3f#ZERO}
+     */
+    final private static Vector3f translateIdentity = new Vector3f(0f, 0f, 0f);
 
     protected Spatial spatial;
     protected boolean enabled = true;
@@ -65,6 +84,10 @@ public class GhostControl extends PhysicsGhostObject
     protected PhysicsSpace space = null;
     private boolean applyLocal = false;
 
+    /**
+     * No-argument constructor needed by SavableClassUtil. Do not invoke
+     * directly!
+     */
     public GhostControl() {
     }
 
@@ -72,37 +95,56 @@ public class GhostControl extends PhysicsGhostObject
         super(shape);
     }
 
+    /**
+     * Test whether physics coordinates should match the local transform of the
+     * Spatial.
+     *
+     * @return true if matching local transform, false if matching world
+     * transform
+     */
     public boolean isApplyPhysicsLocal() {
         return applyLocal;
     }
 
     /**
-     * When set to true, the physics coordinates will be applied to the local
-     * translation of the Spatial
+     * Alter whether physics coordinates should match the local transform of the
+     * Spatial.
      *
-     * @param applyPhysicsLocal true&rarr;apply to local, false&rarr;apply to
-     * world
+     * @param applyPhysicsLocal true&rarr;match local transform,
+     * false&rarr;match world transform (default is false)
      */
     public void setApplyPhysicsLocal(boolean applyPhysicsLocal) {
         applyLocal = applyPhysicsLocal;
     }
 
-    private Vector3f getSpatialTranslation() {
+    /**
+     * Access whichever spatial translation corresponds to the physics location.
+     *
+     * @return the pre-existing vector (not null)
+     */
+    protected Vector3f getSpatialTranslation() {
         if (MySpatial.isIgnoringTransforms(spatial)) {
-            return new Vector3f(); // identity
+            return translateIdentity;
         } else if (applyLocal) {
             return spatial.getLocalTranslation();
+        } else {
+            return spatial.getWorldTranslation();
         }
-        return spatial.getWorldTranslation();
     }
 
-    private Quaternion getSpatialRotation() {
+    /**
+     * Access whichever spatial rotation corresponds to the physics rotation.
+     *
+     * @return the pre-existing quaternion (not null)
+     */
+    protected Quaternion getSpatialRotation() {
         if (MySpatial.isIgnoringTransforms(spatial)) {
-            return new Quaternion();
+            return rotateIdentity;
         } else if (applyLocal) {
             return spatial.getLocalRotation();
+        } else {
+            return spatial.getWorldRotation();
         }
-        return spatial.getWorldRotation();
     }
 
     private Vector3f getSpatialScale() {
@@ -157,6 +199,15 @@ public class GhostControl extends PhysicsGhostObject
         setPhysicsRotation(getSpatialRotation());
     }
 
+    /**
+     * Enable or disable this control.
+     * <p>
+     * The ghost object is removed from its physics space when the control is
+     * disabled. When the control is enabled again, the object is moved to the
+     * current location of the spatial and then added to the physics space.
+     *
+     * @param enabled true&rarr;enable the control, false&rarr;disable it
+     */
     @Override
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
@@ -175,11 +226,23 @@ public class GhostControl extends PhysicsGhostObject
         }
     }
 
+    /**
+     * Test whether this control is enabled.
+     *
+     * @return true if enabled, otherwise false
+     */
     @Override
     public boolean isEnabled() {
         return enabled;
     }
 
+    /**
+     * Update this control. Invoked once per frame during the logical-state
+     * update, provided the control is added to a scene. Do not invoke directly
+     * from user code.
+     *
+     * @param tpf the time interval between updates (in seconds, &ge;0)
+     */
     @Override
     public void update(float tpf) {
         if (!enabled) {
@@ -194,10 +257,24 @@ public class GhostControl extends PhysicsGhostObject
         }
     }
 
+    /**
+     * Render this control. Invoked once per view port per frame, provided the
+     * control is added to a scene. Should be invoked only by a subclass or by
+     * the RenderManager.
+     *
+     * @param rm the render manager (not null)
+     * @param vp the view port to render (not null)
+     */
     @Override
     public void render(RenderManager rm, ViewPort vp) {
     }
 
+    /**
+     * Add this control's ghost object to the specified physics space and remove
+     * it from any space it's currently in.
+     *
+     * @param space where to add, or null to simply remove
+     */
     @Override
     public void setPhysicsSpace(PhysicsSpace space) {
         if (space == null) {
@@ -215,11 +292,22 @@ public class GhostControl extends PhysicsGhostObject
         this.space = space;
     }
 
+    /**
+     * Access the physics space containing this control's ghost object.
+     *
+     * @return the pre-existing space, or null for none
+     */
     @Override
     public PhysicsSpace getPhysicsSpace() {
         return space;
     }
 
+    /**
+     * Serialize this control, for example when saving to a J3O file.
+     *
+     * @param ex exporter (not null)
+     * @throws IOException from exporter
+     */
     @Override
     public void write(JmeExporter ex) throws IOException {
         super.write(ex);
@@ -229,6 +317,12 @@ public class GhostControl extends PhysicsGhostObject
         oc.write(spatial, "spatial", null);
     }
 
+    /**
+     * De-serialize this control, for example when loading from a J3O file.
+     *
+     * @param im importer (not null)
+     * @throws IOException from importer
+     */
     @Override
     public void read(JmeImporter im) throws IOException {
         super.read(im);

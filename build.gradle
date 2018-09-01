@@ -17,6 +17,7 @@ gradle.projectsEvaluated {
         classpath sourceSets.main.runtimeClasspath
         enableAssertions true
         jvmArgs '-XX:+UseConcMarkSweepGC'
+        //jvmArgs '-XX:+UseG1GC', '-XX:MaxGCPauseMillis=10'
     }
 }
 
@@ -44,14 +45,13 @@ dependencies {
     // from stephengold's bintray repositories:
     compile 'jme3utilities:jme3-utilities-heart:2.7.0'
     compile 'jme3utilities:jme3-utilities-nifty:0.7.13'
-    compile 'jme3utilities:Minie:0.2.5'
+    compile 'jme3utilities:Minie:0.2.7'
     compile 'jme3utilities:SkyControl:0.9.13'
     compile 'jme3utilities:Wes:0.3.6'
     //runtime 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
 
     // from jcenter (or mavenLocal) repositories:
     compile "org.jmonkeyengine:jme3-blender:$jmonkeyengineVersion"
-    runtime "org.jmonkeyengine:jme3-bullet-native:3.1.0-stable"
     compile "org.jmonkeyengine:jme3-lwjgl:$jmonkeyengineVersion"
     compile "org.jmonkeyengine:jme3-plugins:$jmonkeyengineVersion"
     compile 'ch.qos.logback:logback-classic:1.2.3'

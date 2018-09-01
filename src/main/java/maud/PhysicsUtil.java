@@ -486,11 +486,11 @@ public class PhysicsUtil {
                         = new ChildCollisionShape[numChildren];
                 childList.toArray(childArray);
                 for (ChildCollisionShape child : childArray) {
-                    CollisionShape childShape = child.shape;
+                    CollisionShape childShape = child.getShape();
                     long shapeId = childShape.getObjectId();
                     if (shapeId == oldShapeId) {
-                        Vector3f location = child.location.clone();
-                        Matrix3f rotation = child.rotation.clone();
+                        Vector3f location = child.getLocation().clone();
+                        Matrix3f rotation = child.getRotation().clone();
                         compound.removeChildShape(childShape);
                         compound.addChildShape(newShape, location, rotation);
                     }
@@ -592,7 +592,7 @@ public class PhysicsUtil {
                 CompoundCollisionShape ccs = (CompoundCollisionShape) shape;
                 List<ChildCollisionShape> children = ccs.getChildren();
                 for (ChildCollisionShape child : children) {
-                    CollisionShape childShape = child.shape;
+                    CollisionShape childShape = child.getShape();
                     long childId = childShape.getObjectId();
                     result.put(childId, childShape);
                 }
@@ -653,7 +653,7 @@ public class PhysicsUtil {
                 CompoundCollisionShape ccs = (CompoundCollisionShape) shape;
                 List<ChildCollisionShape> children = ccs.getChildren();
                 for (ChildCollisionShape child : children) {
-                    CollisionShape childShape = child.shape;
+                    CollisionShape childShape = child.getShape();
                     long childId = childShape.getObjectId();
                     if (childId == usedShapeId) {
                         long parentId = shape.getObjectId();
@@ -683,7 +683,7 @@ public class PhysicsUtil {
             CompoundCollisionShape compound = (CompoundCollisionShape) user;
             List<ChildCollisionShape> children = compound.getChildren();
             for (ChildCollisionShape child : children) {
-                id = child.shape.getObjectId();
+                id = child.getShape().getObjectId();
                 if (id == shapeId) {
                     result = true;
                     break;

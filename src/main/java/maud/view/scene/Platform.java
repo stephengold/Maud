@@ -86,13 +86,17 @@ class Platform {
      */
     final private static String textureAssetPath
             = "Textures/platform/rock_11474.jpg";
-    /**
-     * local copy of {@link com.jme3.math.Vector3f#UNIT_XYZ}
-     */
-    final private static Vector3f scaleIdentity = new Vector3f(1f, 1f, 1f);
     // *************************************************************************
     // fields
 
+    /**
+     * radius as of the previous update (&ge;0)
+     */
+    private float oldDiameter = 0f;
+    /**
+     * type as of the previous update (not null)
+     */
+    private PlatformType oldType = PlatformType.None;
     /**
      * view that owns this platform (not null, set by constructor or
      * {@link #setView(SceneViewCore)})
@@ -174,41 +178,25 @@ class Platform {
     void update() {
         EditorModel model = Maud.getModel();
         SceneOptions options = model.getScene();
+        Cgm cgm = view.getCgm();
+        WhichCgm whichCgm = model.whichCgm(cgm);
+        float diameter = options.getPlatformDiameter(whichCgm);
         PlatformType type = options.getPlatformType();
-        switch (type) {
-            case None:
-                if (spatial != null) {
+
+        if (diameter != oldDiameter || type != oldType) {
+            switch (type) {
+                case None:
                     setPlatform(null);
-                }
-                break;
-
-            case Square:
-                if (spatial == null) {
-                    Spatial square = createSquare();
+                    break;
+                case Square:
+                    Spatial square = createSquare(diameter);
                     setPlatform(square);
-                }
-                break;
-
-            default:
-                throw new IllegalStateException();
-        }
-
-        if (spatial != null) {
-            Cgm cgm = view.getCgm();
-            WhichCgm whichCgm = model.whichCgm(cgm);
-            float diameter = options.getPlatformDiameter(whichCgm);
-            Vector3f center = new Vector3f(0f, -diameter * squareThickness, 0f);
-
-            RigidBodyControl rbc = spatial.getControl(RigidBodyControl.class);
-            rbc.setPhysicsLocation(center);
-
-            CollisionShape shape = rbc.getCollisionShape();
-            Vector3f scale = scaleIdentity.mult(diameter);
-            shape.setScale(scale);
-            rbc.setCollisionShape(shape);
-
-            spatial.setLocalTranslation(center);
-            spatial.setLocalScale(diameter);
+                    break;
+                default:
+                    throw new IllegalStateException();
+            }
+            oldDiameter = diameter;
+            oldType = type;
         }
     }
     // *************************************************************************
@@ -217,11 +205,15 @@ class Platform {
     /**
      * Create a square slab platform.
      *
+     * @param diameter (&ge;0)
      * @return a new, orphaned spatial with its own RigidBodyControl, not added
      * to any physics space
      */
-    private static Spatial createSquare() {
+    private static Spatial createSquare(float diameter) {
         Spatial result = new Geometry("square platform", squareMesh);
+        Vector3f center = new Vector3f(0f, -diameter * squareThickness, 0f);
+        result.setLocalTranslation(center);
+        result.setLocalScale(diameter);
 
         AssetManager assetManager = Locators.getAssetManager();
         Texture texture = MyAsset.loadTexture(assetManager, textureAssetPath);
@@ -229,10 +221,13 @@ class Platform {
         result.setMaterial(material);
         result.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
 
-        Vector3f halfExtents = new Vector3f(radius, squareThickness, radius);
+        Vector3f halfExtents = new Vector3f(radius, squareThickness, radius); // TODO construct once
         BoxCollisionShape shape = new BoxCollisionShape(halfExtents);
+        Vector3f scale = new Vector3f(diameter, diameter, diameter);
+        shape.setScale(scale);
         float mass = 0f;
         RigidBodyControl rbc = new RigidBodyControl(shape, mass);
+        rbc.setPhysicsLocation(center);
         result.addControl(rbc);
 
         return result;

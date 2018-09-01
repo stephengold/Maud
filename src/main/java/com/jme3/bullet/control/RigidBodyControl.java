@@ -54,14 +54,33 @@ import com.jme3.scene.shape.Sphere;
 import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
 import java.io.IOException;
+import java.util.logging.Logger;
 import jme3utilities.MySpatial;
 import maud.PhysicsUtil;
 
 /**
+ * A physics control to link a PhysicsRigidBody to a spatial.
+ * <p>
+ * This class is shared between JBullet and Native Bullet.
  *
  * @author normenhansen
  */
-public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl, JmeCloneable {
+public class RigidBodyControl extends PhysicsRigidBody
+        implements PhysicsControl, JmeCloneable {
+
+    /**
+     * message logger for this class
+     */
+    final private static Logger logger
+            = Logger.getLogger(RigidBodyControl.class.getName());
+    /**
+     * local copy of {@link com.jme3.math.Quaternion#IDENTITY}
+     */
+    final private static Quaternion rotateIdentity = new Quaternion();
+    /**
+     * local copy of {@link com.jme3.math.Vector3f#ZERO}
+     */
+    final private static Vector3f translateIdentity = new Vector3f(0f, 0f, 0f);
 
     protected Spatial spatial;
     protected boolean enabled = true;
@@ -69,12 +88,16 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
     protected PhysicsSpace space = null;
     protected boolean kinematicSpatial = true;
 
+    /**
+     * No-argument constructor needed by SavableClassUtil. Do not invoke
+     * directly!
+     */
     public RigidBodyControl() {
     }
 
     /**
      * When using this constructor, the CollisionShape for the RigidBody is
-     * generated automatically when the Control is added to a Spatial.
+     * generated automatically when the control is added to a spatial.
      *
      * @param mass When not 0, a HullCollisionShape is generated, otherwise a
      * MeshCollisionShape is used. For geometries with box or sphere meshes the
@@ -85,14 +108,20 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
     }
 
     /**
-     * Creates a new PhysicsNode with the supplied collision shape and mass 1
+     * Create a new control with mass=1 and the specified collision shape.
      *
-     * @param shape
+     * @param shape the desired shape (not null, alias created)
      */
     public RigidBodyControl(CollisionShape shape) {
         super(shape);
     }
 
+    /**
+     * Create a new control with the specified collision shape and mass.
+     *
+     * @param shape the desired shape (not null, alias created)
+     * @param mass the desired mass (&ge;0)
+     */
     public RigidBodyControl(CollisionShape shape, float mass) {
         super(shape, mass);
     }
@@ -149,6 +178,8 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
         }
         control.setApplyPhysicsLocal(isApplyPhysicsLocal());
         control.spatial = this.spatial;
+        control.setEnabled(isEnabled());
+
         return control;
     }
 
@@ -157,6 +188,7 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
         this.spatial = cloner.clone(spatial);
     }
 
+    @Override
     public void setSpatial(Spatial spatial) {
         this.spatial = spatial;
         setUserObject(spatial);
@@ -193,6 +225,7 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
         }
     }
 
+    @Override
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
         if (space != null) {
@@ -210,61 +243,86 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
         }
     }
 
+    /**
+     * Test whether this control is enabled.
+     *
+     * @return true if enabled, otherwise false
+     */
+    @Override
     public boolean isEnabled() {
         return enabled;
     }
 
     /**
-     * Checks if this control is in kinematic spatial mode.
+     * Test whether this control is in kinematic mode.
      *
-     * @return true if the spatial location is applied to this kinematic
-     * rigidbody
+     * @return true if the spatial location and rotation are applied to the
+     * rigid body, otherwise false
      */
     public boolean isKinematicSpatial() {
         return kinematicSpatial;
     }
 
     /**
-     * Sets this control to kinematic spatial mode so that the spatials
-     * transform will be applied to the rigidbody in kinematic mode, defaults to
-     * true.
+     * Enable or disable kinematic mode. In kinematic mode, the spatial's
+     * location and rotation will be applied to the rigid body.
      *
-     * @param kinematicSpatial
+     * @param kinematicSpatial true&rarr;kinematic, false&rarr;dynamic or static
      */
     public void setKinematicSpatial(boolean kinematicSpatial) {
         this.kinematicSpatial = kinematicSpatial;
     }
 
+    /**
+     * Test whether physics location and rotation should match the spatial's
+     * local transform.
+     *
+     * @return true if matching local transform, false if matching world
+     * transform
+     */
     public boolean isApplyPhysicsLocal() {
         return motionState.isApplyPhysicsLocal();
     }
 
     /**
-     * When set to true, the physics coordinates will be applied to the local
-     * translation of the Spatial instead of the world translation.
+     * Alter whether physics location and rotation should match the spatial's
+     * local transform.
      *
-     * @param applyPhysicsLocal
+     * @param applyPhysicsLocal true&rarr;match local transform,
+     * false&rarr;match world transform (default is false)
      */
     public void setApplyPhysicsLocal(boolean applyPhysicsLocal) {
         motionState.setApplyPhysicsLocal(applyPhysicsLocal);
     }
 
+    /**
+     * Access whichever spatial translation corresponds to the physics location.
+     *
+     * @return the pre-existing vector (not null)
+     */
     private Vector3f getSpatialTranslation() {
         if (MySpatial.isIgnoringTransforms(spatial)) {
-            return new Vector3f(); // identity
+            return translateIdentity;
         } else if (motionState.isApplyPhysicsLocal()) {
             return spatial.getLocalTranslation();
+        } else {
+            return spatial.getWorldTranslation();
         }
-        return spatial.getWorldTranslation();
     }
 
+    /**
+     * Access whichever spatial rotation corresponds to the physics rotation.
+     *
+     * @return the pre-existing quaternion (not null)
+     */
     private Quaternion getSpatialRotation() {
         if (MySpatial.isIgnoringTransforms(spatial)) {
-            return new Quaternion(); // identity
+            return rotateIdentity;
         } else if (motionState.isApplyPhysicsLocal()) {
             return spatial.getLocalRotation();
+        } else {
+            return spatial.getWorldRotation();
         }
-        return spatial.getWorldRotation();
     }
 
     private Vector3f getSpatialScale() {
@@ -276,6 +334,12 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
         return spatial.getWorldScale();
     }
 
+    /**
+     * Update this control. Invoked once per frame, during the logical-state
+     * update, provided the control is added to a scene.
+     *
+     * @param tpf the time interval between updates (in seconds, &ge;0)
+     */
     @Override
     public void update(float tpf) {
         if (enabled && spatial != null) {
@@ -298,22 +362,24 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
     }
 
     /**
-     * After reshaping the body, always remove it from any physics space and
-     * then re-add it.
+     * Render this control. Invoked once per view port per frame, provided the
+     * control is added to a scene. Should be invoked only by a subclass or by
+     * the RenderManager.
      *
-     * @param collisionShape replacement shape
+     * @param rm the render manager (not null)
+     * @param vp the view port to render (not null)
      */
-    public void setCollisionShape(CollisionShape collisionShape) {
-        super.setCollisionShape(collisionShape);
-        if (space != null) {
-            space.removeCollisionObject(this);
-            space.addCollisionObject(this);
-        }
-    }
-
+    @Override
     public void render(RenderManager rm, ViewPort vp) {
     }
 
+    /**
+     * Add this control's body to the specified physics space and remove it from
+     * any space it's currently in.
+     *
+     * @param space where to add, or null to simply remove
+     */
+    @Override
     public void setPhysicsSpace(PhysicsSpace space) {
         if (space == null) {
             if (this.space != null) {
@@ -324,16 +390,31 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
             if (this.space == space) {
                 return;
             }
-            space.addCollisionObject(this);
-            added = true;
+            // if this object isn't enabled, it will be added when it will be enabled.
+            if (isEnabled()) {
+                space.addCollisionObject(this);
+                added = true;
+            }
         }
         this.space = space;
     }
 
+    /**
+     * Access the physics space to which the body is added.
+     *
+     * @return the pre-existing space, or null for none
+     */
+    @Override
     public PhysicsSpace getPhysicsSpace() {
         return space;
     }
 
+    /**
+     * Serialize this control, for example when saving to a J3O file.
+     *
+     * @param ex exporter (not null)
+     * @throws IOException from exporter
+     */
     @Override
     public void write(JmeExporter ex) throws IOException {
         super.write(ex);
@@ -344,6 +425,12 @@ public class RigidBodyControl extends PhysicsRigidBody implements PhysicsControl
         oc.write(spatial, "spatial", null);
     }
 
+    /**
+     * De-serialize this control, for example when loading from a J3O file.
+     *
+     * @param im importer (not null)
+     * @throws IOException from importer
+     */
     @Override
     public void read(JmeImporter im) throws IOException {
         super.read(im);

@@ -388,7 +388,7 @@ public class SelectedShape implements Cloneable {
             result = new ArrayList<>(count);
             for (int childIndex = 0; childIndex < count; childIndex++) {
                 ChildCollisionShape child = children.get(childIndex);
-                String description = MyShape.describe(child.shape);
+                String description = MyShape.describe(child.getShape());
                 if (description.startsWith(prefix)) {
                     result.add(description);
                 }
@@ -441,7 +441,7 @@ public class SelectedShape implements Cloneable {
             List<ChildCollisionShape> children = ccs.getChildren();
             if (!children.isEmpty()) {
                 ChildCollisionShape child = children.get(0);
-                selectedId = child.shape.getObjectId();
+                selectedId = child.getShape().getObjectId();
             }
         }
     }
@@ -625,11 +625,11 @@ public class SelectedShape implements Cloneable {
 
                     Transform parent = new Transform();
                     for (ChildCollisionShape child : children) {
-                        long id = child.shape.getObjectId();
+                        long id = child.getShape().getObjectId();
                         if (id == userId) {
-                            parent.setTranslation(child.location);
+                            parent.setTranslation(child.getLocation());
                             Quaternion rot = parent.getRotation();
-                            rot.fromRotationMatrix(child.rotation);
+                            rot.fromRotationMatrix(child.getRotation());
                         }
                     }
                     storeResult.combineWithParent(parent);
