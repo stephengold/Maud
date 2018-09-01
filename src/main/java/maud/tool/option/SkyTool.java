@@ -150,7 +150,7 @@ public class SkyTool extends Tool {
 
         float hour = options.getHour();
         setSlider("hour", hourSt, hour);
-        int second = Math.round(hour * 3600);
+        int second = Math.round(hour * 3_600);
         int minute = second / TimeOfDay.secondsPerMinute;
         int mm = minute % TimeOfDay.minutesPerHour;
         int hh = minute / TimeOfDay.minutesPerHour;
