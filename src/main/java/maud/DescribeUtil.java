@@ -26,7 +26,12 @@
  */
 package maud;
 
+import com.jme3.animation.Bone;
+import com.jme3.math.Matrix3f;
+import com.jme3.math.Matrix4f;
+import com.jme3.math.Vector3f;
 import java.util.logging.Logger;
+import jme3utilities.MyString;
 import jme3utilities.Validate;
 
 /**
@@ -111,6 +116,57 @@ public class DescribeUtil {
         assert result != null;
         assert !result.isEmpty();
         return result;
+    }
+
+    /**
+     * Describe a material-parameter value.
+     *
+     * @param value (may be null, unaffected)
+     * @return a textual description (not null, not empty)
+     */
+    public static String matParam(Object value) {
+        String description;
+
+        if (value == null || value instanceof String) {
+            String string = (String) value;
+            description = MyString.quote(string);
+
+        } else if (value instanceof Bone) {
+            Bone bone = (Bone) value;
+            description = bone.getName();
+
+        } else if (value instanceof Matrix3f) {
+            Matrix3f m = (Matrix3f) value;
+            StringBuilder builder = new StringBuilder(100);
+            Vector3f row = new Vector3f();
+            for (int i = 0; i < 3; i++) {
+                m.getRow(i, row);
+                builder.append(row);
+            }
+            description = builder.toString();
+
+        } else if (value instanceof Matrix3f[]) {
+            Matrix3f[] ma = (Matrix3f[]) value;
+            description = String.format("length=%d", ma.length);
+
+        } else if (value instanceof Matrix4f) {
+            Matrix4f m = (Matrix4f) value;
+            description = String.format("(%f %f %f %f)(%f %f %f %f)"
+                    + "(%f %f %f %f)(%f %f %f %f)",
+                    m.m00, m.m01, m.m02, m.m03,
+                    m.m10, m.m11, m.m12, m.m13,
+                    m.m20, m.m21, m.m22, m.m23,
+                    m.m30, m.m31, m.m32, m.m33);
+
+        } else if (value instanceof Matrix4f[]) {
+            Matrix4f[] ma = (Matrix4f[]) value;
+            description = String.format("length=%d", ma.length);
+
+        } else {
+            description = value.toString();
+        }
+
+        return description;
     }
 
     /**

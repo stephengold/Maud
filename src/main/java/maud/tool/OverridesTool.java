@@ -26,7 +26,6 @@
  */
 package maud.tool;
 
-import com.jme3.animation.Bone;
 import com.jme3.shader.VarType;
 import java.util.List;
 import java.util.logging.Logger;
@@ -205,15 +204,7 @@ class OverridesTool extends Tool {
         SelectedOverride override = Maud.getModel().getTarget().getOverride();
         if (override.isSelected()) {
             Object data = override.getValue();
-            if (data == null || data instanceof String) {
-                String string = (String) data;
-                valueButton = MyString.quote(string);
-            } else if (data instanceof Bone) {
-                Bone bone = (Bone) data;
-                valueButton = bone.getName();
-            } else {
-                valueButton = data.toString();
-            }
+            valueButton = DescribeUtil.matParam(data);
         }
 
         setButtonText("mpoValue", valueButton);

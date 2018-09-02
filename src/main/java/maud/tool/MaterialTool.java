@@ -26,11 +26,7 @@
  */
 package maud.tool;
 
-import com.jme3.animation.Bone;
 import com.jme3.material.RenderState;
-import com.jme3.math.Matrix3f;
-import com.jme3.math.Matrix4f;
-import com.jme3.math.Vector3f;
 import com.jme3.shader.VarType;
 import java.util.List;
 import java.util.logging.Logger;
@@ -280,47 +276,9 @@ class MaterialTool extends Tool {
         if (param.isSelected()) {
             if (param.isOverridden()) {
                 valueButton = "(overridden)";
-
             } else {
-                Object value = param.getValue(); // TODO create utility method
-                if (value == null || value instanceof String) {
-                    String string = (String) value;
-                    valueButton = MyString.quote(string);
-
-                } else if (value instanceof Bone) {
-                    Bone bone = (Bone) value;
-                    valueButton = bone.getName();
-
-                } else if (value instanceof Matrix3f) {
-                    Matrix3f m = (Matrix3f) value;
-                    StringBuilder builder = new StringBuilder(100);
-                    Vector3f row = new Vector3f();
-                    for (int i = 0; i < 3; i++) {
-                        m.getRow(i, row);
-                        builder.append(row);
-                    }
-                    valueButton = builder.toString();
-
-                } else if (value instanceof Matrix3f[]) {
-                    Matrix3f[] ma = (Matrix3f[]) value;
-                    valueButton = String.format("length=%d", ma.length);
-
-                } else if (value instanceof Matrix4f) {
-                    Matrix4f m = (Matrix4f) value;
-                    valueButton = String.format("(%f %f %f %f)(%f %f %f %f)"
-                            + "(%f %f %f %f)(%f %f %f %f)",
-                            m.m00, m.m01, m.m02, m.m03,
-                            m.m10, m.m11, m.m12, m.m13,
-                            m.m20, m.m21, m.m22, m.m23,
-                            m.m30, m.m31, m.m32, m.m33);
-
-                } else if (value instanceof Matrix4f[]) {
-                    Matrix4f[] ma = (Matrix4f[]) value;
-                    valueButton = String.format("length=%d", ma.length);
-
-                } else {
-                    valueButton = value.toString();
-                }
+                Object value = param.getValue();
+                valueButton = DescribeUtil.matParam(value);
             }
         }
 
