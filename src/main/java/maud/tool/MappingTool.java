@@ -217,32 +217,32 @@ class MappingTool extends Tool {
      * Update the index status and previous/next buttons.
      */
     private void updateIndex() {
-        String indexText;
-        String nButton, pButton; // TODO rename
+        String indexStatus;
+        String nextButton, previousButton;
 
         LoadedMap map = Maud.getModel().getMap();
         int numBoneMappings = map.countMappings();
         if (map.isBoneMappingSelected()) {
             int index = map.findIndex();
-            indexText = DescribeUtil.index(index, numBoneMappings);
-            nButton = "+";
-            pButton = "-";
+            indexStatus = DescribeUtil.index(index, numBoneMappings);
+            nextButton = "+";
+            previousButton = "-";
 
         } else {
             if (numBoneMappings == 0) {
-                indexText = "no mappings";
+                indexStatus = "no mappings";
             } else if (numBoneMappings == 1) {
-                indexText = "one mapping";
+                indexStatus = "one mapping";
             } else {
-                indexText = String.format("%d mappings", numBoneMappings);
+                indexStatus = String.format("%d mappings", numBoneMappings);
             }
-            nButton = "";
-            pButton = "";
+            nextButton = "";
+            previousButton = "";
         }
 
-        setStatusText("mappingIndex", indexText);
-        setButtonText("mappingNext", nButton);
-        setButtonText("mappingPrevious", pButton);
+        setStatusText("mappingIndex", indexStatus);
+        setButtonText("mappingNext", nextButton);
+        setButtonText("mappingPrevious", previousButton);
     }
 
     /**

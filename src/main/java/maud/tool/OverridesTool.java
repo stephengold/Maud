@@ -116,35 +116,35 @@ class OverridesTool extends Tool {
      * Update the index status and next/previous/select-button texts.
      */
     private void updateIndex() {
-        String indexText;
-        String nButton = "", pButton = "", sButton = ""; // TODO rename
+        String indexStatus;
+        String nextButton = "", previousButton = "", selectButton = "";
 
         Cgm target = Maud.getModel().getTarget();
         int numMpos = target.getSpatial().countOverrides();
         int selectedIndex = target.getOverride().findNameIndex();
         if (selectedIndex >= 0) {
-            indexText = DescribeUtil.index(selectedIndex, numMpos);
+            indexStatus = DescribeUtil.index(selectedIndex, numMpos);
             if (numMpos > 1) {
-                nButton = "+";
-                pButton = "-";
-                sButton = "Select";
+                nextButton = "+";
+                previousButton = "-";
+                selectButton = "Select";
             }
         } else { // no MPO selected
             if (numMpos == 0) {
-                indexText = "no overrides";
+                indexStatus = "no overrides";
             } else if (numMpos == 1) {
-                indexText = "one override";
-                sButton = "Select";
+                indexStatus = "one override";
+                selectButton = "Select";
             } else {
-                indexText = String.format("%d overrides", numMpos);
-                sButton = "Select";
+                indexStatus = String.format("%d overrides", numMpos);
+                selectButton = "Select";
             }
         }
 
-        setStatusText("mpoIndex", indexText);
-        setButtonText("mpoNext", nButton);
-        setButtonText("mpoPrevious", pButton);
-        setButtonText("mpoSelect", sButton);
+        setStatusText("mpoIndex", indexStatus);
+        setButtonText("mpoNext", nextButton);
+        setButtonText("mpoPrevious", previousButton);
+        setButtonText("mpoSelect", selectButton);
     }
 
     /**

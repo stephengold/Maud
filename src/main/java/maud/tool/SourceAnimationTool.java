@@ -273,17 +273,17 @@ class SourceAnimationTool extends Tool {
         boolean ponging = play.willReverse();
         setChecked("pongSource", ponging);
 
-        String pButton = "";
+        String pauseButton = "";
         float duration = cgm.getAnimation().getDuration();
         if (duration > 0f) {
             boolean paused = play.isPaused();
             if (paused) {
-                pButton = "Resume";
+                pauseButton = "Resume";
             } else {
-                pButton = "Pause";
+                pauseButton = "Pause";
             }
         }
-        setButtonText("togglePauseSource", pButton);
+        setButtonText("togglePauseSource", pauseButton);
     }
 
     /**

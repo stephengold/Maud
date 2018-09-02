@@ -70,35 +70,35 @@ class KeyframeTool extends Tool {
      */
     @Override
     protected void toolUpdate() {
-        String indexText, timeText; // TODO rename
+        String indexStatus, timeStatus;
 
         EditableCgm target = Maud.getModel().getTarget();
         float time = target.getPlay().getTime();
         int numKeyframes = target.getTrack().countKeyframes();
         if (numKeyframes == 0) {
             if (target.getTrack().isSelected()) {
-                indexText = "no keyframes";
-                timeText = String.format("%.3f", time);
+                indexStatus = "no keyframes";
+                timeStatus = String.format("%.3f", time);
             } else {
-                indexText = "no track";
-                timeText = "n/a";
+                indexStatus = "no track";
+                timeStatus = "n/a";
             }
         } else {
             int index = target.getFrame().findIndex();
             if (index == -1) {
                 if (numKeyframes == 1) {
-                    indexText = "one keyframe";
+                    indexStatus = "one keyframe";
                 } else {
-                    indexText = String.format("%d keyframes", numKeyframes);
+                    indexStatus = String.format("%d keyframes", numKeyframes);
                 }
             } else {
-                indexText = DescribeUtil.index(index, numKeyframes);
+                indexStatus = DescribeUtil.index(index, numKeyframes);
             }
-            timeText = String.format("%.3f", time);
+            timeStatus = String.format("%.3f", time);
         }
 
-        setStatusText("keyframeIndex", indexText);
-        setStatusText("keyframeTime", timeText);
+        setStatusText("keyframeIndex", indexStatus);
+        setStatusText("keyframeTime", timeStatus);
 
         updateEditButtons();
         updateNavigationButtons();

@@ -211,8 +211,8 @@ class MaterialTool extends Tool {
      * Update the parameter-index status and next/previous/select-button labels.
      */
     private void updateParameterIndex() {
-        String indexText;
-        String nButton = "", pButton = "", sButton = ""; // TODO rename
+        String indexStatus;
+        String nextButton = "", previousButton = "", selectButton = "";
 
         Cgm target = Maud.getModel().getTarget();
         SelectedSpatial spatial = target.getSpatial();
@@ -220,30 +220,30 @@ class MaterialTool extends Tool {
                 = spatial.listMatParamNames("", WhichParams.Defined);
         int numDefined = defined.size();
         if (numDefined > 1) {
-            sButton = "Select parameter";
+            selectButton = "Select parameter";
         }
 
         int selectedIndex = target.getMatParam().findNameIndex();
         if (selectedIndex >= 0) {
-            indexText = DescribeUtil.index(selectedIndex, numDefined);
+            indexStatus = DescribeUtil.index(selectedIndex, numDefined);
             if (numDefined > 1) {
-                nButton = "+";
-                pButton = "-";
+                nextButton = "+";
+                previousButton = "-";
             }
         } else { // no parameter selected
             if (numDefined == 0) {
-                indexText = "none";
+                indexStatus = "none";
             } else if (numDefined == 1) {
-                indexText = "one parameter";
+                indexStatus = "one parameter";
             } else {
-                indexText = String.format("%d parameters", numDefined);
+                indexStatus = String.format("%d parameters", numDefined);
             }
         }
 
-        setStatusText("mpIndex", indexText);
-        setButtonText("mpNext", nButton);
-        setButtonText("mpPrevious", pButton);
-        setButtonText("mpSelect", sButton);
+        setStatusText("mpIndex", indexStatus);
+        setButtonText("mpNext", nextButton);
+        setButtonText("mpPrevious", previousButton);
+        setButtonText("mpSelect", selectButton);
     }
 
     /**

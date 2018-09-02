@@ -179,7 +179,7 @@ class MeshTool extends Tool {
      * Update the buffer-index status and next/previous/delete/select texts.
      */
     private void updateBufferIndex() {
-        String indexText; // TODO rename
+        String indexStatus;
         String nextButton = "", previousButton = "";
         String deleteButton = "", selectButton = "";
 
@@ -193,7 +193,7 @@ class MeshTool extends Tool {
         SelectedBuffer buffer = target.getBuffer();
         int selectedIndex = buffer.index();
         if (selectedIndex >= 0) {
-            indexText = DescribeUtil.index(selectedIndex, numBuffers);
+            indexStatus = DescribeUtil.index(selectedIndex, numBuffers);
             if (numBuffers > 1) {
                 nextButton = "+";
                 previousButton = "-";
@@ -203,15 +203,15 @@ class MeshTool extends Tool {
             }
         } else { // no buffer selected
             if (numBuffers == 0) {
-                indexText = "none";
+                indexStatus = "none";
             } else if (numBuffers == 1) {
-                indexText = "one buffer";
+                indexStatus = "one buffer";
             } else {
-                indexText = String.format("%d buffers", numBuffers);
+                indexStatus = String.format("%d buffers", numBuffers);
             }
         }
 
-        setStatusText("vbIndex", indexText);
+        setStatusText("vbIndex", indexStatus);
         setButtonText("vbNext", nextButton);
         setButtonText("vbPrevious", previousButton);
         setButtonText("vbDelete", deleteButton);

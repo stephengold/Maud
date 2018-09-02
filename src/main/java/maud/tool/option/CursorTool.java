@@ -158,8 +158,8 @@ public class CursorTool extends Tool {
         setChecked("3DCursor", visible);
 
         int colorIndex = Maud.getModel().getMisc().getColorIndex();
-        String indexText = DescribeUtil.index(colorIndex);
-        setButtonText("cursorColorIndex", indexText);
+        String indexStatus = DescribeUtil.index(colorIndex);
+        setButtonText("cursorColorIndex", indexStatus);
 
         ColorRGBA color = options.copyColor(colorIndex, null);
         setColorBank("cursor", colorSt, color);

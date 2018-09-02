@@ -297,17 +297,17 @@ class AnimationTool extends Tool {
         boolean ponging = play.willReverse();
         setChecked("pong", ponging);
 
-        String pButton = "";
+        String pauseButton = "";
         float duration = cgm.getAnimation().getDuration();
         if (duration > 0f) {
             boolean paused = play.isPaused();
             if (paused) {
-                pButton = "Resume";
+                pauseButton = "Resume";
             } else {
-                pButton = "Pause";
+                pauseButton = "Pause";
             }
         }
-        setButtonText("togglePause", pButton);
+        setButtonText("togglePause", pauseButton);
     }
 
     /**

@@ -188,24 +188,24 @@ class SpatialTool extends Tool {
      * Update the display of the spatial's parent.
      */
     private void updateParent() {
-        String parentText, spButton;
+        String parentStatus, selectParentButton;
 
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         if (spatial.isCgmRoot()) {
-            parentText = "none (the model root is selected)";
-            spButton = "";
+            parentStatus = "none (the model root is selected)";
+            selectParentButton = "";
         } else {
             String name = spatial.getParentName();
             if (name == null) {
-                parentText = "null";
+                parentStatus = "null";
             } else {
-                parentText = MyString.quote(name);
+                parentStatus = MyString.quote(name);
             }
-            spButton = "Select";
+            selectParentButton = "Select";
         }
 
-        setStatusText("spatialParent", " " + parentText);
-        setButtonText("spatialSelectParent", spButton);
+        setStatusText("spatialParent", " " + parentStatus);
+        setButtonText("spatialSelectParent", selectParentButton);
     }
 
     /**

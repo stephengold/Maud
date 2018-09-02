@@ -88,35 +88,35 @@ class JointTool extends Tool {
      * Update the index status and next/previous/select buttons.
      */
     private void updateIndex() {
-        String indexText;
-        String nButton = "", pButton = "", sButton = ""; // TODO rename
+        String indexStatus;
+        String nextButton = "", previousButton = "", selectButton = "";
 
         Cgm target = Maud.getModel().getTarget();
         int numJoints = target.countJoints();
         if (numJoints > 0) {
-            sButton = "Select";
+            selectButton = "Select";
         }
 
         SelectedJoint joint = target.getJoint();
         if (joint.isSelected()) {
             int selectedIndex = joint.index();
-            indexText = DescribeUtil.index(selectedIndex, numJoints);
+            indexStatus = DescribeUtil.index(selectedIndex, numJoints);
             if (numJoints > 1) {
-                nButton = "+";
-                pButton = "-";
+                nextButton = "+";
+                previousButton = "-";
             }
         } else if (numJoints == 0) {
-            indexText = "no joints";
+            indexStatus = "no joints";
         } else if (numJoints == 1) {
-            indexText = "one joint";
+            indexStatus = "one joint";
         } else {
-            indexText = String.format("%d joints", numJoints);
+            indexStatus = String.format("%d joints", numJoints);
         }
 
-        setStatusText("jointIndex", indexText);
-        setButtonText("jointNext", nButton);
-        setButtonText("jointPrevious", pButton);
-        setButtonText("jointSelect", sButton);
+        setStatusText("jointIndex", indexStatus);
+        setButtonText("jointNext", nextButton);
+        setButtonText("jointPrevious", previousButton);
+        setButtonText("jointSelect", selectButton);
     }
 
     /**

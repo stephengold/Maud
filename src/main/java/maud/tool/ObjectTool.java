@@ -82,35 +82,35 @@ class ObjectTool extends Tool {
      * Update the index status and next/previous/select buttons.
      */
     private void updateIndex() {
-        String indexText;
-        String nButton = "", pButton = "", sButton = ""; // TODO rename
+        String indexStatus;
+        String nextButton = "", previousButton = "", selectButton = "";
 
         Cgm target = Maud.getModel().getTarget();
         int numObjects = target.getSceneView().objectMap().size();
         if (numObjects > 0) {
-            sButton = "Select";
+            selectButton = "Select";
         }
 
         SelectedObject object = target.getObject();
         if (object.isSelected()) {
             int selectedIndex = object.index();
-            indexText = DescribeUtil.index(selectedIndex, numObjects);
+            indexStatus = DescribeUtil.index(selectedIndex, numObjects);
             if (numObjects > 1) {
-                nButton = "+";
-                pButton = "-";
+                nextButton = "+";
+                previousButton = "-";
             }
         } else if (numObjects == 0) {
-            indexText = "no objects";
+            indexStatus = "no objects";
         } else if (numObjects == 1) {
-            indexText = "one object";
+            indexStatus = "one object";
         } else {
-            indexText = String.format("%d objects", numObjects);
+            indexStatus = String.format("%d objects", numObjects);
         }
 
-        setStatusText("physicsIndex", indexText);
-        setButtonText("physicsNext", nButton);
-        setButtonText("physicsPrevious", pButton);
-        setButtonText("physicsSelectObject", sButton);
+        setStatusText("physicsIndex", indexStatus);
+        setButtonText("physicsNext", nextButton);
+        setButtonText("physicsPrevious", previousButton);
+        setButtonText("physicsSelectObject", selectButton);
     }
 
     /**

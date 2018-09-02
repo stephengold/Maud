@@ -128,35 +128,35 @@ class ShapeTool extends Tool {
      * Update the index status and next/previous/select buttons.
      */
     private void updateIndex() {
-        String indexText;
-        String nButton = "", pButton = "", sButton = ""; // TODO rename
+        String indexStatus;
+        String nextButton = "", previousButton = "", selectButton = "";
 
         Cgm target = Maud.getModel().getTarget();
         int numShapes = target.getSceneView().shapeMap().size();
         if (numShapes > 0) {
-            sButton = "Select";
+            selectButton = "Select";
         }
 
         SelectedShape shape = target.getShape();
         if (shape.isSelected()) {
             int selectedIndex = shape.index();
-            indexText = DescribeUtil.index(selectedIndex, numShapes);
+            indexStatus = DescribeUtil.index(selectedIndex, numShapes);
             if (numShapes > 1) {
-                nButton = "+";
-                pButton = "-";
+                nextButton = "+";
+                previousButton = "-";
             }
         } else if (numShapes == 0) {
-            indexText = "no shapes";
+            indexStatus = "no shapes";
         } else if (numShapes == 1) {
-            indexText = "one shape";
+            indexStatus = "one shape";
         } else {
-            indexText = String.format("%d shapes", numShapes);
+            indexStatus = String.format("%d shapes", numShapes);
         }
 
-        setStatusText("shapeIndex", indexText);
-        setButtonText("shapeNext", nButton);
-        setButtonText("shapePrevious", pButton);
-        setButtonText("shapeSelect", sButton);
+        setStatusText("shapeIndex", indexStatus);
+        setButtonText("shapeNext", nextButton);
+        setButtonText("shapePrevious", previousButton);
+        setButtonText("shapeSelect", selectButton);
     }
 
     /**

@@ -83,35 +83,35 @@ class UserDataTool extends Tool {
      * Update the index status and next/previous/select buttons.
      */
     private void updateIndex() {
-        String indexText;
-        String nButton = "", pButton = "", sButton = ""; // TODO rename
+        String indexStatus;
+        String nextButton = "", previousButton = "", selectButton = "";
 
         EditableCgm target = Maud.getModel().getTarget();
         int numKeys = target.getSpatial().countUserData();
         int selectedIndex = target.getUserData().findKeyIndex();
         if (selectedIndex >= 0) {
-            indexText = DescribeUtil.index(selectedIndex, numKeys);
+            indexStatus = DescribeUtil.index(selectedIndex, numKeys);
             if (numKeys > 1) {
-                nButton = "+";
-                pButton = "-";
-                sButton = "Select";
+                nextButton = "+";
+                previousButton = "-";
+                selectButton = "Select";
             }
         } else { // no key selected
             if (numKeys == 0) {
-                indexText = "no keys";
+                indexStatus = "no keys";
             } else if (numKeys == 1) {
-                indexText = "one key";
-                sButton = "Select";
+                indexStatus = "one key";
+                selectButton = "Select";
             } else {
-                indexText = String.format("%d keys", numKeys);
-                sButton = "Select";
+                indexStatus = String.format("%d keys", numKeys);
+                selectButton = "Select";
             }
         }
 
-        setStatusText("userDataIndex", indexText);
-        setButtonText("userDataNext", nButton);
-        setButtonText("userDataPrevious", pButton);
-        setButtonText("userKeySelect", sButton);
+        setStatusText("userDataIndex", indexStatus);
+        setButtonText("userDataNext", nextButton);
+        setButtonText("userDataPrevious", previousButton);
+        setButtonText("userKeySelect", selectButton);
     }
 
     /**
