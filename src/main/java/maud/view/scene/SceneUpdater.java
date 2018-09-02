@@ -224,24 +224,30 @@ class SceneUpdater {
      * @param cgm which C-G model (not null)
      */
     private static void updateAxes(Cgm cgm) {
-        AxesVisualizer visualizer = cgm.getSceneView().getAxesVisualizer();
+        SceneView view = cgm.getSceneView();
+        AxesVisualizer visualizer = view.getAxesVisualizer();
         Transform transform = axesTransform(cgm);
-        if (transform == null) {
-            visualizer.setEnabled(false);
-        } else {
+        boolean enable = (transform != null);
+        visualizer.setEnabled(enable);
+        if (enable) {
+            AxesOptions options = Maud.getModel().getScene().getAxes();
+            boolean depthTestFlag = options.getDepthTestFlag();
+            visualizer.setDepthTest(depthTestFlag);
+
             Node axesNode = (Node) visualizer.getSpatial();
+            axesNode.removeFromParent();
+            if (depthTestFlag) {
+                view.attachToSceneRoot(axesNode);
+            } else {
+                view.attachToOverlayRoot(axesNode);
+            }
             axesNode.setLocalTransform(transform);
-            visualizer.setEnabled(true);
 
             Vector3f axesOrigin = transform.getTranslation();
             Vector3f cameraLocation = cgm.getScenePov().location(null);
             float distance = axesOrigin.distance(cameraLocation);
             float length = 0.2f * distance;
             visualizer.setAxisLength(length);
-
-            AxesOptions options = Maud.getModel().getScene().getAxes();
-            boolean depthTestFlag = options.getDepthTestFlag();
-            visualizer.setDepthTest(depthTestFlag);
 
             float lineWidth = options.getLineWidth();
             visualizer.setLineWidth(lineWidth);

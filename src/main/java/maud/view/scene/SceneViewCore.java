@@ -155,7 +155,7 @@ public class SceneViewCore
     // fields
 
     /*
-     * ambient light added to the scene (not null)
+     * ambient light added to the scene
      */
     final private AmbientLight ambientLight = new AmbientLight();
     /**
@@ -184,11 +184,11 @@ public class SceneViewCore
      */
     private CgmTransform cgmTransform = new CgmTransform();
     /**
-     * 3-D cursor (not null)
+     * 3-D cursor
      */
     final private DddCursor cursor = new DddCursor(this);
     /*
-     * directional added to the scene (not null)
+     * directional added to the scene
      */
     final private DirectionalLight mainLight = new DirectionalLight();
     /**
@@ -280,6 +280,16 @@ public class SceneViewCore
     }
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Attach an orphan spatial to the scene's overlay root node.
+     *
+     * @param orphan spatial to clone (not null)
+     */
+    void attachToOverlayRoot(Spatial orphan) {
+        assert MySpatial.isOrphan(orphan);
+        overlayRoot.attachChild(orphan);
+    }
 
     /**
      * Attach an orphan spatial to the scene's base root node.
@@ -1117,7 +1127,6 @@ public class SceneViewCore
 
         Node axesNode = new Node("axes node");
         axesNode.addControl(axesVisualizer);
-        attachToSceneRoot(axesNode);
     }
 
     /**
