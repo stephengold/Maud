@@ -71,7 +71,6 @@ import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.minie.MyControlP;
 import jme3utilities.nifty.dialog.VectorDialog;
-import jme3utilities.ui.ActionApplication;
 import jme3utilities.wes.TrackEdit;
 import maud.Maud;
 import maud.MaudUtil;
@@ -314,25 +313,6 @@ public class EditableCgm extends LoadedCgm {
         sceneView.attachSpatial(parentPosition, child);
         parent.attachChild(child);
         editState.setEdited(eventDescription);
-    }
-
-    /**
-     * Determine the default base path for writing the C-G model to the
-     * filesystem. TODO move to Cgm class
-     *
-     * @return absolute filesystem path less extension (not null, not empty)
-     */
-    public String baseFilePathForWrite() {
-        String folder = assetFolderForWrite();
-        String assetPath = getAssetPath();
-        if (assetPath.isEmpty()) {
-            assetPath = "Models/Untitled/Untitled";
-        }
-        File file = new File(folder, assetPath);
-        String result = file.getAbsolutePath();
-        result = result.replaceAll("\\\\", "/");
-
-        return result;
     }
 
     /**
@@ -1548,22 +1528,6 @@ public class EditableCgm extends LoadedCgm {
     }
     // *************************************************************************
     // private methods
-
-    /**
-     * Determine the default asset folder for writing the C-G model to the
-     * filesystem.
-     *
-     * @return absolute filesystem path (not null, not empty)
-     */
-    private String assetFolderForWrite() {
-        String result = assetRootPath;
-        if (result.isEmpty() || result.endsWith(".jar")
-                || result.endsWith(".zip")) {
-            result = ActionApplication.getWrittenAssetDirPath();
-        }
-
-        return result;
-    }
 
     /**
      * Delete all "extra" spatials among a node's descendents. Note: recursive!

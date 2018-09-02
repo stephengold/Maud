@@ -31,12 +31,14 @@ import com.jme3.asset.AssetManager;
 import com.jme3.asset.ModelKey;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.plugins.bvh.BVHAnimData;
+import java.io.File;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
+import jme3utilities.ui.ActionApplication;
 import jme3utilities.ui.Locators;
 import maud.CheckLoaded;
 import maud.LoadUtil;
@@ -83,6 +85,25 @@ public class LoadedCgm extends Cgm {
     protected String name = null;
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Determine the default base path for writing the C-G model to the
+     * filesystem.
+     *
+     * @return absolute filesystem path less extension (not null, not empty)
+     */
+    public String baseFilePathForWrite() {
+        String folder = assetFolderForWrite();
+        String assetPath = getAssetPath();
+        if (assetPath.isEmpty()) {
+            assetPath = "Models/Untitled/Untitled";
+        }
+        File file = new File(folder, assetPath);
+        String result = file.getAbsolutePath();
+        result = result.replaceAll("\\\\", "/");
+
+        return result;
+    }
 
     /**
      * Read the asset path of the loaded C-G model, less extension.
@@ -322,6 +343,24 @@ public class LoadedCgm extends Cgm {
         name = null;
 
         super.unload();
+    }
+    // *************************************************************************
+    // new protected methods
+
+    /**
+     * Determine the default asset folder for writing the C-G model to the
+     * filesystem.
+     *
+     * @return absolute filesystem path (not null, not empty)
+     */
+    protected String assetFolderForWrite() {
+        String result = assetRootPath;
+        if (result.isEmpty() || result.endsWith(".jar")
+                || result.endsWith(".zip")) {
+            result = ActionApplication.getWrittenAssetDirPath();
+        }
+
+        return result;
     }
     // *************************************************************************
     // private methods
