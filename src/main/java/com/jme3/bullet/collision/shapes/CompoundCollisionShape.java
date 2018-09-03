@@ -58,11 +58,16 @@ public class CompoundCollisionShape extends CollisionShape {
      */
     final private static Logger logger
             = Logger.getLogger(CompoundCollisionShape.class.getName());
-
+    /**
+     * children of this shape
+     */
     private ArrayList<ChildCollisionShape> children = new ArrayList<>();
 
+    /**
+     * Instantiate an empty compound shape (with no children).
+     */
     public CompoundCollisionShape() {
-        objectId = createShape();//new CompoundShape();
+        objectId = createShape();
         logger.log(Level.FINE, "Created Shape {0}", Long.toHexString(objectId));
     }
 

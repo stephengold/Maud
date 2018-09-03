@@ -33,19 +33,19 @@ jar.manifest.attributes(
 )
 
 repositories {
+    //mavenLocal()
     maven { url 'https://dl.bintray.com/stephengold/jme3utilities' }
     //maven { url 'https://dl.bintray.com/stephengold/org.jmonkeyengine' }
     //maven { url 'https://dl.bintray.com/jmonkeyengine/contrib' }
     jcenter()
     maven { url 'https://jitpack.io' }
-    //mavenLocal()
 }
 
 dependencies {
     // from stephengold's bintray repositories:
-    compile 'jme3utilities:jme3-utilities-heart:2.7.0'
+    compile 'jme3utilities:jme3-utilities-heart:2.8.0'
     compile 'jme3utilities:jme3-utilities-nifty:0.7.13'
-    compile 'jme3utilities:Minie:0.2.7'
+    compile 'jme3utilities:Minie:0.2.8'
     compile 'jme3utilities:SkyControl:0.9.13'
     compile 'jme3utilities:Wes:0.3.6'
     //runtime 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
