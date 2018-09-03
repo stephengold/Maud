@@ -57,7 +57,6 @@ import java.util.TreeSet;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
-import jme3utilities.math.MyVector3f;
 
 /**
  * Physics utility methods. All methods should be static.
@@ -232,8 +231,7 @@ public class PhysicsUtil {
     public static CollisionShape makeShape(ShapeType shapeType,
             Vector3f halfExtents, float margin) {
         Validate.nonNull(shapeType, "shape type");
-        Validate.nonNull(halfExtents, "half extents");
-        assert MyVector3f.isAllNonNegative(halfExtents);
+        Validate.nonNegative(halfExtents, "half extents");
         Validate.nonNegative(margin, "margin");
 
         CollisionShape result;
@@ -404,7 +402,7 @@ public class PhysicsUtil {
         } else if (object instanceof PhysicsGhostObject) {
             PhysicsGhostObject ghost = (PhysicsGhostObject) object;
             ghost.getPhysicsRotation(storeResult);
-        } else { // TODO PhysicsCharacter
+        } else {
             throw new IllegalArgumentException();
         }
 
@@ -519,7 +517,7 @@ public class PhysicsUtil {
             CollisionShape shape = pco.getCollisionShape();
             long shapeId = shape.getObjectId();
             if (shapeId == oldShapeId) {
-                space.remove(pco); // TODO not necessary for Ghost?
+                space.remove(pco);
                 pco.setCollisionShape(newShape);
                 space.add(pco);
             }
@@ -568,7 +566,7 @@ public class PhysicsUtil {
         } else if (object instanceof PhysicsGhostObject) {
             PhysicsGhostObject ghost = (PhysicsGhostObject) object;
             ghost.setPhysicsRotation(newOrientation);
-        } else { // TODO PhysicsCharacter
+        } else {
             throw new IllegalStateException();
         }
     }
