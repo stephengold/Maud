@@ -402,22 +402,4 @@ public class ShowMenus {
             builder.show(ActionPrefix.setRefreshRate);
         }
     }
-
-    /**
-     * Display a "CGM -> Source model" menu.
-     */
-    static void sourceCgm() {
-        MenuBuilder builder = new MenuBuilder();
-
-        builder.addSubmenu("Load");
-        if (Maud.getModel().getSource().isLoaded()) {
-            SelectedSpatial ss = Maud.getModel().getTarget().getSpatial();
-            if (ss.isNode()) {
-                builder.addEdit("Merge");
-            }
-            builder.add("Unload");
-        }
-
-        builder.show("select menuItem CGM -> Source model -> ");
-    }
 }

@@ -44,6 +44,7 @@ import maud.model.EditorModel;
 import maud.model.LoadedMap;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.LoadedCgm;
+import maud.model.cgm.SelectedSpatial;
 import maud.model.option.ViewMode;
 
 /**
@@ -468,7 +469,16 @@ public class BuildMenus {
         builder.addSubmenu("Load");
         builder.addDialog("Save");
         //builder.add("Export"); TODO
-        builder.addSubmenu("Source model"); // TODO inline the submenu
+
+        builder.addSubmenu("Load source model");
+        EditorModel model = Maud.getModel();
+        if (model.getSource().isLoaded()) {
+            SelectedSpatial ss = model.getTarget().getSpatial();
+            if (ss.isNode()) {
+                builder.addEdit("Merge source model");
+            }
+            builder.add("Unload source model");
+        }
     }
 
     /**
@@ -579,8 +589,8 @@ public class BuildMenus {
     }
 
     /**
-     * Build a "CGM -> Load" or "CGM -> Source model -> Load" menu for selecting
-     * an asset locator.
+     * Build a "CGM -> Load" or "CGM -> Load source model" menu for selecting an
+     * asset locator.
      */
     private void buildLocatorMenu() {
         builder.reset();

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -27,7 +27,6 @@
 package maud.menu;
 
 import java.util.logging.Logger;
-import jme3utilities.MyString;
 import maud.Maud;
 import maud.dialog.EditorDialogs;
 
@@ -64,61 +63,32 @@ class CgmMenus {
      */
     static boolean menuCgm(String remainder) {
         boolean handled = true;
-        String sourcePrefix = "Source model" + EditorMenus.menuPathSeparator;
-        if (remainder.startsWith(sourcePrefix)) {
-            String selectArg = MyString.remainder(remainder, sourcePrefix);
-            handled = menuSourceCgm(selectArg);
-
-        } else {
-            switch (remainder) {
-                case "History":
-                    Maud.gui.tools.select("history");
-                    break;
-
-                case "Load":
-                    Maud.gui.buildMenus.loadCgm();
-                    break;
-
-                case "Save":
-                    EditorDialogs.saveCgm();
-                    break;
-
-                case "Source model":
-                    ShowMenus.sourceCgm();
-                    break;
-
-                case "Tool":
-                    Maud.gui.tools.select("cgm");
-                    break;
-
-                default:
-                    handled = false;
-            }
-        }
-
-        return handled;
-    }
-    // *************************************************************************
-    // private methods
-
-    /**
-     * Handle a "select menuItem" action from the "CGM -> Source model" menu.
-     *
-     * @param remainder not-yet-parsed portion of the menu path (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private static boolean menuSourceCgm(String remainder) {
-        boolean handled = true;
         switch (remainder) {
+            case "History":
+                Maud.gui.tools.select("history");
+                break;
+
             case "Load":
+                Maud.gui.buildMenus.loadCgm();
+                break;
+
+            case "Load source model":
                 Maud.gui.buildMenus.loadSourceCgm();
                 break;
 
-            case "Merge":
+            case "Merge source model":
                 Maud.getModel().getTarget().getSpatial().attachClone();
                 break;
 
-            case "Unload":
+            case "Save":
+                EditorDialogs.saveCgm();
+                break;
+
+            case "Tool":
+                Maud.gui.tools.select("cgm");
+                break;
+
+            case "Unload source model":
                 Maud.getModel().getSource().unload();
                 break;
 
