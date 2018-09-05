@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -36,35 +36,43 @@ public enum AxesSubject {
     // values
 
     /**
-     * display model-space axes of the loaded C-G model
+     * axes of the scene camera
+     */
+    Camera,
+    /**
+     * axes of the loaded C-G model
      */
     Model,
     /**
-     * hide the axes
+     * hide the visualizer
      */
     None,
     /**
-     * display local axes of the selected bone, if any
+     * local axes of the selected bone, if any TODO rename Bone
      */
     SelectedBone,
     /**
-     * display axes of the selected light, if any
+     * axes of the selected light, if any TODO rename Light
      */
     SelectedLight,
     /**
-     * display axes of the selected physics object, if any
+     * axes of the selected physics object, if any TODO rename
      */
     SelectedObject,
     /**
-     * display local axes of the selected physics shape, if any
+     * local axes of the selected physics shape, if any TODO rename Shape
      */
     SelectedShape,
     /**
-     * display local axes of the selected spatial
+     * local axes of the selected spatial TODO rename Spatial
      */
     SelectedSpatial,
     /**
-     * display world axes of the view
+     * axes of the selected skeleton, if any
+     */
+    Skeleton,
+    /**
+     * world axes of the scene
      */
     World;
 }

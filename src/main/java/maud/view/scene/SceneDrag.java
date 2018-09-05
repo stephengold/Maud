@@ -362,6 +362,9 @@ public class SceneDrag {
          */
         AxesSubject subject = Maud.getModel().getScene().getAxes().getSubject();
         switch (subject) {
+            case Camera: // ignore attempts to drag the camera axes
+                break;
+
             case Model:
                 /*
                  * Apply the Y-axis rotation to the world transform.
@@ -403,7 +406,7 @@ public class SceneDrag {
                 }
                 break;
 
-            case SelectedShape:
+            case SelectedShape: // TODO
                 break;
 
             case SelectedSpatial:
@@ -417,6 +420,9 @@ public class SceneDrag {
                     localRotation.normalizeLocal();
                     editableCgm.setSpatialRotation(localRotation);
                 }
+                break;
+
+            case Skeleton: // TODO
                 break;
 
             case World: // ignore attempts to drag the world axes

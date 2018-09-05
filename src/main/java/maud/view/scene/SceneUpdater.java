@@ -32,8 +32,11 @@ import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -72,7 +75,7 @@ import maud.model.option.scene.VertexOptions;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SceneUpdater {
+public class SceneUpdater {
     // *************************************************************************
     // constants and loggers
 
@@ -111,11 +114,25 @@ class SceneUpdater {
      * @param cgm (not null)
      * @return a new instance (in world coordinates) or null to hide the axes
      */
-    static Transform axesTransform(Cgm cgm) {
+    public static Transform axesTransform(Cgm cgm) {
         Transform transform = null;
         SceneView sceneView = cgm.getSceneView();
         AxesSubject subject = Maud.getModel().getScene().getAxes().getSubject();
         switch (subject) {
+            case Camera:
+                transform = new Transform(); // identity
+                Camera camera = sceneView.getCamera();
+                Quaternion rotation = camera.getRotation();
+                transform.getRotation().set(rotation);
+                float screenX = 0.5f * camera.getWidth();
+                float screenY = 0.5f * camera.getHeight();
+                float screenZ = 0.5f;
+                Vector2f screen = new Vector2f(screenX, screenY);
+                Vector3f worldCenter
+                        = camera.getWorldCoordinates(screen, screenZ);
+                transform.getTranslation().set(worldCenter);
+                break;
+
             case Model:
                 if (cgm.isLoaded()) {
                     transform = sceneView.getTransform().worldTransform();
@@ -161,6 +178,17 @@ class SceneUpdater {
                         transform = new Transform(); // identity
                     } else {
                         transform = spatial.getWorldTransform();
+                    }
+                }
+                break;
+
+            case Skeleton:
+                if (cgm.isLoaded() && cgm.getSkeleton().isSelected()) {
+                    transform = new Transform();
+                    Spatial asp = sceneView.findSkeletonSpatial();
+                    if (!MySpatial.isIgnoringTransforms(asp)) {
+                        Transform worldTransform = asp.getWorldTransform();
+                        transform.set(worldTransform);
                     }
                 }
                 break;
