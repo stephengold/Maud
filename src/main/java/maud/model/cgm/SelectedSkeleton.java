@@ -250,19 +250,40 @@ public class SelectedSkeleton implements JmeCloneable {
     /**
      * Find the spatial associated with the selected skeleton.
      *
-     * @return the pre-existing instance (not null)
+     * @return the pre-existing instance, or null if none selected
      */
     Spatial findSpatial() {
+        Spatial result;
+
         boolean[] selectedSgcFlag = {false};
-        find(selectedSgcFlag);
-        Spatial spatial;
-        if (selectedSgcFlag[0]) {
-            spatial = cgm.getSgc().getControlled();
+        Skeleton skeleton = find(selectedSgcFlag);
+        if (skeleton == null) {
+            result = null;
+        } else if (selectedSgcFlag[0]) {
+            result = cgm.getSgc().getControlled();
         } else {
-            spatial = cgm.getRootSpatial();
+            result = cgm.getRootSpatial();
         }
 
-        return spatial;
+        return result;
+    }
+
+    /**
+     * Find the tree position of the spatial associated with the selected
+     * skeleton.
+     *
+     * @return the pre-existing instance, or null if none selected
+     */
+    public List<Integer> findSpatialPosition() {
+        Spatial spatial = findSpatial();
+        List<Integer> result;
+        if (spatial == null) {
+            result = null;
+        } else {
+            result = cgm.findSpatial(spatial);
+        }
+
+        return result;
     }
 
     /**
@@ -723,7 +744,8 @@ public class SelectedSkeleton implements JmeCloneable {
      * cloner and original to resolve copied fields.
      *
      * @param cloner the cloner currently cloning this control (not null)
-     * @param original the view from which this view was shallow-cloned (unused)
+     * @param original the instance from which this instance was shallow-cloned
+     * (unused)
      */
     @Override
     public void cloneFields(Cloner cloner, Object original) {

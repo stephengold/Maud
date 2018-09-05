@@ -323,6 +323,26 @@ public class SceneViewCore
     }
 
     /**
+     * Find the spatial controlled by the selected skeleton control.
+     *
+     * @return a pre-existing instance, or null if none found
+     */
+    Spatial findSkeletonSpatial() {
+        Spatial result = null;
+
+        List<Integer> treePosition = cgm.getSkeleton().findSpatialPosition();
+        if (treePosition != null) {
+            result = cgmRoot;
+            for (int childPosition : treePosition) {
+                Node node = (Node) result;
+                result = node.getChild(childPosition);
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Find a geometry that is animated by the selected skeleton control.
      *
      * @return a pre-existing instance, or cgmRoot if none found

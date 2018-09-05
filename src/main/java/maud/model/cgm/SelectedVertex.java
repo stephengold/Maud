@@ -28,6 +28,8 @@ package maud.model.cgm;
 
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Matrix4f;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Transform;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.math.Vector4f;
@@ -38,7 +40,10 @@ import com.jme3.scene.VertexBuffer;
 import java.nio.FloatBuffer;
 import java.util.logging.Logger;
 import jme3utilities.MyMesh;
+import jme3utilities.Validate;
+import jme3utilities.math.MyVector3f;
 import jme3utilities.wes.Pose;
+import maud.view.scene.SceneUpdater;
 
 /**
  * The MVC model of the selected vertex in a loaded C-G model.
@@ -251,7 +256,24 @@ public class SelectedVertex implements Cloneable {
      * @param newIndex which vertex to select, or -1 to deselect
      */
     public void select(int newIndex) {
+        Validate.inRange(newIndex, "new index", -1, Integer.MAX_VALUE);
         selectedIndex = newIndex;
+    }
+
+    /**
+     * Select an extreme vertex.
+     *
+     * @param axesDirection the direction to maximize (in axes space, not null,
+     * not zero)
+     */
+    public void selectExtreme(Vector3f axesDirection) {
+        Validate.nonZero(axesDirection, "direction");
+
+        Transform transform = SceneUpdater.axesTransform(cgm);
+        Quaternion rotation = transform.getRotation();
+        Vector3f worldDirection = rotation.mult(axesDirection, null);
+
+        selectExtremeWorld(worldDirection);
     }
 
     /**
@@ -341,9 +363,39 @@ public class SelectedVertex implements Cloneable {
     // private methods
 
     /**
+     * Select an extreme vertex.
+     *
+     * @param worldDirection the direction to maximize (in world space, not
+     * null, not zero)
+     */
+    private void selectExtremeWorld(Vector3f worldDirection) {
+        assert worldDirection != null;
+        assert !MyVector3f.isZero(worldDirection);
+
+        Spatial selectedSpatial = cgm.getSceneView().selectedSpatial();
+        Geometry selectedGeometry = (Geometry) selectedSpatial;
+        Pose pose = cgm.getPose().get();
+        Matrix4f[] skinningMatrices = pose.skin(null);
+
+        double bestDot = Double.NEGATIVE_INFINITY;
+        Vector3f tmpWorldLocation = new Vector3f();
+
+        int numVertices = cgm.getSpatial().countVertices();
+        for (int iVertex = 0; iVertex < numVertices; iVertex++) {
+            MyMesh.vertexWorldLocation(selectedGeometry, iVertex,
+                    skinningMatrices, tmpWorldLocation);
+            double dot = MyVector3f.dot(tmpWorldLocation, worldDirection);
+            if (dot >= bestDot) {
+                bestDot = dot;
+                select(iVertex);
+            }
+        }
+    }
+
+    /**
      * Access the weight data for the selected vertex.
      *
-     * @return a read-only buffer instance
+     * @return a positioned, read-only buffer instance
      */
     private FloatBuffer weightBuffer() {
         assert selectedIndex >= 0 : selectedIndex;
