@@ -27,6 +27,7 @@
 package maud.action;
 
 import com.jme3.material.RenderState;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer;
@@ -288,6 +289,20 @@ class SelectANAction {
                     ActionPrefix.selectEdgeFilter);
             EdgeFilteringMode newMode = EdgeFilteringMode.valueOf(arg);
             model.getScene().getRender().setEdgeFilter(newMode);
+
+        } else if (actionString.startsWith(ActionPrefix.selectExtremeVertex)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectExtremeVertex);
+            String[] args = arg.split(" ");
+            if (args.length == 3) {
+                float x = Float.parseFloat(args[0]);
+                float y = Float.parseFloat(args[1]);
+                float z = Float.parseFloat(args[2]);
+                Vector3f direction = new Vector3f(x, y, z);
+                model.getTarget().getVertex().selectExtreme(direction);
+            } else {
+                handled = false;
+            }
 
         } else if (actionString.startsWith(ActionPrefix.selectFaceCull)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectFaceCull);

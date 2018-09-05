@@ -285,6 +285,10 @@ public class ActionPrefix {
      */
     final public static String selectEdgeFilter = "select edgeFilter ";
     /**
+     * arguments are 3 float values
+     */
+    final public static String selectExtremeVertex = "select extremeVertex ";
+    /**
      * argument is the name of a RenderState.FaceCullMode value
      */
     final public static String selectFaceCull = "select faceCull ";

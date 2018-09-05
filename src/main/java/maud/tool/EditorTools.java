@@ -80,6 +80,7 @@ public class EditorTools {
     final private CursorTool cursor;
     final private DisplaySettingsTool displaySettings;
     final private ExtractTool extract;
+    final private ExtremeVertexTool extremeVertex;
     final private HistoryTool history;
     final private JointTool joint;
     final private KeyframeTool keyframe;
@@ -143,6 +144,7 @@ public class EditorTools {
         cursor = new CursorTool(screen);
         displaySettings = new DisplaySettingsTool(screen);
         extract = new ExtractTool(screen);
+        extremeVertex = new ExtremeVertexTool(screen);
         history = new HistoryTool(screen);
         joint = new JointTool(screen);
         keyframe = new KeyframeTool(screen);
@@ -193,13 +195,13 @@ public class EditorTools {
     public void attachAll(AppStateManager stateManager) {
         stateManager.attachAll(animation, axes, background, bone, boneRotation,
                 boneScale, boneTranslation, bounds, camera, cgm, cursor,
-                displaySettings, extract, history, keyframe, joint, lightColor,
-                lightDirection, lightPosition, lights, mapping, material, mesh,
-                object, overrides, physics, platform, render, retarget,
-                sceneLighting, sceneVertex, score, settings, sgc, shape,
-                skeleton, sky, sourceAnimation, spatial, spatialDetails,
-                spatialRotation, spatialScale, spatialTranslation, track,
-                tweening, twist, userData, vertex);
+                displaySettings, extract, extremeVertex, history, keyframe,
+                joint, lightColor, lightDirection, lightPosition, lights,
+                mapping, material, mesh, object, overrides, physics, platform,
+                render, retarget, sceneLighting, sceneVertex, score, settings,
+                sgc, shape, skeleton, sky, sourceAnimation, spatial,
+                spatialDetails, spatialRotation, spatialScale,
+                spatialTranslation, track, tweening, twist, userData, vertex);
     }
 
     /**

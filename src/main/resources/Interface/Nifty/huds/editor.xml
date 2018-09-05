@@ -948,6 +948,50 @@ the menu bar, status bar, and tool windows.
                 </panel>
             </control>
 
+            <control name="window" id="extremeVertexTool" title="Extreme Vertex Tool"
+                     hideOnClose="true"
+                     height="110px" width="220px" x="110" y="160">
+                <panel childLayout="vertical">
+                    <panel height="3px"/>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Coordinate system:  "
+                                 textHAlign="left"/>
+                        <control name="button" id="axesSubject2Button"
+                                 width="99px">
+                            <interact onRelease="perform(select axesSubject)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="button" id="evPlusXButton"
+                                 width="45px">
+                            <interact onRelease="perform(select extremeVertex +1 0 0)"/>
+                        </control>
+                        <control name="button" id="evPlusYButton"
+                                 width="45px">
+                            <interact onRelease="perform(select extremeVertex 0 +1 0)"/>
+                        </control>
+                        <control name="button" id="evPlusZButton"
+                                 width="45px">
+                            <interact onRelease="perform(select extremeVertex 0 0 +1)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="button" id="evMinusXButton"
+                                 width="45px">
+                            <interact onRelease="perform(select extremeVertex -1 0 0)"/>
+                        </control>
+                        <control name="button" id="evMinusYButton"
+                                 width="45px">
+                            <interact onRelease="perform(select extremeVertex 0 -1 0)"/>
+                        </control>
+                        <control name="button" id="evMinusZButton"
+                                 width="45px">
+                            <interact onRelease="perform(select extremeVertex 0 0 -1)"/>
+                        </control>
+                    </panel>
+                </panel>
+            </control>
+
             <control name="window" id="historyTool" title="History Tool"
                      hideOnClose="true"
                      height="240px" width="370px" x="160" y="110">

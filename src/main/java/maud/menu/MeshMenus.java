@@ -87,10 +87,10 @@ public class MeshMenus {
         }
 
         builder.addTool("Vertex tool");
-
         if (spatial.countVertices() > 0) {
             builder.addSubmenu("Select vertex");
         }
+        builder.addTool("Extreme vertex tool");
     }
 
     /**
@@ -108,6 +108,10 @@ public class MeshMenus {
 
         } else {
             switch (remainder) {
+                case "Extreme vertex tool":
+                    Maud.gui.tools.select("extremeVertex");
+                    break;
+
                 case "Select":
                     SpatialMenus.selectSpatial("", WhichSpatials.Geometries);
                     break;
@@ -180,7 +184,7 @@ public class MeshMenus {
             MenuBuilder builder = new MenuBuilder();
 
             builder.addDialog("By index");
-            //builder.add("Extreme"); TODO
+            builder.addTool("Extreme tool");
             SelectedVertex vertex = target.getVertex();
             if (vertex.isSelected()) {
                 //builder.add("Neighbor"); TODO
@@ -222,7 +226,9 @@ public class MeshMenus {
             case "By index":
                 EditorDialogs.selectVertex();
                 break;
-            //case "Extreme": TODO
+            case "Extreme tool":
+                Maud.gui.tools.select("extremeVertex");
+                break;
             //case "Neighbor": TODO
             case "Next":
                 Maud.getModel().getTarget().getVertex().selectNext();
