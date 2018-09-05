@@ -575,7 +575,11 @@ public class MaudUtil {
                     }
                     break;
 
-                default: // TODO more types
+                default:
+                    /* TODO handle FloatArray, IntArray, Matrix3, Matrix3Array,
+                     * Matrix4, Matrix4Array, Texture2D, Texture3D,
+                     * TextureArray, TextureBuffer, TextureCubeMap,
+                     * Vector2Array, Vector3Array, Vector4Array */
                     throw new IllegalArgumentException();
             }
         }

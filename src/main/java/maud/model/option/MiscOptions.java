@@ -125,7 +125,7 @@ public class MiscOptions implements Cloneable {
      */
     private ViewMode viewMode = ViewMode.Scene;
     // *************************************************************************
-    // new methods exposed
+    // new methods exposed TODO rename getters
 
     /**
      * Read which background to view/edit in BackgroundTool.
@@ -278,7 +278,7 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Alter which background to view/edit in BackgroundTool.
+     * Select which background to view/edit in BackgroundTool.
      *
      * @param newBackground an enum value (not null)
      */
@@ -436,7 +436,7 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Alter the display mode for rotations.
+     * Alter the display mode for rotations. TODO rename selectRotationDisplay
      *
      * @param newMode an enum value (not null)
      */

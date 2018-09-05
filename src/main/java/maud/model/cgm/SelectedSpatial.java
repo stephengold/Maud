@@ -1430,7 +1430,8 @@ public class SelectedSpatial implements JmeCloneable {
      * cloner and original to resolve copied fields.
      *
      * @param cloner the cloner currently cloning this control (not null)
-     * @param original the view from which this view was shallow-cloned (unused)
+     * @param original the instance from which this instance was shallow-cloned
+     * (unused)
      */
     @Override
     public void cloneFields(Cloner cloner, Object original) {
