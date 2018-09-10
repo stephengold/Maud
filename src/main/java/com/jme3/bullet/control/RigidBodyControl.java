@@ -97,6 +97,9 @@ public class RigidBodyControl extends PhysicsRigidBody
      * space to which the body is (or would be) added
      */
     protected PhysicsSpace space = null;
+    /**
+     * true&rarr;body is kinematic, false&rarr;body is static or dynamic
+     */
     protected boolean kinematicSpatial = true;
 
     /**
@@ -139,6 +142,13 @@ public class RigidBodyControl extends PhysicsRigidBody
         super(shape, mass);
     }
 
+    /**
+     * Clone this control for a different spatial. No longer used as of JME 3.1.
+     * TODO eviscerate
+     *
+     * @param spatial the spatial for the clone to control (or null)
+     * @return a new control (not null)
+     */
     @Override
     public Control cloneForSpatial(Spatial spatial) {
         RigidBodyControl control = new RigidBodyControl(collisionShape, mass);
@@ -163,9 +173,15 @@ public class RigidBodyControl extends PhysicsRigidBody
             control.setLinearVelocity(getLinearVelocity());
         }
         control.setApplyPhysicsLocal(isApplyPhysicsLocal());
+
         return control;
     }
 
+    /**
+     * Create a shallow clone for the JME cloner.
+     *
+     * @return a new control (not null)
+     */
     @Override
     public Object jmeClone() {
         RigidBodyControl control = new RigidBodyControl(collisionShape, mass);
@@ -210,21 +226,32 @@ public class RigidBodyControl extends PhysicsRigidBody
         this.spatial = cloner.clone(spatial);
     }
 
+    /**
+     * Alter which spatial is controlled. Invoked when the control is added to
+     * or removed from a spatial. Should be invoked only by a subclass or from
+     * Spatial. Do not invoke directly from user code.
+     *
+     * @param spatial the spatial to control (or null)
+     */
     @Override
     public void setSpatial(Spatial spatial) {
         this.spatial = spatial;
         setUserObject(spatial);
-        if (spatial == null) {
-            return;
+
+        if (spatial != null) {
+            if (collisionShape == null) {
+                createCollisionShape();
+                rebuildRigidBody();
+            }
+            setPhysicsLocation(getSpatialTranslation());
+            setPhysicsRotation(getSpatialRotation());
         }
-        if (collisionShape == null) {
-            createCollisionShape();
-            rebuildRigidBody();
-        }
-        setPhysicsLocation(getSpatialTranslation());
-        setPhysicsRotation(getSpatialRotation());
     }
 
+    /**
+     * Set the collision shape based on the controlled spatial and its
+     * descendents.
+     */
     protected void createCollisionShape() {
         if (spatial == null) {
             return;
@@ -302,22 +329,22 @@ public class RigidBodyControl extends PhysicsRigidBody
     }
 
     /**
-     * Test whether physics location and rotation should match the spatial's
-     * local transform.
+     * Test whether physics-space coordinates should match the spatial's local
+     * coordinates.
      *
-     * @return true if matching local transform, false if matching world
-     * transform
+     * @return true if matching local coordinates, false if matching world
+     * coordinates
      */
     public boolean isApplyPhysicsLocal() {
         return motionState.isApplyPhysicsLocal();
     }
 
     /**
-     * Alter whether physics location and rotation should match the spatial's
-     * local transform.
+     * Alter whether physics-space coordinates should match the spatial's local
+     * coordinates.
      *
-     * @param applyPhysicsLocal true&rarr;match local transform,
-     * false&rarr;match world transform (default is false)
+     * @param applyPhysicsLocal true&rarr;match local coordinates,
+     * false&rarr;match world coordinates (default is false)
      */
     public void setApplyPhysicsLocal(boolean applyPhysicsLocal) {
         motionState.setApplyPhysicsLocal(applyPhysicsLocal);
@@ -366,7 +393,7 @@ public class RigidBodyControl extends PhysicsRigidBody
      * Update this control. Invoked once per frame, during the logical-state
      * update, provided the control is added to a scene.
      *
-     * @param tpf the time interval between updates (in seconds, &ge;0)
+     * @param tpf the time interval between frames (in seconds, &ge;0)
      */
     @Override
     public void update(float tpf) {
@@ -406,30 +433,26 @@ public class RigidBodyControl extends PhysicsRigidBody
      * not enabled, alter where the body would be added. The body is removed
      * from any other space it's currently in.
      *
-     * @param space where to add, or null to simply remove
+     * @param newSpace where to add, or null to simply remove
      */
     @Override
-    public void setPhysicsSpace(PhysicsSpace space) {
-        if (space == null) {
-            if (this.space != null) {
-                this.space.removeCollisionObject(this);
-                added = false;
-            }
-        } else {
-            if (this.space == space) {
-                return;
-            } else if (this.space != null) {
-                this.space.removeCollisionObject(this);
-                added = false;
-            }
-            // If the control isn't enabled, its body will be
-            // added when it gets enabled.
-            if (isEnabled()) {
-                space.addCollisionObject(this);
-                added = true;
-            }
+    public void setPhysicsSpace(PhysicsSpace newSpace) {
+        if (space == newSpace) {
+            return;
         }
-        this.space = space;
+        if (added) {
+            space.removeCollisionObject(this);
+            added = false;
+        }
+        if (newSpace != null && isEnabled()) {
+            newSpace.addCollisionObject(this);
+            added = true;
+        }
+        /*
+         * If this control isn't enabled, its body will be
+         * added to the new space when the control becomes enabled.
+         */
+        space = newSpace;
     }
 
     /**

@@ -76,7 +76,8 @@ public class CompoundCollisionShape extends CollisionShape {
      *
      * @param shape the child shape to add (not null, not a compound shape,
      * alias created)
-     * @param location the local location of the child shape (not null)
+     * @param location the local coordinates of the child shape's center (not
+     * null, unaffected)
      */
     public void addChildShape(CollisionShape shape, Vector3f location) {
         addChildShape(shape, location, new Matrix3f());
@@ -87,8 +88,10 @@ public class CompoundCollisionShape extends CollisionShape {
      *
      * @param shape the child shape to add (not null, not a compound shape,
      * alias created)
-     * @param location the local location of the child shape (not null)
-     * @param rotation the local orientation of the child shape (not null)
+     * @param location the local coordinates of the child shape's center (not
+     * null, unaffected)
+     * @param rotation the local orientation of the child shape (not null,
+     * unaffected)
      */
     public void addChildShape(CollisionShape shape, Vector3f location,
             Matrix3f rotation) {
@@ -96,29 +99,9 @@ public class CompoundCollisionShape extends CollisionShape {
             throw new IllegalStateException(
                     "CompoundCollisionShapes cannot have CompoundCollisionShapes as children!");
         }
-        children.add(new ChildCollisionShape(location.clone(), rotation.clone(), shape));
+        children.add(new ChildCollisionShape(location.clone(),
+                rotation.clone(), shape));
         addChildShape(objectId, shape.getObjectId(), location, rotation);
-    }
-
-    /**
-     * Add a child shape with the specified local translation and orientation.
-     *
-     * @param shape the child shape to add (not null, not a compound shape,
-     * alias created)
-     * @param location the local location of the child shape (not null)
-     * @param rotation the local orientation of the child shape (not null)
-     */
-    private void addChildShapeDirect(CollisionShape shape, Vector3f location,
-            Matrix3f rotation) {
-        if (shape instanceof CompoundCollisionShape) {
-            throw new IllegalStateException(
-                    "CompoundCollisionShapes cannot have CompoundCollisionShapes as children!");
-        }
-//        Transform transA = new Transform(Converter.convert(rotation));
-//        Converter.convert(location, transA.origin);
-//        Converter.convert(rotation, transA.basis);
-        addChildShape(objectId, shape.getObjectId(), location, rotation);
-//        ((CompoundShape) objectId).addChildShape(transA, shape.getObjectId());
     }
 
     /**
@@ -129,7 +112,8 @@ public class CompoundCollisionShape extends CollisionShape {
     public void removeChildShape(CollisionShape shape) {
         removeChildShape(objectId, shape.getObjectId());
 //        ((CompoundShape) objectId).removeChildShape(shape.getObjectId());
-        for (Iterator<ChildCollisionShape> it = children.iterator(); it.hasNext();) {
+        for (Iterator<ChildCollisionShape> it = children.iterator();
+                it.hasNext();) {
             ChildCollisionShape childCollisionShape = it.next();
             if (childCollisionShape.getShape() == shape) {
                 it.remove();
@@ -215,9 +199,8 @@ public class CompoundCollisionShape extends CollisionShape {
 
     private void loadChildren() {
         for (ChildCollisionShape child : children) {
-            addChildShapeDirect(child.getShape(), child.getLocation(),
-                    child.getRotation());
+            addChildShape(objectId, child.getShape().getObjectId(),
+                    child.getLocation(), child.getRotation());
         }
     }
-
 }

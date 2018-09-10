@@ -77,7 +77,9 @@ public class GhostControl extends PhysicsGhostObject
      * local copy of {@link com.jme3.math.Vector3f#ZERO}
      */
     final private static Vector3f translateIdentity = new Vector3f(0f, 0f, 0f);
-
+    /**
+     * spatial to which this control is added, or null if none
+     */
     protected Spatial spatial;
     /**
      * true&rarr;control is enabled, false&rarr;control is disabled
@@ -114,22 +116,22 @@ public class GhostControl extends PhysicsGhostObject
     }
 
     /**
-     * Test whether physics coordinates should match the local transform of the
-     * Spatial.
+     * Test whether physics-space coordinates should match the spatial's local
+     * coordinates.
      *
-     * @return true if matching local transform, false if matching world
-     * transform
+     * @return true if matching local coordinates, false if matching world
+     * coordinates
      */
     public boolean isApplyPhysicsLocal() {
         return applyLocal;
     }
 
     /**
-     * Alter whether physics coordinates should match the local transform of the
-     * Spatial.
+     * Alter whether physics-space coordinates should match the spatial's local
+     * coordinates.
      *
-     * @param applyPhysicsLocal true&rarr;match local transform,
-     * false&rarr;match world transform (default is false)
+     * @param applyPhysicsLocal true&rarr;match local coordinates,
+     * false&rarr;match world coordinates (default is false)
      */
     public void setApplyPhysicsLocal(boolean applyPhysicsLocal) {
         applyLocal = applyPhysicsLocal;
@@ -174,6 +176,13 @@ public class GhostControl extends PhysicsGhostObject
         return spatial.getWorldScale();
     }
 
+    /**
+     * Clone this control for a different spatial. No longer used as of JME 3.1.
+     * TODO eviscerate
+     *
+     * @param spatial the spatial for the clone to control (or null)
+     * @return a new control (not null)
+     */
     @Override
     public Control cloneForSpatial(Spatial spatial) {
         GhostControl control = new GhostControl(collisionShape);
@@ -184,9 +193,15 @@ public class GhostControl extends PhysicsGhostObject
         control.setPhysicsLocation(getPhysicsLocation());
         control.setPhysicsRotation(getPhysicsRotationMatrix());
         control.setApplyPhysicsLocal(isApplyPhysicsLocal());
+
         return control;
     }
 
+    /**
+     * Create a shallow clone for the JME cloner.
+     *
+     * @return a new control (not null)
+     */
     @Override
     public Object jmeClone() {
         GhostControl control = new GhostControl(collisionShape);
@@ -198,6 +213,7 @@ public class GhostControl extends PhysicsGhostObject
         control.setPhysicsRotation(getPhysicsRotationMatrix());
         control.setApplyPhysicsLocal(isApplyPhysicsLocal());
         control.spatial = this.spatial;
+
         return control;
     }
 
@@ -215,22 +231,29 @@ public class GhostControl extends PhysicsGhostObject
         this.spatial = cloner.clone(spatial);
     }
 
+    /**
+     * Alter which spatial is controlled. Invoked when the control is added to
+     * or removed from a spatial. Should be invoked only by a subclass or from
+     * Spatial. Do not invoke directly from user code.
+     *
+     * @param spatial the spatial to control (or null)
+     */
     @Override
     public void setSpatial(Spatial spatial) {
         this.spatial = spatial;
         setUserObject(spatial);
-        if (spatial == null) {
-            return;
+
+        if (spatial != null) {
+            setPhysicsLocation(getSpatialTranslation());
+            setPhysicsRotation(getSpatialRotation());
         }
-        setPhysicsLocation(getSpatialTranslation());
-        setPhysicsRotation(getSpatialRotation());
     }
 
     /**
      * Enable or disable this control.
      * <p>
-     * The ghost object is removed from its physics space when the control is
-     * disabled. When the control is enabled again, the object is moved to the
+     * When the control is disabled, the ghost object is removed from physics
+     * space. When the control is enabled again, the object is moved to the
      * current location of the spatial and then added to the physics space.
      *
      * @param enabled true&rarr;enable the control, false&rarr;disable it
@@ -268,7 +291,7 @@ public class GhostControl extends PhysicsGhostObject
      * update, provided the control is added to a scene. Do not invoke directly
      * from user code.
      *
-     * @param tpf the time interval between updates (in seconds, &ge;0)
+     * @param tpf the time interval between frames (in seconds, &ge;0)
      */
     @Override
     public void update(float tpf) {
@@ -298,33 +321,29 @@ public class GhostControl extends PhysicsGhostObject
 
     /**
      * If enabled, add this control's physics object to the specified physics
-     * space. In not enabled, alter where the object would be added. The object
+     * space. If not enabled, alter where the object would be added. The object
      * is removed from any other space it's currently in.
      *
-     * @param space where to add, or null to simply remove
+     * @param newSpace where to add, or null to simply remove
      */
     @Override
-    public void setPhysicsSpace(PhysicsSpace space) {
-        if (space == null) {
-            if (this.space != null) {
-                this.space.removeCollisionObject(this);
-                added = false;
-            }
-        } else {
-            if (this.space == space) {
-                return;
-            } else if (this.space != null) {
-                this.space.removeCollisionObject(this);
-                added = false;
-            }
-            // If the control isn't enabled, its object will be
-            // added when it gets enabled.
-            if (isEnabled()) {
-                space.addCollisionObject(this);
-                added = true;
-            }
+    public void setPhysicsSpace(PhysicsSpace newSpace) {
+        if (space == newSpace) {
+            return;
         }
-        this.space = space;
+        if (added) {
+            space.removeCollisionObject(this);
+            added = false;
+        }
+        if (newSpace != null && isEnabled()) {
+            newSpace.addCollisionObject(this);
+            added = true;
+        }
+        /*
+         * If this control isn't enabled, its physics object will be
+         * added to the new space when the control becomes enabled.
+         */
+        space = newSpace;
     }
 
     /**
