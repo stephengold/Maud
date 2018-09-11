@@ -1836,8 +1836,9 @@ the menu bar, status bar, and tool windows.
 
             <control name="window" id="physicsTool" title="Physics Tool"
                      hideOnClose="true"
-                     height="90px" width="170px" x="70" y="200">
+                     height="110px" width="170px" x="70" y="200">
                 <panel childLayout="vertical">
+                    <panel height="3px"/>
                     <panel childLayout="horizontal" height="28px">
                         <control name="checkbox" id="physics2CheckBox"/>
                         <control name="label" text="  visualize physics"/>
