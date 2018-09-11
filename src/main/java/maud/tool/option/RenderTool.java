@@ -80,11 +80,7 @@ public class RenderTool extends Tool {
     @Override
     protected List<String> listCheckBoxes() {
         List<String> result = super.listCheckBoxes();
-        result.add("3DCursor2");
         result.add("shadows");
-        result.add("sky2");
-        result.add("physics");
-
         return result;
     }
 
@@ -113,20 +109,8 @@ public class RenderTool extends Tool {
     public void onCheckBoxChanged(String name, boolean isChecked) {
         SceneOptions options = Maud.getModel().getScene();
         switch (name) {
-            case "3DCursor2":
-                options.getCursor().setVisible(isChecked);
-                break;
-
-            case "physics":
-                options.getRender().setPhysicsRendered(isChecked);
-                break;
-
             case "shadows":
                 options.getRender().setShadowsRendered(isChecked);
-                break;
-
-            case "sky2":
-                options.getRender().setSkySimulated(isChecked);
                 break;
 
             default:
@@ -158,17 +142,8 @@ public class RenderTool extends Tool {
         SceneOptions sceneOptions = model.getScene();
         RenderOptions options = sceneOptions.getRender();
 
-        boolean isCursorVisible = sceneOptions.getCursor().isVisible();
-        setChecked("3DCursor2", isCursorVisible);
-
-        boolean isSkySimulated = options.isSkySimulated();
-        setChecked("sky2", isSkySimulated);
-
         boolean shadowsFlag = options.areShadowsRendered();
         setChecked("shadows", shadowsFlag);
-
-        boolean renderFlag = options.isPhysicsRendered();
-        setChecked("physics", renderFlag);
 
         TriangleMode mode = options.getTriangleMode();
         String modeName = mode.toString();
