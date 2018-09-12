@@ -71,7 +71,7 @@ public class RigidBodyControl extends PhysicsRigidBody
     /**
      * message logger for this class
      */
-    final private static Logger logger
+    final public static Logger logger
             = Logger.getLogger(RigidBodyControl.class.getName());
     /**
      * local copy of {@link com.jme3.math.Quaternion#IDENTITY}
@@ -279,6 +279,15 @@ public class RigidBodyControl extends PhysicsRigidBody
         }
     }
 
+    /**
+     * Enable or disable this control.
+     * <p>
+     * When the control is disabled, the body is removed from physics space.
+     * When the control is enabled again, the body is moved to the current
+     * location of the spatial and then added to the physics space.
+     *
+     * @param enabled true&rarr;enable the control, false&rarr;disable it
+     */
     @Override
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;

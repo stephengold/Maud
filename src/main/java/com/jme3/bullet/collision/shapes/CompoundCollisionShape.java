@@ -56,7 +56,7 @@ public class CompoundCollisionShape extends CollisionShape {
     /**
      * message logger for this class
      */
-    final private static Logger logger
+    final public static Logger logger
             = Logger.getLogger(CompoundCollisionShape.class.getName());
     /**
      * children of this shape

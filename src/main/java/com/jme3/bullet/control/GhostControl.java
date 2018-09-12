@@ -67,7 +67,7 @@ public class GhostControl extends PhysicsGhostObject
     /**
      * message logger for this class
      */
-    final private static Logger logger
+    final public static Logger logger
             = Logger.getLogger(GhostControl.class.getName());
     /**
      * local copy of {@link com.jme3.math.Quaternion#IDENTITY}
