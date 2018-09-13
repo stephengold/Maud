@@ -1282,6 +1282,7 @@ public class SceneViewCore
             viewPorts[1] = viewPort2;
         }
         result.setDebugViewPorts(viewPorts);
+        result.setDebugFilter(platform);
 
         result.setDebugEnabled(true);
         result.setSpeed(0f);

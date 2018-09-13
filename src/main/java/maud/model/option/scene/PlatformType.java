@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -36,11 +36,15 @@ public enum PlatformType {
     // values
 
     /**
-     * square slab
+     * circular monument on a plain surrounded by hills
      */
-    Square,
+    Landscape,
     /**
      * no platform
      */
-    None;
+    None,
+    /**
+     * square slab
+     */
+    Square;
 }
