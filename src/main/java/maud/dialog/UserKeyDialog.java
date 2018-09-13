@@ -26,13 +26,9 @@
  */
 package maud.dialog;
 
-import de.lessvoid.nifty.controls.Button;
-import de.lessvoid.nifty.controls.TextField;
-import de.lessvoid.nifty.elements.Element;
-import de.lessvoid.nifty.elements.render.TextRenderer;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
-import jme3utilities.nifty.dialog.DialogController;
+import jme3utilities.nifty.dialog.TextEntryDialog;
 import maud.Maud;
 
 /**
@@ -40,7 +36,7 @@ import maud.Maud;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class UserKeyDialog implements DialogController {
+class UserKeyDialog extends TextEntryDialog {
     // *************************************************************************
     // constants and loggers
 
@@ -50,14 +46,6 @@ class UserKeyDialog implements DialogController {
     final private static Logger logger
             = Logger.getLogger(UserKeyDialog.class.getName());
     // *************************************************************************
-    // fields
-
-    /**
-     * description of the commit action (not null, not empty, should fit the
-     * button -- about 8 or 9 characters)
-     */
-    final private String commitDescription;
-    // *************************************************************************
     // constructors
 
     /**
@@ -66,61 +54,29 @@ class UserKeyDialog implements DialogController {
      * @param description (not null, not empty)
      */
     UserKeyDialog(String description) {
-        assert description != null;
-        assert !description.isEmpty();
-
-        commitDescription = description;
+        super(description);
     }
     // *************************************************************************
-    // DialogController methods
+    // TextEntryDialog methods
 
     /**
-     * Test whether "commit" actions are allowed.
+     * Determine the feedback message for the specified input text.
      *
-     * @param dialogElement (not null)
-     * @return true if allowed, otherwise false
+     * @param inputText (not null)
+     * @return the message (not null)
      */
     @Override
-    public boolean allowCommit(Element dialogElement) {
-        String proposedKey = getKey(dialogElement);
-        if (isReserved(proposedKey) || existsInSpatial(proposedKey)) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    /**
-     * Callback to update the dialog box prior to rendering. (Invoked once per
-     * render pass.)
-     *
-     * @param dialogElement (not null)
-     * @param ignored time interval between updates (in seconds, &ge;0)
-     */
-    @Override
-    public void update(Element dialogElement, float ignored) {
-        String commitLabel, feedbackMessage;
-        String proposedKey = getKey(dialogElement);
-        if (isReserved(proposedKey)) {
-            commitLabel = "";
-            feedbackMessage = String.format("%s is a reserved key",
-                    MyString.quote(proposedKey));
-        } else if (existsInSpatial(proposedKey)) {
-            commitLabel = "";
-            feedbackMessage = String.format("%s is already in use",
-                    MyString.quote(proposedKey));
-        } else {
-            commitLabel = commitDescription;
-            feedbackMessage = "";
+    protected String feedback(String inputText) {
+        String msg = "";
+        if (isReserved(inputText)) {
+            msg = String.format("%s is a reserved key",
+                    MyString.quote(inputText));
+        } else if (existsInSpatial(inputText)) {
+            msg = String.format("%s is already in use",
+                    MyString.quote(inputText));
         }
 
-        Button commitButton
-                = dialogElement.findNiftyControl("#commit", Button.class);
-        commitButton.setText(commitLabel);
-
-        Element feedbackElement = dialogElement.findElementById("#feedback");
-        TextRenderer renderer = feedbackElement.getRenderer(TextRenderer.class);
-        renderer.setText(feedbackMessage);
+        return msg;
     }
     // *************************************************************************
     // private methods
@@ -139,23 +95,6 @@ class UserKeyDialog implements DialogController {
         } else {
             return false;
         }
-    }
-
-    /**
-     * Read the text field.
-     *
-     * @param dialogElement (not null)
-     * @return a text string (not null)
-     */
-    private String getKey(Element dialogElement) {
-        assert dialogElement != null;
-
-        TextField textField
-                = dialogElement.findNiftyControl("#textfield", TextField.class);
-        String text = textField.getRealText();
-
-        assert text != null;
-        return text;
     }
 
     /**

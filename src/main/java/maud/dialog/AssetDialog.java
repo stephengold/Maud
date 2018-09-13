@@ -29,10 +29,6 @@ package maud.dialog;
 import com.jme3.asset.AssetInfo;
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
-import de.lessvoid.nifty.controls.Button;
-import de.lessvoid.nifty.controls.TextField;
-import de.lessvoid.nifty.elements.Element;
-import de.lessvoid.nifty.elements.render.TextRenderer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -41,15 +37,15 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
-import jme3utilities.nifty.dialog.DialogController;
+import jme3utilities.nifty.dialog.TextEntryDialog;
 import jme3utilities.ui.Locators;
 
 /**
- * Controller for a text-entry dialog box used to select an asset.
+ * Controller for a text-entry dialog box used to select an existing asset.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class AssetDialog implements DialogController {
+class AssetDialog extends TextEntryDialog {
     // *************************************************************************
     // constants and loggers
 
@@ -66,11 +62,6 @@ class AssetDialog implements DialogController {
      */
     final private List<String> extensions = new ArrayList<>(4);
     /**
-     * description of the commit action (not null, not empty, should fit the
-     * button -- about 8 or 9 characters)
-     */
-    final private String commitDescription;
-    /**
      * URL specification of asset location, or null for the default location
      */
     final private String spec;
@@ -85,73 +76,39 @@ class AssetDialog implements DialogController {
      * Instantiate a controller with the specified commit description, asset
      * location, and list of extensions.
      *
-     * @param description (not null, not empty)
+     * @param description commit-button text (not null, not empty)
      * @param specification URL specification of asset location, or null for the
      * default location
      * @param extList list of accepted extensions (not null, unaffected)
      */
     AssetDialog(String description, String specification,
             Collection<String> extList) {
-        assert description != null;
-        assert !description.isEmpty();
-        assert extList != null;
-
-        commitDescription = description;
+        super(description);
         spec = specification;
         extensions.addAll(extList);
     }
     // *************************************************************************
-    // DialogController methods
+    // TextEntryDialog methods
 
     /**
-     * Test whether "commit" actions are allowed.
+     * Determine the feedback message for the specified input text.
      *
-     * @param dialogElement (not null)
-     * @return true if allowed, otherwise false
+     * @param assetPath the input text (not null)
+     * @return the message (not null)
      */
     @Override
-    public boolean allowCommit(Element dialogElement) {
-        String proposedAssetPath = getPath(dialogElement);
-        if (hasExtension(proposedAssetPath) && exists(proposedAssetPath)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Callback to update the dialog box prior to rendering. (Invoked once per
-     * render pass.)
-     *
-     * @param dialogElement (not null)
-     * @param ignored time interval between updates (in seconds, &ge;0)
-     */
-    @Override
-    public void update(Element dialogElement, float ignored) {
-        String commitLabel, feedbackMessage;
-        String proposedAssetPath = getPath(dialogElement);
-        if (hasExtension(proposedAssetPath)) {
-            if (exists(proposedAssetPath)) {
-                commitLabel = commitDescription;
-                feedbackMessage = "";
-            } else {
-                commitLabel = "";
-                feedbackMessage = String.format("asset doesn't exist");
+    protected String feedback(String assetPath) {
+        String msg = "";
+        if (hasExtension(assetPath)) {
+            if (!exists(assetPath)) {
+                msg = String.format("asset doesn't exist");
             }
         } else {
-            commitLabel = "";
             String list = MyString.join("/", extensions);
-            feedbackMessage = String.format("needs extension: %s",
-                    MyString.quote(list));
+            msg = String.format("needs extension: %s", MyString.quote(list));
         }
 
-        Button commitButton = dialogElement.findNiftyControl("#commit",
-                Button.class);
-        commitButton.setText(commitLabel);
-
-        Element feedbackElement = dialogElement.findElementById("#feedback");
-        TextRenderer renderer = feedbackElement.getRenderer(TextRenderer.class);
-        renderer.setText(feedbackMessage);
+        return msg;
     }
     // *************************************************************************
     // private methods
@@ -195,23 +152,6 @@ class AssetDialog implements DialogController {
         pathCache.put(assetPath, result);
 
         return result;
-    }
-
-    /**
-     * Read the text field.
-     *
-     * @param dialogElement (not null)
-     * @return a text string (not null)
-     */
-    private String getPath(Element dialogElement) {
-        assert dialogElement != null;
-
-        TextField textField = dialogElement.findNiftyControl("#textfield",
-                TextField.class);
-        String path = textField.getRealText();
-
-        assert path != null;
-        return path;
     }
 
     /**

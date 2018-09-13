@@ -60,11 +60,21 @@ public class OverwriteDialog implements DialogController {
     }
 
     /**
-     * Callback to update the dialog box prior to rendering. (Invoked once per
-     * render pass.)
+     * Construct the action-string suffix for a commit.
      *
      * @param dialogElement (not null)
-     * @param ignored time interval between updates (in seconds, &ge;0)
+     * @return the suffix (not null)
+     */
+    @Override
+    public String commitSuffix(Element dialogElement) {
+        return "";
+    }
+
+    /**
+     * Update this dialog box prior to rendering. (Invoked once per frame.)
+     *
+     * @param dialogElement (not null)
+     * @param ignored time interval between frames (in seconds, &ge;0)
      */
     @Override
     public void update(Element dialogElement, float ignored) {

@@ -32,6 +32,7 @@ import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import java.util.List;
 import java.util.logging.Logger;
+import jme3utilities.MyString;
 import jme3utilities.nifty.dialog.DialogController;
 import maud.model.cgm.TrackItem;
 
@@ -93,11 +94,25 @@ class MixDialog implements DialogController {
     }
 
     /**
-     * Callback to update the dialog box prior to rendering. (Invoked once per
-     * render pass.)
+     * Construct the action-string suffix for a commit.
      *
      * @param dialogElement (not null)
-     * @param ignored time interval between updates (in seconds, &ge;0)
+     * @return the suffix (not null)
+     */
+    @Override
+    public String commitSuffix(Element dialogElement) {
+        ListBox listBox = dialogElement.findNiftyControl("#box", ListBox.class);
+        List indices = listBox.getSelectedIndices();
+        String suffix = MyString.join(",", indices);
+
+        return suffix;
+    }
+
+    /**
+     * Update this dialog box prior to rendering. (Invoked once per frame.)
+     *
+     * @param dialogElement (not null)
+     * @param ignored time interval between frames (in seconds, &ge;0)
      */
     @Override
     public void update(Element dialogElement, float ignored) {

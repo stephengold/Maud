@@ -29,14 +29,14 @@ package maud.dialog;
 import de.lessvoid.nifty.controls.Button;
 import de.lessvoid.nifty.elements.Element;
 import java.util.logging.Logger;
-import jme3utilities.nifty.dialog.DialogController;
+import jme3utilities.nifty.dialog.MinimalDialog;
 
 /**
  * Controller for a confirmation dialog box to confirm quitting the application.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class QuitDialog implements DialogController {
+public class QuitDialog extends MinimalDialog {
     // *************************************************************************
     // constants and loggers
 
@@ -46,25 +46,14 @@ public class QuitDialog implements DialogController {
     final private static Logger logger
             = Logger.getLogger(QuitDialog.class.getName());
     // *************************************************************************
-    // DialogController methods
-
-    /**
-     * Test whether "commit" actions are allowed.
-     *
-     * @param dialogElement (not null)
-     * @return true if allowed, otherwise false
-     */
-    @Override
-    public boolean allowCommit(Element dialogElement) {
-        return true;
-    }
+    // MinimalDialog methods
 
     /**
      * Callback to update the dialog box prior to rendering. (Invoked once per
      * render pass.)
      *
      * @param dialogElement (not null)
-     * @param ignored time interval between updates (in seconds, &ge;0)
+     * @param ignored time interval between frames (in seconds, &ge;0)
      */
     @Override
     public void update(Element dialogElement, float ignored) {

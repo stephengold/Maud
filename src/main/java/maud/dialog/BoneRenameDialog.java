@@ -26,13 +26,9 @@
  */
 package maud.dialog;
 
-import de.lessvoid.nifty.controls.Button;
-import de.lessvoid.nifty.controls.TextField;
-import de.lessvoid.nifty.elements.Element;
-import de.lessvoid.nifty.elements.render.TextRenderer;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
-import jme3utilities.nifty.dialog.DialogController;
+import jme3utilities.nifty.dialog.TextEntryDialog;
 import maud.Maud;
 import maud.model.cgm.SelectedSkeleton;
 
@@ -41,7 +37,7 @@ import maud.model.cgm.SelectedSkeleton;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class BoneRenameDialog implements DialogController {
+class BoneRenameDialog extends TextEntryDialog {
     // *************************************************************************
     // constants and loggers
 
@@ -51,97 +47,40 @@ class BoneRenameDialog implements DialogController {
     final private static Logger logger
             = Logger.getLogger(BoneRenameDialog.class.getName());
     // *************************************************************************
-    // fields
-
-    /**
-     * description of the commit action (not null, not empty, should fit the
-     * button -- about 8 or 9 characters)
-     */
-    final private String commitDescription;
-    // *************************************************************************
     // constructors
 
     /**
      * Instantiate a controller with the specified commit description.
      *
-     * @param description (not null)
+     * @param description commit-button text (not null, not empty)
      */
     BoneRenameDialog(String description) {
-        assert description != null;
-        assert !description.isEmpty();
-
-        commitDescription = description;
+        super(description);
     }
     // *************************************************************************
-    // DialogController methods
+    // TextEntryDialog methods
 
     /**
-     * Test whether "commit" actions are allowed.
+     * Determine the feedback message for the specified input text.
      *
-     * @param dialogElement (not null)
-     * @return true if allowed, otherwise false
+     * @param proposedName the input text (not null)
+     * @return the message (not null)
      */
     @Override
-    public boolean allowCommit(Element dialogElement) {
-        String proposedName = getName(dialogElement);
-        if (isReserved(proposedName) || isUsed(proposedName)) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    /**
-     * Callback to update the dialog box prior to rendering. (Invoked once per
-     * render pass.)
-     *
-     * @param dialogElement (not null)
-     * @param ignored time interval between updates (in seconds, &ge;0)
-     */
-    @Override
-    public void update(Element dialogElement, float ignored) {
-        String commitLabel, feedbackMessage;
-        String proposedName = getName(dialogElement);
+    protected String feedback(String proposedName) {
+        String msg = "";
         if (isReserved(proposedName)) {
-            commitLabel = "";
-            feedbackMessage = String.format("%s is a reserved name",
+            msg = String.format("%s is a reserved name",
                     MyString.quote(proposedName));
         } else if (isUsed(proposedName)) {
-            commitLabel = "";
-            feedbackMessage = String.format("%s is already in use",
+            msg = String.format("%s is already in use",
                     MyString.quote(proposedName));
-        } else {
-            commitLabel = commitDescription;
-            feedbackMessage = "";
         }
 
-        Button commitButton
-                = dialogElement.findNiftyControl("#commit", Button.class);
-        commitButton.setText(commitLabel);
-
-        Element feedbackElement = dialogElement.findElementById("#feedback");
-        TextRenderer renderer = feedbackElement.getRenderer(TextRenderer.class);
-        renderer.setText(feedbackMessage);
+        return msg;
     }
     // *************************************************************************
     // private methods
-
-    /**
-     * Read the text field.
-     *
-     * @param dialogElement (not null)
-     * @return a text string (not null)
-     */
-    private String getName(Element dialogElement) {
-        assert dialogElement != null;
-
-        TextField textField
-                = dialogElement.findNiftyControl("#textfield", TextField.class);
-        String text = textField.getRealText();
-
-        assert text != null;
-        return text;
-    }
 
     /**
      * Test whether the specified name is reserved.

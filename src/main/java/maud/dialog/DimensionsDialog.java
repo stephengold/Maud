@@ -26,23 +26,19 @@
  */
 package maud.dialog;
 
-import de.lessvoid.nifty.controls.Button;
-import de.lessvoid.nifty.controls.TextField;
-import de.lessvoid.nifty.elements.Element;
-import de.lessvoid.nifty.elements.render.TextRenderer;
 import java.util.Locale;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import jme3utilities.Validate;
-import jme3utilities.nifty.dialog.DialogController;
+import jme3utilities.nifty.dialog.TextEntryDialog;
 
 /**
  * Controller for a text-entry dialog box used to input display dimensions.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class DimensionsDialog implements DialogController {
+public class DimensionsDialog extends TextEntryDialog {
     // *************************************************************************
     // constants and loggers
 
@@ -75,18 +71,13 @@ public class DimensionsDialog implements DialogController {
      * minimum value for display width (&le;maxWidth)
      */
     final private int minWidth;
-    /**
-     * description of the commit action (not null, not empty, should fit the
-     * button -- about 8 or 9 characters)
-     */
-    final private String commitDescription;
     // *************************************************************************
     // constructors
 
     /**
      * Instantiate a controller.
      *
-     * @param description commit description (not null, not empty)
+     * @param description commit-button text (not null, not empty)
      * @param minWidth minimum value for display width (&le;maxWidth)
      * @param minHeight minimum value for display height (&le;maxHeight)
      * @param maxWidth maximum value for display width (&ge;minWidth)
@@ -94,11 +85,11 @@ public class DimensionsDialog implements DialogController {
      */
     public DimensionsDialog(String description, int minWidth, int minHeight,
             int maxWidth, int maxHeight) {
-        Validate.nonEmpty(description, "description");
+        super(description);
+
         assert minWidth <= maxWidth;
         assert minHeight <= maxHeight;
 
-        commitDescription = description;
         this.minWidth = minWidth;
         this.minHeight = minHeight;
         this.maxWidth = maxWidth;
@@ -131,101 +122,38 @@ public class DimensionsDialog implements DialogController {
         return result;
     }
     // *************************************************************************
-    // DialogController methods
+    // TextEntryDialog methods
 
     /**
-     * Test whether "commit" actions are allowed.
+     * Determine the feedback message for the specified input text.
      *
-     * @param dialogElement (not null)
-     * @return true if allowed, otherwise false
+     * @param text the input text (not null)
+     * @return the message (not null)
      */
     @Override
-    public boolean allowCommit(Element dialogElement) {
-        Validate.nonNull(dialogElement, "dialog element");
-
-        boolean allowCommit = false;
-        String text = getText(dialogElement);
-        Matcher matcher = dimensionsPattern.matcher(text);
-        if (matcher.find()) {
-            String group1 = matcher.group(1);
-            int width = Integer.parseInt(group1);
-            String group2 = matcher.group(2);
-            int height = Integer.parseInt(group2);
-            if (width >= minWidth && width <= maxWidth
-                    && height >= minHeight && height <= maxHeight) {
-                allowCommit = true;
-            }
-        }
-
-        return allowCommit;
-    }
-
-    /**
-     * Callback to update the dialog box prior to rendering. (Invoked once per
-     * render pass.)
-     *
-     * @param dialogElement (not null)
-     * @param ignored time interval between updates (in seconds, &ge;0)
-     */
-    @Override
-    public void update(Element dialogElement, float ignored) {
-        Validate.nonNull(dialogElement, "dialog element");
-
-        String commitLabel = "";
-        String feedbackMessage = "";
-
-        String text = getText(dialogElement);
+    protected String feedback(String text) {
+        String msg = "";
         Matcher matcher = dimensionsPattern.matcher(text);
         if (matcher.find()) {
             String group1 = matcher.group(1);
             int width = Integer.parseInt(group1);
             if (width < minWidth) {
-                feedbackMessage
-                        = String.format("width must not be < %d", minWidth);
+                msg = String.format("width must not be < %d", minWidth);
             } else if (width > maxWidth) {
-                feedbackMessage
-                        = String.format("width must not be > %d", maxWidth);
+                msg = String.format("width must not be > %d", maxWidth);
             } else {
                 String group2 = matcher.group(2);
                 int height = Integer.parseInt(group2);
                 if (height < minHeight) {
-                    feedbackMessage = String.format(
-                            "height must not be < %d", minHeight);
+                    msg = String.format("height must not be < %d", minHeight);
                 } else if (height > maxHeight) {
-                    feedbackMessage = String.format(
-                            "height must not be > %d", maxHeight);
-                } else {
-                    commitLabel = commitDescription;
+                    msg = String.format("height must not be > %d", maxHeight);
                 }
             }
         } else {
-            feedbackMessage = "improper format for display dimensions";
+            msg = "improper format for display dimensions";
         }
 
-        Button commitButton
-                = dialogElement.findNiftyControl("#commit", Button.class);
-        commitButton.setText(commitLabel);
-
-        Element feedbackElement = dialogElement.findElementById("#feedback");
-        TextRenderer renderer = feedbackElement.getRenderer(TextRenderer.class);
-
-        renderer.setText(feedbackMessage);
-    }
-    // *************************************************************************
-    // private methods
-
-    /**
-     * Read the text field.
-     *
-     * @param dialogElement (not null)
-     * @return a text string (not null)
-     */
-    private String getText(Element dialogElement) {
-        TextField textField
-                = dialogElement.findNiftyControl("#textfield", TextField.class);
-        String text = textField.getRealText();
-
-        assert text != null;
-        return text;
+        return msg;
     }
 }
