@@ -105,7 +105,7 @@ class ZoomListener implements AnalogListener {
      *
      * @param eventString textual description of the analog event (not null)
      * @param amount amount of the event (&ge;0)
-     * @param ignored time interval between updates (in seconds, &ge;0)
+     * @param ignored time interval between frames (in seconds, &ge;0)
      */
     @Override
     public void onAnalog(String eventString, float amount, float ignored) {

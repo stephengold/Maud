@@ -142,12 +142,12 @@ public class DddCursor {
     }
 
     /**
-     * Update the cursor based on the MVC model.
+     * Update this cursor based on the MVC model.
      *
      * @param cgm which C-G model (not null)
-     * @param updateInterval time interval between updates (in seconds, &ge;0)
+     * @param tpf time interval between frames (in seconds, &ge;0)
      */
-    void update(Cgm cgm, float updateInterval) {
+    void update(Cgm cgm, float tpf) {
         /*
          * visibility
          */
@@ -167,7 +167,7 @@ public class DddCursor {
              * color
              */
             float cycleTime = options.getCycleTime();
-            colorTime = (colorTime + updateInterval) % cycleTime;
+            colorTime = (colorTime + tpf) % cycleTime;
             double t = Math.sin(Math.PI * colorTime / cycleTime);
             double t2 = t * t;
             float fraction = (float) (t2 * t2); // 4th power of sine

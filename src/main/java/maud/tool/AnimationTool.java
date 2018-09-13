@@ -174,8 +174,8 @@ class AnimationTool extends Tool {
     }
 
     /**
-     * Callback to update this tool prior to rendering. (Invoked once per render
-     * pass while this tool is displayed.)
+     * Callback to update this tool prior to rendering. (Invoked once per frame
+     * while this tool is displayed.)
      */
     @Override
     protected void toolUpdate() {

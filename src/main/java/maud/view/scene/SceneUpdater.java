@@ -205,20 +205,20 @@ public class SceneUpdater {
     }
 
     /**
-     * Update a scene view prior to rendering. Invoked once per render pass on
-     * each scene view.
+     * Update a scene view prior to rendering. Invoked once per frame on each
+     * scene view.
      *
      * @param viewCgm which C-G model occupies the view (not null)
-     * @param updateInterval time interval between updates (in seconds, &ge;0)
+     * @param tpf time interval between frames (in seconds, &ge;0)
      */
-    static void update(Cgm viewCgm, float updateInterval) {
+    static void update(Cgm viewCgm, float tpf) {
         SceneView sceneView = viewCgm.getSceneView();
         assert sceneView.getCamera() != null;
 
-        viewCgm.getScenePov().update(updateInterval);
+        viewCgm.getScenePov().update(tpf);
         updateAxes(viewCgm);
         updateBounds(sceneView);
-        sceneView.getCursor().update(viewCgm, updateInterval);
+        sceneView.getCursor().update(viewCgm, tpf);
         updatePhysics(viewCgm);
         sceneView.getPlatform().update();
         updateShadows(viewCgm);

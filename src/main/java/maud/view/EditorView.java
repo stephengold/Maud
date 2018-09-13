@@ -36,7 +36,6 @@ import maud.model.cgm.Cgm;
  * @author Stephen Gold sgold@sonic.net
  */
 public interface EditorView {
-
     /**
      * Consider selecting each axis in this view.
      *
@@ -108,13 +107,13 @@ public interface EditorView {
     ViewPort getViewPort();
 
     /**
-     * Update this view prior to rendering. (Invoked once per render pass on
-     * each instance.)
+     * Update this view prior to rendering. (Invoked once per frame on each
+     * instance.)
      *
      * @param renderCgm which C-G model to render
-     * @param updateInterval time interval between updates (in seconds, &ge;0)
+     * @param tpf time interval between frames (in seconds, &ge;0)
      */
-    void update(Cgm renderCgm, float updateInterval);
+    void update(Cgm renderCgm, float tpf);
 
     /**
      * Attempt to warp a cursor to the screen coordinates of the mouse pointer.

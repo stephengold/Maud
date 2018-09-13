@@ -1,4 +1,4 @@
-Licensing history for assets in "Models/indicators/3d cursor"
+Licensing history for assets in "src/main/resources/Models/indicators/3d cursor"
 
 Stephen Gold authored "3d cursor.blend" and "3d cursor.j3o" and makes them
 available under the Creative Commons Attribution-Share Alike 3.0 Unported

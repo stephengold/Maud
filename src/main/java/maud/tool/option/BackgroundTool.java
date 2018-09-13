@@ -120,8 +120,8 @@ public class BackgroundTool extends Tool {
     }
 
     /**
-     * Callback to update this tool prior to rendering. (Invoked once per render
-     * pass while this tool is displayed.)
+     * Update this tool prior to rendering. (Invoked once per frame while this
+     * tool is displayed.)
      */
     @Override
     protected void toolUpdate() {

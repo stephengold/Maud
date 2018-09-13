@@ -312,10 +312,10 @@ public class ScenePov implements Cloneable, Pov {
     /**
      * Update this POV and its camera.
      *
-     * @param updateInterval time interval between updates (in seconds, &ge;0)
+     * @param tpf time interval between frames (in seconds, &ge;0)
      */
     @Override
-    public void update(float updateInterval) {
+    public void update(float tpf) {
         CameraOptions options = Maud.getModel().getScene().getCamera();
 
         if (options.isOrbitMode()) {
@@ -329,7 +329,7 @@ public class ScenePov implements Cloneable, Pov {
             }
         }
 
-        updateLookDirection(updateInterval);
+        updateLookDirection(tpf);
 
         if (options.isOrbitMode() && !isPivoting) {
             /*
@@ -530,13 +530,13 @@ public class ScenePov implements Cloneable, Pov {
      * Update the look direction, turning the POV toward its goal at a limited
      * rate.
      *
-     * @param updateInterval time interval between updates (in seconds, &ge;0)
+     * @param tpf time interval between frames (in seconds, &ge;0)
      */
-    private void updateLookDirection(float updateInterval) {
+    private void updateLookDirection(float tpf) {
         double dot = MyVector3f.dot(lookDirection, directionalGoal);
         dot = MyMath.clamp(dot, 1.0);
         float angle = (float) Math.acos(dot);
-        float maxAngle = maxRotationRate * updateInterval;
+        float maxAngle = maxRotationRate * tpf;
         if (angle <= maxAngle) {
             lookDirection.set(directionalGoal);
             isPivoting = false;

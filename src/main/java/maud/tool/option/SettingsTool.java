@@ -120,15 +120,14 @@ public class SettingsTool extends Tool {
     @Override
     public void onSliderChanged() {
         MiscOptions options = Maud.getModel().getMisc();
-
         float x = readSlider("submenuWarpX", submenuSt);
         float y = readSlider("submenuWarpY", submenuSt);
         options.setSubmenuWarp(x, y);
     }
 
     /**
-     * Callback to update this tool prior to rendering. (Invoked once per render
-     * pass while this tool is displayed.)
+     * Update this tool prior to rendering. (Invoked once per frame while this
+     * tool is displayed.)
      */
     @Override
     protected void toolUpdate() {

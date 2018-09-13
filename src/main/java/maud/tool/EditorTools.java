@@ -87,8 +87,8 @@ public class EditorTools {
     final private LightColorTool lightColor;
     final private LightDirectionTool lightDirection;
     final private LightPositionTool lightPosition;
-    final private LightsTool lights;
 
+    final private LightsTool lights;
     final private MappingTool mapping;
     final private MaterialTool material;
     final private MeshTool mesh;
@@ -99,8 +99,8 @@ public class EditorTools {
     final private RenderTool render;
     final private RetargetTool retarget;
     final private SceneLightingTool sceneLighting;
-    final private SceneVertexTool sceneVertex;
 
+    final private SceneVertexTool sceneVertex;
     final private ScoreTool score;
     final private SettingsTool settings;
     final private SgcTool sgc;
@@ -110,8 +110,8 @@ public class EditorTools {
     final private SourceAnimationTool sourceAnimation;
     final private SpatialDetailsTool spatialDetails;
     final private SpatialRotationTool spatialRotation;
-    final private SpatialScaleTool spatialScale;
 
+    final private SpatialScaleTool spatialScale;
     final private SpatialTool spatial;
     final private SpatialTranslationTool spatialTranslation;
     final private TrackTool track;

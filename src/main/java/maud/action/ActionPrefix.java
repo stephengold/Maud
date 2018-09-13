@@ -559,7 +559,7 @@ public class ActionPrefix {
     final public static String setMeshWeights = "set meshWeights ";
     /**
      * argument is a number of samples per pixel, formatted using
-     * {@link maud.MaudUtil#describeMsaaFactor(int)}
+     * {@link maud.DescribeUtil#msaaFactor(int)}
      */
     final public static String setMsaaFactor = "set msaaFactor ";
     /**

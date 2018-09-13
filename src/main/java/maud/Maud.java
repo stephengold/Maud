@@ -354,7 +354,7 @@ public class Maud extends GuiApplication {
      *
      * @param actionString textual description of the action (not null)
      * @param ongoing true if the action is ongoing, otherwise false
-     * @param tpf time interval between updates (in seconds, &ge;0)
+     * @param tpf time interval between frames (in seconds, &ge;0)
      */
     @Override
     public void onAction(String actionString, boolean ongoing, float tpf) {
@@ -395,13 +395,13 @@ public class Maud extends GuiApplication {
     }
 
     /**
-     * Callback invoked once per render pass.
+     * Callback invoked once per frame.
      *
-     * @param updateInterval time interval between updates (in seconds, &ge;0)
+     * @param tpf time interval between frames (in seconds, &ge;0)
      */
     @Override
-    public void simpleUpdate(float updateInterval) {
-        super.simpleUpdate(updateInterval);
+    public void simpleUpdate(float tpf) {
+        super.simpleUpdate(tpf);
 
         if (!didStartup1) {
             startup1();

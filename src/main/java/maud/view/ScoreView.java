@@ -527,14 +527,14 @@ public class ScoreView implements EditorView {
     }
 
     /**
-     * Update this view prior to rendering. Invoked once per render pass on each
-     * score view.
+     * Update this view prior to rendering. Invoked once per frame on each score
+     * view.
      *
      * @param viewCgm which C-G model occupies the view (not null)
-     * @param updateInterval time interval between updates (in seconds, &ge;0)
+     * @param tpf time interval between frames (in seconds, &ge;0)
      */
     @Override
-    public void update(Cgm viewCgm, float updateInterval) {
+    public void update(Cgm viewCgm, float tpf) {
         Validate.nonNull(viewCgm, "view model");
 
         if (r == null) {
@@ -605,7 +605,7 @@ public class ScoreView implements EditorView {
             attachGnomon();
             attachLimits();
 
-            cgm.getScorePov().update(updateInterval);
+            cgm.getScorePov().update(tpf);
 
             boolean isBindPose = cgm.getAnimation().isBindPose();
             if (isBindPose) {

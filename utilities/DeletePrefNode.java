@@ -33,7 +33,7 @@ import java.util.prefs.Preferences;
  * A console application to delete Maud's Preferences node. This causes Maud to
  * believe it's never before shown the display-settings dialog in the current
  * environment.
- *
+ * <p>
  * This application is intended for testing only.
  *
  * @author Stephen Gold sgold@sonic.net
@@ -46,7 +46,7 @@ public class DeletePrefNode {
     final private static String maudsKey = "Maud";
 
     /**
-     * @param args the command-line arguments
+     * @param args the command-line arguments (ignored)
      */
     public static void main(String[] args) {
         try {

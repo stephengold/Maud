@@ -63,7 +63,7 @@ public class SpatialMenus {
     // new methods exposed
 
     /**
-     * Display a "Spatial -> Edit material" menu.
+     * Display a "Spatial -&gt; Edit material" menu.
      */
     public static void editMaterial() {
         MenuBuilder builder = new MenuBuilder();

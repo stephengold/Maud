@@ -880,14 +880,14 @@ public class SceneViewCore
     }
 
     /**
-     * Update this view prior to rendering. (Invoked once per render pass on
-     * each instance.)
+     * Update this view prior to rendering. (Invoked once per frame on each
+     * instance.)
      *
      * @param ignored not used
-     * @param updateInterval time interval between updates (in seconds, &ge;0)
+     * @param tpf time interval between frames (in seconds, &ge;0)
      */
     @Override
-    public void update(Cgm ignored, float updateInterval) {
+    public void update(Cgm ignored, float tpf) {
         Camera camera = getCamera();
         if (camera != null) {
             List<Integer> modelRootPosition = new ArrayList<>(0);
@@ -896,7 +896,7 @@ public class SceneViewCore
             updateParentShadowMode();
             updateParentTransform();
             updatePose();
-            SceneUpdater.update(cgm, updateInterval);
+            SceneUpdater.update(cgm, tpf);
             skyControl.setCamera(camera);
 
             PhysicsSpace space = getPhysicsSpace();

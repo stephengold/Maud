@@ -130,8 +130,8 @@ abstract public class Tool extends GuiWindowController {
     }
 
     /**
-     * Callback to update this tool prior to rendering. (Invoked once per render
-     * pass while this tool is displayed.)
+     * Update this tool prior to rendering. (Invoked once per frame while this
+     * tool is displayed.)
      */
     abstract protected void toolUpdate();
     // *************************************************************************
@@ -163,14 +163,14 @@ abstract public class Tool extends GuiWindowController {
     }
 
     /**
-     * Callback to update this tool prior to rendering. (Invoked once per render
-     * pass while this tool is displayed.)
+     * Update this tool prior to rendering. (Invoked once per frame while this
+     * tool is displayed.)
      *
-     * @param updateInterval time interval between updates (in seconds, &ge;0)
+     * @param tpf time interval between frames (in seconds, &ge;0)
      */
     @Override
-    final public void update(float updateInterval) {
-        super.update(updateInterval);
+    final public void update(float tpf) {
+        super.update(tpf);
 
         EditorScreen screen = (EditorScreen) getScreenController();
         screen.setIgnoreGuiChanges(true);
