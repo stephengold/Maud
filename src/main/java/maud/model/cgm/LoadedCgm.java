@@ -401,10 +401,11 @@ public class LoadedCgm extends Cgm {
             ext = key.getExtension();
             if (!useCache) {
                 /*
-                 * Delete the key from the asset manager's cache in order
-                 * to force a fresh load from persistent storage.
+                 * Clear the asset manager's cache in order to force a fresh
+                 * load from persistent storage, not only for the model but
+                 * also for any assets it references.
                  */
-                assetManager.deleteFromCache(key);
+                assetManager.clearCache();
             }
             Locators.registerDefault();
             List<String> specList = Maud.getModel().getLocations().listAll();
@@ -412,6 +413,7 @@ public class LoadedCgm extends Cgm {
 
             loaded = LoadUtil.loadCgmAsset(assetManager, key, diagnose);
         }
+
         if (loaded == null) {
             logger.log(Level.SEVERE, "Failed to load model from asset {0}",
                     MyString.quote(assetPath));
