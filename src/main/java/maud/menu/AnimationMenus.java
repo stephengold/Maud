@@ -107,7 +107,7 @@ public class AnimationMenus {
             builder.add("Unload");
         }
         if (target.getAnimation().isReal()) {
-            builder.addDialog("Delete");
+            builder.addDialog("Delete"); // user must confirm
             builder.addSubmenu("Edit");
             builder.addDialog("Rename");
         }
