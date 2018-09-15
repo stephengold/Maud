@@ -75,7 +75,7 @@ public class ActionPrefix {
      */
     final public static String loadCgmNamed = "load cgm named ";
     /**
-     * argument is an location index followed by an asset path to a skeleton map
+     * argument is a location index followed by an asset path to a skeleton map
      */
     final public static String loadMapAsset = "load map asset ";
     /**
@@ -103,6 +103,14 @@ public class ActionPrefix {
      * argument is the name of a C-G model on the classpath
      */
     final public static String loadSourceCgmNamed = "load sourceCgm named ";
+    /**
+     * argument is a location index followed by an asset path to a texture
+     */
+    final public static String loadTextureAsset = "load texture asset ";
+    /**
+     * argument is a URL spec or else defaultLocation
+     */
+    final public static String loadTextureLocator = "load texture locator ";
     /**
      * arguments are 2 whichCgms and a name for the new animation
      */
@@ -413,6 +421,10 @@ public class ActionPrefix {
      * argument is a quoted name plus bracketed index, or a prefix thereof
      */
     final public static String selectSpatialChild = "select spatialChild ";
+    /**
+     * argument is the description of a texture type
+     */
+    final public static String selectTextureType = "select textureType ";
     /**
      * argument is the name of a tool window
      */

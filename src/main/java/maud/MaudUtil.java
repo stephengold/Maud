@@ -29,6 +29,8 @@ package maud;
 import com.jme3.animation.Animation;
 import com.jme3.animation.SpatialTrack;
 import com.jme3.animation.Track;
+import com.jme3.asset.AssetManager;
+import com.jme3.asset.TextureKey;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.material.MatParam;
@@ -71,6 +73,8 @@ import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import jme3utilities.math.MyVector3f;
 import jme3utilities.nifty.dialog.VectorDialog;
+import jme3utilities.ui.Locators;
+import maud.dialog.TextureKeyDialog;
 import maud.model.option.RotationDisplayMode;
 
 /**
@@ -555,6 +559,21 @@ public class MaudUtil {
                     result = Integer.parseInt(lcText);
                     break;
 
+                case Texture2D:
+                case Texture3D:
+                case TextureArray:
+                case TextureCubeMap:
+                    TextureKey key
+                            = TextureKeyDialog.parseTextureKey(textString);
+                    AssetManager assetManager = Locators.getAssetManager();
+                    try {
+                        result = assetManager.loadAsset(key);
+                    } catch (RuntimeException exception) {
+                        exception.printStackTrace();
+                        result = null;
+                    }
+                    break;
+
                 case Vector2:
                 case Vector3:
                     result = VectorDialog.parseVector(lcText);
@@ -577,8 +596,7 @@ public class MaudUtil {
 
                 default:
                     /* TODO handle FloatArray, IntArray, Matrix3, Matrix3Array,
-                     * Matrix4, Matrix4Array, Texture2D, Texture3D,
-                     * TextureArray, TextureBuffer, TextureCubeMap,
+                     * Matrix4, Matrix4Array, TextureBuffer,
                      * Vector2Array, Vector3Array, Vector4Array */
                     throw new IllegalArgumentException();
             }

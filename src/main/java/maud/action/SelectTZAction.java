@@ -26,6 +26,7 @@
  */
 package maud.action;
 
+import com.jme3.texture.Texture;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.tools.SizeValue;
@@ -33,9 +34,12 @@ import de.lessvoid.nifty.tools.SizeValueType;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.WindowController;
+import jme3utilities.nifty.dialog.DialogController;
 import jme3utilities.wes.TweenRotations;
 import jme3utilities.wes.TweenVectors;
+import maud.DescribeUtil;
 import maud.Maud;
+import maud.dialog.TextureKeyDialog;
 import maud.menu.AnimationMenus;
 import maud.menu.EnumMenus;
 import maud.menu.MeshMenus;
@@ -84,6 +88,10 @@ class SelectTZAction {
         boolean handled = true;
 
         switch (actionString) {
+            case Action.selectTextureType:
+                EnumMenus.selectTextureType();
+                break;
+
             case Action.selectTrack:
                 AnimationMenus.selectTrack();
                 break;
@@ -139,7 +147,19 @@ class SelectTZAction {
         Cgm target = model.getTarget();
         String arg;
 
-        if (actionString.startsWith(ActionPrefix.selectTrack)) {
+        if (actionString.startsWith(ActionPrefix.selectTextureType)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectTextureType);
+            DialogController dialog = Maud.gui.getActiveDialog();
+            TextureKeyDialog tkd = (TextureKeyDialog) dialog;
+            for (Texture.Type type : Texture.Type.values()) {
+                String description = DescribeUtil.type(type);
+                if (arg.equals(description)) {
+                    tkd.setTypeHint(type);
+                }
+            }
+
+        } else if (actionString.startsWith(ActionPrefix.selectTrack)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectTrack);
             AnimationMenus.selectTrack(arg);
 

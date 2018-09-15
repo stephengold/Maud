@@ -28,6 +28,7 @@ package maud.dialog;
 
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
+import com.jme3.asset.TextureKey;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
@@ -35,6 +36,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.math.Vector4f;
 import com.jme3.shader.VarType;
 import com.jme3.system.JmeVersion;
+import com.jme3.texture.Texture;
 import de.lessvoid.nifty.Nifty;
 import java.io.File;
 import java.util.ArrayList;
@@ -51,6 +53,7 @@ import jme3utilities.nifty.dialog.DialogController;
 import jme3utilities.nifty.dialog.FloatDialog;
 import jme3utilities.nifty.dialog.IntegerDialog;
 import jme3utilities.nifty.dialog.LongDialog;
+import jme3utilities.nifty.dialog.MinimalDialog;
 import jme3utilities.nifty.dialog.TextEntryDialog;
 import jme3utilities.nifty.dialog.VectorDialog;
 import jme3utilities.sky.Constants;
@@ -125,7 +128,7 @@ public class EditorDialogs {
                 MyString.quote(niftyVersion));
         text += String.format(
                 "%n   jme3-utilities-heart version %s (BSD license)",
-                MyString.quote(Misc.getVersionShort()));
+                MyString.quote(Misc.getVersionShort()));  // TODO
         text += String.format("%n   Minie version %s (BSD license)",
                 MyString.quote(MinieVersion.versionShort()));
         text += String.format("%n   SkyControl version %s (BSD license)",
@@ -202,9 +205,10 @@ public class EditorDialogs {
         String name = Maud.getModel().getTarget().getAnimation().getName();
         String message = String.format("Delete the %s animation?",
                 MyString.quote(name));
+        DialogController controller = new MinimalDialog();
         Maud.gui.closeAllPopups();
         Maud.gui.showConfirmDialog(message, "Delete", Action.deleteAnimation,
-                null);
+                controller);
     }
 
     /**
@@ -241,8 +245,10 @@ public class EditorDialogs {
         String name = Maud.getModel().getTarget().getSgc().name();
         String message
                 = String.format("Delete the %s control?", MyString.quote(name));
+        DialogController controller = new MinimalDialog();
         Maud.gui.closeAllPopups();
-        Maud.gui.showConfirmDialog(message, "Delete", Action.deleteSgc, null);
+        Maud.gui.showConfirmDialog(message, "Delete", Action.deleteSgc,
+                controller);
     }
 
     /**
@@ -644,9 +650,11 @@ public class EditorDialogs {
     public static void saveCgm() {
         EditableCgm target = Maud.getModel().getTarget();
         String baseFilePath = target.baseFilePathForWrite();
+        DialogController controller = new TextEntryDialog("Save");
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter base file path for model:",
-                baseFilePath, "Save", ActionPrefix.saveCgmUnconfirmed, null);
+                baseFilePath, "Save", ActionPrefix.saveCgmUnconfirmed,
+                controller);
     }
 
     /**
@@ -654,9 +662,11 @@ public class EditorDialogs {
      */
     public static void saveMap() {
         String baseFilePath = Maud.getModel().getMap().baseFilePathForWrite();
+        DialogController controller = new TextEntryDialog("Save");
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter base file path for map:",
-                baseFilePath, "Save", ActionPrefix.saveMapUnconfirmed, null);
+                baseFilePath, "Save", ActionPrefix.saveMapUnconfirmed,
+                controller);
     }
 
     /**
@@ -935,6 +945,19 @@ public class EditorDialogs {
                         allowNull);
                 promptMessage = "Enter new integer value:";
                 break;
+
+            case Texture2D:
+            case Texture3D:
+            case TextureArray:
+            case TextureCubeMap:
+                TextureKey textureKey = null;
+                if (oldValue != null) {
+                    Texture texture = (Texture) oldValue;
+                    textureKey = (TextureKey) texture.getKey();
+                }
+                Maud.gui.showTextureKeyDialog(textureKey, allowNull,
+                        actionPrefix);
+                return;
 
             case Vector2:
                 if (oldValue == null) {

@@ -95,6 +95,10 @@ class LoadAction {
                 Maud.gui.buildMenus.loadSourceCgm();
                 break;
 
+            case Action.loadTexture:
+                Maud.gui.buildMenus.loadTexture();
+                break;
+
             default:
                 handled = testForPrefixes(actionString);
         }
@@ -117,32 +121,33 @@ class LoadAction {
         EditorModel model = Maud.getModel();
         LoadedCgm source = model.getSource();
         EditableCgm target = model.getTarget();
-        String args, name, path;
+
+        String args, name, spec;
         if (actionString.startsWith(ActionPrefix.loadAnimation)) {
-            args = MyString.remainder(actionString, ActionPrefix.loadAnimation);
-            AnimationMenus.loadAnimation(args, target);
+            name = MyString.remainder(actionString, ActionPrefix.loadAnimation);
+            AnimationMenus.loadAnimation(name, target);
 
         } else if (actionString.startsWith(ActionPrefix.loadCgmAsset)) {
             args = MyString.remainder(actionString, ActionPrefix.loadCgmAsset);
             Maud.gui.buildMenus.loadCgmAsset(args, target);
 
         } else if (actionString.startsWith(ActionPrefix.loadCgmLocator)) {
-            path = MyString.remainder(actionString,
+            spec = MyString.remainder(actionString,
                     ActionPrefix.loadCgmLocator);
-            Maud.gui.buildMenus.loadCgmLocator(path, target);
+            Maud.gui.buildMenus.loadCgmLocator(spec, target);
 
         } else if (actionString.startsWith(ActionPrefix.loadCgmNamed)) {
             name = MyString.remainder(actionString, ActionPrefix.loadCgmNamed);
             target.loadNamed(name);
 
         } else if (actionString.startsWith(ActionPrefix.loadMapAsset)) {
-            path = MyString.remainder(actionString, ActionPrefix.loadMapAsset);
-            Maud.gui.buildMenus.loadMapAsset(path);
+            args = MyString.remainder(actionString, ActionPrefix.loadMapAsset);
+            Maud.gui.buildMenus.loadMapAsset(args);
 
         } else if (actionString.startsWith(ActionPrefix.loadMapLocator)) {
-            path = MyString.remainder(actionString,
+            spec = MyString.remainder(actionString,
                     ActionPrefix.loadMapLocator);
-            Maud.gui.buildMenus.loadMapLocator(path);
+            Maud.gui.buildMenus.loadMapLocator(spec);
 
         } else if (actionString.startsWith(ActionPrefix.loadMapNamed)) {
             name = MyString.remainder(actionString,
@@ -150,9 +155,9 @@ class LoadAction {
             model.getMap().loadNamed(name);
 
         } else if (actionString.startsWith(ActionPrefix.loadSourceAnimation)) {
-            args = MyString.remainder(actionString,
+            name = MyString.remainder(actionString,
                     ActionPrefix.loadSourceAnimation);
-            AnimationMenus.loadAnimation(args, source);
+            AnimationMenus.loadAnimation(name, source);
 
         } else if (actionString.startsWith(ActionPrefix.loadSourceCgmAsset)) {
             args = MyString.remainder(actionString,
@@ -160,14 +165,24 @@ class LoadAction {
             Maud.gui.buildMenus.loadCgmAsset(args, source);
 
         } else if (actionString.startsWith(ActionPrefix.loadSourceCgmLocator)) {
-            path = MyString.remainder(actionString,
+            spec = MyString.remainder(actionString,
                     ActionPrefix.loadSourceCgmLocator);
-            Maud.gui.buildMenus.loadCgmLocator(path, source);
+            Maud.gui.buildMenus.loadCgmLocator(spec, source);
 
         } else if (actionString.startsWith(ActionPrefix.loadSourceCgmNamed)) {
             name = MyString.remainder(actionString,
                     ActionPrefix.loadSourceCgmNamed);
             source.loadNamed(name);
+
+        } else if (actionString.startsWith(ActionPrefix.loadTextureAsset)) {
+            args = MyString.remainder(actionString,
+                    ActionPrefix.loadTextureAsset);
+            Maud.gui.buildMenus.loadTextureAsset(args);
+
+        } else if (actionString.startsWith(ActionPrefix.loadTextureLocator)) {
+            spec = MyString.remainder(actionString,
+                    ActionPrefix.loadTextureLocator);
+            Maud.gui.buildMenus.loadTextureLocator(spec);
 
         } else {
             handled = false;

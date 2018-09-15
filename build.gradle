@@ -44,7 +44,7 @@ repositories {
 dependencies {
     // from stephengold's bintray repositories:
     compile 'jme3utilities:jme3-utilities-heart:2.9.0'
-    compile 'jme3utilities:jme3-utilities-nifty:0.8.0'
+    compile 'jme3utilities:jme3-utilities-nifty:0.8.1'
     compile 'jme3utilities:Minie:0.2.10'
     compile 'jme3utilities:SkyControl:0.9.13'
     compile 'jme3utilities:Wes:0.3.6'

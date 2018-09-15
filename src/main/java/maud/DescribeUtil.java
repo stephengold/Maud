@@ -27,9 +27,11 @@
 package maud;
 
 import com.jme3.animation.Bone;
+import com.jme3.asset.TextureKey;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Matrix4f;
 import com.jme3.math.Vector3f;
+import com.jme3.texture.Texture;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
@@ -162,6 +164,19 @@ public class DescribeUtil {
             Matrix4f[] ma = (Matrix4f[]) value;
             description = String.format("length=%d", ma.length);
 
+        } else if (value instanceof Texture) {
+            Texture texture = (Texture) value;
+            TextureKey textureKey = (TextureKey) texture.getKey();
+            if (textureKey == null) {
+                description = "( keyless texture )";
+            } else {
+                int anisotropy = textureKey.getAnisotropy();
+                description = textureKey.toString();
+                if (anisotropy != 0) {
+                    description += String.format(" (Anisotropy%d)", anisotropy);
+                }
+            }
+
         } else {
             description = value.toString();
         }
@@ -181,6 +196,35 @@ public class DescribeUtil {
             description = "disabled";
         } else {
             description = String.format("%dx", factor);
+        }
+
+        return description;
+    }
+
+    /**
+     * Describe a texture type, using the same names as
+     * {@link com.jme3.asset.TextureKey#toString())}.
+     *
+     * @param type (not null)
+     * @return a textual description (not null, not empty)
+     */
+    public static String type(Texture.Type type) {
+        String description;
+        switch (type) {
+            case TwoDimensional:
+                description = "2D";
+                break;
+            case ThreeDimensional:
+                description = "3D";
+                break;
+            case TwoDimensionalArray:
+                description = "Array";
+                break;
+            case CubeMap:
+                description = "Cube";
+                break;
+            default:
+                throw new IllegalArgumentException();
         }
 
         return description;

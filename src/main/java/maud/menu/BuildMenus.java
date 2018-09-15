@@ -37,9 +37,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Misc;
 import jme3utilities.MyString;
+import jme3utilities.nifty.dialog.DialogController;
 import maud.Maud;
 import maud.action.ActionPrefix;
 import maud.dialog.EditorDialogs;
+import maud.dialog.TextureKeyDialog;
 import maud.model.EditorModel;
 import maud.model.LoadedMap;
 import maud.model.cgm.Cgm;
@@ -124,7 +126,7 @@ public class BuildMenus {
     }
 
     /**
-     * Handle a "load cgm asset" action without arguments.
+     * Handle a "load cgm" action without arguments.
      */
     public void loadCgm() {
         buildLocatorMenu();
@@ -213,12 +215,12 @@ public class BuildMenus {
     /**
      * Handle a "load (source)cgm locator" action with argument.
      *
-     * @param arg action argument (not null, not empty)
+     * @param spec URL specification (not null, not empty)
      * @param slot load slot (not null)
      */
-    public void loadCgmLocator(String arg, LoadedCgm slot) {
-        if (arg.equals(defaultLocation)) {
-            buildTestDataMenu();
+    public void loadCgmLocator(String spec, LoadedCgm slot) {
+        if (spec.equals(defaultLocation)) {
+            buildClasspathCgmMenu();
             if (slot == Maud.getModel().getSource()) {
                 builder.show(ActionPrefix.loadSourceCgmNamed);
             } else if (slot == Maud.getModel().getTarget()) {
@@ -227,15 +229,15 @@ public class BuildMenus {
                 throw new IllegalArgumentException();
             }
 
-        } else if (arg.startsWith("file://") || arg.endsWith(".jar")
-                || arg.endsWith(".zip")) {
+        } else if (spec.startsWith("file://") || spec.endsWith(".jar")
+                || spec.endsWith(".zip")) {
             String indexString
-                    = Maud.getModel().getLocations().indexForSpec(arg);
+                    = Maud.getModel().getLocations().indexForSpec(spec);
             String args = indexString + " /";
             loadCgmAsset(args, slot);
 
         } else {
-            EditorDialogs.loadCgmAsset(arg, slot);
+            EditorDialogs.loadCgmAsset(spec, slot);
         }
     }
 
@@ -306,11 +308,12 @@ public class BuildMenus {
     /**
      * Handle a "load map locator" action.
      *
-     * @param arg action argument (not null, not empty)
+     * @param spec URL specification or
+     * defaultLocation/identityForSource/identityForTarget(not null, not empty)
      */
-    public void loadMapLocator(String arg) {
+    public void loadMapLocator(String spec) {
         EditorModel model = Maud.getModel();
-        switch (arg) {
+        switch (spec) {
             case defaultLocation:
                 buildClasspathMapMenu();
                 builder.show(ActionPrefix.loadMapNamed);
@@ -327,24 +330,120 @@ public class BuildMenus {
                 break;
 
             default:
-                if (arg.startsWith("file://") || arg.endsWith(".jar")
-                        || arg.endsWith(".zip")) {
+                if (spec.startsWith("file://") || spec.endsWith(".jar")
+                        || spec.endsWith(".zip")) {
                     String indexString;
-                    indexString = model.getLocations().indexForSpec(arg);
+                    indexString = model.getLocations().indexForSpec(spec);
                     String args = indexString + " /";
                     loadMapAsset(args);
                 } else {
-                    EditorDialogs.loadMapAsset(arg);
+                    EditorDialogs.loadMapAsset(spec);
                 }
         }
     }
 
     /**
-     * Handle a "load sourceCgm asset" action without arguments.
+     * Handle a "load sourceAnimation" action without arguments.
      */
     public void loadSourceCgm() {
         buildLocatorMenu();
         builder.show(ActionPrefix.loadSourceCgmLocator);
+    }
+
+    /**
+     * Handle a "load texture" action without arguments.
+     */
+    public void loadTexture() {
+        buildLocatorMenu();
+        builder.show(ActionPrefix.loadTextureLocator);
+    }
+
+    /**
+     * Handle a "load texture asset" action with arguments.
+     *
+     * @param args action arguments (not null, not empty)
+     */
+    public void loadTextureAsset(String args) {
+        String indexString = args.split(" ")[0];
+        String assetPath = MyString.remainder(args, indexString + " ");
+        String spec = Maud.getModel().getLocations().specForIndex(indexString);
+
+        if (spec == null || !spec.startsWith("file:///")) { // won't browse
+            setTextureKeyAsset(assetPath);
+            return;
+        }
+        String rootPath = MyString.remainder(spec, "file:///");
+
+        if (rootPath.endsWith(".jar") || rootPath.endsWith(".zip")) {
+            List<String> entryNames = Misc.listZipEntries(rootPath, assetPath);
+            int numEntries = entryNames.size();
+            List<String> cgmEntries = new ArrayList<>(numEntries);
+            for (String entryName : entryNames) {
+                if (MenuBuilder.hasTextureSuffix(entryName)) {
+                    cgmEntries.add(entryName);
+                }
+            }
+            if (cgmEntries.size() == 1 && cgmEntries.contains(assetPath)) {
+                setTextureKeyAsset(assetPath);
+            } else if (!cgmEntries.isEmpty()) {
+                ShowMenus.selectFile(cgmEntries,
+                        ActionPrefix.loadTextureAsset + indexString + " ");
+            }
+
+        } else { // not a JAR or ZIP
+            File file = new File(rootPath, assetPath);
+            if (file.isDirectory()) {
+                String folderPath = file.getAbsolutePath();
+                buildFolderMenu(folderPath, "");
+                String menuPrefix = ActionPrefix.loadTextureAsset + args;
+                if (!menuPrefix.endsWith("/")) {
+                    menuPrefix += "/";
+                }
+                builder.show(menuPrefix);
+
+            } else if (file.canRead()) {
+                setTextureKeyAsset(assetPath);
+
+            } else {
+                /*
+                 * Treat the pathname as a prefix.
+                 */
+                File parent = file.getParentFile();
+                String parentPath = parent.getAbsolutePath();
+                parentPath = parentPath.replaceAll("\\\\", "/");
+                if (!parentPath.endsWith("/")) {
+                    parentPath += "/";
+                }
+                String prefix = file.getName();
+                buildFolderMenu(parentPath, prefix);
+                parentPath = MyString.remainder(parentPath, rootPath);
+                String menuPrefix = ActionPrefix.loadTextureAsset
+                        + indexString + " " + parentPath;
+                if (!menuPrefix.endsWith("/")) {
+                    menuPrefix += "/";
+                }
+                builder.show(menuPrefix);
+            }
+        }
+    }
+
+    /**
+     * Handle a "load texture locator" action.
+     *
+     * @param spec URL specification or defaultLocation (not null, not empty)
+     */
+    public void loadTextureLocator(String spec) {
+        if (spec.equals(defaultLocation)) {
+            buildClasspathTextureMenu();
+            builder.show(ActionPrefix.loadTextureAsset + "-1 /");
+
+        } else if (spec.startsWith("file://") || spec.endsWith(".jar")
+                || spec.endsWith(".zip")) {
+            String indexString
+                    = Maud.getModel().getLocations().indexForSpec(spec);
+            String args = indexString + " /";
+            loadTextureAsset(args);
+        }
     }
 
     /**
@@ -655,7 +754,7 @@ public class BuildMenus {
         builder.addSubmenu("Select");
         builder.addSubmenu("Add new");
         if (Maud.getModel().getTarget().getSgc().isSelected()) {
-            builder.addEdit("Delete");
+            builder.addDialog("Delete"); // user must confirm
             builder.add("Deselect");
         }
     }
@@ -691,13 +790,13 @@ public class BuildMenus {
     }
 
     /**
-     * Build a "... -> Load -> defaultLocation" menu.
+     * Build a menu of models on the classpath. TODO sort methods
      */
-    private void buildTestDataMenu() {
+    private void buildClasspathCgmMenu() {
         builder.reset();
         /*
          * Add items for C-G models included (on the classpath) with Maud.
-         * If haveTestdata is true, also for C-G models in jme3-testdata.
+         * If haveTestdata, also add items for C-G models in jme3-testdata.
          *
          * animated models:
          */
@@ -734,6 +833,37 @@ public class BuildMenus {
     }
 
     /**
+     * Build a menu of textures on the classpath.
+     */
+    private void buildClasspathTextureMenu() {
+        builder.reset();
+        /*
+         * Add items for textures included (on the classpath) with Maud.
+         * If haveTestdata, also add items for textures in jme3-testdata.
+         */
+        builder.addFile("Models/Jaime/NormalMap.png");
+        builder.addFile("Models/Jaime/diffuseMap.jpg");
+        builder.addFile("Models/MhGame/textures/brown_eye.png");
+        builder.addFile("Models/MhGame/textures/eyebrow001.png");
+        builder.addFile("Models/MhGame/textures/lit_matte.png");
+        builder.addFile("Models/MhGame/textures/lit_standard_skin.png");
+        builder.addFile("Models/MhGame/textures/male_worksuit01_ao.png");
+        builder.addFile("Models/MhGame/textures/male_worksuit01_diffuse.png");
+        builder.addFile("Models/MhGame/textures/male_worksuit01_normal.png");
+        builder.addFile("Models/MhGame/textures/shoes03_diffuse.png");
+        builder.addFile("Models/MhGame/textures/skinmat_eye.png");
+        builder.addFile(
+                "Models/MhGame/textures/young_lightskinned_male_diffuse2.png");
+        builder.addFile("Models/Sinbad/sinbad_body.jpg");
+        builder.addFile("Models/Sinbad/sinbad_clothes.jpg");
+        builder.addFile("Models/Sinbad/sinbad_sword.jpg");
+        builder.addFile("Textures/platform/bronze_ape.jpg");
+        builder.addFile("Textures/platform/rock_11474.jpg");
+        builder.addFile("Textures/platform/wood_0534.jpg");
+        // TODO more classpath textures
+    }
+
+    /**
      * Build a View menu.
      */
     private void buildViewMenu() {
@@ -749,5 +879,19 @@ public class BuildMenus {
                 || viewMode.equals(ViewMode.Hybrid)) {
             builder.addSubmenu("Score options");
         }
+    }
+
+    /**
+     * Alter the asset path in the current texture key.
+     *
+     * @param assetPath the desired path (not null, not empty)
+     */
+    private void setTextureKeyAsset(String assetPath) {
+        assert assetPath != null;
+        assert !assetPath.isEmpty();
+
+        DialogController dialog = Maud.gui.getActiveDialog();
+        TextureKeyDialog tkd = (TextureKeyDialog) dialog;
+        tkd.setAssetPath(assetPath);
     }
 }

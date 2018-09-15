@@ -74,6 +74,7 @@ public class Action {
     final static String loadRetargetedPose = "load retargetedPose";
     final static String loadSourceAnimation = "load sourceAnimation";
     final static String loadSourceCgm = "load sourceCgm";
+    final static String loadTexture = "load texture";
 
     final static String newAnimation = "new animation";
     final static String newAnimationFromExtract = "new animation fromExtract";
@@ -215,6 +216,7 @@ public class Action {
     final static String selectSourceBone = "select sourceBone";
     final static String selectSpatialChild = "select spatialChild";
     final static String selectSpatialParent = "select spatialParent";
+    final static String selectTextureType = "select textureType";
     final static String selectTrack = "select track";
     final static String selectTrackTarget = "select trackTarget";
     final static String selectTriangleMode = "select triangleMode";

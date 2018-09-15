@@ -34,6 +34,7 @@ import com.jme3.audio.openal.ALAudioRenderer;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.scene.plugins.bvh.BVHLoader;
 import com.jme3.system.AppSettings;
+import de.lessvoid.nifty.Nifty;
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -81,6 +82,11 @@ public class Maud extends GuiApplication {
      * path to the script asset evaluated at startup
      */
     final public static String startupScriptAssetPath = "Scripts/startup.js";
+    /**
+     * asset path to Nifty XML for a texture-key dialog box
+     */
+    final private static String textureKeyDialogAssetPath
+            = "Interface/Nifty/dialogs/texture-key.xml";
     // *************************************************************************
     // fields
 
@@ -343,6 +349,9 @@ public class Maud extends GuiApplication {
             logger.warning(message);
             editorModel.getMisc().setStatusMessage(message);
         }
+
+        Nifty nifty = getNifty();
+        nifty.fromXmlWithoutStartScreen(textureKeyDialogAssetPath);
 
         StartScreen startScreen = new StartScreen();
         stateManager.attach(startScreen);

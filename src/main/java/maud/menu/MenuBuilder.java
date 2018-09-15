@@ -209,6 +209,9 @@ class MenuBuilder {
             addFolder(name);
         } else {
             assert !hasCgmSuffix(name);
+            if (hasTextureSuffix(name)) {
+                addTexture(name);
+            }
         }
     }
 
@@ -335,6 +338,18 @@ class MenuBuilder {
     }
 
     /**
+     * Add an item with the texture icon to the menu.
+     *
+     * @param item (not null, not empty)
+     */
+    void addTexture(String item) {
+        assert item != null;
+        assert !item.isEmpty();
+
+        add(item, "Textures/icons/texture.png");
+    }
+
+    /**
      * Add an item with the Xbuf icon to the menu.
      *
      * @param item (not null, not empty)
@@ -431,6 +446,30 @@ class MenuBuilder {
         assert !item.isEmpty();
 
         boolean result = items.contains(item);
+        return result;
+    }
+
+    /**
+     * Test whether a filename (or zip entry name) has a texture suffix.
+     *
+     * @param name the name of the file/entry (not null, not empty)
+     */
+    static boolean hasTextureSuffix(String name) {
+        assert name != null;
+        assert !name.isEmpty();
+
+        boolean result = false;
+        if (name.endsWith(".png")
+                || name.endsWith(".jpg") || name.endsWith(".jpeg")
+                || name.endsWith(".bmp")
+                || name.endsWith(".dds")
+                || name.endsWith(".gif")
+                || name.endsWith(".hdr")
+                || name.endsWith(".pfm")
+                || name.endsWith(".tga")) {
+            result = true;
+        }
+
         return result;
     }
 

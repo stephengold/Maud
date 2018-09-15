@@ -29,6 +29,7 @@ package maud;
 import com.jme3.app.Application;
 import com.jme3.app.StatsAppState;
 import com.jme3.app.state.AppStateManager;
+import com.jme3.asset.TextureKey;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
@@ -40,8 +41,10 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.NiftyEventSubscriber;
+import de.lessvoid.nifty.controls.CheckBox;
 import de.lessvoid.nifty.controls.CheckBoxStateChangedEvent;
 import de.lessvoid.nifty.controls.SliderChangedEvent;
+import de.lessvoid.nifty.controls.TextField;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.screen.Screen;
 import java.util.List;
@@ -59,6 +62,7 @@ import jme3utilities.math.MyMath;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.ui.InputMode;
 import maud.action.EditorInputMode;
+import maud.dialog.TextureKeyDialog;
 import maud.menu.BuildMenus;
 import maud.mesh.Lozenge;
 import maud.model.EditorModel;
@@ -494,6 +498,45 @@ public class EditorScreen extends GuiScreenController {
     public void setIgnoreGuiChanges(boolean newSetting) {
         ignoreGuiChanges = newSetting;
     }
+
+    /**
+     * Create, customize, and activate a modal texture-key editing dialog box.
+     *
+     * @param oldKey the key to edit (may be null, unaffected)
+     * @param allowNull if true, "null" will be an allowed value
+     * @param actionPrefix the commit action prefix (not null)
+     */
+    public void showTextureKeyDialog(TextureKey oldKey, boolean allowNull,
+            String actionPrefix) {
+        Validate.nonNull(actionPrefix, "action prefix");
+        /*
+         * Create a popup using the "dialogs/texture-key" layout as a base.
+         * Nifty assigns the popup a new id.
+         */
+        Element dialogElement = nifty.createPopup("dialogs/texture-key");
+        setActiveDialog(dialogElement);
+        String popupId = dialogElement.getId();
+        assert popupId != null;
+
+        CheckBox flipBox
+                = dialogElement.findNiftyControl("#flip", CheckBox.class);
+        boolean flip = (oldKey == null) ? false : oldKey.isFlipY();
+        flipBox.setChecked(flip);
+
+        CheckBox mipMapBox
+                = dialogElement.findNiftyControl("#mipmap", CheckBox.class);
+        boolean mipMap = (oldKey == null) ? false : oldKey.isGenerateMips();
+        mipMapBox.setChecked(mipMap);
+
+        TextField anisotropyField = dialogElement.findNiftyControl(
+                "#anisotropy", TextField.class);
+        int anisotropy = (oldKey == null) ? 0 : oldKey.getAnisotropy();
+        String defaultValue = Integer.toString(anisotropy);
+        anisotropyField.setText(defaultValue);
+
+        TextureKeyDialog controller = new TextureKeyDialog(oldKey, allowNull);
+        activateDialog(popupId, actionPrefix, "#commit", controller);
+    }
     // *************************************************************************
     // GuiScreenController methods
 
@@ -534,13 +577,13 @@ public class EditorScreen extends GuiScreenController {
 
     /**
      * Callback to update the editor screen prior to rendering. (Invoked once
-     * per render pass.)
+     * per frame.)
      *
-     * @param updateInterval time interval between updates (in seconds, &ge;0)
+     * @param tpf time interval between frames (in seconds, &ge;0)
      */
     @Override
-    public void update(float updateInterval) {
-        super.update(updateInterval);
+    public void update(float tpf) {
+        super.update(tpf);
 
         if (toolMap.isEmpty()) {
             return;
@@ -569,10 +612,10 @@ public class EditorScreen extends GuiScreenController {
          */
         Cgm source = model.getSource();
         if (source.getAnimation().isMoving()) {
-            updateTrackTime(source, updateInterval);
+            updateTrackTime(source, tpf);
         }
         if (target.getAnimation().isMoving()) {
-            updateTrackTime(target, updateInterval);
+            updateTrackTime(target, tpf);
         } else if (target.getAnimation().isRetargetedPose()) {
             target.getPose().setToAnimation();
         }
@@ -588,10 +631,10 @@ public class EditorScreen extends GuiScreenController {
                 CgmTransform cgmTransform
                         = cgmToRotate.getSceneView().getTransform();
                 if (signals.test(modelCCWSignalName)) {
-                    cgmTransform.rotateY(updateInterval);
+                    cgmTransform.rotateY(tpf);
                 }
                 if (signals.test(modelCWSignalName)) {
-                    cgmTransform.rotateY(-updateInterval);
+                    cgmTransform.rotateY(-tpf);
                 }
             }
 
@@ -608,10 +651,10 @@ public class EditorScreen extends GuiScreenController {
         /*
          * Update the views.
          */
-        source.getSceneView().update(null, updateInterval);
-        target.getSceneView().update(null, updateInterval);
-        source.getScoreView().update(source, updateInterval);
-        target.getScoreView().update(target, updateInterval);
+        source.getSceneView().update(null, tpf);
+        target.getSceneView().update(null, tpf);
+        source.getScoreView().update(source, tpf);
+        target.getScoreView().update(target, tpf);
     }
     // *************************************************************************
     // private methods
@@ -754,9 +797,9 @@ public class EditorScreen extends GuiScreenController {
      * Update the animation time.
      *
      * @param cgm (not null)
-     * @param updateInterval time interval between updates (in seconds, &ge;0)
+     * @param tpf time interval between frames (in seconds, &ge;0)
      */
-    private void updateTrackTime(Cgm cgm, float updateInterval) {
+    private void updateTrackTime(Cgm cgm, float tpf) {
         LoadedAnimation animation = cgm.getAnimation();
         assert animation.isMoving();
         PlayOptions play = cgm.getPlay();
@@ -764,7 +807,7 @@ public class EditorScreen extends GuiScreenController {
         assert speed != 0f;
 
         float time = play.getTime();
-        time += speed * updateInterval;
+        time += speed * tpf;
 
         boolean cont = play.willContinue();
         boolean reverse = play.willReverse();

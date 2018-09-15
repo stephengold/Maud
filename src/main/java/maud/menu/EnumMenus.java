@@ -34,17 +34,21 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.shader.VarType;
 import com.jme3.shadow.EdgeFilteringMode;
+import com.jme3.texture.Texture;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
+import jme3utilities.nifty.dialog.DialogController;
 import jme3utilities.wes.TweenRotations;
 import jme3utilities.wes.TweenTransforms;
 import jme3utilities.wes.TweenVectors;
+import maud.DescribeUtil;
 import maud.Maud;
 import maud.action.ActionPrefix;
 import maud.dialog.LicenseType;
+import maud.dialog.TextureKeyDialog;
 import maud.model.cgm.SelectedBuffer;
 import maud.model.cgm.SelectedSpatial;
 import maud.model.cgm.UserDataType;
@@ -342,6 +346,26 @@ public class EnumMenus {
         }
 
         builder.show(ActionPrefix.selectSkeletonColor);
+    }
+
+    /**
+     * Display a menu to set the texture type using the "select textureType "
+     * action prefix.
+     */
+    public static void selectTextureType() {
+        MenuBuilder builder = new MenuBuilder();
+
+        DialogController dialog = Maud.gui.getActiveDialog();
+        TextureKeyDialog tkd = (TextureKeyDialog) dialog;
+        Texture.Type selected = tkd.getTypeHint();
+        for (Texture.Type type : Texture.Type.values()) {
+            if (type != selected) {
+                String description = DescribeUtil.type(type);
+                builder.add(description);
+            }
+        }
+
+        builder.show("select textureType ");
     }
 
     /**
