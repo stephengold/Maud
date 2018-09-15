@@ -10,9 +10,11 @@ Attribution-Share Alike 3.0 Unported License.
 
 The files
 "3d cursor.blend",
+"3d cursor.j3o",
 "Maud.png",
 "Maud-settings.png",
 "bone.png",
+"bronze_ape.jpg",
 "bvh.png",
 "dialog.png",
 "edit.png",
@@ -21,14 +23,18 @@ The files
 "geometry.png",
 "jar.png",
 "jme.png",
+"ladder.blend",
+"ladder.j3o"
 "node.png",
 "ogre.png",
 "rock_11474.jpg",
 "rotate.png",
 "scale.png",
 "submenu.png",
+"texture.png",
 "tool.png",
 "translate.png",
+"wood_0534.jpg",
 "xbuf.png", and
 "zip.png"
 are the work of Stephen Gold, who licensed them under the Creative Commons

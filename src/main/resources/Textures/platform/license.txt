@@ -1,8 +1,9 @@
 Licensing history for assets in src/main/resources/Textures/platform
 
-Stephen Gold authored "rock_11474.jpg". He makes it available under the
-Creative Commons Attribution-Share Alike 3.0 Unported license -- 
-see https://creativecommons.org/licenses/by-sa/3.0/ for details.
+Stephen Gold authored "bronze_ape.jpg", "rock_11474.jpg", and "wood_0534.jpg".
+He makes it available under the Creative Commons Attribution-Share Alike 3.0
+Unported license -- see https://creativecommons.org/licenses/by-sa/3.0/ for
+details.
 
 When sharing or reusing these files, please attribute them to "Stephen Gold's
 Maud Project at https://github.com/stephengold/Maud"
