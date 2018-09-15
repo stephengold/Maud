@@ -101,7 +101,7 @@ public class DimensionsDialog extends TextEntryDialog {
     /**
      * Parse the specified text to obtain dimensions.
      *
-     * @param text (not null, not empty)
+     * @param text the input text (not null, not empty)
      * @return a new array containing the width and height, or null for a syntax
      * error
      */
