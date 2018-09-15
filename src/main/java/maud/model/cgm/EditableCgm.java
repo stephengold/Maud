@@ -196,6 +196,7 @@ public class EditableCgm extends LoadedCgm {
         }
 
         History.autoAdd();
+        material.setKey(null);
         material.setParam(parameterName, varType, value);
         getSceneView().setParam(parameterName, varType, value);
 
@@ -420,6 +421,7 @@ public class EditableCgm extends LoadedCgm {
         SceneView sceneView = getSceneView();
 
         History.autoAdd();
+        material.setKey(null);
         material.clearParam(parameterName);
         sceneView.deleteMatParam();
 
@@ -681,6 +683,7 @@ public class EditableCgm extends LoadedCgm {
         String oldName = material.getName();
         if (oldName != newName && !oldName.equals(newName)) {
             History.autoAdd();
+            material.setKey(null);
             material.setName(newName);
             // scene view not updated
 
@@ -1025,6 +1028,7 @@ public class EditableCgm extends LoadedCgm {
             RenderState modelState = material.getAdditionalRenderState();
             if (modelState.isDepthTest() != newState) {
                 History.autoAdd();
+                material.setKey(null);
                 modelState.setDepthTest(newState);
                 SceneView sceneView = getSceneView();
                 sceneView.setDepthTest(newState);
@@ -1049,6 +1053,7 @@ public class EditableCgm extends LoadedCgm {
             RenderState modelState = material.getAdditionalRenderState();
             if (modelState.getFaceCullMode() != newMode) {
                 History.autoAdd();
+                material.setKey(null);
                 modelState.setFaceCullMode(newMode);
                 SceneView sceneView = getSceneView();
                 sceneView.setFaceCullMode(newMode);
@@ -1141,6 +1146,7 @@ public class EditableCgm extends LoadedCgm {
         Material material = getSpatial().getMaterial();
 
         History.autoAdd();
+        material.setKey(null);
         VarType varType = oldParam.getVarType();
         material.setParam(parameterName, varType, value);
         getSceneView().setParam(parameterName, varType, value);
@@ -1371,6 +1377,7 @@ public class EditableCgm extends LoadedCgm {
             RenderState modelState = material.getAdditionalRenderState();
             if (modelState.isWireframe() != newState) {
                 History.autoAdd();
+                material.setKey(null);
                 modelState.setWireframe(newState);
                 updateSceneWireframe();
 

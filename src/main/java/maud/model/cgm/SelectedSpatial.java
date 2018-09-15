@@ -329,6 +329,7 @@ public class SelectedSpatial implements JmeCloneable {
     public void cloneMaterial() {
         Material oldMaterial = getMaterial();
         Material clone = oldMaterial.clone();
+        clone.setKey(null);
         editableCgm.setMaterial(clone, "clone material");
     }
 
