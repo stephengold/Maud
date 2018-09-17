@@ -15,6 +15,7 @@ gradle.projectsEvaluated {
         //args '--forceDialog'
         //args '--skipStartup'
         classpath sourceSets.main.runtimeClasspath
+        //doFirst { println commandLine }
         enableAssertions true
         jvmArgs '-XX:+UseConcMarkSweepGC'
         //jvmArgs '-XX:+UseG1GC', '-XX:MaxGCPauseMillis=10'
