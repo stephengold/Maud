@@ -240,7 +240,9 @@ public class EditorScreen extends GuiScreenController {
         Validate.nonNull(tool, "tool");
 
         Tool oldMapping = toolMap.put(toolName, tool);
-        assert oldMapping == null;
+        if (oldMapping != null) {
+            throw new RuntimeException("Two tools with the same name.");
+        }
     }
 
     /**
