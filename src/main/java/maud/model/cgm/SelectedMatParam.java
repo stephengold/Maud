@@ -158,9 +158,9 @@ public class SelectedMatParam implements Cloneable {
      */
     public Object getValue() {
         Object value = null;
-        MatParam mpo = find();
-        if (mpo != null) {
-            value = mpo.getValue();
+        MatParam mp = find();
+        if (mp != null) {
+            value = mp.getValue();
         }
 
         return value;
@@ -173,9 +173,9 @@ public class SelectedMatParam implements Cloneable {
      */
     public VarType getVarType() {
         VarType varType = null;
-        MatParam mpo = find();
-        if (mpo != null) {
-            varType = mpo.getVarType();
+        MatParam mp = find();
+        if (mp != null) {
+            varType = mp.getVarType();
         }
 
         return varType;
