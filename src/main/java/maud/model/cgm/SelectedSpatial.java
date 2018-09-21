@@ -217,13 +217,13 @@ public class SelectedSpatial implements JmeCloneable {
         SceneView sceneView = cgm.getSceneView();
         Spatial viewSpatial = sceneView.selectedSpatial();
         Vector3f halfExtents = MaudUtil.halfExtents(viewSpatial);
-        float margin = 0f;
+        float margin = 0.04f;
         CollisionShape shape
                 = PhysicsUtil.makeShape(shapeType, halfExtents, margin);
         float mass = 1f;
         RigidBodyControl rbc = new RigidBodyControl(shape, mass);
         rbc.setKinematic(true);
-        // why is the default kinematic=false but kinematicSpatial=true?
+        // TODO why is the default kinematic=false but kinematicSpatial=true?
 
         editableCgm.addSgc(rbc, "add a RigidBodyControl");
         Spatial modelSpatial = find();
