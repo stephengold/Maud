@@ -29,14 +29,18 @@ package maud.model.cgm;
 import com.jme3.material.MatParam;
 import com.jme3.material.MatParamOverride;
 import com.jme3.material.Material;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
 import com.jme3.shader.VarType;
 import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
+import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
+import jme3utilities.Misc;
 import jme3utilities.MyString;
-import jme3utilities.Validate;
+import maud.MaudUtil;
+import maud.view.scene.SceneView;
 
 /**
  * A locator for a material parameter or M-P override.
@@ -61,14 +65,15 @@ public class MatParamRef implements JmeCloneable {
      */
     private Material matParamMaterial;
     /**
-     * referenced material parameter or M-P override (not null)
-     */
-    private MatParam target;
-    /**
      * spatial whose local list includes the target M-P override, or null if
      * target is a material parameter
      */
     private Spatial overrideSpatial;
+    /**
+     * name of the target material parameter or M-P override (not null, not
+     * empty)
+     */
+    final private String parameterName;
     // *************************************************************************
     // constructors
 
@@ -76,31 +81,37 @@ public class MatParamRef implements JmeCloneable {
      * Instantiate a reference to a parameter in a material.
      *
      * @param matParam the material parameter instance (not null)
-     * @param material which material contains the parameter instance (not null)
+     * @param material which material contains the parameter instance (not null,
+     * alias created)
      */
     MatParamRef(MatParam matParam, Material material) {
-        Validate.nonNull(matParam, "material parameter");
-        Validate.nonNull(material, "material");
+        assert material != null;
+        String name = matParam.getName();
+        assert name != null;
+        assert !name.isEmpty();
         assert matParam.getValue() != null;
 
         matParamMaterial = material;
-        target = matParam;
         overrideSpatial = null;
+        parameterName = name;
     }
 
     /**
      * Instantiate a reference to a material-parameter override.
      *
      * @param override the M-P override instance (not null)
-     * @param spatial whose local list contains the override instance (not null)
+     * @param spatial whose local list contains the override instance (not null,
+     * alias created)
      */
     MatParamRef(MatParamOverride override, Spatial spatial) {
-        Validate.nonNull(override, "override");
-        Validate.nonNull(spatial, "spatial");
+        assert spatial != null;
+        String name = override.getName();
+        assert name != null;
+        assert !name.isEmpty();
 
         matParamMaterial = null;
-        target = override;
         overrideSpatial = spatial;
+        parameterName = name;
     }
     // *************************************************************************
     // new methods exposed
@@ -129,8 +140,32 @@ public class MatParamRef implements JmeCloneable {
      * @return an object (may be null if target is an override)
      */
     Object getParameterValue() {
+        MatParam target = getTarget();
         Object result = target.getValue();
+
+        if (result == null) {
+            assert isOverride();
+        }
         return result;
+    }
+
+    /**
+     * Access the target material parameter or M-P override.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    MatParam getTarget() {
+        MatParam target = null;
+        if (isInMaterial()) {
+            assert overrideSpatial == null;
+            target = matParamMaterial.getParam(parameterName);
+        } else {
+            assert matParamMaterial == null;
+            target = MaudUtil.findOverride(overrideSpatial, parameterName);
+        }
+
+        assert target != null;
+        return target;
     }
 
     /**
@@ -166,23 +201,44 @@ public class MatParamRef implements JmeCloneable {
     /**
      * Read the target's parameter name.
      *
-     * @return name
+     * @return name (not null, not empty)
      */
     String parameterName() {
-        String result = target.getName();
-        return result;
+        return parameterName;
     }
 
     /**
-     * Alter the value of the target.
+     * Alter the value of the target, both in the MVC model and the specified
+     * scene view.
      *
      * @param desiredValue (may be null only for override, alias created)
      */
-    void setValue(Object desiredValue) {
+    void setValue(Object desiredValue, Cgm cgm) {
         if (desiredValue == null) {
             assert isOverride();
         }
+
+        MatParam target = getTarget();
         target.setValue(desiredValue);
+
+        Object viewValue = Misc.deepClone(desiredValue);
+        SceneView sceneView = cgm.getSceneView();
+        Spatial cgmRoot = cgm.getRootSpatial();
+        VarType varType = target.getVarType();
+
+        if (isInMaterial()) {
+            matParamMaterial.setKey(null);
+            List<Geometry> matSpatials
+                    = MaudUtil.listUsers(cgmRoot, matParamMaterial, null);
+            Spatial matSpatial = matSpatials.get(0);
+            List<Integer> treePosition = cgm.findSpatial(matSpatial);
+            sceneView.setParamValue(treePosition, parameterName, varType,
+                    viewValue);
+        } else {
+            List<Integer> treePosition = cgm.findSpatial(overrideSpatial);
+            sceneView.setOverrideValue(treePosition, parameterName, varType,
+                    viewValue);
+        }
     }
 
     /**
@@ -191,6 +247,7 @@ public class MatParamRef implements JmeCloneable {
      * @return enum value (not null)
      */
     VarType type() {
+        MatParam target = getTarget();
         VarType result = target.getVarType();
 
         assert result != null;
@@ -223,7 +280,6 @@ public class MatParamRef implements JmeCloneable {
     @Override
     public void cloneFields(Cloner cloner, Object original) {
         matParamMaterial = cloner.clone(matParamMaterial);
-        target = cloner.clone(target);
         overrideSpatial = cloner.clone(overrideSpatial);
     }
 
@@ -257,8 +313,7 @@ public class MatParamRef implements JmeCloneable {
             result = true;
         } else if (otherObject instanceof MatParamRef) {
             MatParamRef otherRef = (MatParamRef) otherObject;
-            result = otherRef.target == target
-                    && otherRef.getMaterial() == matParamMaterial
+            result = otherRef.getMaterial() == matParamMaterial
                     && otherRef.getOverrideSpatial() == overrideSpatial;
         } else {
             result = false;
@@ -276,7 +331,6 @@ public class MatParamRef implements JmeCloneable {
     public int hashCode() {
         int hash = 33;
         hash = 17 * hash + Objects.hashCode(matParamMaterial);
-        hash = 17 * hash + Objects.hashCode(target);
         hash = 17 * hash + Objects.hashCode(overrideSpatial);
 
         return hash;
@@ -291,13 +345,14 @@ public class MatParamRef implements JmeCloneable {
     public String toString() {
         String result;
 
-        String pName = target.getName();
         if (overrideSpatial != null) {
             String name = overrideSpatial.getName();
-            result = MyString.quote(pName) + "o" + MyString.quote(name);
+            result = MyString.quote(parameterName) + "override"
+                    + MyString.quote(name);
         } else {
             String name = matParamMaterial.getName();
-            result = MyString.quote(pName) + "p" + MyString.quote(name);
+            result = MyString.quote(parameterName) + "param"
+                    + MyString.quote(name);
         }
 
         return result;
