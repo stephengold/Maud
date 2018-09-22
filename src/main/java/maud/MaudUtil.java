@@ -71,12 +71,12 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import jme3utilities.MySpatial;
+import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import jme3utilities.math.MyVector3f;
 import jme3utilities.nifty.dialog.VectorDialog;
 import jme3utilities.ui.Locators;
-import maud.dialog.TextureKeyDialog;
 import maud.model.option.RotationDisplayMode;
 
 /**
@@ -101,6 +101,10 @@ public class MaudUtil {
      * pattern for matching the word "null"
      */
     final private static Pattern nullPattern = Pattern.compile("\\s*null\\s*");
+    /**
+     * pattern to match a tag in parentheses at the end of a string
+     */
+    final private static Pattern tagPattern = Pattern.compile(" \\((\\w+)\\)$");
     /**
      * local copy of {@link com.jme3.math.Transform#IDENTITY}
      */
@@ -598,8 +602,7 @@ public class MaudUtil {
                 case Texture3D:
                 case TextureArray:
                 case TextureCubeMap:
-                    TextureKey key
-                            = TextureKeyDialog.parseTextureKey(textString);
+                    TextureKey key = parseTextureKey(textString);
                     AssetManager assetManager = Locators.getAssetManager();
                     try {
                         result = assetManager.loadTexture(key);
@@ -636,6 +639,66 @@ public class MaudUtil {
                     throw new IllegalArgumentException();
             }
         }
+
+        return result;
+    }
+
+    /**
+     * Parse the specified text to obtain a texture key.
+     *
+     * @param text the input text (not null, not empty)
+     * @return a new texture key (not null)
+     * @see maud.DescribeUtil#key(com.jme3.asset.TextureKey)
+     */
+    public static TextureKey parseTextureKey(String text) {
+        Validate.nonEmpty(text, "text");
+
+        boolean flipY = false;
+        boolean generateMips = false;
+        int anisotropy = 0;
+        Texture.Type typeHint = Texture.Type.TwoDimensional;
+        String name;
+
+        while (true) {
+            Matcher matcher = tagPattern.matcher(text);
+            if (matcher.find()) {
+                int startPos = matcher.start();
+                String tag = matcher.group(1);
+                if (tag.startsWith("Anisotropy")) {
+                    String numberText = MyString.remainder(tag, "Anisotropy");
+                    anisotropy = Integer.parseInt(numberText);
+                } else {
+                    switch (tag) {
+                        case "3D":
+                            typeHint = Texture.Type.ThreeDimensional;
+                            break;
+                        case "Array":
+                            typeHint = Texture.Type.TwoDimensionalArray;
+                            break;
+                        case "Cube":
+                            typeHint = Texture.Type.CubeMap;
+                            break;
+                        case "Flipped":
+                            flipY = true;
+                            break;
+                        case "Mipmapped":
+                            generateMips = true;
+                            break;
+                        default:
+                            throw new IllegalArgumentException(tag);
+                    }
+                }
+                text = text.substring(0, startPos);
+            } else {
+                name = text;
+                break;
+            }
+        }
+
+        TextureKey result = new TextureKey(name, flipY);
+        result.setAnisotropy(anisotropy);
+        result.setGenerateMips(generateMips);
+        result.setTextureTypeHint(typeHint);
 
         return result;
     }
