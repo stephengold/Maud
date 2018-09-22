@@ -32,13 +32,15 @@ import com.jme3.math.Matrix3f;
 import com.jme3.math.Matrix4f;
 import com.jme3.math.Vector3f;
 import com.jme3.texture.Texture;
+import com.jme3.texture.Texture3D;
+import com.jme3.texture.TextureCubeMap;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 
 /**
  * Utility methods to describe values of various sorts. All methods should be
- * static.
+ * static. TODO move some of these to Describer
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -121,6 +123,25 @@ public class DescribeUtil {
     }
 
     /**
+     * Describe a texture key.
+     *
+     * @param textureKey (not null, unaffected)
+     * @return a textual description (not null, not empty)
+     */
+    public static String key(TextureKey textureKey) {
+        String result = textureKey.toString();
+
+        int anisotropy = textureKey.getAnisotropy();
+        if (anisotropy != 0) {
+            result += String.format(" (Anisotropy%d)", anisotropy);
+        }
+
+        assert result != null;
+        assert !result.isEmpty();
+        return result;
+    }
+
+    /**
      * Describe a material-parameter value.
      *
      * @param value (may be null, unaffected)
@@ -166,16 +187,7 @@ public class DescribeUtil {
 
         } else if (value instanceof Texture) {
             Texture texture = (Texture) value;
-            TextureKey textureKey = (TextureKey) texture.getKey();
-            if (textureKey == null) {
-                description = "( keyless texture )";
-            } else {
-                int anisotropy = textureKey.getAnisotropy();
-                description = textureKey.toString();
-                if (anisotropy != 0) {
-                    description += String.format(" (Anisotropy%d)", anisotropy);
-                }
-            }
+            description = texture(texture);
 
         } else {
             description = value.toString();
@@ -199,6 +211,43 @@ public class DescribeUtil {
         }
 
         return description;
+    }
+
+    /**
+     * Describe a texture.
+     *
+     * @param texture the input texture (may be null, unaffected)
+     * @return a textual description (not null, not empty)
+     */
+    public static String texture(Texture texture) {
+        String result = "null";
+
+        if (texture != null) {
+            TextureKey textureKey = (TextureKey) texture.getKey();
+            if (textureKey == null) {
+                result = "(no key)";
+            } else {
+                result = key(textureKey);
+            }
+
+            Texture.MagFilter mag = texture.getMagFilter();
+            result += " mag:" + mag.toString();
+            Texture.MinFilter min = texture.getMinFilter();
+            result += " min:" + min.toString();
+            if (texture instanceof Texture3D
+                    || texture instanceof TextureCubeMap) {
+                Texture.WrapMode rWrap = texture.getWrap(Texture.WrapAxis.R);
+                result += " r:" + rWrap.toString();
+            }
+            Texture.WrapMode sWrap = texture.getWrap(Texture.WrapAxis.S);
+            result += " s:" + sWrap.toString();
+            Texture.WrapMode tWrap = texture.getWrap(Texture.WrapAxis.T);
+            result += " t:" + tWrap.toString();
+        }
+
+        assert result != null;
+        assert !result.isEmpty();
+        return result;
     }
 
     /**
