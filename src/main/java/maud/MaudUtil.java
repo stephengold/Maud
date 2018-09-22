@@ -34,6 +34,7 @@ import com.jme3.asset.TextureKey;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.material.MatParam;
+import com.jme3.material.MatParamOverride;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Matrix3f;
@@ -310,6 +311,32 @@ public class MaudUtil {
         }
 
         return null;
+    }
+
+    /**
+     * Access the named M-P override in the specified spatial. TODO use
+     * MySpatial
+     *
+     * @param spatial the spatial to search (not null)
+     * @param parameterName which override (not null, not empty)
+     * @return the pre-existing instance, or null if not found
+     */
+    public static MatParamOverride findOverride(Spatial spatial,
+            String parameterName) {
+        Validate.nonNull(spatial, "spatial");
+        Validate.nonEmpty(parameterName, "parameterName");
+
+        MatParamOverride result = null;
+        Collection<MatParamOverride> list = spatial.getLocalMatParamOverrides();
+        for (MatParamOverride override : list) {
+            String name = override.getName();
+            if (parameterName.equals(name)) {
+                result = override;
+                break;
+            }
+        }
+
+        return result;
     }
 
     /**

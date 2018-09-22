@@ -65,7 +65,6 @@ import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
 import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -1009,15 +1008,9 @@ public class SceneViewCore
      * @return the pre-existing instance (not null)
      */
     protected MatParamOverride findSelectedMpo() {
-        MatParamOverride result = null;
         Spatial spatial = selectedSpatial();
         String parameterName = cgm.getOverride().getName();
-        Collection<MatParamOverride> mpos = spatial.getLocalMatParamOverrides();
-        for (MatParamOverride mpo : mpos) {
-            if (mpo.getName().equals(parameterName)) {
-                result = mpo;
-            }
-        }
+        MatParamOverride result = MaudUtil.findOverride(spatial, parameterName);
 
         assert result != null;
         return result;
