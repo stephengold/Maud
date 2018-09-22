@@ -137,6 +137,14 @@ class SetOZAction {
                 target.getSpatial().snapRotation(PhysicsSpace.AXIS_Z);
                 break;
 
+            case Action.setTextureClone:
+                target.getTexture().cloneFirstRef();
+                break;
+
+            case Action.setTextureNull:
+                target.getTexture().nullifyFirst();
+                break;
+
             case Action.setTimeLimitLower:
                 Cgm cgm = Maud.gui.mouseCgm();
                 if (cgm != null) {

@@ -671,7 +671,7 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Access the material.
+     * Access the material. TODO rename findMaterial()
      *
      * @return the pre-existing instance, or null if none
      */
@@ -1305,6 +1305,24 @@ public class SelectedSpatial implements JmeCloneable {
             select(owner);
             Maud.gui.tools.select("spatial");
         }
+    }
+
+    /**
+     * Select a geometry that uses the specified material.
+     *
+     * @param material (not null)
+     */
+    void selectMaterial(Material material) {
+        assert material != null;
+
+        Spatial rootSpatial = cgm.getRootSpatial();
+        List<Geometry> geoms = MaudUtil.listUsers(rootSpatial, material, null);
+        Geometry geometry = geoms.get(0);
+
+        List<Integer> position = cgm.findSpatial(geometry);
+        assert position != null;
+        treePosition = position;
+        postSelect();
     }
 
     /**

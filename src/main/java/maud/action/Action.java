@@ -88,6 +88,7 @@ public class Action {
     final static String newOverride = "new override";
     final static String newSgc = "new sgc";
     final static String newSingleKeyframe = "new singleKeyframe";
+    final static String newTexture = "new texture";
     final static String newUserKey = "new userKey";
 
     final static String nextAnimation = "next animation";
@@ -107,6 +108,7 @@ public class Action {
     final static String nextShape = "next shape";
     final static String nextSourceAnimation = "next sourceAnimation";
     final static String nextSourceAnimControl = "next sourceAnimControl";
+    final static String nextTexture = "next texture";
     final static String nextTrack = "next track";
     final static String nextUserData = "next userData";
     final static String nextVertex = "next vertex";
@@ -135,6 +137,7 @@ public class Action {
     final static String previousSourceAnimation = "previous sourceAnimation";
     final static String previousSourceAnimControl
             = "previous sourceAnimControl";
+    final static String previousTexture = "previous texture";
     final static String previousTrack = "previous track";
     final static String previousUserData = "previous userData";
     final static String previousVertex = "previous vertex";
@@ -216,7 +219,10 @@ public class Action {
     final static String selectSourceBone = "select sourceBone";
     final static String selectSpatialChild = "select spatialChild";
     final static String selectSpatialParent = "select spatialParent";
+    final static String selectTextureMag = "select textureMag";
+    final static String selectTextureMin = "select textureMin";
     final static String selectTextureType = "select textureType";
+    final static String selectTextureUser = "select textureUser";
     final static String selectTrack = "select track";
     final static String selectTrackTarget = "select trackTarget";
     final static String selectTriangleMode = "select triangleMode";
@@ -226,6 +232,7 @@ public class Action {
     final static String selectUserKey = "select userKey";
     final static String selectVertex = "select vertex";
 
+    final static String setAnisotropy = "set anisotropy";
     final static String setBatchHint = "set batchHint";
     final static String setBufferInstanceSpan = "set bufferInstanceSpan";
     final static String setBufferLimit = "set bufferLimit";
@@ -248,6 +255,8 @@ public class Action {
     final static String setSpatialAngleSnapX = "set spatialAngle snapX";
     final static String setSpatialAngleSnapY = "set spatialAngle snapY";
     final static String setSpatialAngleSnapZ = "set spatialAngle snapZ";
+    final static String setTextureClone = "set texture clone";
+    final static String setTextureNull = "set texture null";
     final static String setTimeLimitLower = "set timeLimit lower";
     final static String setTimeLimitUpper = "set timeLimit upper";
     final static String setTrackRotationAll = "set track rotation all";

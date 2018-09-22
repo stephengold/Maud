@@ -293,10 +293,12 @@ public class LoadedCgm extends Cgm {
         getSceneView().loadCgm(cgmRoot);
         updateSceneWireframe();
         /*
-         * Reset the selected bone/spatial and also the loaded animation.
+         * Reset the selected bone/spatial/texture
+         * and also the loaded animation. TODO other selections?
          */
         getBone().deselect();
-        getSpatial().postLoad();
+        getSpatial().postLoad(); // TODO deal separately with sgc and light?
+        getTexture().deselectAll();
         getAnimation().loadBindPose();
 
         SelectedAnimControl sac = getAnimControl();

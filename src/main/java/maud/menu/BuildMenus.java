@@ -37,16 +37,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Misc;
 import jme3utilities.MyString;
-import jme3utilities.nifty.dialog.DialogController;
 import maud.Maud;
 import maud.action.ActionPrefix;
 import maud.dialog.EditorDialogs;
-import maud.dialog.TextureKeyDialog;
 import maud.model.EditorModel;
 import maud.model.LoadedMap;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.LoadedCgm;
 import maud.model.cgm.SelectedSpatial;
+import maud.model.cgm.SelectedTexture;
 import maud.model.option.ViewMode;
 
 /**
@@ -366,10 +365,12 @@ public class BuildMenus {
     public void loadTextureAsset(String args) {
         String indexString = args.split(" ")[0];
         String assetPath = MyString.remainder(args, indexString + " ");
-        String spec = Maud.getModel().getLocations().specForIndex(indexString);
+        EditorModel model = Maud.getModel();
+        String spec = model.getLocations().specForIndex(indexString);
+        SelectedTexture texture = model.getTarget().getTexture();
 
         if (spec == null || !spec.startsWith("file:///")) { // won't browse
-            setTextureKeyAsset(assetPath);
+            texture.setAssetPath(assetPath);
             return;
         }
         String rootPath = MyString.remainder(spec, "file:///");
@@ -384,7 +385,7 @@ public class BuildMenus {
                 }
             }
             if (cgmEntries.size() == 1 && cgmEntries.contains(assetPath)) {
-                setTextureKeyAsset(assetPath);
+                texture.setAssetPath(assetPath);
             } else if (!cgmEntries.isEmpty()) {
                 ShowMenus.selectFile(cgmEntries,
                         ActionPrefix.loadTextureAsset + indexString + " ");
@@ -402,7 +403,7 @@ public class BuildMenus {
                 builder.show(menuPrefix);
 
             } else if (file.canRead()) {
-                setTextureKeyAsset(assetPath);
+                texture.setAssetPath(assetPath);
 
             } else {
                 /*
@@ -879,19 +880,5 @@ public class BuildMenus {
                 || viewMode.equals(ViewMode.Hybrid)) {
             builder.addSubmenu("Score options");
         }
-    }
-
-    /**
-     * Alter the asset path in the current texture key.
-     *
-     * @param assetPath the desired path (not null, not empty)
-     */
-    private void setTextureKeyAsset(String assetPath) {
-        assert assetPath != null;
-        assert !assetPath.isEmpty();
-
-        DialogController dialog = Maud.gui.getActiveDialog();
-        TextureKeyDialog tkd = (TextureKeyDialog) dialog;
-        tkd.setAssetPath(assetPath);
     }
 }

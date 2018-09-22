@@ -75,12 +75,15 @@ public class SelectedOverride implements Cloneable {
     // new methods exposed
 
     /**
-     * Delete (and deselect) the selected override.
+     * Delete (and deselect) the selected override and deselect its texture if
+     * any.
      */
     public void delete() {
         if (isSelected() && editableCgm != null) {
+            MatParamRef ref = makeRef();
             editableCgm.deleteOverride();
             selectedName = null;
+            cgm.getTexture().deselectRef(ref);
         }
     }
 
@@ -146,7 +149,7 @@ public class SelectedOverride implements Cloneable {
     }
 
     /**
-     * Read the override's parameter name.
+     * Read the override's parameter name. TODO rename parameterName()
      *
      * @return a parameter name, or null if none selected
      */
@@ -170,7 +173,7 @@ public class SelectedOverride implements Cloneable {
     }
 
     /**
-     * Read the override's type.
+     * Read the override's type. TODO rename varType()
      *
      * @return an enum value, or null if none selected
      */
@@ -205,12 +208,22 @@ public class SelectedOverride implements Cloneable {
      * @return true if selected, otherwise false
      */
     public boolean isSelected() {
-        boolean result;
         if (selectedName == null) {
-            result = false;
+            return false;
         } else {
-            result = true;
+            return true;
         }
+    }
+
+    /**
+     * Generate a reference to the selected override.
+     *
+     * @return a new instance (not null)
+     */
+    public MatParamRef makeRef() {
+        Spatial spatial = cgm.getSpatial().find();
+        MatParamOverride mpo = find();
+        MatParamRef result = new MatParamRef(mpo, spatial);
 
         return result;
     }

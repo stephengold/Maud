@@ -2917,6 +2917,113 @@ the menu bar, status bar, and tool windows.
                 </panel>
             </control>
 
+            <control name="window" id="textureTool" title="Texture Tool"
+                     hideOnClose="true"
+                     height="222px" width="420px" x="150" y="120">
+                <panel childLayout="vertical">
+                    <panel height="3px"/>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="button" id="texturePreviousButton"
+                                 width="20px">
+                            <interact onRelease="perform(previous texture)"/>
+                        </control>
+                        <control name="label" id="textureIndex"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="90px"/>
+                        <control name="button" id="textureNextButton"
+                                 width="20px">
+                            <interact onRelease="perform(next texture)"/>
+                        </control>
+                        <control name="label" text="  "/>
+                        <control name="button" id="textureNewButton"
+                                 width="50px">
+                            <interact onRelease="perform(new texture)"/>
+                        </control>
+                        <control name="label" text="  "/>
+                        <control name="button" id="textureNullButton"
+                                 width="45px">
+                            <interact onRelease="perform(set texture null)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Users:  "/>
+                        <control name="label" id="textureUsers"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="*"/>
+                        <control name="button" id="textureSelectUserButton"
+                                 width="75px">
+                            <interact onRelease="perform(select textureUser)"/>
+                        </control>
+                        <control name="label" text="  "/>
+                        <control name="button" id="textureCloneButton"
+                                 width="40px">
+                            <interact onRelease="perform(set texture clone)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Mag filter:  "/>
+                        <control name="button" id="textureMagButton"
+                                 width="60px">
+                            <interact onRelease="perform(select textureMag)"/>
+                        </control>
+                        <control name="label" text="    Min filter:  "/>
+                        <control name="button" id="textureMinButton"
+                                 width="150px">
+                            <interact onRelease="perform(select textureMin)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="R:  "/>
+                        <control name="button" id="textureWrapRButton"
+                                 width="110px">
+                            <interact onRelease="perform(select textureWrap R)"/>
+                        </control>
+                        <control name="label" text="    S:  "/>
+                        <control name="button" id="textureWrapSButton"
+                                 width="110px">
+                            <interact onRelease="perform(select textureWrap S)"/>
+                        </control>
+                        <control name="label" text="    T:  "/>
+                        <control name="button" id="textureWrapTButton"
+                                 width="110px">
+                            <interact onRelease="perform(select textureWrap T)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Type hint:  "/>
+                        <control name="button" id="textureTypeButton"
+                                 width="50px">
+                            <interact onRelease="perform(select textureType)"/>
+                        </control>
+                        <control name="label" text="      "/>
+                        <control name="checkbox" id="flipYCheckBox"
+                                 width="20px"/>
+                        <control name="label" text="  flipY    "/>
+                        <control name="checkbox" id="mipMapCheckBox"
+                                 width="20px"/>
+                        <control name="label" text="  mipMap    Anisotropy:  "/>
+                        <control name="button" id="anisotropyButton"
+                                 width="50px">
+                            <interact onRelease="perform(set anisotropy)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="button" id="texturePathButton"
+                                 width="*">
+                            <interact onRelease="perform(load texture)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" id="textureImage"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="*"/>
+                    </panel>
+                </panel>
+            </control>
+
             <control name="window" id="trackTool" title="Track Tool"
                      hideOnClose="true"
                      height="193px" width="300px" x="150" y="120">

@@ -40,7 +40,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
-import jme3utilities.nifty.dialog.DialogController;
 import jme3utilities.wes.TweenRotations;
 import jme3utilities.wes.TweenTransforms;
 import jme3utilities.wes.TweenVectors;
@@ -48,9 +47,9 @@ import maud.DescribeUtil;
 import maud.Maud;
 import maud.action.ActionPrefix;
 import maud.dialog.LicenseType;
-import maud.dialog.TextureKeyDialog;
 import maud.model.cgm.SelectedBuffer;
 import maud.model.cgm.SelectedSpatial;
+import maud.model.cgm.SelectedTexture;
 import maud.model.cgm.UserDataType;
 import maud.model.option.Background;
 import maud.model.option.MiscOptions;
@@ -84,7 +83,15 @@ public class EnumMenus {
     /**
      * magic word used in "add light" actions and menus
      */
-    public final static String copySelected = "CopySelected";
+    final public static String copySelected = "CopySelected";
+    /**
+     * non-deprecated values for wrap modes
+     */
+    final private static Texture.WrapMode[] wrapValues = {
+        Texture.WrapMode.EdgeClamp,
+        Texture.WrapMode.MirroredRepeat,
+        Texture.WrapMode.Repeat
+    };
     // *************************************************************************
     // constructors
 
@@ -349,15 +356,52 @@ public class EnumMenus {
     }
 
     /**
-     * Display a menu to set the texture type using the "select textureType "
-     * action prefix.
+     * Display a menu to set the selected texture's mag-filter mode using the
+     * "select textureMag " action prefix.
+     */
+    public static void selectTextureMag() {
+        MenuBuilder builder = new MenuBuilder();
+
+        SelectedTexture texture = Maud.getModel().getTarget().getTexture();
+        Texture.MagFilter selected = texture.magFilter();
+        for (Texture.MagFilter type : Texture.MagFilter.values()) {
+            if (type != selected) {
+                String description = type.toString();
+                builder.add(description);
+            }
+        }
+
+        builder.show("select textureMag ");
+    }
+
+    /**
+     * Display a menu to set the selected texture's min-filter mode using the
+     * "select textureMin " action prefix.
+     */
+    public static void selectTextureMin() {
+        MenuBuilder builder = new MenuBuilder();
+
+        SelectedTexture texture = Maud.getModel().getTarget().getTexture();
+        Texture.MinFilter selected = texture.minFilter();
+        for (Texture.MinFilter type : Texture.MinFilter.values()) {
+            if (type != selected) {
+                String description = type.toString();
+                builder.add(description);
+            }
+        }
+
+        builder.show("select textureMin ");
+    }
+
+    /**
+     * Display a menu to set the selected texture's type hint using the "select
+     * textureType " action prefix.
      */
     public static void selectTextureType() {
         MenuBuilder builder = new MenuBuilder();
 
-        DialogController dialog = Maud.gui.getActiveDialog();
-        TextureKeyDialog tkd = (TextureKeyDialog) dialog;
-        Texture.Type selected = tkd.getTypeHint();
+        SelectedTexture texture = Maud.getModel().getTarget().getTexture();
+        Texture.Type selected = texture.typeHint();
         for (Texture.Type type : Texture.Type.values()) {
             if (type != selected) {
                 String description = DescribeUtil.type(type);
@@ -366,6 +410,28 @@ public class EnumMenus {
         }
 
         builder.show("select textureType ");
+    }
+
+    /**
+     * Display a menu to set the selected texture's wrap mode for the specified
+     * axis using the "select textureWrap " action prefix.
+     *
+     * @param axis which texture axis (not null)
+     */
+    public static void selectTextureWrap(Texture.WrapAxis axis) {
+        Validate.nonNull(axis, "axis");
+        MenuBuilder builder = new MenuBuilder();
+
+        SelectedTexture texture = Maud.getModel().getTarget().getTexture();
+        Texture.WrapMode selected = texture.wrapMode(axis);
+        for (Texture.WrapMode type : wrapValues) {
+            if (type != selected) {
+                String description = type.toString();
+                builder.add(description);
+            }
+        }
+
+        builder.show("select textureWrap " + axis.toString() + " ");
     }
 
     /**

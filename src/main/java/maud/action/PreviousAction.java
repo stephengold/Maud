@@ -129,6 +129,10 @@ class PreviousAction {
                 model.getSource().getAnimControl().selectPrevious();
                 break;
 
+            case Action.previousTexture:
+                target.getTexture().selectPrevious();
+                break;
+
             case Action.previousTrack:
                 target.getTrack().selectPrevious();
                 break;

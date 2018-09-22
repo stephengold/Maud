@@ -84,7 +84,11 @@ class SetANAction {
         EditorModel model = Maud.getModel();
         EditableCgm target = model.getTarget();
         switch (actionString) {
-            case Action.setBatchHint:
+            case Action.setAnisotropy:
+                EditorDialogs.setAnisotropy();
+                break;
+
+            case Action.setBatchHint: // TODO should be select
                 EnumMenus.setBatchHint();
                 break;
 
@@ -100,11 +104,11 @@ class SetANAction {
                 EditorDialogs.setBufferStride();
                 break;
 
-            case Action.setColorDepth:
+            case Action.setColorDepth: // TODO should be select
                 ShowMenus.setColorDepth();
                 break;
 
-            case Action.setCullHint:
+            case Action.setCullHint: // TODO should be select
                 EnumMenus.setCullHint();
                 break;
 
@@ -140,7 +144,7 @@ class SetANAction {
                 MeshMenus.setMeshWeights();
                 break;
 
-            case Action.setMsaaFactor:
+            case Action.setMsaaFactor: // TODO should be select
                 ShowMenus.setMsaaFactor();
                 break;
 
@@ -196,6 +200,12 @@ class SetANAction {
                     ActionPrefix.setAmbientLevel);
             float level = Float.valueOf(arg);
             model.getScene().getLights().setAmbientLevel(level);
+
+        } else if (actionString.startsWith(ActionPrefix.setAnisotropy)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setAnisotropy);
+            int anisotropy = Integer.valueOf(arg);
+            target.getTexture().setAnisotropy(anisotropy);
 
         } else if (actionString.startsWith(ActionPrefix.setAxesLineWidth)) {
             arg = MyString.remainder(actionString,

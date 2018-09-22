@@ -73,8 +73,10 @@ import maud.view.scene.SceneView;
 /**
  * MVC model for a computer-graphics (C-G) model in the Maud application:
  * encapsulates the C-G model's tree of spatials and provides access to related
- * MVC model state including the displayed pose, the loaded animation, and the
- * selected bone/joint/physics/sgc/shape/skeleton/spatial/track/userdata/vertex.
+ * MVC model state including the displayed pose, the loaded animation, the
+ * animation play options, and the selected animControl/bone/buffer/frame/joint
+ * /light/collisionObject/override/sgc/shape/skeleton/spatial/texture/
+ * animationTrack/userData/vertex.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -172,6 +174,10 @@ public class Cgm implements Cloneable {
      */
     private SelectedSpatial selectedSpatial = new SelectedSpatial();
     /**
+     * which texture is selected
+     */
+    private SelectedTexture selectedTexture = new SelectedTexture();
+    /**
      * which track is selected in the selected animation
      */
     private SelectedTrack selectedTrack = new SelectedTrack();
@@ -216,6 +222,7 @@ public class Cgm implements Cloneable {
         selectedShape.setCgm(cgm);
         selectedSkeleton.setCgm(cgm);
         selectedSpatial.setCgm(cgm);
+        selectedTexture.setCgm(cgm);
         selectedTrack.setCgm(cgm);
         selectedUserData.setCgm(cgm);
         selectedVertex.setCgm(cgm);
@@ -639,6 +646,16 @@ public class Cgm implements Cloneable {
     public SelectedSpatial getSpatial() {
         assert selectedSpatial != null;
         return selectedSpatial;
+    }
+
+    /**
+     * Access the selected texture.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public SelectedTexture getTexture() {
+        assert selectedTexture != null;
+        return selectedTexture;
     }
 
     /**
@@ -1106,6 +1123,7 @@ public class Cgm implements Cloneable {
         clone.selectedShape = selectedShape.clone();
         clone.selectedSkeleton = cloner.clone(selectedSkeleton);
         clone.selectedSpatial = cloner.clone(selectedSpatial);
+        clone.selectedTexture = cloner.clone(selectedTexture);
         clone.selectedTrack = cloner.clone(selectedTrack);
         clone.selectedUserData = selectedUserData.clone();
         clone.selectedVertex = selectedVertex.clone();

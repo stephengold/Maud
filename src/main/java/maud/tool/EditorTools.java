@@ -114,6 +114,7 @@ public class EditorTools {
     final private SpatialScaleTool spatialScale;
     final private SpatialTool spatial;
     final private SpatialTranslationTool spatialTranslation;
+    final private TextureTool texture;
     final private TrackTool track;
     final private TweeningTool tweening;
     final private TwistTool twist;
@@ -178,6 +179,7 @@ public class EditorTools {
         spatialScale = new SpatialScaleTool(screen);
         spatial = new SpatialTool(screen);
         spatialTranslation = new SpatialTranslationTool(screen);
+        texture = new TextureTool(screen);
         track = new TrackTool(screen);
         tweening = new TweeningTool(screen);
         twist = new TwistTool(screen);
@@ -201,7 +203,8 @@ public class EditorTools {
                 render, retarget, sceneLighting, sceneVertex, score, settings,
                 sgc, shape, skeleton, sky, sourceAnimation, spatial,
                 spatialDetails, spatialRotation, spatialScale,
-                spatialTranslation, track, tweening, twist, userData, vertex);
+                spatialTranslation, texture, track, tweening, twist, userData,
+                vertex);
     }
 
     /**

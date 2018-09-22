@@ -28,7 +28,6 @@ package maud.dialog;
 
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
-import com.jme3.asset.TextureKey;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
@@ -36,7 +35,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.math.Vector4f;
 import com.jme3.shader.VarType;
 import com.jme3.system.JmeVersion;
-import com.jme3.texture.Texture;
 import de.lessvoid.nifty.Nifty;
 import java.io.File;
 import java.util.ArrayList;
@@ -70,6 +68,7 @@ import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.LoadedAnimation;
 import maud.model.cgm.LoadedCgm;
+import maud.model.cgm.MatParamRef;
 import maud.model.cgm.PlayOptions;
 import maud.model.cgm.PlayTimes;
 import maud.model.cgm.SelectedBone;
@@ -730,6 +729,20 @@ public class EditorDialogs {
     }
 
     /**
+     * Display a "set anisotropy " dialog to enter the anisotropy of the
+     * selected texture.
+     */
+    public static void setAnisotropy() {
+        int oldValue = Maud.getModel().getTarget().getTexture().anisotropy();
+        String defaultText = Integer.toString(oldValue);
+        DialogController controller = new IntegerDialog("Select", 0,
+                Integer.MAX_VALUE, false);
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter the anisotropy:", defaultText,
+                ActionPrefix.setAnisotropy, controller);
+    }
+
+    /**
      * Display a "set bufferInstanceSpan " dialog to enter the new span.
      */
     public static void setBufferInstanceSpan() {
@@ -950,13 +963,18 @@ public class EditorDialogs {
             case Texture3D:
             case TextureArray:
             case TextureCubeMap:
-                TextureKey textureKey = null;
-                if (oldValue != null) {
-                    Texture texture = (Texture) oldValue;
-                    textureKey = (TextureKey) texture.getKey();
+                /*
+                 * Select the texture in the texture tool.
+                 */
+                Cgm target = Maud.getModel().getTarget();
+                MatParamRef ref;
+                if (allowNull) {
+                    ref = target.getOverride().makeRef();
+                } else {
+                    ref = target.getMatParam().makeRef();
                 }
-                Maud.gui.showTextureKeyDialog(textureKey, allowNull,
-                        actionPrefix);
+                target.getTexture().select(ref);
+                Maud.gui.tools.select("texture");
                 return;
 
             case Vector2:

@@ -422,9 +422,22 @@ public class ActionPrefix {
      */
     final public static String selectSpatialChild = "select spatialChild ";
     /**
+     * argument is the name of a mag-filter mode
+     */
+    final public static String selectTextureMag = "select textureMag ";
+    /**
+     * argument is the name of a min-filter mode
+     */
+    final public static String selectTextureMin = "select textureMin ";
+    /**
      * argument is the description of a texture type
      */
     final public static String selectTextureType = "select textureType ";
+    /**
+     * arguments are the name of a texture axis and an optional name of a wrap
+     * mode
+     */
+    final public static String selectTextureWrap = "select textureWrap ";
     /**
      * argument is the name of a tool window
      */
@@ -490,6 +503,10 @@ public class ActionPrefix {
      * argument is a decimal float
      */
     final public static String setAmbientLevel = "set ambientLevel ";
+    /**
+     * argument is a decimal integer
+     */
+    final public static String setAnisotropy = "set anisotropy ";
     /**
      * argument is a decimal width in pixels
      */

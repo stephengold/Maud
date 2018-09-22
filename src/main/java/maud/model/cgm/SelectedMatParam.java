@@ -31,7 +31,6 @@ import com.jme3.material.MatParamOverride;
 import com.jme3.material.Material;
 import com.jme3.scene.Spatial;
 import com.jme3.shader.VarType;
-import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
@@ -71,12 +70,15 @@ public class SelectedMatParam implements Cloneable {
     // new methods exposed
 
     /**
-     * Delete (and deselect) the selected parameter.
+     * Delete (and deselect) the selected parameter and deselect its texture if
+     * any.
      */
     public void delete() {
         if (isSelected() && editableCgm != null) {
+            MatParamRef ref = makeRef();
             editableCgm.deleteMatParam();
             selectedName = null;
+            cgm.getTexture().deselectRef(ref);
         }
     }
 
@@ -102,7 +104,7 @@ public class SelectedMatParam implements Cloneable {
     }
 
     /**
-     * Access the named parameter.
+     * Access the named parameter in the selected material.
      *
      * @param parameterName which parameter (not null)
      * @return the pre-existing instance, or null if not found
@@ -113,13 +115,7 @@ public class SelectedMatParam implements Cloneable {
         MatParam result = null;
         if (cgm.isLoaded()) {
             Material material = cgm.getSpatial().getMaterial();
-            Collection<MatParam> params = material.getParams();
-            for (MatParam param : params) {
-                if (param.getName().equals(parameterName)) {
-                    result = param;
-                    break;
-                }
-            }
+            result = material.getParam(parameterName);
         }
 
         return result;
@@ -217,6 +213,31 @@ public class SelectedMatParam implements Cloneable {
         }
 
         return result;
+    }
+
+    /**
+     * Generate a reference to the selected parameter.
+     *
+     * @return a new instance (not null)
+     */
+    public MatParamRef makeRef() {
+        MatParam mp = find();
+        Material material = cgm.getSpatial().getMaterial();
+        MatParamRef result = new MatParamRef(mp, material);
+
+        return result;
+    }
+
+    /**
+     * Update the selected parameter after a new material is applied.
+     */
+    void postSetMaterial(Material newMaterial) {
+        if (isSelected()) {
+            MatParam result = newMaterial.getParam(selectedName);
+            if (result == null) {
+                deselect();
+            }
+        }
     }
 
     /**

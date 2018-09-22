@@ -188,7 +188,7 @@ is split into overlapping sub-windows called "tools".
 
 #### Tools
 
-At last count, Maud had 48 tools.
+At last count, Maud had 49 tools.
 Each tool can be independently hidden or made visible.
 
 Selecting a tool makes it visible and moves it to the top layer for convenient
@@ -759,6 +759,7 @@ BVH resources:
 [bican]: https://github.com/canbican "Can Bican"
 [blender]: https://docs.blender.org "Blender Project"
 [bsd3]: https://opensource.org/licenses/BSD-3-Clause "3-Clause BSD License"
+[bullet]: https://pybullet.org/wordpress "Bullet Real-Time Physics Simulation"
 [bvhretarget]: https://github.com/Nehon/bvhretarget "BVH Retarget Project"
 [chrome]: https://www.google.com/chrome "Chrome"
 [elements]: http://www.adobe.com/products/photoshop-elements.html "Photoshop Elements"
@@ -852,6 +853,7 @@ I therefore acknowledge the following artists and software developers:
 + plus the creators of (and contributors to) the following software:
     + [Adobe Photoshop Elements][elements]
     + the [Blender][] 3-D animation suite
+    + the [Bullet][] physics simulation kit
     + the [FindBugs][] source-code analyzer
     + the [Git][] revision-control system and GitK commit viewer
     + the [Google Chrome web browser][chrome]

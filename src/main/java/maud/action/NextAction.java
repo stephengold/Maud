@@ -137,6 +137,10 @@ class NextAction {
                 model.getSource().getAnimControl().selectNext();
                 break;
 
+            case Action.nextTexture:
+                target.getTexture().selectNext();
+                break;
+
             case Action.nextTrack:
                 target.getTrack().selectNext();
                 break;

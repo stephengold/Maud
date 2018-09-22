@@ -140,6 +140,10 @@ class NewAction {
                 }
                 break;
 
+            case Action.newTexture:
+                model.getTarget().getTexture().create();
+                break;
+
             case Action.newUserKey:
                 EnumMenus.selectUserDataType();
                 break;

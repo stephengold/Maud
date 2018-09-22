@@ -55,6 +55,7 @@ import com.jme3.scene.UserData;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.control.Control;
 import com.jme3.shader.VarType;
+import com.jme3.texture.Texture;
 import java.io.File;
 import java.io.IOException;
 import java.nio.Buffer;
@@ -187,6 +188,8 @@ public class EditableCgm extends LoadedCgm {
         MatParam matDefParam = def.getMaterialParam(parameterName);
         VarType varType = matDefParam.getVarType();
         Object defaultValue = matDefParam.getValue();
+        Spatial matSpatial = getSpatial().find();
+        List<Integer> treePosition = findSpatial(matSpatial);
 
         Object value;
         if (defaultValue == null) {
@@ -198,7 +201,8 @@ public class EditableCgm extends LoadedCgm {
         History.autoAdd();
         material.setKey(null);
         material.setParam(parameterName, varType, value);
-        getSceneView().setParam(parameterName, varType, value);
+        getSceneView().setParamValue(treePosition, parameterName, varType,
+                value);
 
         String description = String.format("add material parameter %s",
                 MyString.quote(parameterName));
@@ -413,7 +417,7 @@ public class EditableCgm extends LoadedCgm {
 
     /**
      * Delete the selected material parameter. The invoker is responsible for
-     * deselecting the parameter.
+     * deselecting the parameter and its texture if any.
      */
     void deleteMatParam() {
         Material material = getSpatial().getMaterial();
@@ -642,7 +646,7 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Rename the selected material-parameter override.
+     * Rename the selected material-parameter override. TODO sort methods
      *
      * @param newName new parameter name (not null, not empty)
      */
@@ -652,18 +656,23 @@ public class EditableCgm extends LoadedCgm {
         Spatial spatial = getSpatial().find();
         SelectedOverride override = getOverride();
         MatParamOverride oldMpo = override.find();
+        MatParamRef oldRef = new MatParamRef(oldMpo, spatial);
 
         String oldName = oldMpo.getName();
         Object value = oldMpo.getValue();
         VarType varType = oldMpo.getVarType();
+
         MatParamOverride newMpo = new MatParamOverride(varType, newName, value);
         boolean enabled = oldMpo.isEnabled();
         newMpo.setEnabled(enabled);
+        MatParamRef newRef = new MatParamRef(newMpo, spatial);
 
         History.autoAdd();
         spatial.addMatParamOverride(newMpo);
         spatial.removeMatParamOverride(oldMpo);
         getSceneView().renameOverride(newName);
+        override.selectParameter(newName);
+        getTexture().replaceRef(oldRef, newRef);
 
         String description = String.format(
                 "rename material-parameter override %s to %s",
@@ -844,6 +853,41 @@ public class EditableCgm extends LoadedCgm {
         getSceneView().replaceLight(oldName, newLight);
         selectedLight.select(newLight);
         editState.setEditedLightPosDir(oldName);
+    }
+
+    /**
+     * Replace the selected texture references with the specified texture.
+     *
+     * @param newTexture the replacement texture (not null, aliases created)
+     * @param eventDescription for the edit history (not null)
+     */
+    void replaceSelectedTexture(Texture newTexture, String eventDescription) {
+        assert newTexture != null;
+        assert eventDescription != null;
+
+        History.autoAdd();
+        getTexture().replaceTexture(newTexture);
+        editState.setEdited(eventDescription);
+    }
+
+    /**
+     * Select the specified texture reference and replace it with the specified
+     * texture.
+     *
+     * @param ref the texture reference to select/replace (not null)
+     * @param newTexture the replacement texture (may be null, aliases created)
+     * @param eventDescription for the edit history (not null)
+     */
+    void selectAndReplaceTexture(MatParamRef ref, Texture newTexture,
+            String eventDescription) {
+        assert ref != null;
+        assert eventDescription != null;
+
+        SelectedTexture texture = getTexture();
+        History.autoAdd();
+        texture.select(ref);
+        texture.replaceTexture(newTexture);
+        editState.setEdited(eventDescription);
     }
 
     /**
@@ -1129,6 +1173,8 @@ public class EditableCgm extends LoadedCgm {
         History.autoAdd();
         spatial.setMaterial(newMaterial);
         getSceneView().setMaterial(newMaterial);
+        getMatParam().postSetMaterial(newMaterial);
+        getTexture().postEdit();
         editState.setEdited(eventDescription);
     }
 
@@ -1141,15 +1187,20 @@ public class EditableCgm extends LoadedCgm {
         Validate.nonNull(valueString, "value string");
 
         MatParam oldParam = getMatParam().find();
-        Object value = MaudUtil.parseMatParam(oldParam, valueString);
+        VarType varType = oldParam.getVarType();
         String parameterName = oldParam.getName();
+        Object modelValue = MaudUtil.parseMatParam(oldParam, valueString);
+        Object viewValue = MaudUtil.parseMatParam(oldParam, valueString);
+
+        Spatial matSpatial = getSpatial().find();
+        List<Integer> treePosition = findSpatial(matSpatial);
         Material material = getSpatial().getMaterial();
 
         History.autoAdd();
         material.setKey(null);
-        VarType varType = oldParam.getVarType();
-        material.setParam(parameterName, varType, value);
-        getSceneView().setParam(parameterName, varType, value);
+        material.setParam(parameterName, varType, modelValue);
+        getSceneView().setParamValue(treePosition, parameterName, varType,
+                viewValue);
 
         String description = String.format(
                 "alter value of material parameter %s",
@@ -1232,18 +1283,21 @@ public class EditableCgm extends LoadedCgm {
         Validate.nonNull(valueString, "value string");
 
         MatParamOverride oldMpo = getOverride().find();
+        VarType varType = oldMpo.getVarType();
+        String parameterName = oldMpo.getName();
         Object modelValue = MaudUtil.parseMatParam(oldMpo, valueString);
         Object viewValue = MaudUtil.parseMatParam(oldMpo, valueString);
-        String parameterName = oldMpo.getName();
+
         Spatial spatial = getSpatial().find();
+        List<Integer> treePosition = findSpatial(spatial);
 
         History.autoAdd();
         spatial.removeMatParamOverride(oldMpo);
-        VarType varType = oldMpo.getVarType();
         MatParamOverride newMpo
                 = new MatParamOverride(varType, parameterName, modelValue);
         spatial.addMatParamOverride(newMpo);
-        getSceneView().setOverrideValue(viewValue);
+        getSceneView().setOverrideValue(treePosition, parameterName, varType,
+                viewValue);
 
         String description = String.format(
                 "alter value of material-parameter override %s",

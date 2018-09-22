@@ -55,7 +55,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
-import jme3utilities.Misc;
 import jme3utilities.MyCamera;
 import jme3utilities.MyLight;
 import jme3utilities.MySpatial;
@@ -65,6 +64,7 @@ import jme3utilities.math.MyVector3f;
 import jme3utilities.minie.MyControlP;
 import jme3utilities.minie.MyObject;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.PhysicsUtil;
 import maud.model.cgm.Cgm;
 
@@ -610,39 +610,63 @@ public class SceneView extends SceneViewCore {
     }
 
     /**
-     * Alter the value of the selected material-parameter override.
+     * Alter the value of the named M-P override in the specified spatial.
      *
-     * @param newValue (may be null, alias created if not null)
+     * @param treePosition the tree position of the spatial (not null,
+     * unaffected)
+     * @param parameterName the parameter name (not null, not empty)
+     * @param varType type of parameter (not null)
+     * @param viewValue the desired value (may be null, alias created)
      */
-    public void setOverrideValue(Object newValue) {
-        Spatial spatial = selectedSpatial();
-        MatParamOverride oldMpo = findSelectedMpo();
+    public void setOverrideValue(List<Integer> treePosition, String parameterName,
+            VarType varType, Object viewValue) {
+        Validate.nonNull(treePosition, "treePosition");
+        Validate.nonEmpty(parameterName, "parameter name");
+        Validate.nonNull(varType, "var type");
+
+        Spatial spatial = getCgmRoot();
+        for (int childPosition : treePosition) {
+            Node node = (Node) spatial;
+            spatial = node.getChild(childPosition);
+        }
+
+        MatParamOverride oldMpo = MaudUtil.findOverride(spatial, parameterName);
+        assert oldMpo != null;
+
         spatial.removeMatParamOverride(oldMpo);
 
-        String name = oldMpo.getName();
-        VarType varType = oldMpo.getVarType();
-        MatParamOverride newMpo = new MatParamOverride(varType, name, newValue);
+        MatParamOverride newMpo
+                = new MatParamOverride(varType, parameterName, viewValue);
         boolean enabled = oldMpo.isEnabled();
         newMpo.setEnabled(enabled);
         spatial.addMatParamOverride(newMpo);
     }
 
     /**
-     * Set a parameter in the selected material.
+     * Alter the value of the named material parameter in the specified spatial.
      *
-     * @param parameterName parameter name (not null, not empty)
+     * @param treePosition the tree position of a spatial that uses the material
+     * (not null, unaffected)
+     * @param parameterName the parameter name (not null, not empty)
      * @param varType type of parameter (not null)
-     * @param newValue new value (not null, unaffected)
+     * @param viewValue the desired value (not null, alias created)
      */
-    public void setParam(String parameterName, VarType varType,
-            Object newValue) {
+    public void setParamValue(List<Integer> treePosition, String parameterName,
+            VarType varType, Object viewValue) {
+        Validate.nonNull(treePosition, "treePosition");
         Validate.nonEmpty(parameterName, "parameter name");
         Validate.nonNull(varType, "var type");
-        Validate.nonNull(newValue, "new value");
+        Validate.nonNull(viewValue, "view value");
 
-        Material material = selectedMaterial();
-        Object cloneValue = Misc.deepClone(newValue);
-        material.setParam(parameterName, varType, cloneValue);
+        Spatial spatial = getCgmRoot();
+        for (int childPosition : treePosition) {
+            Node node = (Node) spatial;
+            spatial = node.getChild(childPosition);
+        }
+
+        Geometry geometry = (Geometry) spatial;
+        Material material = geometry.getMaterial();
+        material.setParam(parameterName, varType, viewValue);
     }
 
     /**

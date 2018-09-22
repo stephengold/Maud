@@ -34,12 +34,10 @@ import de.lessvoid.nifty.tools.SizeValueType;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.WindowController;
-import jme3utilities.nifty.dialog.DialogController;
 import jme3utilities.wes.TweenRotations;
 import jme3utilities.wes.TweenVectors;
 import maud.DescribeUtil;
 import maud.Maud;
-import maud.dialog.TextureKeyDialog;
 import maud.menu.AnimationMenus;
 import maud.menu.EnumMenus;
 import maud.menu.MeshMenus;
@@ -47,6 +45,7 @@ import maud.menu.ShowMenus;
 import maud.model.EditorModel;
 import maud.model.TweenPreset;
 import maud.model.cgm.Cgm;
+import maud.model.cgm.SelectedTexture;
 import maud.model.cgm.SelectedVertex;
 import maud.model.option.ViewMode;
 import maud.model.option.scene.TriangleMode;
@@ -86,10 +85,23 @@ class SelectTZAction {
      */
     static boolean process(String actionString) {
         boolean handled = true;
+        Cgm target = Maud.getModel().getTarget();
 
         switch (actionString) {
+            case Action.selectTextureMag:
+                EnumMenus.selectTextureMag();
+                break;
+
+            case Action.selectTextureMin:
+                EnumMenus.selectTextureMin();
+                break;
+
             case Action.selectTextureType:
                 EnumMenus.selectTextureType();
+                break;
+
+            case Action.selectTextureUser:
+                target.getTexture().selectFirstUser();
                 break;
 
             case Action.selectTrack:
@@ -97,7 +109,7 @@ class SelectTZAction {
                 break;
 
             case Action.selectTrackTarget:
-                Maud.getModel().getTarget().getTrack().selectTarget();
+                target.getTrack().selectTarget();
                 break;
 
             case Action.selectTriangleMode:
@@ -147,16 +159,40 @@ class SelectTZAction {
         Cgm target = model.getTarget();
         String arg;
 
-        if (actionString.startsWith(ActionPrefix.selectTextureType)) {
+        if (actionString.startsWith(ActionPrefix.selectTextureMag)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectTextureMag);
+            Texture.MagFilter filter = Texture.MagFilter.valueOf(arg);
+            target.getTexture().setMagFilter(filter);
+
+        } else if (actionString.startsWith(ActionPrefix.selectTextureMin)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectTextureMin);
+            Texture.MinFilter filter = Texture.MinFilter.valueOf(arg);
+            target.getTexture().setMinFilter(filter);
+
+        } else if (actionString.startsWith(ActionPrefix.selectTextureType)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.selectTextureType);
-            DialogController dialog = Maud.gui.getActiveDialog();
-            TextureKeyDialog tkd = (TextureKeyDialog) dialog;
+            SelectedTexture texture = target.getTexture();
             for (Texture.Type type : Texture.Type.values()) {
                 String description = DescribeUtil.type(type);
                 if (arg.equals(description)) {
-                    tkd.setTypeHint(type);
+                    texture.setTypeHint(type);
                 }
+            }
+
+        } else if (actionString.startsWith(ActionPrefix.selectTextureWrap)) {
+            String argList = MyString.remainder(actionString,
+                    ActionPrefix.selectTextureWrap);
+            String[] args = argList.split(" ");
+            Texture.WrapAxis axis = Texture.WrapAxis.valueOf(args[0]);
+            if (args.length == 1) {
+                EnumMenus.selectTextureWrap(axis);
+            } else {
+                assert args.length == 2;
+                Texture.WrapMode mode = Texture.WrapMode.valueOf(args[1]);
+                target.getTexture().setWrapMode(axis, mode);
             }
 
         } else if (actionString.startsWith(ActionPrefix.selectTrack)) {
