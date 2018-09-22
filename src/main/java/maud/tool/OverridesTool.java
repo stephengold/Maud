@@ -196,7 +196,7 @@ class OverridesTool extends Tool {
     }
 
     /**
-     * Update the value-button text.
+     * Update the value button.
      */
     private void updateValue() {
         String valueButton = "";
@@ -205,6 +205,9 @@ class OverridesTool extends Tool {
         if (override.isSelected()) {
             Object data = override.getValue();
             valueButton = DescribeUtil.matParam(data);
+            if (valueButton.length() > 40) {
+                valueButton = valueButton.substring(0, 38) + " ...";
+            }
         }
 
         setButtonText("mpoValue", valueButton);

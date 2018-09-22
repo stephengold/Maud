@@ -279,6 +279,9 @@ class MaterialTool extends Tool {
             } else {
                 Object value = param.getValue();
                 valueButton = DescribeUtil.matParam(value);
+                if (valueButton.length() > 72) {
+                    valueButton = valueButton.substring(0, 70) + " ...";
+                }
             }
         }
 
