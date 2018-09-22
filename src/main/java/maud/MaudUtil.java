@@ -34,6 +34,7 @@ import com.jme3.asset.TextureKey;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.material.MatParam;
+import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Matrix4f;
@@ -43,6 +44,7 @@ import com.jme3.math.Transform;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.math.Vector4f;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -530,6 +532,39 @@ public class MaudUtil {
     }
 
     /**
+     * Enumerate all geometries using the specified material in the specified
+     * subtree of a scene graph. Note: recursive! TODO use MySpatial
+     *
+     * @param subtree (not null, aliases created)
+     * @param material the material to search for (may be null, unaffected)
+     * @param addResult (added to if not null)
+     * @return an expanded list (either storeResult or a new instance)
+     */
+    public static List<Geometry> listUsers(Spatial subtree,
+            Material material, List<Geometry> addResult) {
+        Validate.nonNull(subtree, "subtree");
+        List<Geometry> result
+                = (addResult == null) ? new ArrayList<>(50) : addResult;
+
+        if (subtree instanceof Geometry) {
+            Geometry geometry = (Geometry) subtree;
+            if (geometry.getMaterial() == material) {
+                result.add(geometry);
+            }
+        }
+
+        if (subtree instanceof Node) {
+            Node node = (Node) subtree;
+            List<Spatial> children = node.getChildren();
+            for (Spatial child : children) {
+                listUsers(child, material, result);
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Parse a material parameter from the specified text string.
      *
      * @param oldParameter old parameter (not null, unaffected)
@@ -567,7 +602,7 @@ public class MaudUtil {
                             = TextureKeyDialog.parseTextureKey(textString);
                     AssetManager assetManager = Locators.getAssetManager();
                     try {
-                        result = assetManager.loadAsset(key);
+                        result = assetManager.loadTexture(key);
                     } catch (RuntimeException exception) {
                         exception.printStackTrace();
                         result = null;
