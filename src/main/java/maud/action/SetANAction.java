@@ -89,7 +89,7 @@ class SetANAction {
                 break;
 
             case Action.setBatchHint: // TODO should be select
-                EnumMenus.setBatchHint();
+                EnumMenus.selectBatchHint();
                 break;
 
             case Action.setBufferInstanceSpan:
@@ -109,7 +109,7 @@ class SetANAction {
                 break;
 
             case Action.setCullHint: // TODO should be select
-                EnumMenus.setCullHint();
+                EnumMenus.selectCullHint();
                 break;
 
             case Action.setDimensions:
@@ -145,7 +145,7 @@ class SetANAction {
                 break;
 
             case Action.setMsaaFactor: // TODO should be select
-                ShowMenus.setMsaaFactor();
+                ShowMenus.selectMsaaFactor();
                 break;
 
             default:

@@ -359,7 +359,7 @@ public class ShowMenus {
      * Display a menu to configure MSAA using the "set msaaFactor " action
      * prefix.
      */
-    public static void setMsaaFactor() {
+    public static void selectMsaaFactor() {
         MenuBuilder builder = new MenuBuilder();
 
         int selectedFactor = DisplaySettings.getMsaaFactor();

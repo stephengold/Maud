@@ -560,7 +560,7 @@ public class EnumMenus {
      * Display a menu to set the batch hint of the current spatial using the
      * "set batchHint " action prefix.
      */
-    public static void setBatchHint() {
+    public static void selectBatchHint() {
         MenuBuilder builder = new MenuBuilder();
 
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
@@ -579,7 +579,7 @@ public class EnumMenus {
      * Display a menu to set the cull hint of the current spatial using the "set
      * cullHint " action prefix.
      */
-    public static void setCullHint() {
+    public static void selectCullHint() {
         MenuBuilder builder = new MenuBuilder();
 
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
@@ -598,7 +598,7 @@ public class EnumMenus {
      * Display a menu to set the render bucket of the current spatial using the
      * "set queueBucket " action prefix.
      */
-    public static void setQueueBucket() {
+    public static void selectQueueBucket() {
         MenuBuilder builder = new MenuBuilder();
 
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
@@ -617,7 +617,7 @@ public class EnumMenus {
      * Display a menu to set the shadow mode of the current spatial using the
      * "set shadowMode " action prefix.
      */
-    public static void setShadowMode() {
+    public static void selectShadowMode() {
         MenuBuilder builder = new MenuBuilder();
 
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();

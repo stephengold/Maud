@@ -104,7 +104,7 @@ class SetOZAction {
                 break;
 
             case Action.setQueueBucket:
-                EnumMenus.setQueueBucket();
+                EnumMenus.selectQueueBucket();
                 break;
 
             case Action.setRefreshRate:
@@ -112,7 +112,7 @@ class SetOZAction {
                 break;
 
             case Action.setShadowMode:
-                EnumMenus.setShadowMode();
+                EnumMenus.selectShadowMode();
                 break;
 
             case Action.setShapeParmValue:
