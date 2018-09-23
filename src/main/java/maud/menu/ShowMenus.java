@@ -191,7 +191,7 @@ public class ShowMenus {
             }
         }
 
-        builder.show(ActionPrefix.setColorDepth);
+        builder.show(ActionPrefix.selectColorDepth);
     }
 
     /**
@@ -312,7 +312,7 @@ public class ShowMenus {
             }
         }
 
-        builder.show(ActionPrefix.setMsaaFactor);
+        builder.show(ActionPrefix.selectMsaaFactor);
     }
 
     /**

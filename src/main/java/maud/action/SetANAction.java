@@ -243,8 +243,9 @@ class SetANAction {
             float fraction = Float.parseFloat(arg);
             model.getScene().getRender().setCloudiness(fraction);
 
-        } else if (actionString.startsWith(ActionPrefix.setColorDepth)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setColorDepth);
+        } else if (actionString.startsWith(ActionPrefix.selectColorDepth)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectColorDepth);
             int bitsPerPixel = Integer.parseInt(arg);
             DisplaySettings.setColorDepth(bitsPerPixel);
 
@@ -306,8 +307,9 @@ class SetANAction {
             int mnwpv = Integer.parseInt(arg);
             target.setMeshWeights(mnwpv);
 
-        } else if (actionString.startsWith(ActionPrefix.setMsaaFactor)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setMsaaFactor);
+        } else if (actionString.startsWith(ActionPrefix.selectMsaaFactor)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectMsaaFactor);
             int factor = 16;
             for (int f : new int[]{1, 2, 4, 6, 8}) {
                 String aaDescription = DescribeUtil.msaaFactor(f);
