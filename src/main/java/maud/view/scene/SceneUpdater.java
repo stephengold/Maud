@@ -118,7 +118,18 @@ public class SceneUpdater {
         Transform transform = null;
         SceneView sceneView = cgm.getSceneView();
         AxesSubject subject = Maud.getModel().getScene().getAxes().getSubject();
-        switch (subject) { // TODO reorder cases
+        switch (subject) {
+            case Bone:
+                if (cgm.getBone().isSelected()) {
+                    transform = cgm.getBone().modelTransform(null);
+                    Spatial tsp = sceneView.findTransformSpatial();
+                    if (!MySpatial.isIgnoringTransforms(tsp)) {
+                        Transform worldTransform = tsp.getWorldTransform();
+                        transform.combineWithParent(worldTransform);
+                    }
+                }
+                break;
+
             case Camera:
                 transform = new Transform(); // identity
                 Camera camera = sceneView.getCamera();
@@ -133,23 +144,9 @@ public class SceneUpdater {
                 transform.getTranslation().set(worldCenter);
                 break;
 
-            case Model:
-                if (cgm.isLoaded()) {
-                    transform = sceneView.getTransform().worldTransform();
-                }
-                break;
-
-            case None:
-                break;
-
-            case Bone:
-                if (cgm.getBone().isSelected()) {
-                    transform = cgm.getBone().modelTransform(null);
-                    Spatial tsp = sceneView.findTransformSpatial();
-                    if (!MySpatial.isIgnoringTransforms(tsp)) {
-                        Transform worldTransform = tsp.getWorldTransform();
-                        transform.combineWithParent(worldTransform);
-                    }
+            case CollisionObject:
+                if (cgm.getObject().isSelected()) {
+                    transform = cgm.getObject().transform(null);
                 }
                 break;
 
@@ -159,26 +156,18 @@ public class SceneUpdater {
                 }
                 break;
 
-            case CollisionObject:
-                if (cgm.getObject().isSelected()) {
-                    transform = cgm.getObject().transform(null);
+            case Model:
+                if (cgm.isLoaded()) {
+                    transform = sceneView.getTransform().worldTransform();
                 }
+                break;
+
+            case None:
                 break;
 
             case Shape:
                 if (cgm.getShape().isSelected()) {
                     transform = cgm.getShape().transform(null);
-                }
-                break;
-
-            case Spatial:
-                if (cgm.isLoaded()) {
-                    Spatial spatial = sceneView.selectedSpatial();
-                    if (MySpatial.isIgnoringTransforms(spatial)) {
-                        transform = new Transform(); // identity
-                    } else {
-                        transform = spatial.getWorldTransform();
-                    }
                 }
                 break;
 
@@ -189,6 +178,17 @@ public class SceneUpdater {
                     if (!MySpatial.isIgnoringTransforms(asp)) {
                         Transform worldTransform = asp.getWorldTransform();
                         transform.set(worldTransform);
+                    }
+                }
+                break;
+
+            case Spatial:
+                if (cgm.isLoaded()) {
+                    Spatial spatial = sceneView.selectedSpatial();
+                    if (MySpatial.isIgnoringTransforms(spatial)) {
+                        transform = new Transform(); // identity
+                    } else {
+                        transform = spatial.getWorldTransform();
                     }
                 }
                 break;
