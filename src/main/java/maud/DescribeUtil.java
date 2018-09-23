@@ -252,7 +252,7 @@ public class DescribeUtil {
 
     /**
      * Describe a texture type, using the same names as
-     * {@link com.jme3.asset.TextureKey#toString())}.
+     * {@link com.jme3.asset.TextureKey#toString()}.
      *
      * @param type (not null)
      * @return a textual description (not null, not empty)
