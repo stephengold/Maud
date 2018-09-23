@@ -646,7 +646,27 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Rename the selected material-parameter override. TODO sort methods
+     * Rename the selected material.
+     *
+     * @param newName new material name (may be null or duplicate)
+     */
+    public void renameMaterial(String newName) {
+        Material material = getSpatial().getMaterial();
+        String oldName = material.getName();
+        if (oldName != newName && !oldName.equals(newName)) {
+            History.autoAdd();
+            material.setKey(null);
+            material.setName(newName);
+            // scene view not updated
+
+            String description = String.format("rename material %s to %s",
+                    MyString.quote(oldName), MyString.quote(newName));
+            editState.setEdited(description);
+        }
+    }
+
+    /**
+     * Rename the selected material-parameter override.
      *
      * @param newName new parameter name (not null, not empty)
      */
@@ -680,26 +700,6 @@ public class EditableCgm extends LoadedCgm {
         editState.setEdited(description);
 
         override.selectParameter(newName);
-    }
-
-    /**
-     * Rename the selected material.
-     *
-     * @param newName new material name (may be null or duplicate)
-     */
-    public void renameMaterial(String newName) {
-        Material material = getSpatial().getMaterial();
-        String oldName = material.getName();
-        if (oldName != newName && !oldName.equals(newName)) {
-            History.autoAdd();
-            material.setKey(null);
-            material.setName(newName);
-            // scene view not updated
-
-            String description = String.format("rename material %s to %s",
-                    MyString.quote(oldName), MyString.quote(newName));
-            editState.setEdited(description);
-        }
     }
 
     /**
