@@ -582,6 +582,49 @@ public class BuildMenus {
     }
 
     /**
+     * Build a menu of models on the classpath.
+     */
+    private void buildClasspathCgmMenu() {
+        builder.reset();
+        /*
+         * Add items for C-G models included (on the classpath) with Maud.
+         * If haveTestdata, also add items for C-G models in jme3-testdata.
+         *
+         * animated models:
+         */
+        if (haveTestdata) {
+            builder.addOgre("Elephant");
+        }
+        builder.addJme("Jaime");
+        builder.addOgre("MhGame");
+        if (haveTestdata) {
+            builder.addOgre("Ninja");
+            builder.addOgre("Oto");
+        }
+        builder.addXbuf("Puppet");
+        builder.addOgre("Sinbad");
+        /*
+         * non-animated models:
+         */
+        if (haveTestdata) {
+            builder.addJme("Boat");
+            builder.addJme("Buggy");
+            builder.addOgre("Ferrari");
+            builder.addOgre("HoverTank");
+            builder.addOgre("MonkeyHead");
+            builder.addOgre("Sign Post");
+            builder.addOgre("SpaceCraft");
+        }
+        builder.addOgre("Sword");
+        if (haveTestdata) {
+            builder.addGeometry("Teapot");
+            builder.addOgre("Tree");
+        }
+
+        builder.addDialog(otherName);
+    }
+
+    /**
      * Build a "Map -> Load -> defaultLocation" menu.
      */
     private void buildClasspathMapMenu() {
@@ -593,6 +636,37 @@ public class BuildMenus {
         builder.addJme("SinbadToMhGame"); // 49 mappings
 
         builder.addDialog(otherName);
+    }
+
+    /**
+     * Build a menu of textures on the classpath.
+     */
+    private void buildClasspathTextureMenu() {
+        builder.reset();
+        /*
+         * Add items for textures included (on the classpath) with Maud.
+         * If haveTestdata, also add items for textures in jme3-testdata.
+         */
+        builder.addFile("Models/Jaime/NormalMap.png");
+        builder.addFile("Models/Jaime/diffuseMap.jpg");
+        builder.addFile("Models/MhGame/textures/brown_eye.png");
+        builder.addFile("Models/MhGame/textures/eyebrow001.png");
+        builder.addFile("Models/MhGame/textures/lit_matte.png");
+        builder.addFile("Models/MhGame/textures/lit_standard_skin.png");
+        builder.addFile("Models/MhGame/textures/male_worksuit01_ao.png");
+        builder.addFile("Models/MhGame/textures/male_worksuit01_diffuse.png");
+        builder.addFile("Models/MhGame/textures/male_worksuit01_normal.png");
+        builder.addFile("Models/MhGame/textures/shoes03_diffuse.png");
+        builder.addFile("Models/MhGame/textures/skinmat_eye.png");
+        builder.addFile(
+                "Models/MhGame/textures/young_lightskinned_male_diffuse2.png");
+        builder.addFile("Models/Sinbad/sinbad_body.jpg");
+        builder.addFile("Models/Sinbad/sinbad_clothes.jpg");
+        builder.addFile("Models/Sinbad/sinbad_sword.jpg");
+        builder.addFile("Textures/platform/bronze_ape.jpg");
+        builder.addFile("Textures/platform/rock_11474.jpg");
+        builder.addFile("Textures/platform/wood_0534.jpg");
+        // TODO more classpath textures
     }
 
     /**
@@ -788,80 +862,6 @@ public class BuildMenus {
         if (target.getSpatial().hasMaterial()) {
             builder.addSubmenu("Edit material");
         }
-    }
-
-    /**
-     * Build a menu of models on the classpath. TODO sort methods
-     */
-    private void buildClasspathCgmMenu() {
-        builder.reset();
-        /*
-         * Add items for C-G models included (on the classpath) with Maud.
-         * If haveTestdata, also add items for C-G models in jme3-testdata.
-         *
-         * animated models:
-         */
-        if (haveTestdata) {
-            builder.addOgre("Elephant");
-        }
-        builder.addJme("Jaime");
-        builder.addOgre("MhGame");
-        if (haveTestdata) {
-            builder.addOgre("Ninja");
-            builder.addOgre("Oto");
-        }
-        builder.addXbuf("Puppet");
-        builder.addOgre("Sinbad");
-        /*
-         * non-animated models:
-         */
-        if (haveTestdata) {
-            builder.addJme("Boat");
-            builder.addJme("Buggy");
-            builder.addOgre("Ferrari");
-            builder.addOgre("HoverTank");
-            builder.addOgre("MonkeyHead");
-            builder.addOgre("Sign Post");
-            builder.addOgre("SpaceCraft");
-        }
-        builder.addOgre("Sword");
-        if (haveTestdata) {
-            builder.addGeometry("Teapot");
-            builder.addOgre("Tree");
-        }
-
-        builder.addDialog(otherName);
-    }
-
-    /**
-     * Build a menu of textures on the classpath.
-     */
-    private void buildClasspathTextureMenu() {
-        builder.reset();
-        /*
-         * Add items for textures included (on the classpath) with Maud.
-         * If haveTestdata, also add items for textures in jme3-testdata.
-         */
-        builder.addFile("Models/Jaime/NormalMap.png");
-        builder.addFile("Models/Jaime/diffuseMap.jpg");
-        builder.addFile("Models/MhGame/textures/brown_eye.png");
-        builder.addFile("Models/MhGame/textures/eyebrow001.png");
-        builder.addFile("Models/MhGame/textures/lit_matte.png");
-        builder.addFile("Models/MhGame/textures/lit_standard_skin.png");
-        builder.addFile("Models/MhGame/textures/male_worksuit01_ao.png");
-        builder.addFile("Models/MhGame/textures/male_worksuit01_diffuse.png");
-        builder.addFile("Models/MhGame/textures/male_worksuit01_normal.png");
-        builder.addFile("Models/MhGame/textures/shoes03_diffuse.png");
-        builder.addFile("Models/MhGame/textures/skinmat_eye.png");
-        builder.addFile(
-                "Models/MhGame/textures/young_lightskinned_male_diffuse2.png");
-        builder.addFile("Models/Sinbad/sinbad_body.jpg");
-        builder.addFile("Models/Sinbad/sinbad_clothes.jpg");
-        builder.addFile("Models/Sinbad/sinbad_sword.jpg");
-        builder.addFile("Textures/platform/bronze_ape.jpg");
-        builder.addFile("Textures/platform/rock_11474.jpg");
-        builder.addFile("Textures/platform/wood_0534.jpg");
-        // TODO more classpath textures
     }
 
     /**
