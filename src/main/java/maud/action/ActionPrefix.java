@@ -281,6 +281,10 @@ public class ActionPrefix {
      */
     final public static String selectBufferUsage = "select bufferUsage ";
     /**
+     * argument is a decimal number of bits
+     */
+    final public static String selectColorDepth = "set colorDepth ";
+    /**
      * argument is the name of a cull hint
      */
     final public static String selectCullHint = "select cullHint ";
@@ -338,6 +342,11 @@ public class ActionPrefix {
      * argument is the name of a movement-mode enum value
      */
     final public static String selectMovement = "select movement ";
+    /**
+     * argument is a number of samples per pixel, formatted using
+     * {@link maud.DescribeUtil#msaaFactor(int)}
+     */
+    final public static String selectMsaaFactor = "set msaaFactor ";
     /**
      * argument is the name of an orbit-center enum value
      */
@@ -546,10 +555,6 @@ public class ActionPrefix {
      */
     final public static String setCloudiness = "set cloudiness ";
     /**
-     * argument is a decimal number of bits
-     */
-    final public static String selectColorDepth = "set colorDepth ";
-    /**
      * arguments are the decimal width in pixels, an "x", and the decimal height
      * in pixels
      */
@@ -591,11 +596,6 @@ public class ActionPrefix {
      * argument is a decimal number of weights
      */
     final public static String setMeshWeights = "set meshWeights ";
-    /**
-     * argument is a number of samples per pixel, formatted using
-     * {@link maud.DescribeUtil#msaaFactor(int)}
-     */
-    final public static String selectMsaaFactor = "set msaaFactor ";
     /**
      * argument is a decimal number of splits
      */
