@@ -33,12 +33,24 @@ package maud.model.option.scene;
  */
 public enum AxesSubject {
     // *************************************************************************
-    // values TODO reorder
+    // values
 
+    /**
+     * local axes of the selected bone, if any
+     */
+    Bone,
     /**
      * axes of the scene camera
      */
     Camera,
+    /**
+     * axes of the selected collision object, if any
+     */
+    CollisionObject,
+    /**
+     * axes of the selected light, if any
+     */
+    Light,
     /**
      * axes of the loaded C-G model
      */
@@ -48,29 +60,17 @@ public enum AxesSubject {
      */
     None,
     /**
-     * local axes of the selected bone, if any
-     */
-    Bone,
-    /**
-     * axes of the selected light, if any
-     */
-    Light,
-    /**
-     * axes of the selected collision object, if any
-     */
-    CollisionObject,
-    /**
      * local axes of the selected physics shape, if any
      */
     Shape,
     /**
-     * local axes of the selected spatial
-     */
-    Spatial,
-    /**
      * axes of the selected skeleton, if any
      */
     Skeleton,
+    /**
+     * local axes of the selected spatial
+     */
+    Spatial,
     /**
      * world axes of the scene
      */
