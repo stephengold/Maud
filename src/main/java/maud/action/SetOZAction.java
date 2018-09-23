@@ -103,7 +103,7 @@ class SetOZAction {
                 EditorDialogs.setPhysicsRbpValue(rbp);
                 break;
 
-            case Action.setQueueBucket:
+            case Action.selectQueueBucket:
                 EnumMenus.selectQueueBucket();
                 break;
 
@@ -111,7 +111,7 @@ class SetOZAction {
                 ShowMenus.setRefreshRate();
                 break;
 
-            case Action.setShadowMode:
+            case Action.selectShadowMode:
                 EnumMenus.selectShadowMode();
                 break;
 

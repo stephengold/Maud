@@ -88,7 +88,7 @@ class SetANAction {
                 EditorDialogs.setAnisotropy();
                 break;
 
-            case Action.setBatchHint: // TODO should be select
+            case Action.selectBatchHint:
                 EnumMenus.selectBatchHint();
                 break;
 
@@ -104,11 +104,11 @@ class SetANAction {
                 EditorDialogs.setBufferStride();
                 break;
 
-            case Action.setColorDepth: // TODO should be select
+            case Action.selectColorDepth:
                 ShowMenus.selectColorDepth();
                 break;
 
-            case Action.setCullHint: // TODO should be select
+            case Action.selectCullHint:
                 EnumMenus.selectCullHint();
                 break;
 
@@ -144,7 +144,7 @@ class SetANAction {
                 MeshMenus.setMeshWeights();
                 break;
 
-            case Action.setMsaaFactor: // TODO should be select
+            case Action.selectMsaaFactor:
                 ShowMenus.selectMsaaFactor();
                 break;
 
