@@ -361,34 +361,12 @@ public class SceneDrag {
          * and rotate that object.
          */
         AxesSubject subject = Maud.getModel().getScene().getAxes().getSubject();
-        switch (subject) { // TODO reorder cases
-            case Camera: // ignore attempts to drag the camera axes
-                break;
-
-            case Model:
-                /*
-                 * Apply the Y-axis rotation to the world transform.
-                 */
-                Cgm cgm = getCgm();
-                CgmTransform cgmTransform = cgm.getSceneView().getTransform();
-                float angle = FastMath.asin(cross.y * fLength);
-                cgmTransform.rotateY(angle);
-                break;
-
+        switch (subject) {
             case Bone:
                 rotateBone(rotation);
                 break;
 
-            case Light:
-                if (dragAxisIndex == MyVector3f.xAxis) {
-                    SelectedLight light = editableCgm.getLight();
-                    if (light.canDirect()) {
-                        /*
-                         * Adjust the direction of the selected light.
-                         */
-                        light.setDirection(newDirWorld);
-                    }
-                }
+            case Camera: // ignore attempts to drag the camera axes
                 break;
 
             case CollisionObject:
@@ -406,7 +384,32 @@ public class SceneDrag {
                 }
                 break;
 
+            case Light:
+                if (dragAxisIndex == MyVector3f.xAxis) {
+                    SelectedLight light = editableCgm.getLight();
+                    if (light.canDirect()) {
+                        /*
+                         * Adjust the direction of the selected light.
+                         */
+                        light.setDirection(newDirWorld);
+                    }
+                }
+                break;
+
+            case Model:
+                /*
+                 * Apply the Y-axis rotation to the world transform.
+                 */
+                Cgm cgm = getCgm();
+                CgmTransform cgmTransform = cgm.getSceneView().getTransform();
+                float angle = FastMath.asin(cross.y * fLength);
+                cgmTransform.rotateY(angle);
+                break;
+
             case Shape: // TODO
+                break;
+
+            case Skeleton: // TODO
                 break;
 
             case Spatial:
@@ -420,9 +423,6 @@ public class SceneDrag {
                     localRotation.normalizeLocal();
                     editableCgm.setSpatialRotation(localRotation);
                 }
-                break;
-
-            case Skeleton: // TODO
                 break;
 
             case World: // ignore attempts to drag the world axes
@@ -448,15 +448,7 @@ public class SceneDrag {
          * and scale that object.
          */
         AxesSubject subject = Maud.getModel().getScene().getAxes().getSubject();
-        switch (subject) { // TODO reorder cases
-            case Model:
-                /*
-                 * Scale the world transform.
-                 */
-                CgmTransform cgmTransform = cgm.getSceneView().getTransform();
-                cgmTransform.scale(factor);
-                break;
-
+        switch (subject) {
             case Bone:
                 if (cgm.getBone().shouldEnableControls()) {
                     /*
@@ -470,7 +462,7 @@ public class SceneDrag {
                 }
                 break;
 
-            case Light: // ignore attempts to scale lights
+            case Camera: // ignore attempts to drag camera axes
                 break;
 
             case CollisionObject:
@@ -481,11 +473,25 @@ public class SceneDrag {
                  */
                 break;
 
+            case Light: // ignore attempts to scale lights
+                break;
+
+            case Model:
+                /*
+                 * Scale the world transform.
+                 */
+                CgmTransform cgmTransform = cgm.getSceneView().getTransform();
+                cgmTransform.scale(factor);
+                break;
+
             case Shape:
                 if (editableCgm != null) {
                     Vector3f scale = new Vector3f(factor, factor, factor);
                     editableCgm.getShape().resize(scale);
                 }
+                break;
+
+            case Skeleton: // TODO
                 break;
 
             case Spatial:
@@ -526,17 +532,20 @@ public class SceneDrag {
          * and scale that object.
          */
         AxesSubject subject = Maud.getModel().getScene().getAxes().getSubject();
-        switch (subject) { // TODO reorder cases
-            case Model: // ignore attempts to scale a model axis
+        switch (subject) {
             case Bone: // ignore attempts to scale bones
-            case Light: // ignore attempts to scale lights
             case CollisionObject: // ignore attempts to scale objects
+            case Light: // ignore attempts to scale lights
+            case Model: // ignore attempts to scale a model axis
                 break;
 
             case Shape: // won't work on all shapes
                 if (editableCgm != null) {
                     editableCgm.getShape().resize(scale);
                 }
+                break;
+
+            case Skeleton: // TODO
                 break;
 
             case Spatial:
@@ -571,10 +580,7 @@ public class SceneDrag {
          * and translate that object.
          */
         AxesSubject subject = Maud.getModel().getScene().getAxes().getSubject();
-        switch (subject) { // TODO reorder cases
-            case Model: // ignore attempts to translate the model root
-                break;
-
+        switch (subject) {
             case Bone:
                 if (cgm.getBone().shouldEnableControls()) {
                     /*
@@ -619,18 +625,6 @@ public class SceneDrag {
                 }
                 break;
 
-            case Light:
-                SelectedLight light = editableCgm.getLight();
-                if (light.canPosition()) {
-                    /*
-                     * Translate the selected light.
-                     */
-                    Vector3f position = light.position();
-                    position.addLocal(offset);
-                    light.setPosition(position);
-                }
-                break;
-
             case CollisionObject:
                 SelectedObject object = editableCgm.getObject();
                 if (object.canPosition()) {
@@ -643,7 +637,23 @@ public class SceneDrag {
                 }
                 break;
 
+            case Light:
+                SelectedLight light = editableCgm.getLight();
+                if (light.canPosition()) {
+                    /*
+                     * Translate the selected light.
+                     */
+                    Vector3f position = light.position();
+                    position.addLocal(offset);
+                    light.setPosition(position);
+                }
+                break;
+
+            case Model: // ignore attempts to translate the model root
+                break;
+
             case Shape: // TODO
+            case Skeleton: // TODO
                 break;
 
             case Spatial:
