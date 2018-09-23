@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.nifty.dialog.TextEntryDialog;
 import maud.Maud;
-import maud.model.cgm.LoadedAnimation;
+import maud.MaudUtil;
 import maud.model.cgm.SelectedAnimControl;
 
 /**
@@ -70,7 +70,7 @@ class AnimationNameDialog extends TextEntryDialog {
     @Override
     protected String feedback(String proposedName) {
         String msg = "";
-        if (LoadedAnimation.isReserved(proposedName)) {
+        if (MaudUtil.isReservedAnimationName(proposedName)) {
             msg = String.format("%s is a reserved name",
                     MyString.quote(proposedName));
         } else if (isUsed(proposedName)) {

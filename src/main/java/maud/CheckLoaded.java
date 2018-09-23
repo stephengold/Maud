@@ -49,7 +49,6 @@ import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
-import maud.model.cgm.LoadedAnimation;
 import maud.model.cgm.SelectedSkeleton;
 
 /**
@@ -107,7 +106,7 @@ public class CheckLoaded {
                 logger.warning("animation name is empty");
                 return false;
             }
-            if (LoadedAnimation.isReserved(name)) {
+            if (MaudUtil.isReservedAnimationName(name)) {
                 logger.warning("animation has reserved name");
                 return false;
             }

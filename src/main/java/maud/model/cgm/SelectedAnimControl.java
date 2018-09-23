@@ -50,6 +50,7 @@ import jme3utilities.wes.Pose;
 import jme3utilities.wes.TrackEdit;
 import jme3utilities.wes.TweenTransforms;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.model.EditorModel;
 import maud.model.WhichCgm;
 
@@ -100,7 +101,7 @@ public class SelectedAnimControl implements JmeCloneable {
         Validate.nonNull(which1, "1st animation's model");
         Validate.nonNull(which2, "2nd animation's model");
         Validate.nonEmpty(animationName, "animation name");
-        assert !LoadedAnimation.isReserved(animationName) : animationName;
+        assert !MaudUtil.isReservedAnimationName(animationName) : animationName;
         assert !hasRealAnimation(animationName) : animationName;
 
         EditorModel model = Maud.getModel();
@@ -164,7 +165,7 @@ public class SelectedAnimControl implements JmeCloneable {
      */
     public void addCopy(String newAnimationName) {
         Validate.nonEmpty(newAnimationName, "new animation name");
-        assert !LoadedAnimation.isReserved(newAnimationName) : newAnimationName;
+        assert !MaudUtil.isReservedAnimationName(newAnimationName) : newAnimationName;
         assert !hasRealAnimation(newAnimationName) : newAnimationName;
 
         LoadedAnimation loaded = cgm.getAnimation();
@@ -214,7 +215,7 @@ public class SelectedAnimControl implements JmeCloneable {
     public void addMix(String indices, String animationName) {
         Validate.nonEmpty(indices, "indices");
         Validate.nonNull(animationName, "animation name");
-        assert !LoadedAnimation.isReserved(animationName) : animationName;
+        assert !MaudUtil.isReservedAnimationName(animationName) : animationName;
         assert !hasRealAnimation(animationName) : animationName;
 
         List<TrackItem> allTracks = cgm.listTrackItems();
@@ -267,7 +268,7 @@ public class SelectedAnimControl implements JmeCloneable {
      */
     public void addPose(String newAnimationName) {
         Validate.nonNull(newAnimationName, "new animation name");
-        assert !LoadedAnimation.isReserved(newAnimationName) : newAnimationName;
+        assert !MaudUtil.isReservedAnimationName(newAnimationName) : newAnimationName;
         assert !hasRealAnimation(newAnimationName) : newAnimationName;
 
         Pose pose = cgm.getPose().get();

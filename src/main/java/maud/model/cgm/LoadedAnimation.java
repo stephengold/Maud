@@ -645,27 +645,6 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Test whether the specified animation name is reserved.
-     *
-     * @param name which name to test (not null)
-     * @return true if reserved, otherwise false
-     */
-    public static boolean isReserved(String name) {
-        boolean result;
-        if (name.isEmpty()) {
-            result = true;
-        } else if (name.equals(bindPoseName)) {
-            result = true;
-        } else if (name.equals(retargetedPoseName)) {
-            result = true;
-        } else {
-            result = false;
-        }
-
-        return result;
-    }
-
-    /**
      * Test whether retargeted pose is loaded.
      *
      * @return true if it's loaded, false if a real animation or bind pose is
@@ -866,7 +845,7 @@ public class LoadedAnimation implements Cloneable {
      */
     public void rename(String newName) {
         Validate.nonEmpty(newName, "new name");
-        assert !isReserved(newName) : newName;
+        assert !MaudUtil.isReservedAnimationName(newName) : newName;
         SelectedAnimControl sac = cgm.getAnimControl();
         assert !sac.hasRealAnimation(newName) : newName;
         assert isReal();
@@ -1257,7 +1236,7 @@ public class LoadedAnimation implements Cloneable {
      */
     private void loadReal(String name, float newSpeed) {
         assert name != null;
-        assert !isReserved(name);
+        assert !MaudUtil.isReservedAnimationName(name);
 
         if (!name.equals(loadedName)) {
             loadedName = name;

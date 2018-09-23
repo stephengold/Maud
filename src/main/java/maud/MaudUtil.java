@@ -78,6 +78,7 @@ import jme3utilities.math.MyMath;
 import jme3utilities.math.MyVector3f;
 import jme3utilities.nifty.dialog.VectorDialog;
 import jme3utilities.ui.Locators;
+import maud.model.cgm.LoadedAnimation;
 import maud.model.option.RotationDisplayMode;
 
 /**
@@ -554,6 +555,27 @@ public class MaudUtil {
         boolean result;
         if (!hasAttachments && numSgcs == 0 && numUserData == 0
                 && numVertices == 0) {
+            result = true;
+        } else {
+            result = false;
+        }
+
+        return result;
+    }
+
+    /**
+     * Test whether the specified animation name is reserved.
+     *
+     * @param name which name to test (not null)
+     * @return true if reserved, otherwise false
+     */
+    public static boolean isReservedAnimationName(String name) {
+        boolean result;
+        if (name.isEmpty()) {
+            result = true;
+        } else if (name.equals(LoadedAnimation.bindPoseName)) {
+            result = true;
+        } else if (name.equals(LoadedAnimation.retargetedPoseName)) {
             result = true;
         } else {
             result = false;
