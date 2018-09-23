@@ -37,7 +37,6 @@ import maud.DescribeUtil;
 import maud.Maud;
 import maud.dialog.DimensionsDialog;
 import maud.dialog.EditorDialogs;
-import maud.menu.EnumMenus;
 import maud.menu.MeshMenus;
 import maud.menu.ShowMenus;
 import maud.model.EditorModel;
@@ -88,10 +87,6 @@ class SetANAction {
                 EditorDialogs.setAnisotropy();
                 break;
 
-            case Action.selectBatchHint:
-                EnumMenus.selectBatchHint();
-                break;
-
             case Action.setBufferInstanceSpan:
                 EditorDialogs.setBufferInstanceSpan();
                 break;
@@ -102,14 +97,6 @@ class SetANAction {
 
             case Action.setBufferStride:
                 EditorDialogs.setBufferStride();
-                break;
-
-            case Action.selectColorDepth:
-                ShowMenus.selectColorDepth();
-                break;
-
-            case Action.selectCullHint:
-                EnumMenus.selectCullHint();
                 break;
 
             case Action.setDimensions:
@@ -142,10 +129,6 @@ class SetANAction {
 
             case Action.setMeshWeights:
                 MeshMenus.setMeshWeights();
-                break;
-
-            case Action.selectMsaaFactor:
-                ShowMenus.selectMsaaFactor();
                 break;
 
             default:

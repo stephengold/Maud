@@ -113,6 +113,10 @@ class SelectANAction {
                 EnumMenus.selectBackground();
                 break;
 
+            case Action.selectBatchHint:
+                EnumMenus.selectBatchHint();
+                break;
+
             case Action.selectBone:
                 BoneMenus.selectBone();
                 break;
@@ -135,6 +139,14 @@ class SelectANAction {
 
             case Action.selectBufferUsage:
                 EnumMenus.selectBufferUsage();
+                break;
+
+            case Action.selectColorDepth:
+                ShowMenus.selectColorDepth();
+                break;
+
+            case Action.selectCullHint:
+                EnumMenus.selectCullHint();
                 break;
 
             case Action.selectEdgeFilter:
@@ -199,6 +211,10 @@ class SelectANAction {
 
             case Action.selectMeshMode:
                 EnumMenus.selectMeshMode();
+                break;
+
+            case Action.selectMsaaFactor:
+                ShowMenus.selectMsaaFactor();
                 break;
 
             default:

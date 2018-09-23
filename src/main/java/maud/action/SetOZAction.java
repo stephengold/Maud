@@ -34,7 +34,6 @@ import jme3utilities.MyString;
 import jme3utilities.math.MyColor;
 import maud.Maud;
 import maud.dialog.EditorDialogs;
-import maud.menu.EnumMenus;
 import maud.menu.ShowMenus;
 import maud.model.EditorModel;
 import maud.model.WhichCgm;
@@ -103,16 +102,8 @@ class SetOZAction {
                 EditorDialogs.setPhysicsRbpValue(rbp);
                 break;
 
-            case Action.selectQueueBucket:
-                EnumMenus.selectQueueBucket();
-                break;
-
             case Action.setRefreshRate:
                 ShowMenus.selectRefreshRate();
-                break;
-
-            case Action.selectShadowMode:
-                EnumMenus.selectShadowMode();
                 break;
 
             case Action.setShapeParmValue:

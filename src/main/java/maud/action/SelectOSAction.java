@@ -121,6 +121,10 @@ class SelectOSAction {
                 EnumMenus.selectPlatformType();
                 break;
 
+            case Action.selectQueueBucket:
+                EnumMenus.selectQueueBucket();
+                break;
+
             case Action.selectSceneBones:
                 currentOption = model.getScene().getSkeleton().getShowBones();
                 EnumMenus.selectShowBones(ActionPrefix.selectSceneBones,
@@ -153,6 +157,10 @@ class SelectOSAction {
 
             case Action.selectSgcSpatial:
                 target.getSpatial().selectControlled();
+                break;
+
+            case Action.selectShadowMode:
+                EnumMenus.selectShadowMode();
                 break;
 
             case Action.selectShape:

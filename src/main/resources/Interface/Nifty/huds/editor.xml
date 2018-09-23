@@ -846,14 +846,14 @@ the menu bar, status bar, and tool windows.
                         <control name="label" text="MSAA factor:  "/>
                         <control name="button" id="displayMsaaButton"
                                  width="65px">
-                            <interact onRelease="perform(set msaaFactor)"/>
+                            <interact onRelease="perform(select msaaFactor)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="color depth:  "/>
                         <control name="button" id="colorDepthButton"
                                  width="55px">
-                            <interact onRelease="perform(set colorDepth)"/>
+                            <interact onRelease="perform(select colorDepth)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
@@ -2735,26 +2735,26 @@ the menu bar, status bar, and tool windows.
                         <control name="label" text="Batch hint:  "/>
                         <control name="button" id="spatialBatchHintButton"
                                  width="50px">
-                            <interact onRelease="perform(set batchHint)"/>
+                            <interact onRelease="perform(select batchHint)"/>
                         </control>
                         <control name="label" text="    Cull hint:  "/>
                         <control name="button" id="spatialCullHintButton"
                                  width="65px">
-                            <interact onRelease="perform(set cullHint)"/>
+                            <interact onRelease="perform(select cullHint)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Queue bucket:  "/>
                         <control name="button" id="spatialBucketButton"
                                  width="80px">
-                            <interact onRelease="perform(set queueBucket)"/>
+                            <interact onRelease="perform(select queueBucket)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Shadow mode:  "/>
                         <control name="button" id="spatialShadowsButton"
                                  width="105px">
-                            <interact onRelease="perform(set shadowMode)"/>
+                            <interact onRelease="perform(select shadowMode)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
