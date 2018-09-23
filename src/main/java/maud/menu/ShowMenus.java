@@ -287,7 +287,7 @@ public class ShowMenus {
      * Display a menu to set the color depth (bits per pixel) for the display
      * using the "set colorDepth " action prefix.
      */
-    public static void setColorDepth() {
+    public static void selectColorDepth() {
         MenuBuilder builder = new MenuBuilder();
 
         int depth = DisplaySettings.getColorDepth();

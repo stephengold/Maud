@@ -105,7 +105,7 @@ class SetANAction {
                 break;
 
             case Action.setColorDepth: // TODO should be select
-                ShowMenus.setColorDepth();
+                ShowMenus.selectColorDepth();
                 break;
 
             case Action.setCullHint: // TODO should be select
