@@ -144,7 +144,6 @@ public class EditorDialogs {
                 MyString.quote(LibraryVersion.getVersionShort()));
 
         text += String.format("%n   jme3-blender (BSD license)");
-        text += String.format("%n   jme3-bullet (BSD license)");
         text += String.format("%n   jme3-bullet-native (BSD license)");
         text += String.format("%n   jme3-desktop (BSD license)");
         text += String.format("%n   jme3-effects (BSD license)");
