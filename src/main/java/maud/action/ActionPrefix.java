@@ -283,7 +283,7 @@ public class ActionPrefix {
     /**
      * argument is a decimal number of bits
      */
-    final public static String selectColorDepth = "set colorDepth ";
+    final public static String selectColorDepth = "select colorDepth ";
     /**
      * argument is the name of a cull hint
      */
@@ -346,7 +346,7 @@ public class ActionPrefix {
      * argument is a number of samples per pixel, formatted using
      * {@link maud.DescribeUtil#msaaFactor(int)}
      */
-    final public static String selectMsaaFactor = "set msaaFactor ";
+    final public static String selectMsaaFactor = "select msaaFactor ";
     /**
      * argument is the name of an orbit-center enum value
      */

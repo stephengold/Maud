@@ -180,7 +180,7 @@ public class EnumMenus {
 
     /**
      * Display a menu to set the batch hint of the current spatial using the
-     * "set batchHint " action prefix.
+     * "select batchHint " action prefix.
      */
     public static void selectBatchHint() {
         MenuBuilder builder = new MenuBuilder();
@@ -218,8 +218,8 @@ public class EnumMenus {
     }
 
     /**
-     * Display a menu to set the cull hint of the current spatial using the "set
-     * cullHint " action prefix.
+     * Display a menu to set the cull hint of the current spatial using the
+     * "select cullHint " action prefix.
      */
     public static void selectCullHint() {
         MenuBuilder builder = new MenuBuilder();
@@ -369,7 +369,7 @@ public class EnumMenus {
 
     /**
      * Display a menu to set the render bucket of the current spatial using the
-     * "set queueBucket " action prefix.
+     * "select queueBucket " action prefix.
      */
     public static void selectQueueBucket() {
         MenuBuilder builder = new MenuBuilder();
@@ -388,7 +388,7 @@ public class EnumMenus {
 
     /**
      * Display a menu to set the shadow mode of the current spatial using the
-     * "set shadowMode " action prefix.
+     * "select shadowMode " action prefix.
      */
     public static void selectShadowMode() {
         MenuBuilder builder = new MenuBuilder();

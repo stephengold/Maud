@@ -34,6 +34,7 @@ import com.jme3.scene.VertexBuffer;
 import com.jme3.shadow.EdgeFilteringMode;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
+import maud.DescribeUtil;
 import maud.Maud;
 import maud.menu.AnimationMenus;
 import maud.menu.BoneMenus;
@@ -47,6 +48,7 @@ import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.option.Background;
+import maud.model.option.DisplaySettings;
 import maud.model.option.LoadBvhAxisOrder;
 import maud.model.option.scene.AxesDragEffect;
 import maud.model.option.scene.AxesSubject;
@@ -294,6 +296,12 @@ class SelectANAction {
             VertexBuffer.Usage usage = VertexBuffer.Usage.valueOf(arg);
             target.setBufferUsage(usage);
 
+        } else if (actionString.startsWith(ActionPrefix.selectColorDepth)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectColorDepth);
+            int bitsPerPixel = Integer.parseInt(arg);
+            DisplaySettings.setColorDepth(bitsPerPixel);
+
         } else if (actionString.startsWith(ActionPrefix.selectCullHint)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectCullHint);
             Spatial.CullHint value = Spatial.CullHint.valueOf(arg);
@@ -376,6 +384,19 @@ class SelectANAction {
             arg = MyString.remainder(actionString, ActionPrefix.selectMovement);
             MovementMode mode = MovementMode.valueOf(arg);
             model.getScene().getCamera().setMode(mode);
+
+        } else if (actionString.startsWith(ActionPrefix.selectMsaaFactor)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectMsaaFactor);
+            int factor = 16;
+            for (int f : new int[]{1, 2, 4, 6, 8}) {
+                String aaDescription = DescribeUtil.msaaFactor(f);
+                if (arg.equals(aaDescription)) {
+                    factor = f;
+                    break;
+                }
+            }
+            DisplaySettings.setMsaaFactor(factor);
 
         } else {
             handled = false;

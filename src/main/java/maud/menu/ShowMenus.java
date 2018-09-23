@@ -155,7 +155,7 @@ public class ShowMenus {
 
     /**
      * Display a menu to select the color depth (bits per pixel) for the display
-     * using the "set colorDepth " action prefix.
+     * using the "select colorDepth " action prefix.
      */
     public static void selectColorDepth() {
         MenuBuilder builder = new MenuBuilder();
@@ -298,7 +298,7 @@ public class ShowMenus {
     }
 
     /**
-     * Display a menu to configure MSAA using the "set msaaFactor " action
+     * Display a menu to configure MSAA using the "select msaaFactor " action
      * prefix.
      */
     public static void selectMsaaFactor() {

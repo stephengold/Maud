@@ -33,7 +33,6 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.math.MyColor;
 import jme3utilities.math.MyVector3f;
-import maud.DescribeUtil;
 import maud.Maud;
 import maud.dialog.DimensionsDialog;
 import maud.dialog.EditorDialogs;
@@ -243,12 +242,6 @@ class SetANAction {
             float fraction = Float.parseFloat(arg);
             model.getScene().getRender().setCloudiness(fraction);
 
-        } else if (actionString.startsWith(ActionPrefix.selectColorDepth)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.selectColorDepth);
-            int bitsPerPixel = Integer.parseInt(arg);
-            DisplaySettings.setColorDepth(bitsPerPixel);
-
         } else if (actionString.startsWith(ActionPrefix.setDimensions)) {
             arg = MyString.remainder(actionString, ActionPrefix.setDimensions);
             int[] wh = DimensionsDialog.parseDimensions(arg);
@@ -306,19 +299,6 @@ class SetANAction {
             arg = MyString.remainder(actionString, ActionPrefix.setMeshWeights);
             int mnwpv = Integer.parseInt(arg);
             target.setMeshWeights(mnwpv);
-
-        } else if (actionString.startsWith(ActionPrefix.selectMsaaFactor)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.selectMsaaFactor);
-            int factor = 16;
-            for (int f : new int[]{1, 2, 4, 6, 8}) {
-                String aaDescription = DescribeUtil.msaaFactor(f);
-                if (arg.equals(aaDescription)) {
-                    factor = f;
-                    break;
-                }
-            }
-            DisplaySettings.setMsaaFactor(factor);
 
         } else if (actionString.startsWith(ActionPrefix.setNumSplits)) {
             arg = MyString.remainder(actionString, ActionPrefix.setNumSplits);
