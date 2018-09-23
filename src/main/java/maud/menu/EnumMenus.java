@@ -179,6 +179,25 @@ public class EnumMenus {
     }
 
     /**
+     * Display a menu to set the batch hint of the current spatial using the
+     * "set batchHint " action prefix.
+     */
+    public static void selectBatchHint() {
+        MenuBuilder builder = new MenuBuilder();
+
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        Spatial.BatchHint selectedHint = spatial.getLocalBatchHint();
+        for (Spatial.BatchHint hint : Spatial.BatchHint.values()) {
+            if (hint != selectedHint) {
+                String name = hint.toString();
+                builder.addEdit(name);
+            }
+        }
+
+        builder.show(ActionPrefix.selectBatchHint);
+    }
+
+    /**
      * Handle a "select bufferUsage" action without an argument.
      */
     public static void selectBufferUsage() {
@@ -196,6 +215,25 @@ public class EnumMenus {
         }
 
         builder.show(ActionPrefix.selectBufferUsage);
+    }
+
+    /**
+     * Display a menu to set the cull hint of the current spatial using the "set
+     * cullHint " action prefix.
+     */
+    public static void selectCullHint() {
+        MenuBuilder builder = new MenuBuilder();
+
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        Spatial.CullHint selectedHint = spatial.getLocalCullHint();
+        for (Spatial.CullHint hint : Spatial.CullHint.values()) {
+            if (hint != selectedHint) {
+                String name = hint.toString();
+                builder.addEdit(name);
+            }
+        }
+
+        builder.show(ActionPrefix.selectCullHint);
     }
 
     /**
@@ -327,6 +365,44 @@ public class EnumMenus {
         }
 
         builder.show(ActionPrefix.selectPlatformType);
+    }
+
+    /**
+     * Display a menu to set the render bucket of the current spatial using the
+     * "set queueBucket " action prefix.
+     */
+    public static void selectQueueBucket() {
+        MenuBuilder builder = new MenuBuilder();
+
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        RenderQueue.Bucket selectedBucket = spatial.getLocalQueueBucket();
+        for (RenderQueue.Bucket bucket : RenderQueue.Bucket.values()) {
+            if (bucket != selectedBucket) {
+                String name = bucket.toString();
+                builder.addEdit(name);
+            }
+        }
+
+        builder.show(ActionPrefix.selectQueueBucket);
+    }
+
+    /**
+     * Display a menu to set the shadow mode of the current spatial using the
+     * "set shadowMode " action prefix.
+     */
+    public static void selectShadowMode() {
+        MenuBuilder builder = new MenuBuilder();
+
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        RenderQueue.ShadowMode selectedMode = spatial.getLocalShadowMode();
+        for (RenderQueue.ShadowMode mode : RenderQueue.ShadowMode.values()) {
+            if (mode != selectedMode) {
+                String name = mode.toString();
+                builder.addEdit(name);
+            }
+        }
+
+        builder.show(ActionPrefix.selectShadowMode);
     }
 
     /**
@@ -554,82 +630,6 @@ public class EnumMenus {
         }
 
         builder.show("select menuItem View -> Select mode -> ");
-    }
-
-    /**
-     * Display a menu to set the batch hint of the current spatial using the
-     * "set batchHint " action prefix.
-     */
-    public static void selectBatchHint() {
-        MenuBuilder builder = new MenuBuilder();
-
-        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
-        Spatial.BatchHint selectedHint = spatial.getLocalBatchHint();
-        for (Spatial.BatchHint hint : Spatial.BatchHint.values()) {
-            if (hint != selectedHint) {
-                String name = hint.toString();
-                builder.addEdit(name);
-            }
-        }
-
-        builder.show(ActionPrefix.selectBatchHint);
-    }
-
-    /**
-     * Display a menu to set the cull hint of the current spatial using the "set
-     * cullHint " action prefix.
-     */
-    public static void selectCullHint() {
-        MenuBuilder builder = new MenuBuilder();
-
-        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
-        Spatial.CullHint selectedHint = spatial.getLocalCullHint();
-        for (Spatial.CullHint hint : Spatial.CullHint.values()) {
-            if (hint != selectedHint) {
-                String name = hint.toString();
-                builder.addEdit(name);
-            }
-        }
-
-        builder.show(ActionPrefix.selectCullHint);
-    }
-
-    /**
-     * Display a menu to set the render bucket of the current spatial using the
-     * "set queueBucket " action prefix.
-     */
-    public static void selectQueueBucket() {
-        MenuBuilder builder = new MenuBuilder();
-
-        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
-        RenderQueue.Bucket selectedBucket = spatial.getLocalQueueBucket();
-        for (RenderQueue.Bucket bucket : RenderQueue.Bucket.values()) {
-            if (bucket != selectedBucket) {
-                String name = bucket.toString();
-                builder.addEdit(name);
-            }
-        }
-
-        builder.show(ActionPrefix.selectQueueBucket);
-    }
-
-    /**
-     * Display a menu to set the shadow mode of the current spatial using the
-     * "set shadowMode " action prefix.
-     */
-    public static void selectShadowMode() {
-        MenuBuilder builder = new MenuBuilder();
-
-        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
-        RenderQueue.ShadowMode selectedMode = spatial.getLocalShadowMode();
-        for (RenderQueue.ShadowMode mode : RenderQueue.ShadowMode.values()) {
-            if (mode != selectedMode) {
-                String name = mode.toString();
-                builder.addEdit(name);
-            }
-        }
-
-        builder.show(ActionPrefix.selectShadowMode);
     }
 
     /**
