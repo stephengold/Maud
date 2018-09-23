@@ -114,7 +114,7 @@ class SetANAction {
 
             case Action.setDimensions:
                 if (DisplaySettings.isFullscreen()) {
-                    ShowMenus.setDimensions();
+                    ShowMenus.selectDimensions();
                 } else {
                     EditorDialogs.setDimensions();
                 }

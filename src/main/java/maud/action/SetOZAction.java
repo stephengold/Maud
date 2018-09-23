@@ -108,7 +108,7 @@ class SetOZAction {
                 break;
 
             case Action.setRefreshRate:
-                ShowMenus.setRefreshRate();
+                ShowMenus.selectRefreshRate();
                 break;
 
             case Action.selectShadowMode:

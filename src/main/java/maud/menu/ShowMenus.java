@@ -325,10 +325,10 @@ public class ShowMenus {
     }
 
     /**
-     * Display a menu to set the (full-screen) display dimensions using the "set
-     * dimensions " action prefix.
+     * Display a menu to select the (full-screen) display dimensions using the
+     * "set dimensions " action prefix. TODO sort methods
      */
-    public static void setDimensions() {
+    public static void selectDimensions() {
         MenuBuilder builder = new MenuBuilder();
 
         int height = DisplaySettings.getHeight();
@@ -374,10 +374,10 @@ public class ShowMenus {
     }
 
     /**
-     * Display a menu to set the refresh rate for the display using the "set
+     * Display a menu to select the refresh rate for the display using the "set
      * refreshRate " action prefix.
      */
-    public static void setRefreshRate() {
+    public static void selectRefreshRate() {
         if (DisplaySettings.isFullscreen()) {
             MenuBuilder builder = new MenuBuilder();
             int refreshRate = DisplaySettings.getRefreshRate();
