@@ -2152,7 +2152,7 @@ the menu bar, status bar, and tool windows.
 
             <control name="window" id="settingsTool" title="Settings Tool"
                      hideOnClose="true"
-                     height="245px" width="200px" x="95" y="175">
+                     height="273px" width="200px" x="95" y="175">
                 <panel childLayout="vertical">
                     <panel height="4px"/>
                     <panel childLayout="horizontal" height="28px">
@@ -2180,6 +2180,13 @@ the menu bar, status bar, and tool windows.
                         <control name="checkbox" id="settingsDiagnoseCheckBox"
                                  width="20px"/>
                         <control name="label" text="  diagnose loads"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="button" id="settingsAxisOrderButton"
+                                 width="60px">
+                            <interact onRelease="perform(select loadBvhAxisOrder)"/>
+                        </control>
+                        <control name="label" text="  BVH axis order"/>
                     </panel>
                     <panel height="3px"/>
                     <control name="label" id="submenuWarpXSliderStatus"

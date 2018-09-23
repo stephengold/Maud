@@ -15,6 +15,9 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Scanner;
 import java.util.logging.Logger;
+import maud.Maud;
+import maud.model.option.LoadBvhAxisOrder;
+import maud.model.option.MiscOptions;
 
 /**
  * Loader for Biovision BVH assets. The BVH file format is documented at
@@ -104,6 +107,8 @@ public class BVHLoader implements AssetLoader {
         Vector3f[] translations = new Vector3f[animation.getNbFrames()];
         Quaternion[] rotations = new Quaternion[animation.getNbFrames()];
         float time = 0;
+        MiscOptions options = Maud.getModel().getMisc();
+        LoadBvhAxisOrder axisOrder = options.loadBvhAxisOrder();
 
         Quaternion rx = new Quaternion();
         Quaternion ry = new Quaternion();
@@ -128,25 +133,36 @@ public class BVHLoader implements AssetLoader {
                     if (bVHChannel.getName().equals("Zposition")) {
                         t.setZ(bVHChannel.getValues().get(i));
                     }
-                    if (bVHChannel.getName().equals("Xrotation")) {
 
+                    if (bVHChannel.getName().equals("Xrotation")) {
                         rx.fromAngleAxis(
                                 (bVHChannel.getValues().get(i)) * FastMath.DEG_TO_RAD,
                                 Vector3f.UNIT_X);
+                        if (axisOrder == LoadBvhAxisOrder.Header) {
+                            r.multLocal(rx);
+                        }
                     }
                     if (bVHChannel.getName().equals("Yrotation")) {
                         ry.fromAngleAxis(
                                 (bVHChannel.getValues().get(i)) * FastMath.DEG_TO_RAD,
                                 Vector3f.UNIT_Y);
+                        if (axisOrder == LoadBvhAxisOrder.Header) {
+                            r.multLocal(ry);
+                        }
                     }
                     if (bVHChannel.getName().equals("Zrotation")) {
                         rz.fromAngleAxis(
                                 (bVHChannel.getValues().get(i)) * FastMath.DEG_TO_RAD,
                                 Vector3f.UNIT_Z);
+                        if (axisOrder == LoadBvhAxisOrder.Header) {
+                            r.multLocal(rz);
+                        }
                     }
                 }
 
-                r.multLocal(rz).multLocal(rx).multLocal(ry);
+                if (axisOrder == LoadBvhAxisOrder.Classic) {
+                    r.multLocal(rz).multLocal(rx).multLocal(ry);
+                }
             }
             translations[i] = t;
             rotations[i] = r;

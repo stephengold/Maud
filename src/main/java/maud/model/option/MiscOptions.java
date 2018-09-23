@@ -37,7 +37,7 @@ import maud.action.ActionPrefix;
 
 /**
  * The MVC model of miscellaneous global options pertaining to Maud's editor
- * screen.
+ * screen. TODO split off loading options
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -100,6 +100,10 @@ public class MiscOptions implements Cloneable {
      */
     private int indexBase = 1;
     /**
+     * axis order for BVH loading (not null)
+     */
+    private LoadBvhAxisOrder axisOrder = LoadBvhAxisOrder.Classic;
+    /**
      * performance-monitoring mode (not null)
      */
     private PerformanceMode performanceMode = PerformanceMode.Off;
@@ -138,7 +142,7 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Read which color to view/edit in CursorTool.
+     * Read which color to view/edit in CursorTool. TODO rename colorIndex
      *
      * @return a color index (0 or 1)
      */
@@ -149,6 +153,7 @@ public class MiscOptions implements Cloneable {
 
     /**
      * Test whether to print diagnostic messages to the console during loads.
+     * TODO rename diagnoseLoads
      *
      * @return true to print diagnostics, otherwise false
      */
@@ -157,7 +162,7 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Read starting point for displayed indices.
+     * Read starting point for displayed indices. TODO rename indexBase
      *
      * @return base index (0 or 1)
      */
@@ -167,7 +172,7 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Test the orientation for loading C-G models.
+     * Test the orientation for loading C-G models. TODO rename isLoadZup
      *
      * @return true &rarr; +Z upward, false &rarr; +Y upward
      */
@@ -176,7 +181,7 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Read the performance-monitoring mode.
+     * Read the performance-monitoring mode. TODO rename performanceMode()
      *
      * @return an enum value (not null)
      */
@@ -186,7 +191,8 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Read which rigid-body parameter to view/edit in ObjectTool.
+     * Read which rigid-body parameter to view/edit in ObjectTool. TODO rename
+     * rbParameter()
      *
      * @return an enum value (not null)
      */
@@ -196,7 +202,7 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Read the display mode for rotations.
+     * Read the display mode for rotations. TODO rename rotationDisplayMode()
      *
      * @return an enum value (not null)
      */
@@ -206,7 +212,8 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Read which shape parameter to view/edit in ShapeTool.
+     * Read which shape parameter to view/edit in ShapeTool. TODO rename
+     * shapeParameter
      *
      * @return an enum value (not null)
      */
@@ -226,7 +233,8 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Read the submenu warp fraction for the X coordinate.
+     * Read the submenu warp fraction for the X coordinate. TODO rename
+     * submenuWarpX
      *
      * @return the fraction (&ge;0, &le;1)
      */
@@ -237,7 +245,8 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Read the submenu warp fraction for the Y coordinate.
+     * Read the submenu warp fraction for the Y coordinate. TODO rename
+     * submenuWarpY
      *
      * @return the fraction (&ge;0, &le;1)
      */
@@ -248,7 +257,7 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Read the view mode.
+     * Read the view mode. TODO rename viewMode()
      *
      * @return an enum value (not null)
      */
@@ -258,7 +267,8 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Read the location of the display's left-right boundary.
+     * Read the location of the display's left-right boundary. TODO rename
+     * xBoundary()
      *
      * @return display X-coordinate (&gt;0, &lt;1)
      */
@@ -278,6 +288,16 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
+     * Read the axis order for loading BVH assets.
+     *
+     * @return display X-coordinate (&gt;0, &lt;1)
+     */
+    public LoadBvhAxisOrder loadBvhAxisOrder() {
+        assert axisOrder != null;
+        return axisOrder;
+    }
+
+    /**
      * Select which background to view/edit in BackgroundTool.
      *
      * @param newBackground an enum value (not null)
@@ -285,6 +305,16 @@ public class MiscOptions implements Cloneable {
     public void selectBackground(Background newBackground) {
         Validate.nonNull(newBackground, "new background");
         background = newBackground;
+    }
+
+    /**
+     * Select the axis order for loading BVH assets.
+     *
+     * @param newOrder an enum value (not null)
+     */
+    public void selectLoadBvhAxisOrder(LoadBvhAxisOrder newOrder) {
+        Validate.nonNull(newOrder, "new order");
+        axisOrder = newOrder;
     }
 
     /**
@@ -539,6 +569,9 @@ public class MiscOptions implements Cloneable {
         MaudUtil.writePerformAction(writer, action);
 
         action = ActionPrefix.selectIndexBase + Integer.toString(indexBase);
+        MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.selectLoadBvhAxisOrder + axisOrder.toString();
         MaudUtil.writePerformAction(writer, action);
 
         action = ActionPrefix.selectPerformanceMode

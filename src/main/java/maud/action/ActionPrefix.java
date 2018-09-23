@@ -317,6 +317,11 @@ public class ActionPrefix {
      */
     final public static String selectLight = "select light ";
     /**
+     * argument is the name of a LoadBvhAxisOrder
+     */
+    final public static String selectLoadBvhAxisOrder
+            = "select loadBvhAxisOrder ";
+    /**
      * argument is the name of a pre-existing material parameter or a prefix
      * thereof
      */

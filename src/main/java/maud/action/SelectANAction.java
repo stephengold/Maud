@@ -47,6 +47,7 @@ import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.option.Background;
+import maud.model.option.LoadBvhAxisOrder;
 import maud.model.option.scene.AxesDragEffect;
 import maud.model.option.scene.AxesSubject;
 import maud.model.option.scene.MovementMode;
@@ -174,6 +175,10 @@ class SelectANAction {
 
             case Action.selectLightOwner:
                 target.getSpatial().selectLightOwner();
+                break;
+
+            case Action.selectLoadBvhAxisOrder:
+                EnumMenus.selectLoadBvhAxisOrder();
                 break;
 
             case Action.selectMapSourceBone:
@@ -329,6 +334,13 @@ class SelectANAction {
         } else if (actionString.startsWith(ActionPrefix.selectLight)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectLight);
             target.getLight().select(arg);
+
+        } else if (actionString.startsWith(
+                ActionPrefix.selectLoadBvhAxisOrder)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectLoadBvhAxisOrder);
+            LoadBvhAxisOrder axisOrder = LoadBvhAxisOrder.valueOf(arg);
+            model.getMisc().selectLoadBvhAxisOrder(axisOrder);
 
         } else if (actionString.startsWith(ActionPrefix.selectMatParam)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectMatParam);

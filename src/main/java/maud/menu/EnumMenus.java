@@ -52,6 +52,7 @@ import maud.model.cgm.SelectedSpatial;
 import maud.model.cgm.SelectedTexture;
 import maud.model.cgm.UserDataType;
 import maud.model.option.Background;
+import maud.model.option.LoadBvhAxisOrder;
 import maud.model.option.MiscOptions;
 import maud.model.option.ShowBones;
 import maud.model.option.ViewMode;
@@ -235,6 +236,20 @@ public class EnumMenus {
         }
 
         builder.show(ActionPrefix.selectFaceCull);
+    }
+
+    /**
+     * Display a "select loadBvhAxisOrder" menu.
+     */
+    public static void selectLoadBvhAxisOrder() {
+        MenuBuilder builder = new MenuBuilder();
+
+        for (LoadBvhAxisOrder center : LoadBvhAxisOrder.values()) {
+            String name = center.toString();
+            builder.add(name);
+        }
+
+        builder.show(ActionPrefix.selectLoadBvhAxisOrder);
     }
 
     /**

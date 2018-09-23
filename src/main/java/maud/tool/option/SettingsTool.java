@@ -31,6 +31,7 @@ import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.SliderTransform;
 import maud.Maud;
+import maud.model.option.LoadBvhAxisOrder;
 import maud.model.option.MiscOptions;
 import maud.model.option.RotationDisplayMode;
 import maud.tool.Tool;
@@ -147,6 +148,10 @@ public class SettingsTool extends Tool {
 
         boolean diagnoseFlag = options.getDiagnoseLoads();
         setChecked("settingsDiagnose", diagnoseFlag);
+
+        LoadBvhAxisOrder axisOrder = options.loadBvhAxisOrder();
+        description = axisOrder.toString();
+        setButtonText("settingsAxisOrder", description);
 
         float x = options.getSubmenuWarpX();
         setSlider("submenuWarpX", submenuSt, x);

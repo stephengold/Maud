@@ -193,6 +193,7 @@ public class Action {
     final static String selectKeyframePrevious = "select keyframePrevious";
     final static String selectLight = "select light";
     final static String selectLightOwner = "select lightOwner";
+    final static String selectLoadBvhAxisOrder = "select loadBvhAxisOrder";
     final static String selectMapSourceBone = "select mapSourceBone";
     final static String selectMapTargetBone = "select mapTargetBone";
     final static String selectMaterialEditMenu = "select materialEditMenu";
