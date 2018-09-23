@@ -129,7 +129,7 @@ public class MiscOptions implements Cloneable {
      */
     private ViewMode viewMode = ViewMode.Scene;
     // *************************************************************************
-    // new methods  TODO reorder methods
+    // new methods
 
     /**
      * Read which background to view/edit in BackgroundTool.
@@ -180,6 +180,25 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
+     * Test the visibility of the menu bar.
+     *
+     * @return true &rarr; visible, false &rarr; hidden
+     */
+    public boolean isMenuBarVisible() {
+        return menuBarVisibility;
+    }
+
+    /**
+     * Read the axis order for loading BVH assets.
+     *
+     * @return display X-coordinate (&gt;0, &lt;1)
+     */
+    public LoadBvhAxisOrder loadBvhAxisOrder() {
+        assert axisOrder != null;
+        return axisOrder;
+    }
+
+    /**
      * Read the performance-monitoring mode.
      *
      * @return an enum value (not null)
@@ -207,88 +226,6 @@ public class MiscOptions implements Cloneable {
     public RotationDisplayMode rotationDisplayMode() {
         assert rotationDisplayMode != null;
         return rotationDisplayMode;
-    }
-
-    /**
-     * Read which shape parameter to view/edit in ShapeTool.
-     *
-     * @return an enum value (not null)
-     */
-    public ShapeParameter shapeParameter() {
-        assert shapeParameter != null;
-        return shapeParameter;
-    }
-
-    /**
-     * Read the message to display in the status bar.
-     *
-     * @return message to display (not null)
-     */
-    public String statusMessage() {
-        assert statusMessage != null;
-        return statusMessage;
-    }
-
-    /**
-     * Read the submenu warp fraction for the X coordinate.
-     *
-     * @return the fraction (&ge;0, &le;1)
-     */
-    public float submenuWarpX() {
-        assert warpX >= 0f : warpX;
-        assert warpX <= 1f : warpX;
-        return warpX;
-    }
-
-    /**
-     * Read the submenu warp fraction for the Y coordinate.
-     *
-     * @return the fraction (&ge;0, &le;1)
-     */
-    public float submenuWarpY() {
-        assert warpY >= 0f : warpY;
-        assert warpY <= 1f : warpY;
-        return warpY;
-    }
-
-    /**
-     * Read the view mode.
-     *
-     * @return an enum value (not null)
-     */
-    public ViewMode viewMode() {
-        assert viewMode != null;
-        return viewMode;
-    }
-
-    /**
-     * Read the location of the display's left-right boundary.
-     *
-     * @return display X-coordinate (&gt;0, &lt;1)
-     */
-    public float xBoundary() {
-        assert xBoundary >= minXBoundary : xBoundary;
-        assert xBoundary <= maxXBoundary : xBoundary;
-        return xBoundary;
-    }
-
-    /**
-     * Test the visibility of the menu bar.
-     *
-     * @return true &rarr; visible, false &rarr; hidden
-     */
-    public boolean isMenuBarVisible() {
-        return menuBarVisibility;
-    }
-
-    /**
-     * Read the axis order for loading BVH assets.
-     *
-     * @return display X-coordinate (&gt;0, &lt;1)
-     */
-    public LoadBvhAxisOrder loadBvhAxisOrder() {
-        assert axisOrder != null;
-        return axisOrder;
     }
 
     /**
@@ -393,6 +330,16 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
+     * Alter the display mode for rotations.
+     *
+     * @param newMode an enum value (not null)
+     */
+    public void selectRotationDisplay(RotationDisplayMode newMode) {
+        Validate.nonNull(newMode, "new mode");
+        rotationDisplayMode = newMode;
+    }
+
+    /**
      * Alter which shape parameter to display in ShapeTool.
      *
      * @param newParameter an enum value (not null)
@@ -460,16 +407,6 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Alter the display mode for rotations.
-     *
-     * @param newMode an enum value (not null)
-     */
-    public void selectRotationDisplay(RotationDisplayMode newMode) {
-        Validate.nonNull(newMode, "new mode");
-        rotationDisplayMode = newMode;
-    }
-
-    /**
      * Alter the message to display in the status bar.
      *
      * @param newMessage what to display (not null)
@@ -500,6 +437,69 @@ public class MiscOptions implements Cloneable {
      */
     public void setXBoundary(float newX) {
         xBoundary = FastMath.clamp(newX, minXBoundary, maxXBoundary);
+    }
+
+    /**
+     * Read which shape parameter to view/edit in ShapeTool.
+     *
+     * @return an enum value (not null)
+     */
+    public ShapeParameter shapeParameter() {
+        assert shapeParameter != null;
+        return shapeParameter;
+    }
+
+    /**
+     * Read the message to display in the status bar.
+     *
+     * @return message to display (not null)
+     */
+    public String statusMessage() {
+        assert statusMessage != null;
+        return statusMessage;
+    }
+
+    /**
+     * Read the submenu warp fraction for the X coordinate.
+     *
+     * @return the fraction (&ge;0, &le;1)
+     */
+    public float submenuWarpX() {
+        assert warpX >= 0f : warpX;
+        assert warpX <= 1f : warpX;
+        return warpX;
+    }
+
+    /**
+     * Read the submenu warp fraction for the Y coordinate.
+     *
+     * @return the fraction (&ge;0, &le;1)
+     */
+    public float submenuWarpY() {
+        assert warpY >= 0f : warpY;
+        assert warpY <= 1f : warpY;
+        return warpY;
+    }
+
+    /**
+     * Read the view mode.
+     *
+     * @return an enum value (not null)
+     */
+    public ViewMode viewMode() {
+        assert viewMode != null;
+        return viewMode;
+    }
+
+    /**
+     * Read the location of the display's left-right boundary.
+     *
+     * @return display X-coordinate (&gt;0, &lt;1)
+     */
+    public float xBoundary() {
+        assert xBoundary >= minXBoundary : xBoundary;
+        assert xBoundary <= maxXBoundary : xBoundary;
+        return xBoundary;
     }
 
     /**
