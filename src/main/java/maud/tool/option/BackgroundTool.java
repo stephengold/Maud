@@ -96,7 +96,7 @@ public class BackgroundTool extends Tool {
         ScoreOptions forScores = editorModel.getScore();
 
         ColorRGBA color = readColorBank("bg", colorSt, null);
-        Background background = Maud.getModel().getMisc().getBackground();
+        Background background = Maud.getModel().getMisc().background();
         switch (background) {
             case SourceScenesWithNoSky:
                 forScenes.setSourceBackgroundColor(color);
@@ -130,7 +130,7 @@ public class BackgroundTool extends Tool {
         ScoreOptions forScores = editorModel.getScore();
 
         ColorRGBA color;
-        Background background = Maud.getModel().getMisc().getBackground();
+        Background background = Maud.getModel().getMisc().background();
         switch (background) {
             case SourceScenesWithNoSky:
                 color = forScenes.sourceBackgroundColor(null);

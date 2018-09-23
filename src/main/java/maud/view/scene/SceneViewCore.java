@@ -759,7 +759,7 @@ public class SceneViewCore
         if (!MyCamera.isFullWidth(camera)) {
             MiscOptions misc = Maud.getModel().getMisc();
             int width = camera.getWidth();
-            float boundaryX = misc.getXBoundary() * width;
+            float boundaryX = misc.xBoundary() * width;
             Vector2f inputXY = selection.copyInputXY();
             float dSquared = FastMath.sqr(inputXY.x - boundaryX);
             selection.considerBoundary(dSquared);
@@ -867,7 +867,7 @@ public class SceneViewCore
     @Override
     public ViewPort getViewPort() {
         ViewPort result;
-        ViewMode viewMode = Maud.getModel().getMisc().getViewMode();
+        ViewMode viewMode = Maud.getModel().getMisc().viewMode();
         if (Maud.getModel().getSource().isLoaded()
                 || viewMode.equals(ViewMode.Hybrid)) {
             result = viewPort2; // split-screen view port
@@ -1120,7 +1120,7 @@ public class SceneViewCore
             MyVector3f.accumulateMaxima(minMax[1], subtreeMinMax[1]);
         }
         Vector3f center = MyVector3f.midpoint(minMax[0], minMax[1]);
-        boolean zUp = Maud.getModel().getMisc().getLoadZup();
+        boolean zUp = Maud.getModel().getMisc().isLoadZup();
         float baseElevation = zUp ? minMax[0].z : minMax[0].y;
         cgmTransform.loadCgm(center, baseElevation, zUp);
 

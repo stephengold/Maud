@@ -108,7 +108,7 @@ class SpatialRotationTool extends Tool {
 
         Quaternion rotation = new Quaternion();
         RotationDisplayMode mode
-                = Maud.getModel().getMisc().getRotationDisplay();
+                = Maud.getModel().getMisc().rotationDisplayMode();
         if (mode == RotationDisplayMode.QuatCoeff) {
             MaudUtil.setFromSliders(sliderPositions, rotation);
         } else {
@@ -127,7 +127,7 @@ class SpatialRotationTool extends Tool {
         updateSnapButtons();
 
         RotationDisplayMode mode
-                = Maud.getModel().getMisc().getRotationDisplay();
+                = Maud.getModel().getMisc().rotationDisplayMode();
         String dButton = mode.toString();
         setButtonText("rotationMode2", dButton);
     }
@@ -144,7 +144,7 @@ class SpatialRotationTool extends Tool {
         Quaternion rotation = spatial.localRotation(null);
 
         RotationDisplayMode mode
-                = Maud.getModel().getMisc().getRotationDisplay();
+                = Maud.getModel().getMisc().rotationDisplayMode();
         float[] statusValues = new float[numAxes];
         float[] sliderPositions = new float[numAxes];
         String unitSuffix = MaudUtil.displayRotation(rotation, mode,
@@ -165,7 +165,7 @@ class SpatialRotationTool extends Tool {
         String xyzButton = "";
 
         EditorModel model = Maud.getModel();
-        RotationDisplayMode mode = model.getMisc().getRotationDisplay();
+        RotationDisplayMode mode = model.getMisc().rotationDisplayMode();
         if (mode != RotationDisplayMode.QuatCoeff) {
             xyzButton = "Snap";
         }

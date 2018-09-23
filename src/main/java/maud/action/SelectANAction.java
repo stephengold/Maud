@@ -265,7 +265,7 @@ class SelectANAction {
             arg = MyString.remainder(actionString,
                     ActionPrefix.selectBoneIndex);
             int index = Integer.parseInt(arg);
-            int indexBase = Maud.getModel().getMisc().getIndexBase();
+            int indexBase = Maud.getModel().getMisc().indexBase();
             target.getBone().select(index - indexBase);
 
         } else if (actionString.startsWith(ActionPrefix.selectBuffer)) {
@@ -328,7 +328,7 @@ class SelectANAction {
         } else if (actionString.startsWith(ActionPrefix.selectKeyframe)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectKeyframe);
             int index = Integer.parseInt(arg);
-            int indexBase = Maud.getModel().getMisc().getIndexBase();
+            int indexBase = Maud.getModel().getMisc().indexBase();
             target.getFrame().select(index - indexBase);
 
         } else if (actionString.startsWith(ActionPrefix.selectLight)) {

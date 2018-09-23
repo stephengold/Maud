@@ -364,7 +364,7 @@ public class LoadedMap implements Cloneable {
         Validate.nonEmpty(path, "path");
 
         boolean useCache = false;
-        boolean diagnose = Maud.getModel().getMisc().getDiagnoseLoads();
+        boolean diagnose = Maud.getModel().getMisc().diagnoseLoads();
 
         Locators.save();
         Locators.unregisterAll();
@@ -407,7 +407,7 @@ public class LoadedMap implements Cloneable {
 
         String assetPath = String.format("SkeletonMaps/%s.j3o", mapName);
         boolean useCache = false;
-        boolean diagnose = Maud.getModel().getMisc().getDiagnoseLoads();
+        boolean diagnose = Maud.getModel().getMisc().diagnoseLoads();
 
         Locators.save();
         Locators.useDefault();

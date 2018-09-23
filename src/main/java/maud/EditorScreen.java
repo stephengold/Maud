@@ -557,8 +557,8 @@ public class EditorScreen extends GuiScreenController {
         }
 
         MiscOptions options = model.getMisc();
-        float x = options.getSubmenuWarpX();
-        float y = options.getSubmenuWarpY();
+        float x = options.submenuWarpX();
+        float y = options.submenuWarpY();
         setSubmenuWarp(x, y);
 
         updatePerformanceMode();
@@ -648,7 +648,7 @@ public class EditorScreen extends GuiScreenController {
             /*
              * Copy the status message to the center.
              */
-            String message = misc.getStatusMessage();
+            String message = misc.statusMessage();
             setStatusText("statusCenter", message);
             /*
              * Update the description of camera options at the right end.
@@ -668,7 +668,7 @@ public class EditorScreen extends GuiScreenController {
     private void updateBoundaryHandle() {
         int height = cam.getHeight(); // in pixels
         int width = cam.getWidth(); // in pixels
-        float boundaryX = width * Maud.getModel().getMisc().getXBoundary();
+        float boundaryX = width * Maud.getModel().getMisc().xBoundary();
 
         ViewPort boundaryViewPort = renderManager.getMainView("Boundary");
         List<Spatial> boundaryScenes = boundaryViewPort.getScenes();
@@ -726,7 +726,7 @@ public class EditorScreen extends GuiScreenController {
                 = stateManager.getState(PerformanceAppState.class);
         StatsAppState sas = stateManager.getState(StatsAppState.class);
 
-        PerformanceMode mode = Maud.getModel().getMisc().getPerformanceMode();
+        PerformanceMode mode = Maud.getModel().getMisc().performanceMode();
         switch (mode) {
             case DebugPas:
                 pas.setEnabled(true);

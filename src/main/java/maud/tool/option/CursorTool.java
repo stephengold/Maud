@@ -135,7 +135,7 @@ public class CursorTool extends Tool {
     public void onSliderChanged() {
         DddCursorOptions options = Maud.getModel().getScene().getCursor();
 
-        int colorIndex = Maud.getModel().getMisc().getColorIndex();
+        int colorIndex = Maud.getModel().getMisc().colorIndex();
         ColorRGBA color = readColorBank("cursor", colorSt, null);
         options.setColor(colorIndex, color);
 
@@ -157,7 +157,7 @@ public class CursorTool extends Tool {
         boolean visible = options.isVisible();
         setChecked("3DCursor", visible);
 
-        int colorIndex = Maud.getModel().getMisc().getColorIndex();
+        int colorIndex = Maud.getModel().getMisc().colorIndex();
         String indexStatus = DescribeUtil.index(colorIndex);
         setButtonText("cursorColorIndex", indexStatus);
 

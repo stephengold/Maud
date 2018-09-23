@@ -134,30 +134,30 @@ public class SettingsTool extends Tool {
     protected void toolUpdate() {
         MiscOptions options = Maud.getModel().getMisc();
 
-        RotationDisplayMode mode = options.getRotationDisplay();
+        RotationDisplayMode mode = options.rotationDisplayMode();
         String description = mode.toString();
         setButtonText("settingsRotationDisplay", description);
 
-        int indexBase = options.getIndexBase();
+        int indexBase = options.indexBase();
         description = Integer.toString(indexBase);
         setButtonText("settingsIndexBase", description);
 
-        boolean zUpFlag = options.getLoadZup();
+        boolean zUpFlag = options.isLoadZup();
         description = zUpFlag ? "+Z up" : "+Y up";
         setButtonText("settingsLoadOrientation", description);
 
-        boolean diagnoseFlag = options.getDiagnoseLoads();
+        boolean diagnoseFlag = options.diagnoseLoads();
         setChecked("settingsDiagnose", diagnoseFlag);
 
         LoadBvhAxisOrder axisOrder = options.loadBvhAxisOrder();
         description = axisOrder.toString();
         setButtonText("settingsAxisOrder", description);
 
-        float x = options.getSubmenuWarpX();
+        float x = options.submenuWarpX();
         setSlider("submenuWarpX", submenuSt, x);
         updateSliderStatus("submenuWarpX", x, "");
 
-        float y = options.getSubmenuWarpY();
+        float y = options.submenuWarpY();
         setSlider("submenuWarpY", submenuSt, y);
         updateSliderStatus("submenuWarpY", y, "");
     }

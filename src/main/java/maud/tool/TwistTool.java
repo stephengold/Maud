@@ -110,7 +110,7 @@ class TwistTool extends Tool {
 
             Quaternion twist = new Quaternion();
             RotationDisplayMode mode
-                    = Maud.getModel().getMisc().getRotationDisplay();
+                    = Maud.getModel().getMisc().rotationDisplayMode();
             if (mode == RotationDisplayMode.QuatCoeff) {
                 MaudUtil.setFromSliders(sliderPositions, twist);
             } else {
@@ -129,7 +129,7 @@ class TwistTool extends Tool {
         updateSelected();
 
         RotationDisplayMode mode
-                = Maud.getModel().getMisc().getRotationDisplay();
+                = Maud.getModel().getMisc().rotationDisplayMode();
         String dButton = mode.toString();
         setButtonText("rotationMode3", dButton);
     }
@@ -153,7 +153,7 @@ class TwistTool extends Tool {
     private void setSlidersToTwist() {
         Quaternion effTwist = Maud.getModel().getMap().copyTwist(null);
         RotationDisplayMode mode
-                = Maud.getModel().getMisc().getRotationDisplay();
+                = Maud.getModel().getMisc().rotationDisplayMode();
         float[] statusValues = new float[numAxes];
         float[] sliderPositions = new float[numAxes];
         String unitSuffix = MaudUtil.displayRotation(effTwist, mode,
@@ -179,7 +179,7 @@ class TwistTool extends Tool {
             setSlidersToTwist();
             rButton = "Reset";
             sButton = "Snap";
-            RotationDisplayMode mode = model.getMisc().getRotationDisplay();
+            RotationDisplayMode mode = model.getMisc().rotationDisplayMode();
             if (mode != RotationDisplayMode.QuatCoeff) {
                 xyzButton = "Snap";
             }

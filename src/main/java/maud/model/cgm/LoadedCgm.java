@@ -158,7 +158,7 @@ public class LoadedCgm extends Cgm {
         Validate.nonEmpty(assetPath, "asset path");
 
         boolean useCache = false;
-        boolean diagnose = Maud.getModel().getMisc().getDiagnoseLoads();
+        boolean diagnose = Maud.getModel().getMisc().diagnoseLoads();
 
         Locators.save();
         Locators.unregisterAll();
@@ -262,7 +262,7 @@ public class LoadedCgm extends Cgm {
 
         String assetPath = String.format("Models/%s/%s", folderName, fileName);
         boolean useCache = false;
-        boolean diagnose = Maud.getModel().getMisc().getDiagnoseLoads();
+        boolean diagnose = Maud.getModel().getMisc().diagnoseLoads();
 
         Locators.save();
         Locators.useDefault();

@@ -132,7 +132,7 @@ class ObjectTool extends Tool {
      */
     private void updateRbp() {
         EditorModel model = Maud.getModel();
-        RigidBodyParameter rbp = model.getMisc().getRbp();
+        RigidBodyParameter rbp = model.getMisc().rbParameter();
         String rbpName = rbp.toString();
         SelectedObject object = model.getTarget().getObject();
         String rbpValue = object.getRbpValue(rbp);

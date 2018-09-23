@@ -167,7 +167,7 @@ public class EnumMenus {
         MenuBuilder builder = new MenuBuilder();
 
         MiscOptions options = Maud.getModel().getMisc();
-        Background selectedBackground = options.getBackground();
+        Background selectedBackground = options.background();
         for (Background background : Background.values()) {
             if (background != selectedBackground) {
                 String name = background.toString();
@@ -546,7 +546,7 @@ public class EnumMenus {
     static void selectViewMode() {
         MenuBuilder builder = new MenuBuilder();
 
-        ViewMode currentMode = Maud.getModel().getMisc().getViewMode();
+        ViewMode currentMode = Maud.getModel().getMisc().viewMode();
         for (ViewMode mode : ViewMode.values()) {
             if (mode != currentMode) {
                 builder.add(mode.toString());

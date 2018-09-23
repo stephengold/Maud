@@ -374,7 +374,7 @@ public class ScoreView implements EditorView {
         if (!MyCamera.isFullWidth(camera)) {
             MiscOptions misc = Maud.getModel().getMisc();
             int width = camera.getWidth(); // in pixels
-            float boundaryX = misc.getXBoundary() * width;
+            float boundaryX = misc.xBoundary() * width;
             Vector2f inputXY = selection.copyInputXY();
             float dSquared = FastMath.sqr(inputXY.x - boundaryX);
             selection.considerBoundary(dSquared);
@@ -512,7 +512,7 @@ public class ScoreView implements EditorView {
     @Override
     public ViewPort getViewPort() {
         ViewPort result = null;
-        ViewMode viewMode = Maud.getModel().getMisc().getViewMode();
+        ViewMode viewMode = Maud.getModel().getMisc().viewMode();
         if (viewMode.equals(ViewMode.Hybrid)) {
             result = viewPort3;
         } else if (viewMode.equals(ViewMode.Score)) {

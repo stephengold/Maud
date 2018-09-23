@@ -870,7 +870,7 @@ public class BuildMenus {
     private void buildViewMenu() {
         builder.addSubmenu("Select mode");
 
-        ViewMode viewMode = Maud.getModel().getMisc().getViewMode();
+        ViewMode viewMode = Maud.getModel().getMisc().viewMode();
         if (viewMode.equals(ViewMode.Scene)
                 || viewMode.equals(ViewMode.Hybrid)) {
             builder.addSubmenu("Scene options");

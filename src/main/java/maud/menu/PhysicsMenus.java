@@ -217,7 +217,8 @@ public class PhysicsMenus {
     public static void selectRbp() {
         MenuBuilder builder = new MenuBuilder();
 
-        RigidBodyParameter selectedRbp = Maud.getModel().getMisc().getRbp();
+        RigidBodyParameter selectedRbp
+                = Maud.getModel().getMisc().rbParameter();
         for (RigidBodyParameter rbp : RigidBodyParameter.values()) {
             if (!rbp.equals(selectedRbp)) {
                 String name = rbp.toString();
@@ -273,7 +274,7 @@ public class PhysicsMenus {
     public static void selectShapeParameter() {
         MenuBuilder builder = new MenuBuilder();
 
-        ShapeParameter selected = Maud.getModel().getMisc().getShapeParameter();
+        ShapeParameter selected = Maud.getModel().getMisc().shapeParameter();
         for (ShapeParameter parm : ShapeParameter.values()) {
             if (!parm.equals(selected)) {
                 String name = parm.toString();

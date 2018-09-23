@@ -151,7 +151,7 @@ public class EditorViewPorts {
     static boolean isSplitScreen() {
         EditorModel editorModel = Maud.getModel();
         boolean twoModelsLoaded = editorModel.getSource().isLoaded();
-        ViewMode viewMode = editorModel.getMisc().getViewMode();
+        ViewMode viewMode = editorModel.getMisc().viewMode();
         boolean split = twoModelsLoaded || viewMode == ViewMode.Hybrid;
 
         return split;
@@ -233,7 +233,7 @@ public class EditorViewPorts {
         boolean twoModelsLoaded = editorModel.getSource().isLoaded();
 
         MiscOptions misc = editorModel.getMisc();
-        ViewMode viewMode = misc.getViewMode();
+        ViewMode viewMode = misc.viewMode();
         switch (viewMode) {
             case Hybrid: // score view on left, scene view on right
                 sourceSceneBase.setEnabled(false);
@@ -491,7 +491,7 @@ public class EditorViewPorts {
      * @param side which side of the boundary the viewport is on (not null)
      */
     private static void updateSideCamera(Camera camera, Side side) {
-        float xBoundary = Maud.getModel().getMisc().getXBoundary();
+        float xBoundary = Maud.getModel().getMisc().xBoundary();
 
         float leftEdge, rightEdge;
         switch (side) {

@@ -237,7 +237,7 @@ class SelectTZAction {
         } else if (actionString.startsWith(ActionPrefix.selectVertex)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectVertex);
             int index = Integer.parseInt(arg);
-            int indexBase = Maud.getModel().getMisc().getIndexBase();
+            int indexBase = Maud.getModel().getMisc().indexBase();
             target.getVertex().select(index - indexBase);
 
         } else if (actionString.startsWith(ActionPrefix.selectVertexBone)) {

@@ -129,95 +129,92 @@ public class MiscOptions implements Cloneable {
      */
     private ViewMode viewMode = ViewMode.Scene;
     // *************************************************************************
-    // new methods exposed TODO rename getters
+    // new methods  TODO reorder methods
 
     /**
      * Read which background to view/edit in BackgroundTool.
      *
      * @return an enum value (not null)
      */
-    public Background getBackground() {
+    public Background background() {
         assert background != null;
         return background;
     }
 
     /**
-     * Read which color to view/edit in CursorTool. TODO rename colorIndex
+     * Read which color to view/edit in CursorTool.
      *
      * @return a color index (0 or 1)
      */
-    public int getColorIndex() {
+    public int colorIndex() {
         assert colorIndex == 0 || colorIndex == 1 : colorIndex;
         return colorIndex;
     }
 
     /**
      * Test whether to print diagnostic messages to the console during loads.
-     * TODO rename diagnoseLoads
      *
      * @return true to print diagnostics, otherwise false
      */
-    public boolean getDiagnoseLoads() {
+    public boolean diagnoseLoads() {
         return diagnoseLoads;
     }
 
     /**
-     * Read starting point for displayed indices. TODO rename indexBase
+     * Read starting point for displayed indices.
      *
      * @return base index (0 or 1)
      */
-    public int getIndexBase() {
+    public int indexBase() {
         assert indexBase == 0 || indexBase == 1 : indexBase;
         return indexBase;
     }
 
     /**
-     * Test the orientation for loading C-G models. TODO rename isLoadZup
+     * Test the orientation for loading C-G models.
      *
      * @return true &rarr; +Z upward, false &rarr; +Y upward
      */
-    public boolean getLoadZup() {
+    public boolean isLoadZup() {
         return loadZup;
     }
 
     /**
-     * Read the performance-monitoring mode. TODO rename performanceMode()
+     * Read the performance-monitoring mode.
      *
      * @return an enum value (not null)
      */
-    public PerformanceMode getPerformanceMode() {
+    public PerformanceMode performanceMode() {
         assert performanceMode != null;
         return performanceMode;
     }
 
     /**
-     * Read which rigid-body parameter to view/edit in ObjectTool. TODO rename
-     * rbParameter()
+     * Read which rigid-body parameter to view/edit in ObjectTool.
      *
      * @return an enum value (not null)
      */
-    public RigidBodyParameter getRbp() {
+    public RigidBodyParameter rbParameter() {
         assert rbp != null;
         return rbp;
     }
 
     /**
-     * Read the display mode for rotations. TODO rename rotationDisplayMode()
+     * Read the display mode for rotations.
      *
      * @return an enum value (not null)
      */
-    public RotationDisplayMode getRotationDisplay() {
+    public RotationDisplayMode rotationDisplayMode() {
         assert rotationDisplayMode != null;
         return rotationDisplayMode;
     }
 
     /**
-     * Read which shape parameter to view/edit in ShapeTool. TODO rename
-     * shapeParameter
+     * Read which shape parameter to view/edit in ShapeTool.
      *
      * @return an enum value (not null)
      */
-    public ShapeParameter getShapeParameter() {
+    public ShapeParameter shapeParameter() {
         assert shapeParameter != null;
         return shapeParameter;
     }
@@ -227,52 +224,49 @@ public class MiscOptions implements Cloneable {
      *
      * @return message to display (not null)
      */
-    public String getStatusMessage() {
+    public String statusMessage() {
         assert statusMessage != null;
         return statusMessage;
     }
 
     /**
-     * Read the submenu warp fraction for the X coordinate. TODO rename
-     * submenuWarpX
+     * Read the submenu warp fraction for the X coordinate.
      *
      * @return the fraction (&ge;0, &le;1)
      */
-    public float getSubmenuWarpX() {
+    public float submenuWarpX() {
         assert warpX >= 0f : warpX;
         assert warpX <= 1f : warpX;
         return warpX;
     }
 
     /**
-     * Read the submenu warp fraction for the Y coordinate. TODO rename
-     * submenuWarpY
+     * Read the submenu warp fraction for the Y coordinate.
      *
      * @return the fraction (&ge;0, &le;1)
      */
-    public float getSubmenuWarpY() {
+    public float submenuWarpY() {
         assert warpY >= 0f : warpY;
         assert warpY <= 1f : warpY;
         return warpY;
     }
 
     /**
-     * Read the view mode. TODO rename viewMode()
+     * Read the view mode.
      *
      * @return an enum value (not null)
      */
-    public ViewMode getViewMode() {
+    public ViewMode viewMode() {
         assert viewMode != null;
         return viewMode;
     }
 
     /**
-     * Read the location of the display's left-right boundary. TODO rename
-     * xBoundary()
+     * Read the location of the display's left-right boundary.
      *
      * @return display X-coordinate (&gt;0, &lt;1)
      */
-    public float getXBoundary() {
+    public float xBoundary() {
         assert xBoundary >= minXBoundary : xBoundary;
         assert xBoundary <= maxXBoundary : xBoundary;
         return xBoundary;

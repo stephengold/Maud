@@ -178,7 +178,7 @@ class ShapeTool extends Tool {
      */
     private void updateParameter() {
         EditorModel model = Maud.getModel();
-        ShapeParameter parameter = model.getMisc().getShapeParameter();
+        ShapeParameter parameter = model.getMisc().shapeParameter();
         String name = parameter.toString();
         setButtonText("shapeParm", name);
 

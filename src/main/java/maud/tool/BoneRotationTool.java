@@ -110,7 +110,7 @@ class BoneRotationTool extends Tool {
 
             Quaternion rotation = new Quaternion();
             RotationDisplayMode mode
-                    = Maud.getModel().getMisc().getRotationDisplay();
+                    = Maud.getModel().getMisc().rotationDisplayMode();
             if (mode == RotationDisplayMode.QuatCoeff) {
                 MaudUtil.setFromSliders(sliderPositions, rotation);
             } else {
@@ -130,7 +130,7 @@ class BoneRotationTool extends Tool {
         updateSelected();
 
         RotationDisplayMode mode
-                = Maud.getModel().getMisc().getRotationDisplay();
+                = Maud.getModel().getMisc().rotationDisplayMode();
         String dButton = mode.toString();
         setButtonText("rotationMode", dButton);
     }
@@ -156,7 +156,7 @@ class BoneRotationTool extends Tool {
         Quaternion rotation = bone.userRotation(null);
 
         RotationDisplayMode mode
-                = Maud.getModel().getMisc().getRotationDisplay();
+                = Maud.getModel().getMisc().rotationDisplayMode();
         float[] statusValues = new float[numAxes];
         float[] sliderPositions = new float[numAxes];
         String unitSuffix = MaudUtil.displayRotation(rotation, mode,

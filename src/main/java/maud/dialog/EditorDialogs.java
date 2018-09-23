@@ -675,7 +675,7 @@ public class EditorDialogs {
         EditorModel model = Maud.getModel();
         Cgm target = model.getTarget();
         int numBones = target.getSkeleton().countBones();
-        int indexBase = model.getMisc().getIndexBase();
+        int indexBase = model.getMisc().indexBase();
         DialogController controller = new IntegerDialog("Select", indexBase,
                 numBones + indexBase - 1, false);
 
@@ -695,7 +695,7 @@ public class EditorDialogs {
         EditorModel model = Maud.getModel();
         Cgm target = model.getTarget();
         int numKeyframes = target.getTrack().countKeyframes();
-        int indexBase = model.getMisc().getIndexBase();
+        int indexBase = model.getMisc().indexBase();
         DialogController controller = new IntegerDialog("Select", indexBase,
                 numKeyframes + indexBase - 1, false);
 
@@ -715,7 +715,7 @@ public class EditorDialogs {
         EditorModel model = Maud.getModel();
         Cgm target = model.getTarget();
         int numVertices = target.getSpatial().countVertices();
-        int indexBase = model.getMisc().getIndexBase();
+        int indexBase = model.getMisc().indexBase();
         DialogController controller = new IntegerDialog("Select", indexBase,
                 numVertices + indexBase - 1, false);
 
@@ -1169,7 +1169,7 @@ public class EditorDialogs {
                 throw new IllegalArgumentException();
         }
 
-        int indexBase = model.getMisc().getIndexBase();
+        int indexBase = model.getMisc().indexBase();
         String defaultText = "";
         int defaultIndex = cgm.getFrame().findIndex();
         if (defaultIndex != -1) {

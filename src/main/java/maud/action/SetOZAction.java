@@ -99,7 +99,7 @@ class SetOZAction {
                 break;
 
             case Action.setPhysicsRbpValue:
-                RigidBodyParameter rbp = model.getMisc().getRbp();
+                RigidBodyParameter rbp = model.getMisc().rbParameter();
                 EditorDialogs.setPhysicsRbpValue(rbp);
                 break;
 
@@ -117,7 +117,7 @@ class SetOZAction {
 
             case Action.setShapeParmValue:
                 ShapeParameter shapeParameter
-                        = model.getMisc().getShapeParameter();
+                        = model.getMisc().shapeParameter();
                 EditorDialogs.setShapeParameterValue(shapeParameter);
                 break;
 
@@ -333,7 +333,7 @@ class SetOZAction {
                 if (args.length == 2) {
                     EditorDialogs.setTimeToKeyframe(whichCgm, whichTime);
                 } else if (args.length == 3) {
-                    int indexBase = model.getMisc().getIndexBase();
+                    int indexBase = model.getMisc().indexBase();
                     int index = Integer.parseInt(args[2]) - indexBase;
                     Cgm cgm = model.getCgm(whichCgm);
                     float newValue = cgm.getTrack().keyframeTime(index);
