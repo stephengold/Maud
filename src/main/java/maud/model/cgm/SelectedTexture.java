@@ -497,7 +497,7 @@ public class SelectedTexture implements JmeCloneable {
         if (selectedTexture != null) {
             AssetKey key = selectedTexture.getKey();
             if (key instanceof TextureKey) {
-                lastAssetPath = ((TextureKey) key).getName();
+                lastAssetPath = key.getName();
             }
         }
     }
@@ -515,7 +515,7 @@ public class SelectedTexture implements JmeCloneable {
 
         AssetKey key = selectedTexture.getKey();
         if (key instanceof TextureKey) {
-            lastAssetPath = ((TextureKey) key).getName();
+            lastAssetPath = key.getName();
         }
     }
 

@@ -186,7 +186,7 @@ class SetANAction {
         } else if (actionString.startsWith(ActionPrefix.setAnisotropy)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setAnisotropy);
-            int anisotropy = Integer.valueOf(arg);
+            int anisotropy = Integer.parseInt(arg);
             target.getTexture().setAnisotropy(anisotropy);
 
         } else if (actionString.startsWith(ActionPrefix.setAxesLineWidth)) {

@@ -243,6 +243,7 @@ public class Platform implements BulletDebugAppState.DebugAppStateFilter {
      * @param obj the joint or collision object to test (unaffected)
      * @return return true if the object should be displayed, false if not
      */
+    @Override
     public boolean displayObject(Savable obj) {
         boolean result = true;
         if (landscape != null) {

@@ -155,7 +155,7 @@ public class MatParamRef implements JmeCloneable {
      * @return the pre-existing instance (not null)
      */
     MatParam getTarget() {
-        MatParam target = null;
+        MatParam target;
         if (isInMaterial()) {
             assert overrideSpatial == null;
             target = matParamMaterial.getParam(parameterName);
