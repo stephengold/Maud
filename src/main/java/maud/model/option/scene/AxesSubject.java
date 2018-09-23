@@ -33,7 +33,7 @@ package maud.model.option.scene;
  */
 public enum AxesSubject {
     // *************************************************************************
-    // values
+    // values TODO reorder
 
     /**
      * axes of the scene camera
@@ -48,25 +48,25 @@ public enum AxesSubject {
      */
     None,
     /**
-     * local axes of the selected bone, if any TODO rename Bone
+     * local axes of the selected bone, if any
      */
-    SelectedBone,
+    Bone,
     /**
-     * axes of the selected light, if any TODO rename Light
+     * axes of the selected light, if any
      */
-    SelectedLight,
+    Light,
     /**
-     * axes of the selected physics object, if any TODO rename
+     * axes of the selected collision object, if any
      */
-    SelectedObject,
+    CollisionObject,
     /**
-     * local axes of the selected physics shape, if any TODO rename Shape
+     * local axes of the selected physics shape, if any
      */
-    SelectedShape,
+    Shape,
     /**
-     * local axes of the selected spatial TODO rename Spatial
+     * local axes of the selected spatial
      */
-    SelectedSpatial,
+    Spatial,
     /**
      * axes of the selected skeleton, if any
      */

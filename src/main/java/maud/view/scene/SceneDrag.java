@@ -361,7 +361,7 @@ public class SceneDrag {
          * and rotate that object.
          */
         AxesSubject subject = Maud.getModel().getScene().getAxes().getSubject();
-        switch (subject) {
+        switch (subject) { // TODO reorder cases
             case Camera: // ignore attempts to drag the camera axes
                 break;
 
@@ -375,11 +375,11 @@ public class SceneDrag {
                 cgmTransform.rotateY(angle);
                 break;
 
-            case SelectedBone:
+            case Bone:
                 rotateBone(rotation);
                 break;
 
-            case SelectedLight:
+            case Light:
                 if (dragAxisIndex == MyVector3f.xAxis) {
                     SelectedLight light = editableCgm.getLight();
                     if (light.canDirect()) {
@@ -391,7 +391,7 @@ public class SceneDrag {
                 }
                 break;
 
-            case SelectedObject:
+            case CollisionObject:
                 if (editableCgm != null) {
                     SelectedObject object = editableCgm.getObject();
                     if (object.canPosition()) {
@@ -406,10 +406,10 @@ public class SceneDrag {
                 }
                 break;
 
-            case SelectedShape: // TODO
+            case Shape: // TODO
                 break;
 
-            case SelectedSpatial:
+            case Spatial:
                 if (editableCgm != null) {
                     /*
                      * Rotate the selected spatial.
@@ -448,7 +448,7 @@ public class SceneDrag {
          * and scale that object.
          */
         AxesSubject subject = Maud.getModel().getScene().getAxes().getSubject();
-        switch (subject) {
+        switch (subject) { // TODO reorder cases
             case Model:
                 /*
                  * Scale the world transform.
@@ -457,7 +457,7 @@ public class SceneDrag {
                 cgmTransform.scale(factor);
                 break;
 
-            case SelectedBone:
+            case Bone:
                 if (cgm.getBone().shouldEnableControls()) {
                     /*
                      * Scale the selected bone in the displayed pose.
@@ -470,10 +470,10 @@ public class SceneDrag {
                 }
                 break;
 
-            case SelectedLight: // ignore attempts to scale lights
+            case Light: // ignore attempts to scale lights
                 break;
 
-            case SelectedObject:
+            case CollisionObject:
                 /*
                  * Ignore attempts to scale the physics object directly
                  * -- the user should scale its geometry or resize its
@@ -481,14 +481,14 @@ public class SceneDrag {
                  */
                 break;
 
-            case SelectedShape:
+            case Shape:
                 if (editableCgm != null) {
                     Vector3f scale = new Vector3f(factor, factor, factor);
                     editableCgm.getShape().resize(scale);
                 }
                 break;
 
-            case SelectedSpatial:
+            case Spatial:
                 if (editableCgm != null) {
                     /*
                      * Scale the selected spatial.
@@ -526,20 +526,20 @@ public class SceneDrag {
          * and scale that object.
          */
         AxesSubject subject = Maud.getModel().getScene().getAxes().getSubject();
-        switch (subject) {
+        switch (subject) { // TODO reorder cases
             case Model: // ignore attempts to scale a model axis
-            case SelectedBone: // ignore attempts to scale bones
-            case SelectedLight: // ignore attempts to scale lights
-            case SelectedObject: // ignore attempts to scale objects
+            case Bone: // ignore attempts to scale bones
+            case Light: // ignore attempts to scale lights
+            case CollisionObject: // ignore attempts to scale objects
                 break;
 
-            case SelectedShape: // won't work on all shapes
+            case Shape: // won't work on all shapes
                 if (editableCgm != null) {
                     editableCgm.getShape().resize(scale);
                 }
                 break;
 
-            case SelectedSpatial:
+            case Spatial:
                 if (editableCgm != null) {
                     /*
                      * Scale the selected spatial.
@@ -571,11 +571,11 @@ public class SceneDrag {
          * and translate that object.
          */
         AxesSubject subject = Maud.getModel().getScene().getAxes().getSubject();
-        switch (subject) {
+        switch (subject) { // TODO reorder cases
             case Model: // ignore attempts to translate the model root
                 break;
 
-            case SelectedBone:
+            case Bone:
                 if (cgm.getBone().shouldEnableControls()) {
                     /*
                      * Factor out the animated geometry's rotation and
@@ -619,7 +619,7 @@ public class SceneDrag {
                 }
                 break;
 
-            case SelectedLight:
+            case Light:
                 SelectedLight light = editableCgm.getLight();
                 if (light.canPosition()) {
                     /*
@@ -631,7 +631,7 @@ public class SceneDrag {
                 }
                 break;
 
-            case SelectedObject:
+            case CollisionObject:
                 SelectedObject object = editableCgm.getObject();
                 if (object.canPosition()) {
                     /*
@@ -643,10 +643,10 @@ public class SceneDrag {
                 }
                 break;
 
-            case SelectedShape: // TODO
+            case Shape: // TODO
                 break;
 
-            case SelectedSpatial:
+            case Spatial:
                 if (editableCgm != null) {
                     /*
                      * Factor out parental rotation and scaling in this view.

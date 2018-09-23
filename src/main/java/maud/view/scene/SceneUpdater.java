@@ -118,7 +118,7 @@ public class SceneUpdater {
         Transform transform = null;
         SceneView sceneView = cgm.getSceneView();
         AxesSubject subject = Maud.getModel().getScene().getAxes().getSubject();
-        switch (subject) {
+        switch (subject) { // TODO reorder cases
             case Camera:
                 transform = new Transform(); // identity
                 Camera camera = sceneView.getCamera();
@@ -142,7 +142,7 @@ public class SceneUpdater {
             case None:
                 break;
 
-            case SelectedBone:
+            case Bone:
                 if (cgm.getBone().isSelected()) {
                     transform = cgm.getBone().modelTransform(null);
                     Spatial tsp = sceneView.findTransformSpatial();
@@ -153,25 +153,25 @@ public class SceneUpdater {
                 }
                 break;
 
-            case SelectedLight:
+            case Light:
                 if (cgm.getLight().isSelected()) {
                     transform = cgm.getLight().transform(null);
                 }
                 break;
 
-            case SelectedObject:
+            case CollisionObject:
                 if (cgm.getObject().isSelected()) {
                     transform = cgm.getObject().transform(null);
                 }
                 break;
 
-            case SelectedShape:
+            case Shape:
                 if (cgm.getShape().isSelected()) {
                     transform = cgm.getShape().transform(null);
                 }
                 break;
 
-            case SelectedSpatial:
+            case Spatial:
                 if (cgm.isLoaded()) {
                     Spatial spatial = sceneView.selectedSpatial();
                     if (MySpatial.isIgnoringTransforms(spatial)) {
@@ -284,7 +284,7 @@ public class SceneUpdater {
             AxesSubject subject = options.getSubject();
             AxesDragEffect effect = options.getDragEffect();
             SelectedLight selectedLight = cgm.getLight();
-            if (subject.equals(AxesSubject.SelectedLight)
+            if (subject.equals(AxesSubject.Light)
                     && selectedLight.canDirect()
                     && effect.equals(AxesDragEffect.Rotate)) {
                 numAxes = 1;

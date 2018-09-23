@@ -57,7 +57,7 @@ public class AxesOptions implements Cloneable {
     /**
      * which set of axes is visualized
      */
-    private AxesSubject subject = AxesSubject.SelectedBone;
+    private AxesSubject subject = AxesSubject.Bone;
     /**
      * flag to enable the depth test for visibility of the axes
      */
