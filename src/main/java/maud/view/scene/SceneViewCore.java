@@ -1009,7 +1009,7 @@ public class SceneViewCore
      */
     protected MatParamOverride findSelectedMpo() {
         Spatial spatial = selectedSpatial();
-        String parameterName = cgm.getOverride().getName();
+        String parameterName = cgm.getOverride().parameterName();
         MatParamOverride result = MaudUtil.findOverride(spatial, parameterName);
 
         assert result != null;

@@ -153,7 +153,7 @@ class OverridesTool extends Tool {
         String dButton, nameText, rButton;
 
         SelectedOverride override = Maud.getModel().getTarget().getOverride();
-        String name = override.getName();
+        String name = override.parameterName();
         if (name == null) {
             dButton = "";
             nameText = "(none selected)";
@@ -182,7 +182,7 @@ class OverridesTool extends Tool {
 
             Object value = override.getValue();
             if (value == null) {
-                VarType varType = override.getVarType();
+                VarType varType = override.varType();
                 typeText = varType.toString();
             } else {
                 typeText = value.getClass().getSimpleName();

@@ -572,7 +572,7 @@ public class EditorDialogs {
     public static void renameOverride() {
         SelectedOverride override = Maud.getModel().getTarget().getOverride();
         if (override.isSelected()) {
-            String oldName = override.getName();
+            String oldName = override.parameterName();
             DialogController controller = new OverrideNameDialog("Rename");
 
             Maud.gui.closeAllPopups();

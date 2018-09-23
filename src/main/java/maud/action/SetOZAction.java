@@ -89,8 +89,8 @@ class SetOZAction {
             case Action.setOverrideValue:
                 SelectedOverride override = target.getOverride();
                 if (override.isSelected()) {
-                    String parameterName = override.getName();
-                    VarType varType = override.getVarType();
+                    String parameterName = override.parameterName();
+                    VarType varType = override.varType();
                     Object oldValue = override.getValue();
                     boolean allowNull = true;
                     EditorDialogs.setMatParamValue(parameterName, varType,

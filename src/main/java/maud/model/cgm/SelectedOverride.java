@@ -149,11 +149,11 @@ public class SelectedOverride implements Cloneable {
     }
 
     /**
-     * Read the override's parameter name. TODO rename parameterName()
+     * Read the override's parameter name. TODO sort methods
      *
      * @return a parameter name, or null if none selected
      */
-    public String getName() {
+    public String parameterName() {
         return selectedName;
     }
 
@@ -173,11 +173,11 @@ public class SelectedOverride implements Cloneable {
     }
 
     /**
-     * Read the override's type. TODO rename varType()
+     * Read the override's type.
      *
      * @return an enum value, or null if none selected
      */
-    public VarType getVarType() {
+    public VarType varType() {
         VarType varType = null;
         MatParamOverride mpo = find();
         if (mpo != null) {
@@ -238,7 +238,7 @@ public class SelectedOverride implements Cloneable {
             int index = nameList.indexOf(selectedName);
             int nextIndex = MyMath.modulo(index + 1, numNames);
             String nextName = nameList.get(nextIndex);
-            selectParameter(nextName);
+            select(nextName);
         }
     }
 
@@ -247,7 +247,7 @@ public class SelectedOverride implements Cloneable {
      *
      * @param parameterName a parameter name (not null, not empty) or noParam
      */
-    public void selectParameter(String parameterName) {
+    public void select(String parameterName) {
         Validate.nonEmpty(parameterName, "parameter name");
 
         if (parameterName.equals(noParam)) {
@@ -267,7 +267,7 @@ public class SelectedOverride implements Cloneable {
             int index = nameList.indexOf(selectedName);
             int nextIndex = MyMath.modulo(index - 1, numNames);
             String previousName = nameList.get(nextIndex);
-            selectParameter(previousName);
+            select(previousName);
         }
     }
 

@@ -532,7 +532,7 @@ public class SelectedTexture implements JmeCloneable {
         if (firstRef.isOverride()) {
             Spatial spatial = firstRef.getOverrideSpatial();
             cgm.getSpatial().select(spatial);
-            cgm.getOverride().selectParameter(parameterName);
+            cgm.getOverride().select(parameterName);
             tool = Maud.gui.getTool("overrides");
         } else {
             assert firstRef.isInMaterial();

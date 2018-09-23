@@ -324,7 +324,7 @@ public class ShowMenus {
 
         EditableCgm target = Maud.getModel().getTarget();
         List<String> nameList = target.getSpatial().listOverrideNames();
-        String selectedName = target.getOverride().getName();
+        String selectedName = target.getOverride().parameterName();
         for (String name : nameList) {
             if (!name.equals(selectedName)) {
                 builder.add(name);

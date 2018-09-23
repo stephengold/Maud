@@ -221,7 +221,7 @@ class SelectOSAction {
 
         } else if (actionString.startsWith(ActionPrefix.selectOverride)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectOverride);
-            target.getOverride().selectParameter(arg);
+            target.getOverride().select(arg);
 
         } else if (actionString.startsWith(
                 ActionPrefix.selectPerformanceMode)) {

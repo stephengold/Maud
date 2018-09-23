@@ -234,7 +234,7 @@ public class EditableCgm extends LoadedCgm {
                 MyString.quote(parameterName));
         editState.setEdited(description);
 
-        getOverride().selectParameter(parameterName);
+        getOverride().select(parameterName);
     }
 
     /**
@@ -691,7 +691,7 @@ public class EditableCgm extends LoadedCgm {
         spatial.addMatParamOverride(newMpo);
         spatial.removeMatParamOverride(oldMpo);
         getSceneView().renameOverride(newName);
-        override.selectParameter(newName);
+        override.select(newName);
         getTexture().replaceRef(oldRef, newRef);
 
         String description = String.format(
@@ -699,7 +699,7 @@ public class EditableCgm extends LoadedCgm {
                 MyString.quote(oldName), MyString.quote(newName));
         editState.setEdited(description);
 
-        override.selectParameter(newName);
+        override.select(newName);
     }
 
     /**
