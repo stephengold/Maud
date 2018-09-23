@@ -263,7 +263,7 @@ class SelectOSAction {
             arg = MyString.remainder(actionString,
                     ActionPrefix.selectRotationDisplay);
             RotationDisplayMode mode = RotationDisplayMode.valueOf(arg);
-            model.getMisc().setRotationDisplay(mode);
+            model.getMisc().selectRotationDisplay(mode);
 
         } else if (actionString.startsWith(ActionPrefix.selectSgc)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectSgc);

@@ -337,13 +337,13 @@ public class MiscOptions implements Cloneable {
     public void selectNextRotationDisplay() {
         switch (rotationDisplayMode) {
             case Degrees:
-                setRotationDisplay(RotationDisplayMode.QuatCoeff);
+                selectRotationDisplay(RotationDisplayMode.QuatCoeff);
                 break;
             case QuatCoeff:
-                setRotationDisplay(RotationDisplayMode.Radians);
+                selectRotationDisplay(RotationDisplayMode.Radians);
                 break;
             case Radians:
-                setRotationDisplay(RotationDisplayMode.Degrees);
+                selectRotationDisplay(RotationDisplayMode.Degrees);
                 break;
             default:
                 logger.log(Level.SEVERE, "mode={0}", rotationDisplayMode);
@@ -460,11 +460,11 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Alter the display mode for rotations. TODO rename selectRotationDisplay
+     * Alter the display mode for rotations.
      *
      * @param newMode an enum value (not null)
      */
-    public void setRotationDisplay(RotationDisplayMode newMode) {
+    public void selectRotationDisplay(RotationDisplayMode newMode) {
         Validate.nonNull(newMode, "new mode");
         rotationDisplayMode = newMode;
     }
