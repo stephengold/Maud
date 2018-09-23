@@ -149,15 +149,6 @@ public class SelectedOverride implements Cloneable {
     }
 
     /**
-     * Read the override's parameter name. TODO sort methods
-     *
-     * @return a parameter name, or null if none selected
-     */
-    public String parameterName() {
-        return selectedName;
-    }
-
-    /**
      * Read the override's parameter value.
      *
      * @return the pre-existing object, or null if none
@@ -170,21 +161,6 @@ public class SelectedOverride implements Cloneable {
         }
 
         return value;
-    }
-
-    /**
-     * Read the override's type.
-     *
-     * @return an enum value, or null if none selected
-     */
-    public VarType varType() {
-        VarType varType = null;
-        MatParamOverride mpo = find();
-        if (mpo != null) {
-            varType = mpo.getVarType();
-        }
-
-        return varType;
     }
 
     /**
@@ -229,17 +205,12 @@ public class SelectedOverride implements Cloneable {
     }
 
     /**
-     * Select the next override (in name lexical order).
+     * Read the override's parameter name.
+     *
+     * @return a parameter name, or null if none selected
      */
-    public void selectNextName() {
-        List<String> nameList = cgm.getSpatial().listOverrideNames();
-        if (isSelected() && !nameList.isEmpty()) {
-            int numNames = nameList.size();
-            int index = nameList.indexOf(selectedName);
-            int nextIndex = MyMath.modulo(index + 1, numNames);
-            String nextName = nameList.get(nextIndex);
-            select(nextName);
-        }
+    public String parameterName() {
+        return selectedName;
     }
 
     /**
@@ -254,6 +225,20 @@ public class SelectedOverride implements Cloneable {
             deselect();
         } else {
             selectedName = parameterName;
+        }
+    }
+
+    /**
+     * Select the next override (in name lexical order).
+     */
+    public void selectNextName() {
+        List<String> nameList = cgm.getSpatial().listOverrideNames();
+        if (isSelected() && !nameList.isEmpty()) {
+            int numNames = nameList.size();
+            int index = nameList.indexOf(selectedName);
+            int nextIndex = MyMath.modulo(index + 1, numNames);
+            String nextName = nameList.get(nextIndex);
+            select(nextName);
         }
     }
 
@@ -287,6 +272,21 @@ public class SelectedOverride implements Cloneable {
         } else {
             editableCgm = null;
         }
+    }
+
+    /**
+     * Read the override's type.
+     *
+     * @return an enum value, or null if none selected
+     */
+    public VarType varType() {
+        VarType varType = null;
+        MatParamOverride mpo = find();
+        if (mpo != null) {
+            varType = mpo.getVarType();
+        }
+
+        return varType;
     }
     // *************************************************************************
     // Object methods
