@@ -195,7 +195,7 @@ public class EditableCgm extends LoadedCgm {
         if (defaultValue == null) {
             value = MaudUtil.defaultValue(varType, parameterName);
         } else {
-            value = Misc.deepClone(defaultValue);
+            value = Misc.deepCopy(defaultValue);
         }
 
         History.autoAdd();

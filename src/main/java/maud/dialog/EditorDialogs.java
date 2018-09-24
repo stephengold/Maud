@@ -121,27 +121,27 @@ public class EditorDialogs {
                 + "ing animated models.\n\nThe version you are using "
                 //+ "is designated 1.0.0-alpha.5 .\n\nIt "
                 + "includes the following libraries:";
-        text += String.format("%n   jme3-core version %s (BSD license)",
+        text += String.format("%n   jme3-core version=%s (BSD license)",
                 MyString.quote(JmeVersion.FULL_NAME));
-        text += String.format("%n   nifty version %s (BSD license)",
+        text += String.format("%n   nifty version=%s (BSD license)",
                 MyString.quote(niftyVersion));
         text += String.format(
-                "%n   jme3-utilities-heart version %s (BSD license)",
-                MyString.quote(Misc.getVersionShort()));  // TODO
-        text += String.format("%n   Minie version %s (BSD license)",
+                "%n   jme3-utilities-heart version=%s (BSD license)",
+                MyString.quote(Misc.versionShort()));
+        text += String.format("%n   Minie version=%s (BSD license)",
                 MyString.quote(MinieVersion.versionShort()));
-        text += String.format("%n   SkyControl version %s (BSD license)",
-                MyString.quote(Constants.getVersionShort()));
-        text += String.format("%n   Wes version %s (BSD license)",
-                MyString.quote(WesVersion.getVersionShort()));
+        text += String.format("%n   SkyControl version=%s (BSD license)",
+                MyString.quote(Constants.versionShort()));
+        text += String.format("%n   Wes version=%s (BSD license)",
+                MyString.quote(WesVersion.versionShort()));
         text += String.format(
-                "%n   jme3-utilities-debug version %s (BSD license)",
+                "%n   jme3-utilities-debug version=%s (BSD license)",
                 MyString.quote(DebugVersion.versionShort()));
-        text += String.format("%n   jme3-utilities-ui version %s (BSD license)",
-                MyString.quote(UiVersion.getVersionShort()));
+        text += String.format("%n   jme3-utilities-ui version=%s (BSD license)",
+                MyString.quote(UiVersion.versionShort()));
         text += String.format(
-                "%n   jme3-utilities-nifty version %s (BSD license)",
-                MyString.quote(LibraryVersion.getVersionShort()));
+                "%n   jme3-utilities-nifty version=%s (BSD license)",
+                MyString.quote(LibraryVersion.versionShort()));
 
         text += String.format("%n   jme3-blender (BSD license)");
         text += String.format("%n   jme3-bullet-native (BSD license)");

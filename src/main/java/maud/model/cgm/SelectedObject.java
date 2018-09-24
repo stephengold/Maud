@@ -158,13 +158,13 @@ public class SelectedObject implements Cloneable {
                     value = prb.getFriction();
                     break;
                 case GravityX:
-                    value = prb.getGravity().x;
+                    value = prb.getGravity(null).x;
                     break;
                 case GravityY:
-                    value = prb.getGravity().y;
+                    value = prb.getGravity(null).y;
                     break;
                 case GravityZ:
-                    value = prb.getGravity().z;
+                    value = prb.getGravity(null).z;
                     break;
                 case LinearDamping:
                     value = prb.getLinearDamping();
@@ -490,17 +490,17 @@ public class SelectedObject implements Cloneable {
                 prb.setFriction(newValue);
                 break;
             case GravityX:
-                vector = prb.getGravity();
+                vector = prb.getGravity(null);
                 vector.x = newValue;
                 prb.setGravity(vector);
                 break;
             case GravityY:
-                vector = prb.getGravity();
+                vector = prb.getGravity(null);
                 vector.y = newValue;
                 prb.setGravity(vector);
                 break;
             case GravityZ:
-                vector = prb.getGravity();
+                vector = prb.getGravity(null);
                 vector.z = newValue;
                 prb.setGravity(vector);
                 break;

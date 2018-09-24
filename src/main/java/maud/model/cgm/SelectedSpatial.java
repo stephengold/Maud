@@ -153,7 +153,7 @@ public class SelectedSpatial implements JmeCloneable {
         SceneView sceneView = cgm.getSceneView();
         Spatial viewSpatial = sceneView.selectedSpatial();
         Vector3f halfExtents = MaudUtil.halfExtents(viewSpatial);
-        float margin = 0f;
+        float margin = 0.04f;
         CollisionShape shape
                 = PhysicsUtil.makeShape(shapeType, halfExtents, margin);
         GhostControl ghostControl = new GhostControl(shape);
@@ -1316,7 +1316,8 @@ public class SelectedSpatial implements JmeCloneable {
         assert material != null;
 
         Spatial rootSpatial = cgm.getRootSpatial();
-        List<Geometry> geoms = MaudUtil.listUsers(rootSpatial, material, null);
+        List<Geometry> geoms
+                = MySpatial.listMaterialUsers(rootSpatial, material, null);
         Geometry geometry = geoms.get(0);
 
         List<Integer> position = cgm.findSpatial(geometry);

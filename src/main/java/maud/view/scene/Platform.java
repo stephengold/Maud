@@ -247,7 +247,8 @@ public class Platform implements BulletDebugAppState.DebugAppStateFilter {
     public boolean displayObject(Savable obj) {
         boolean result = true;
         if (landscape != null) {
-            Savable landscapeObject = landscape.getControl(RigidBodyControl.class);
+            Savable landscapeObject
+                    = landscape.getControl(RigidBodyControl.class);
             if (obj == landscapeObject) {
                 result = false;
             }
@@ -264,19 +265,17 @@ public class Platform implements BulletDebugAppState.DebugAppStateFilter {
         assert landscape == null;
 
         AssetManager assetManager = Locators.getAssetManager();
-        Material grass = new Material(assetManager,
-                "Common/MatDefs/Light/Lighting.j3md"); // TODO use MyAsset
-        grass.setBoolean("UseMaterialColors", true);
-        ColorRGBA terrainColor
-                = new ColorRGBA(0.65f, 0.8f, 0.2f, 1f);
-        grass.setColor("Diffuse", terrainColor.clone());
+        ColorRGBA grassColor
+                = new ColorRGBA(0.4f, 0.7f, 0.1f, 1f);
+        Material grass
+                = MyAsset.createShadedMaterial(assetManager, grassColor);
 
         AbstractHeightMap heightMap = loadHeightMap();
         int terrainDiameter = heightMap.getSize(); // in pixels
         int mapSize = terrainDiameter + 1; // number of samples on a side
         float[] heightArray = heightMap.getHeightMap();
-        landscape = new TerrainQuad("landscape", patchSize, mapSize,
-                heightArray);
+        landscape
+                = new TerrainQuad("landscape", patchSize, mapSize, heightArray);
         landscape.setMaterial(grass);
         landscape.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
 

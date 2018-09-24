@@ -6,12 +6,14 @@ sourceCompatibility = '1.8'
 
 gradle.projectsEvaluated {
     tasks.withType(JavaCompile) {
+        // compile-time options:
         options.compilerArgs << '-Xdiags:verbose'
         options.compilerArgs << '-Xlint:unchecked'
         options.deprecation = true
         options.encoding = 'UTF-8'
     }
     tasks.withType(JavaExec) {
+        // runtime options:
         //args '--forceDialog'
         //args '--skipStartup'
         classpath sourceSets.main.runtimeClasspath
@@ -44,11 +46,10 @@ repositories {
 
 dependencies {
     // from stephengold's bintray repositories:
-    compile 'jme3utilities:jme3-utilities-heart:2.9.0'
-    compile 'jme3utilities:jme3-utilities-nifty:0.8.1'
-    compile 'jme3utilities:Minie:0.2.10'
-    compile 'jme3utilities:SkyControl:0.9.13'
-    compile 'jme3utilities:Wes:0.3.6'
+    compile 'jme3utilities:jme3-utilities-nifty:0.8.2'
+    compile 'jme3utilities:Minie:0.3.1'
+    compile 'jme3utilities:SkyControl:0.9.14'
+    compile 'jme3utilities:Wes:0.3.7'
     //runtime 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
 
     // from jcenter (or mavenLocal) repositories:

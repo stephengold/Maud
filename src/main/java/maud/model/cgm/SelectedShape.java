@@ -131,16 +131,16 @@ public class SelectedShape implements Cloneable {
             case HalfExtentX:
             case HalfExtentY:
             case HalfExtentZ:
-                result = box || cylinder;
+                result = box || cylinder; // TODO height axis of cone/cyl/sph
                 break;
             case Height:
             case Radius:
                 result = box || capsule || cone || cylinder || sphere;
                 break;
             case Margin:
-                result = !sphere;
+                result = !sphere && !capsule;
                 break;
-            default:
+            default: // TODO scale factors
                 result = false;
         }
 
@@ -148,7 +148,7 @@ public class SelectedShape implements Cloneable {
     }
 
     /**
-     * Copy the scale of the shape.
+     * Copy the scale of the shape. TODO remove?
      *
      * @param storeResult (modified if not null)
      * @return a scale vector (either storeResult or a new instance)
@@ -159,10 +159,9 @@ public class SelectedShape implements Cloneable {
         }
 
         CollisionShape shape = find();
-        Vector3f scale = shape.getScale();
-        storeResult.set(scale);
+        shape.getScale(storeResult);
 
-        assert MyVector3f.isAllNonNegative(scale);
+        assert MyVector3f.isAllNonNegative(storeResult);
         return storeResult;
     }
 
@@ -298,13 +297,13 @@ public class SelectedShape implements Cloneable {
                     result = MyShape.radius(shape);
                     break;
                 case ScaleX:
-                    result = shape.getScale().x;
+                    result = shape.getScale(null).x;
                     break;
                 case ScaleY:
-                    result = shape.getScale().y;
+                    result = shape.getScale(null).y;
                     break;
                 case ScaleZ:
-                    result = shape.getScale().z;
+                    result = shape.getScale(null).z;
                     break;
             }
         }
@@ -575,11 +574,13 @@ public class SelectedShape implements Cloneable {
         float oldValue = getValue(parameter);
         if (newValue != oldValue) {
             if (parameter.equals(ShapeParameter.Margin)) {
-                History.autoAdd();
-                set(parameter, newValue);
-                String description = String.format(
-                        "change shape's margin to %f", newValue);
-                editableCgm.getEditState().setEdited(description);
+                if (newValue > 0f) {
+                    History.autoAdd();
+                    set(parameter, newValue);
+                    String description = String.format(
+                            "change shape's margin to %f", newValue);
+                    editableCgm.getEditState().setEdited(description);
+                }
             } else {
                 set(parameter, newValue);
                 String shapeName = find().toString();
@@ -627,9 +628,9 @@ public class SelectedShape implements Cloneable {
                     for (ChildCollisionShape child : children) {
                         long id = child.getShape().getObjectId();
                         if (id == userId) {
-                            parent.setTranslation(child.getLocation());
+                            parent.setTranslation(child.getLocation(null));
                             Quaternion rot = parent.getRotation();
-                            rot.fromRotationMatrix(child.getRotation());
+                            rot.fromRotationMatrix(child.getRotation(null));
                         }
                     }
                     storeResult.combineWithParent(parent);

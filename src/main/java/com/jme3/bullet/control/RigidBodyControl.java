@@ -144,37 +144,13 @@ public class RigidBodyControl extends PhysicsRigidBody
 
     /**
      * Clone this control for a different spatial. No longer used as of JME 3.1.
-     * TODO eviscerate
      *
      * @param spatial the spatial for the clone to control (or null)
      * @return a new control (not null)
      */
     @Override
     public Control cloneForSpatial(Spatial spatial) {
-        RigidBodyControl control = new RigidBodyControl(collisionShape, mass);
-        control.setAngularFactor(getAngularFactor());
-        control.setAngularSleepingThreshold(getAngularSleepingThreshold());
-        control.setCcdMotionThreshold(getCcdMotionThreshold());
-        control.setCcdSweptSphereRadius(getCcdSweptSphereRadius());
-        control.setCollideWithGroups(getCollideWithGroups());
-        control.setCollisionGroup(getCollisionGroup());
-        control.setDamping(getLinearDamping(), getAngularDamping());
-        control.setFriction(getFriction());
-        control.setGravity(getGravity());
-        control.setKinematic(isKinematic());
-        control.setKinematicSpatial(isKinematicSpatial());
-        control.setLinearSleepingThreshold(getLinearSleepingThreshold());
-        control.setPhysicsLocation(getPhysicsLocation(null));
-        control.setPhysicsRotation(getPhysicsRotationMatrix(null));
-        control.setRestitution(getRestitution());
-
-        if (mass > 0) {
-            control.setAngularVelocity(getAngularVelocity());
-            control.setLinearVelocity(getLinearVelocity());
-        }
-        control.setApplyPhysicsLocal(isApplyPhysicsLocal());
-
-        return control;
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -193,7 +169,7 @@ public class RigidBodyControl extends PhysicsRigidBody
         control.setCollisionGroup(getCollisionGroup());
         control.setDamping(getLinearDamping(), getAngularDamping());
         control.setFriction(getFriction());
-        control.setGravity(getGravity());
+        control.setGravity(getGravity(null));
         control.setKinematic(isKinematic());
         control.setKinematicSpatial(isKinematicSpatial());
         control.setLinearSleepingThreshold(getLinearSleepingThreshold());
@@ -201,9 +177,9 @@ public class RigidBodyControl extends PhysicsRigidBody
         control.setPhysicsRotation(getPhysicsRotationMatrix(null));
         control.setRestitution(getRestitution());
 
-        if (mass > 0f) {
-            control.setAngularVelocity(getAngularVelocity());
-            control.setLinearVelocity(getLinearVelocity());
+        if (mass > massForStatic) {
+            control.setAngularVelocity(getAngularVelocity(null));
+            control.setLinearVelocity(getLinearVelocity(null));
         }
         control.setApplyPhysicsLocal(isApplyPhysicsLocal());
         control.spatial = this.spatial;
@@ -217,7 +193,7 @@ public class RigidBodyControl extends PhysicsRigidBody
      * shallow-cloned control into a deep-cloned one, using the specified cloner
      * and original to resolve copied fields.
      *
-     * @param cloner the cloner currently cloning this control (not null)
+     * @param cloner the cloner that's cloning this control (not null)
      * @param original the control from which this control was shallow-cloned
      * (unused)
      */
@@ -271,7 +247,7 @@ public class RigidBodyControl extends PhysicsRigidBody
                 return;
             }
         }
-        if (mass > 0) {
+        if (mass > massForStatic) {
             collisionShape
                     = CollisionShapeFactory.createDynamicMeshShape(spatial);
         } else {
@@ -353,7 +329,7 @@ public class RigidBodyControl extends PhysicsRigidBody
      * coordinates.
      *
      * @param applyPhysicsLocal true&rarr;match local coordinates,
-     * false&rarr;match world coordinates (default is false)
+     * false&rarr;match world coordinates (default=false)
      */
     public void setApplyPhysicsLocal(boolean applyPhysicsLocal) {
         motionState.setApplyPhysicsLocal(applyPhysicsLocal);
@@ -362,7 +338,7 @@ public class RigidBodyControl extends PhysicsRigidBody
     /**
      * Access whichever spatial translation corresponds to the physics location.
      *
-     * @return the pre-existing vector (not null)
+     * @return the pre-existing vector (not null) TODO
      */
     private Vector3f getSpatialTranslation() {
         if (MySpatial.isIgnoringTransforms(spatial)) {
@@ -412,7 +388,7 @@ public class RigidBodyControl extends PhysicsRigidBody
                 super.setPhysicsRotation(getSpatialRotation());
                 Vector3f newScale = getSpatialScale();
                 if (PhysicsUtil.canScale(collisionShape, newScale)) {
-                    Vector3f oldScale = collisionShape.getScale();
+                    Vector3f oldScale = collisionShape.getScale(null);
                     if (!newScale.equals(oldScale)) {
                         // assuming single-use shape
                         collisionShape.setScale(newScale);

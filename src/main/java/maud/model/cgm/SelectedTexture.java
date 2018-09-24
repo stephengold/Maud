@@ -44,7 +44,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
-import jme3utilities.Misc;
 import jme3utilities.MySpatial;
 import jme3utilities.Validate;
 import jme3utilities.nifty.WindowController;
@@ -125,7 +124,7 @@ public class SelectedTexture implements JmeCloneable {
         assert selectedTexture != null;
 
         MatParamRef firstRef = selectedRefs.get(0);
-        Texture clone = (Texture) Misc.deepClone(selectedTexture);
+        Texture clone = (Texture) Cloner.deepClone(selectedTexture);
         editableCgm.selectAndReplaceTexture(firstRef, clone, "clone texture");
     }
 
@@ -694,7 +693,7 @@ public class SelectedTexture implements JmeCloneable {
 
         Texture.MagFilter oldFilter = magFilter();
         if (oldFilter != newFilter) {
-            Texture clone = (Texture) Misc.deepClone(selectedTexture);
+            Texture clone = (Texture) Cloner.deepClone(selectedTexture);
             clone.setMagFilter(newFilter);
             String eventDescription = String.format(
                     "change texture's magFilter from %s to %s", oldFilter,
@@ -714,7 +713,7 @@ public class SelectedTexture implements JmeCloneable {
 
         Texture.MinFilter oldFilter = minFilter();
         if (oldFilter != newFilter) {
-            Texture clone = (Texture) Misc.deepClone(selectedTexture);
+            Texture clone = (Texture) Cloner.deepClone(selectedTexture);
             clone.setMinFilter(newFilter);
             String eventDescription = String.format(
                     "change texture's minFilter from %s to %s", oldFilter,
@@ -759,7 +758,7 @@ public class SelectedTexture implements JmeCloneable {
 
         Texture.WrapMode oldMode = wrapMode(axis);
         if (oldMode != newMode) {
-            Texture clone = (Texture) Misc.deepClone(selectedTexture);
+            Texture clone = (Texture) Cloner.deepClone(selectedTexture);
             clone.setWrap(axis, newMode);
             String eventDescription = String.format(
                     "change texture's %s-axis wrapMode from %s to %s", axis,

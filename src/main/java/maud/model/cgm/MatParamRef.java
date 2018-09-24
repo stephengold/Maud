@@ -38,8 +38,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
 import jme3utilities.Misc;
+import jme3utilities.MySpatial;
 import jme3utilities.MyString;
-import maud.MaudUtil;
 import maud.view.scene.SceneView;
 
 /**
@@ -161,7 +161,7 @@ public class MatParamRef implements JmeCloneable {
             target = matParamMaterial.getParam(parameterName);
         } else {
             assert matParamMaterial == null;
-            target = MaudUtil.findOverride(overrideSpatial, parameterName);
+            target = MySpatial.findOverride(overrideSpatial, parameterName);
         }
 
         assert target != null;
@@ -221,15 +221,15 @@ public class MatParamRef implements JmeCloneable {
         MatParam target = getTarget();
         target.setValue(desiredValue);
 
-        Object viewValue = Misc.deepClone(desiredValue);
+        Object viewValue = Misc.deepCopy(desiredValue);
         SceneView sceneView = cgm.getSceneView();
         Spatial cgmRoot = cgm.getRootSpatial();
         VarType varType = target.getVarType();
 
         if (isInMaterial()) {
             matParamMaterial.setKey(null);
-            List<Geometry> matSpatials
-                    = MaudUtil.listUsers(cgmRoot, matParamMaterial, null);
+            List<Geometry> matSpatials = MySpatial.listMaterialUsers(cgmRoot,
+                    matParamMaterial, null);
             Spatial matSpatial = matSpatials.get(0);
             List<Integer> treePosition = cgm.findSpatial(matSpatial);
             sceneView.setParamValue(treePosition, parameterName, varType,

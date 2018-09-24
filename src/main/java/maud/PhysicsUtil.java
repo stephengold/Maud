@@ -57,6 +57,7 @@ import java.util.TreeSet;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
+import jme3utilities.math.MyVector3f;
 
 /**
  * Physics utility methods. All methods should be static.
@@ -96,7 +97,10 @@ public class PhysicsUtil {
                 || shape instanceof CapsuleCollisionShape
                 || shape instanceof CylinderCollisionShape
                 || shape instanceof SphereCollisionShape) {
-            result = (scale.x == scale.y && scale.y == scale.z);
+            result = MyVector3f.isScaleUniform(scale);
+        }
+        if (result) {
+            result = MyVector3f.isAllNonNegative(scale);
         }
 
         return result;
@@ -225,7 +229,7 @@ public class PhysicsUtil {
      * @param shapeType type of shape (not null)
      * @param halfExtents desired half extents relative to the center (not null,
      * all non-negative, unaffected)
-     * @param margin desired margin (&ge;0)
+     * @param margin desired margin (&ge;0, ignored for sphere and capsule)
      * @return a new instance
      */
     public static CollisionShape makeShape(ShapeType shapeType,
@@ -241,6 +245,7 @@ public class PhysicsUtil {
         switch (shapeType) {
             case Box:
                 result = new BoxCollisionShape(halfExtents);
+                result.setMargin(margin);
                 break;
 
             case Capsule:
@@ -261,6 +266,7 @@ public class PhysicsUtil {
                 height = 2f * (axisHalfExtent - radius);
                 assert height >= 0f : height;
                 result = new CapsuleCollisionShape(radius, height, axis);
+                // no margin
                 break;
 
             case ConeX:
@@ -268,6 +274,7 @@ public class PhysicsUtil {
                 height = 2f * halfExtents.x;
                 result = new ConeCollisionShape(radius, height,
                         PhysicsSpace.AXIS_X);
+                result.setMargin(margin);
                 break;
 
             case ConeY:
@@ -275,6 +282,7 @@ public class PhysicsUtil {
                 height = 2f * halfExtents.y;
                 result = new ConeCollisionShape(radius, height,
                         PhysicsSpace.AXIS_Y);
+                result.setMargin(margin);
                 break;
 
             case ConeZ:
@@ -282,35 +290,38 @@ public class PhysicsUtil {
                 height = 2f * halfExtents.z;
                 result = new ConeCollisionShape(radius, height,
                         PhysicsSpace.AXIS_Z);
+                result.setMargin(margin);
                 break;
 
             case CylinderX:
                 result = new CylinderCollisionShape(halfExtents,
                         PhysicsSpace.AXIS_X);
+                result.setMargin(margin);
                 break;
 
             case CylinderY:
                 result = new CylinderCollisionShape(halfExtents,
                         PhysicsSpace.AXIS_Y);
+                result.setMargin(margin);
                 break;
 
             case CylinderZ:
                 result = new CylinderCollisionShape(halfExtents,
                         PhysicsSpace.AXIS_Z);
+                result.setMargin(margin);
                 break;
 
             case Sphere:
                 radius = MyMath.max(halfExtents.x, halfExtents.y,
-                        halfExtents.z);
-                assert radius > 0f : radius;
+                        halfExtents.z); // TODO average?
+                assert radius >= 0f : radius;
                 result = new SphereCollisionShape(radius);
+                // no margin
                 break;
 
             default:
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException(shapeType.toString());
         }
-
-        result.setMargin(margin);
 
         return result;
     }
@@ -487,8 +498,8 @@ public class PhysicsUtil {
                     CollisionShape childShape = child.getShape();
                     long shapeId = childShape.getObjectId();
                     if (shapeId == oldShapeId) {
-                        Vector3f location = child.getLocation().clone();
-                        Matrix3f rotation = child.getRotation().clone();
+                        Vector3f location = child.getLocation(null);
+                        Matrix3f rotation = child.getRotation(null);
                         compound.removeChildShape(childShape);
                         compound.addChildShape(newShape, location, rotation);
                     }
@@ -621,8 +632,8 @@ public class PhysicsUtil {
         orientation(object, storeOrientation);
 
         CollisionShape shape = object.getCollisionShape();
-        Vector3f scale = shape.getScale();
-        storeResult.setScale(scale);
+        Vector3f storeScale = storeResult.getScale();
+        shape.getScale(storeScale);
 
         return storeResult;
     }

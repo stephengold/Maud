@@ -34,8 +34,6 @@ import com.jme3.asset.TextureKey;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.material.MatParam;
-import com.jme3.material.MatParamOverride;
-import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Matrix4f;
@@ -45,7 +43,6 @@ import com.jme3.math.Transform;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.math.Vector4f;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -315,32 +312,6 @@ public class MaudUtil {
     }
 
     /**
-     * Access the named M-P override in the specified spatial. TODO use
-     * MySpatial
-     *
-     * @param spatial the spatial to search (not null)
-     * @param parameterName which override (not null, not empty)
-     * @return the pre-existing instance, or null if not found
-     */
-    public static MatParamOverride findOverride(Spatial spatial,
-            String parameterName) {
-        Validate.nonNull(spatial, "spatial");
-        Validate.nonEmpty(parameterName, "parameterName");
-
-        MatParamOverride result = null;
-        Collection<MatParamOverride> list = spatial.getLocalMatParamOverrides();
-        for (MatParamOverride override : list) {
-            String name = override.getName();
-            if (parameterName.equals(name)) {
-                result = override;
-                break;
-            }
-        }
-
-        return result;
-    }
-
-    /**
      * Find the specified spatial in the specified subtree and optionally store
      * its tree position.
      *
@@ -579,39 +550,6 @@ public class MaudUtil {
             result = true;
         } else {
             result = false;
-        }
-
-        return result;
-    }
-
-    /**
-     * Enumerate all geometries using the specified material in the specified
-     * subtree of a scene graph. Note: recursive! TODO use MySpatial
-     *
-     * @param subtree (not null, aliases created)
-     * @param material the material to search for (may be null, unaffected)
-     * @param addResult (added to if not null)
-     * @return an expanded list (either storeResult or a new instance)
-     */
-    public static List<Geometry> listUsers(Spatial subtree,
-            Material material, List<Geometry> addResult) {
-        Validate.nonNull(subtree, "subtree");
-        List<Geometry> result
-                = (addResult == null) ? new ArrayList<>(50) : addResult;
-
-        if (subtree instanceof Geometry) {
-            Geometry geometry = (Geometry) subtree;
-            if (geometry.getMaterial() == material) {
-                result.add(geometry);
-            }
-        }
-
-        if (subtree instanceof Node) {
-            Node node = (Node) subtree;
-            List<Spatial> children = node.getChildren();
-            for (Spatial child : children) {
-                listUsers(child, material, result);
-            }
         }
 
         return result;

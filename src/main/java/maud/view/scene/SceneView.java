@@ -64,7 +64,6 @@ import jme3utilities.math.MyVector3f;
 import jme3utilities.minie.MyControlP;
 import jme3utilities.minie.MyObject;
 import maud.Maud;
-import maud.MaudUtil;
 import maud.PhysicsUtil;
 import maud.model.cgm.Cgm;
 
@@ -630,7 +629,8 @@ public class SceneView extends SceneViewCore {
             spatial = node.getChild(childPosition);
         }
 
-        MatParamOverride oldMpo = MaudUtil.findOverride(spatial, parameterName);
+        MatParamOverride oldMpo
+                = MySpatial.findOverride(spatial, parameterName);
         assert oldMpo != null;
 
         spatial.removeMatParamOverride(oldMpo);
