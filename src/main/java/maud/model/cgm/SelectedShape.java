@@ -131,7 +131,7 @@ public class SelectedShape implements Cloneable {
             case HalfExtentX:
             case HalfExtentY:
             case HalfExtentZ:
-                result = box || cylinder; // TODO height axis of cone/cyl/sph
+                result = box || cylinder; // TODO height axis of cone/cyl
                 break;
             case Height:
             case Radius:
@@ -140,8 +140,13 @@ public class SelectedShape implements Cloneable {
             case Margin:
                 result = !sphere && !capsule;
                 break;
-            default: // TODO scale factors
-                result = false;
+            case ScaleX:
+            case ScaleY:
+            case ScaleZ:
+                result = true; // TODO
+                break;
+            default:
+                throw new IllegalArgumentException(parameter.toString());
         }
 
         return result;
@@ -212,7 +217,7 @@ public class SelectedShape implements Cloneable {
     }
 
     /**
-     * Determine the axis index of the shape.
+     * Determine the axis index of the shape. TODO rename axisIndex()
      *
      * @return 0&rarr;X, 1&rarr;Y, 2&rarr;Z, -1&rarr;doesn't have an axis
      */
@@ -227,7 +232,7 @@ public class SelectedShape implements Cloneable {
     }
 
     /**
-     * Read the id of the selected shape.
+     * Read the Bullet id of the selected shape. TODO rename id()
      *
      * @return id, or -1L if none selected
      */
@@ -236,7 +241,7 @@ public class SelectedShape implements Cloneable {
     }
 
     /**
-     * Read the type of the selected shape.
+     * Read the type of the selected shape. TODO rename type()
      *
      * @return abbreviated class name, or "" if none selected
      */
@@ -252,7 +257,7 @@ public class SelectedShape implements Cloneable {
     }
 
     /**
-     * Read the specified parameter of the shape.
+     * Read the specified parameter of the shape. TODO rename value()
      *
      * @param parameter which parameter to read (not null)
      * @return parameter value (&ge;0) or NaN if not applicable
@@ -305,6 +310,8 @@ public class SelectedShape implements Cloneable {
                 case ScaleZ:
                     result = shape.getScale(null).z;
                     break;
+                default:
+                    throw new IllegalArgumentException(parameter.toString());
             }
         }
 
@@ -522,8 +529,13 @@ public class SelectedShape implements Cloneable {
                 setRadius(newValue);
                 break;
 
+            case ScaleX:
+            case ScaleY:
+            case ScaleZ:
+                // TODO for kinematic controls, alter via the spatial
+
             default:
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException(parameter.toString());
         }
     }
 

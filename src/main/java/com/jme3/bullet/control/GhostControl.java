@@ -49,15 +49,12 @@ import com.jme3.util.clone.JmeCloneable;
 import java.io.IOException;
 import java.util.logging.Logger;
 import jme3utilities.MySpatial;
-import maud.PhysicsUtil;
 
 /**
  * A physics control to link a PhysicsGhostObject to a spatial.
  * <p>
  * The ghost object moves with the spatial it is attached to and can be used to
  * detect overlaps with other physics objects (e.g. aggro radius).
- * <p>
- * This class is shared between JBullet and Native Bullet.
  *
  * @author normenhansen
  */
@@ -204,18 +201,13 @@ public class GhostControl extends PhysicsGhostObject
      * @return a new control (not null)
      */
     @Override
-    public Object jmeClone() {
-        GhostControl control = new GhostControl(collisionShape);
-        control.setCcdMotionThreshold(getCcdMotionThreshold());
-        control.setCcdSweptSphereRadius(getCcdSweptSphereRadius());
-        control.setCollideWithGroups(getCollideWithGroups());
-        control.setCollisionGroup(getCollisionGroup());
-        control.setPhysicsLocation(getPhysicsLocation(null));
-        control.setPhysicsRotation(getPhysicsRotationMatrix(null));
-        control.setApplyPhysicsLocal(isApplyPhysicsLocal());
-        control.spatial = this.spatial;
-
-        return control;
+    public GhostControl jmeClone() {
+        try {
+            GhostControl clone = (GhostControl) super.clone();
+            return clone;
+        } catch (CloneNotSupportedException exception) {
+            throw new RuntimeException(exception);
+        }
     }
 
     /**
@@ -229,6 +221,7 @@ public class GhostControl extends PhysicsGhostObject
      */
     @Override
     public void cloneFields(Cloner cloner, Object original) {
+        super.cloneFields(cloner, original);
         spatial = cloner.clone(spatial);
     }
     // *************************************************************************
@@ -304,9 +297,10 @@ public class GhostControl extends PhysicsGhostObject
         setPhysicsLocation(getSpatialTranslation());
         setPhysicsRotation(getSpatialRotation());
         Vector3f newScale = getSpatialScale();
-        if (PhysicsUtil.canScale(collisionShape, newScale)) {
+        if (collisionShape.canScale(newScale)) {
             collisionShape.setScale(newScale);
             // note: assuming single-use shape
+            // TODO shape-specific averaging of non-uniform scale factors
         }
     }
 

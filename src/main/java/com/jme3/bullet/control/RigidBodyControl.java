@@ -56,12 +56,9 @@ import com.jme3.util.clone.JmeCloneable;
 import java.io.IOException;
 import java.util.logging.Logger;
 import jme3utilities.MySpatial;
-import maud.PhysicsUtil;
 
 /**
  * A physics control to link a PhysicsRigidBody to a spatial.
- * <p>
- * This class is shared between JBullet and Native Bullet.
  *
  * @author normenhansen
  */
@@ -159,33 +156,13 @@ public class RigidBodyControl extends PhysicsRigidBody
      * @return a new control (not null)
      */
     @Override
-    public Object jmeClone() {
-        RigidBodyControl control = new RigidBodyControl(collisionShape, mass);
-        control.setAngularFactor(getAngularFactor());
-        control.setAngularSleepingThreshold(getAngularSleepingThreshold());
-        control.setCcdMotionThreshold(getCcdMotionThreshold());
-        control.setCcdSweptSphereRadius(getCcdSweptSphereRadius());
-        control.setCollideWithGroups(getCollideWithGroups());
-        control.setCollisionGroup(getCollisionGroup());
-        control.setDamping(getLinearDamping(), getAngularDamping());
-        control.setFriction(getFriction());
-        control.setGravity(getGravity(null));
-        control.setKinematic(isKinematic());
-        control.setKinematicSpatial(isKinematicSpatial());
-        control.setLinearSleepingThreshold(getLinearSleepingThreshold());
-        control.setPhysicsLocation(getPhysicsLocation(null));
-        control.setPhysicsRotation(getPhysicsRotationMatrix(null));
-        control.setRestitution(getRestitution());
-
-        if (mass > massForStatic) {
-            control.setAngularVelocity(getAngularVelocity(null));
-            control.setLinearVelocity(getLinearVelocity(null));
+    public RigidBodyControl jmeClone() {
+        try {
+            RigidBodyControl clone = (RigidBodyControl) super.clone();
+            return clone;
+        } catch (CloneNotSupportedException exception) {
+            throw new RuntimeException(exception);
         }
-        control.setApplyPhysicsLocal(isApplyPhysicsLocal());
-        control.spatial = this.spatial;
-        control.setEnabled(isEnabled());
-
-        return control;
     }
 
     /**
@@ -199,7 +176,8 @@ public class RigidBodyControl extends PhysicsRigidBody
      */
     @Override
     public void cloneFields(Cloner cloner, Object original) {
-        this.spatial = cloner.clone(spatial);
+        super.cloneFields(cloner, original);
+        spatial = cloner.clone(spatial);
     }
 
     /**
@@ -387,10 +365,11 @@ public class RigidBodyControl extends PhysicsRigidBody
                 super.setPhysicsLocation(getSpatialTranslation());
                 super.setPhysicsRotation(getSpatialRotation());
                 Vector3f newScale = getSpatialScale();
-                if (PhysicsUtil.canScale(collisionShape, newScale)) {
+                if (collisionShape.canScale(newScale)) {
+                    // TODO shape-specific averaging of non-uniform scale factors
                     Vector3f oldScale = collisionShape.getScale(null);
                     if (!newScale.equals(oldScale)) {
-                        // assuming single-use shape
+                        // note: assuming single-use shape
                         collisionShape.setScale(newScale);
                         setCollisionShape(collisionShape);
                     }

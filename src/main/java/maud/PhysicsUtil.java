@@ -57,7 +57,6 @@ import java.util.TreeSet;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
-import jme3utilities.math.MyVector3f;
 
 /**
  * Physics utility methods. All methods should be static.
@@ -85,29 +84,7 @@ public class PhysicsUtil {
     // new methods exposed
 
     /**
-     * Test whether the specified scale can be applied to the specified shape.
-     *
-     * @param shape which collision shape (not null, unaffected)
-     * @param scale scale factor for each local axis (not null, unaffected)
-     * @return true if can be applied, otherwise false
-     */
-    public static boolean canScale(CollisionShape shape, Vector3f scale) {
-        boolean result = true;
-        if (shape instanceof CompoundCollisionShape
-                || shape instanceof CapsuleCollisionShape
-                || shape instanceof CylinderCollisionShape
-                || shape instanceof SphereCollisionShape) {
-            result = MyVector3f.isScaleUniform(scale);
-        }
-        if (result) {
-            result = MyVector3f.isAllNonNegative(scale);
-        }
-
-        return result;
-    }
-
-    /**
-     * Count the joints in the specified physics space.
+     * Count the joints in the specified physics space. TODO PhysicsSpace method
      *
      * @param space which physics space (not null, unaffected)
      * @return count (&ge;0)
