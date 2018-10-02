@@ -282,6 +282,7 @@ public class Platform implements BulletDebugAppState.DebugAppStateFilter {
         CollisionShape shape = CollisionShapeFactory.createMeshShape(landscape);
         RigidBodyControl rbc
                 = new RigidBodyControl(shape, PhysicsRigidBody.massForStatic);
+        rbc.setApplyScale(true);
         rbc.setKinematic(true);
         landscape.addControl(rbc);
     }
@@ -304,6 +305,7 @@ public class Platform implements BulletDebugAppState.DebugAppStateFilter {
         BoxCollisionShape shape = new BoxCollisionShape(halfExtents);
         RigidBodyControl rbc
                 = new RigidBodyControl(shape, PhysicsRigidBody.massForStatic);
+        rbc.setApplyScale(true);
         rbc.setKinematic(true);
         square.addControl(rbc);
     }

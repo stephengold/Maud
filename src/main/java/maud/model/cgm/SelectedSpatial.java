@@ -157,6 +157,7 @@ public class SelectedSpatial implements JmeCloneable {
         CollisionShape shape
                 = PhysicsUtil.makeShape(shapeType, halfExtents, margin);
         GhostControl ghostControl = new GhostControl(shape);
+        ghostControl.setApplyScale(true);
 
         editableCgm.addSgc(ghostControl, "add a GhostControl");
         Spatial modelSpatial = find();
@@ -222,6 +223,7 @@ public class SelectedSpatial implements JmeCloneable {
                 = PhysicsUtil.makeShape(shapeType, halfExtents, margin);
         float mass = 1f;
         RigidBodyControl rbc = new RigidBodyControl(shape, mass);
+        rbc.setApplyScale(true);
         rbc.setKinematic(true);
         // TODO why is the default kinematic=false but kinematicSpatial=true?
 

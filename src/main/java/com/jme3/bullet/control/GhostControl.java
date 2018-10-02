@@ -45,10 +45,10 @@ import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
 import com.jme3.util.clone.Cloner;
-import com.jme3.util.clone.JmeCloneable;
 import java.io.IOException;
 import java.util.logging.Logger;
 import jme3utilities.MySpatial;
+import jme3utilities.math.MyMath;
 
 /**
  * A physics control to link a PhysicsGhostObject to a spatial.
@@ -58,8 +58,9 @@ import jme3utilities.MySpatial;
  *
  * @author normenhansen
  */
-public class GhostControl extends PhysicsGhostObject
-        implements PhysicsControl, JmeCloneable {
+public class GhostControl
+        extends PhysicsGhostObject
+        implements PhysicsControl {
     // *************************************************************************
     // constants and loggers
 
@@ -73,6 +74,10 @@ public class GhostControl extends PhysicsGhostObject
      */
     final private static Quaternion rotateIdentity = new Quaternion();
     /**
+     * local copy of {@link com.jme3.math.Vector3f#UNIT_XYZ}
+     */
+    final private static Vector3f scaleIdentity = new Vector3f(1f, 1f, 1f);
+    /**
      * local copy of {@link com.jme3.math.Vector3f#ZERO}
      */
     final private static Vector3f translateIdentity = new Vector3f(0f, 0f, 0f);
@@ -83,6 +88,11 @@ public class GhostControl extends PhysicsGhostObject
      * spatial to which this control is added, or null if none
      */
     protected Spatial spatial;
+    /**
+     * true &rarr; enable shape scaling (to the extent the collision shape
+     * supports it), false &rarr; disable shape scaling (default=false)
+     */
+    private boolean applyScale = false;
     /**
      * true&rarr;control is enabled, false&rarr;control is disabled
      */
@@ -133,6 +143,15 @@ public class GhostControl extends PhysicsGhostObject
     }
 
     /**
+     * Test whether the collision-shape scale should match the spatial's scale.
+     *
+     * @return true if matching scales, otherwise false
+     */
+    public boolean isApplyScale() {
+        return applyScale;
+    }
+
+    /**
      * Alter whether physics-space coordinates should match the spatial's local
      * coordinates.
      *
@@ -141,6 +160,21 @@ public class GhostControl extends PhysicsGhostObject
      */
     public void setApplyPhysicsLocal(boolean applyPhysicsLocal) {
         applyLocal = applyPhysicsLocal;
+    }
+
+    /**
+     * Alter whether the collision-shape scale should match the spatial's scale.
+     * CAUTION: Not all shapes can be scaled arbitrarily.
+     * <p>
+     * Note that if the shape is shared (between collision objects and/or
+     * compound shapes) scaling can have unintended consequences.
+     *
+     * @param setting true &rarr; enable shape scaling (to the extent the
+     * collision shape supports it), false &rarr; disable shape scaling
+     * (default=false)
+     */
+    public void setApplyScale(boolean setting) {
+        applyScale = setting;
     }
 
     /**
@@ -173,15 +207,6 @@ public class GhostControl extends PhysicsGhostObject
         }
     }
 
-    private Vector3f getSpatialScale() {
-        if (MySpatial.isIgnoringTransforms(spatial)) {
-            return new Vector3f(1f, 1f, 1f);
-        } else if (applyLocal) {
-            return spatial.getLocalScale();
-        }
-        return spatial.getWorldScale();
-    }
-
     /**
      * Clone this control for a different spatial. No longer used as of JME 3.1.
      *
@@ -192,8 +217,6 @@ public class GhostControl extends PhysicsGhostObject
     public Control cloneForSpatial(Spatial spatial) {
         throw new UnsupportedOperationException();
     }
-    // *************************************************************************
-    // JmeCloneable methods
 
     /**
      * Create a shallow clone for the JME cloner.
@@ -294,13 +317,22 @@ public class GhostControl extends PhysicsGhostObject
         if (!enabled) {
             return;
         }
+
         setPhysicsLocation(getSpatialTranslation());
         setPhysicsRotation(getSpatialRotation());
-        Vector3f newScale = getSpatialScale();
-        if (collisionShape.canScale(newScale)) {
-            collisionShape.setScale(newScale);
-            // note: assuming single-use shape
-            // TODO shape-specific averaging of non-uniform scale factors
+        if (applyScale) {
+            Vector3f newScale = copySpatialScale(null);
+            if (!collisionShape.canScale(newScale)) {
+                float factor = MyMath.cubeRoot(
+                        newScale.x * newScale.y * newScale.z);
+                newScale.set(factor, factor, factor);
+            }
+            Vector3f oldScale = collisionShape.getScale(null);
+            if (!oldScale.equals(newScale)
+                    && collisionShape.canScale(newScale)) {
+                collisionShape.setScale(newScale);
+                setCollisionShape(collisionShape);
+            }
         }
     }
 
@@ -353,6 +385,8 @@ public class GhostControl extends PhysicsGhostObject
     public PhysicsSpace getPhysicsSpace() {
         return space;
     }
+    // *************************************************************************
+    // PhysicsGhostObject methods
 
     /**
      * Serialize this control, for example when saving to a J3O file.
@@ -366,6 +400,7 @@ public class GhostControl extends PhysicsGhostObject
         OutputCapsule oc = ex.getCapsule(this);
         oc.write(enabled, "enabled", true);
         oc.write(applyLocal, "applyLocalPhysics", false);
+        oc.write(applyScale, "applyScale", false);
         oc.write(spatial, "spatial", null);
     }
 
@@ -382,6 +417,31 @@ public class GhostControl extends PhysicsGhostObject
         enabled = ic.readBoolean("enabled", true);
         spatial = (Spatial) ic.readSavable("spatial", null);
         applyLocal = ic.readBoolean("applyLocalPhysics", false);
-        setUserObject(spatial);
+        applyScale = ic.readBoolean("applyScale", false);
+    }
+    // *************************************************************************
+    // private methods
+
+    /**
+     * Copy whichever spatial scale corresponds to the shape scale.
+     *
+     * @param storeResult storage for the result (modified if not null)
+     * @return the scale factor for each local axis (either storeResult or a new
+     * vector, not null)
+     */
+    private Vector3f copySpatialScale(Vector3f storeResult) {
+        Vector3f result = (storeResult == null) ? new Vector3f() : storeResult;
+
+        if (MySpatial.isIgnoringTransforms(spatial)) {
+            result.set(scaleIdentity);
+        } else if (isApplyPhysicsLocal()) {
+            Vector3f scale = spatial.getLocalScale();
+            result.set(scale);
+        } else {
+            Vector3f scale = spatial.getWorldScale();
+            result.set(scale);
+        }
+
+        return result;
     }
 }

@@ -47,7 +47,7 @@ repositories {
 dependencies {
     // from stephengold's bintray repositories:
     compile 'jme3utilities:jme3-utilities-nifty:0.8.2'
-    compile 'jme3utilities:Minie:0.3.2'
+    compile 'jme3utilities:Minie:0.3.3'
     compile 'jme3utilities:SkyControl:0.9.14'
     compile 'jme3utilities:Wes:0.3.7'
     //runtime 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
