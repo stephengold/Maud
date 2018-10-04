@@ -883,6 +883,22 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
+     * Test whether the spatial has both a SkeletonControl and an AnimControl.
+     *
+     * @return true if it has both, otherwise false
+     */
+    public boolean hasSkeletonControls() {
+        Spatial spatial = find();
+        AnimControl animControl = spatial.getControl(AnimControl.class);
+        SkeletonControl skelControl = spatial.getControl(SkeletonControl.class);
+        if (animControl != null && skelControl != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Test whether the specified user key exists in the spatial.
      *
      * @param key the key to search for (not null)

@@ -41,6 +41,7 @@ import maud.action.ActionPrefix;
 import maud.dialog.EditorDialogs;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedShape;
+import maud.model.cgm.SelectedSpatial;
 import maud.model.option.RigidBodyParameter;
 import maud.model.option.ShapeParameter;
 import maud.view.scene.SceneView;
@@ -337,7 +338,10 @@ public class PhysicsMenus {
         MenuBuilder builder = new MenuBuilder();
 
         builder.addEdit("Ghost");
-        builder.addEdit("Ragdoll");
+        SelectedSpatial ss = Maud.getModel().getTarget().getSpatial();
+        if (ss.hasSkeletonControls()) {
+            builder.addEdit("Ragdoll");
+        }
         builder.addEdit("RigidBody");
 
         builder.show("select menuItem Physics -> Add control -> ");
