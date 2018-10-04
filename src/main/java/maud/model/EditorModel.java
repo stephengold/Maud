@@ -253,6 +253,14 @@ public class EditorModel {
     }
 
     /**
+     * Callback invoked after creating a checkpoint.
+     */
+    void postCheckpoint() {
+        sourceCgmLoadSlot.getSceneView().postCheckpoint();
+        targetCgmLoadSlot.getSceneView().postCheckpoint();
+    }
+
+    /**
      * Callback invoked after restoring a checkpoint.
      */
     public void postMakeLive() {
@@ -264,6 +272,8 @@ public class EditorModel {
      * Callback invoked before creating a checkpoint.
      */
     void preCheckpoint() {
+        sourceCgmLoadSlot.getSceneView().preCheckpoint();
+        targetCgmLoadSlot.getSceneView().preCheckpoint();
         mapLoadSlot.getEditState().preCheckpoint();
         targetCgmLoadSlot.getEditState().preCheckpoint();
     }

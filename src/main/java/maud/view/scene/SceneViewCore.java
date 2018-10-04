@@ -34,6 +34,8 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.control.PhysicsControl;
+import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.collision.CollisionResult;
 import com.jme3.input.InputManager;
 import com.jme3.light.AmbientLight;
@@ -65,6 +67,7 @@ import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -563,39 +566,64 @@ public class SceneViewCore
     }
 
     /**
-     * Re-install the C-G model in the scene base graph. Invoked after restoring
-     * a checkpoint.
+     * Re-install the C-G model in the physics space after creating a
+     * checkpoint.
+     */
+    public void postCheckpoint() {
+        PhysicsSpace space = getPhysicsSpace();
+        Collection<PhysicsRigidBody> list = space.getRigidBodyList();
+        assert list.isEmpty(); // TODO targetSpace.isEmpty()
+
+        fillPhysicsSpace();
+    }
+
+    /**
+     * Re-install the C-G model in the base scene graph after restoring a
+     * checkpoint.
      */
     public void postMakeLive() {
+        PhysicsSpace space = getPhysicsSpace();
+        Collection<PhysicsRigidBody> list = space.getRigidBodyList();
+        assert list.isEmpty(); // TODO targetSpace.isEmpty()
         /*
          * Detach any old visualization from the scene graph.
          */
         parent.detachAllChildren();
-        /*
-         * Attach this visualization.
-         */
-        if (cgmRoot != null) {
-            parent.attachChild(cgmRoot);
-            PhysicsSpace space = getPhysicsSpace();
-            MyControlP.enablePhysicsControls(cgmRoot, space);
-        }
-        skeletonVisualizer.setSubject(skeletonControl);
         /*
          * Update backpointers to this view.
          */
         cursor.setView(this);
         platform.setView(this);
         projectile.setView(this);
+        /*
+         * Attach this visualization.
+         */
+        if (cgmRoot != null) {
+            parent.attachChild(cgmRoot);
+        }
+
+        skeletonVisualizer.setSubject(skeletonControl);
+        fillPhysicsSpace();
     }
 
     /**
-     * Un-install the C-G model from the base scene graph. Invoked before
-     * restoring a checkpoint.
+     * De-install the C-G model from the physics space before creating a
+     * checkpoint.
+     */
+    public void preCheckpoint() {
+        emptyPhysicsSpace();
+
+        PhysicsSpace space = getPhysicsSpace();
+        Collection<PhysicsRigidBody> list = space.getRigidBodyList();
+        assert list.isEmpty(); // TODO targetSpace.isEmpty()
+    }
+
+    /**
+     * Remove all objects from this view's physics space before restoring a
+     * checkpoint.
      */
     public void preMakeLive() {
-        if (cgmRoot != null) {
-            MyControlP.disablePhysicsControls(cgmRoot);
-        }
+        emptyPhysicsSpace();
     }
 
     /**
@@ -1233,6 +1261,35 @@ public class SceneViewCore
     }
 
     /**
+     * Remove all physics controls from the physics space.
+     */
+    private void emptyPhysicsSpace() {
+        Node sceneRoot = getSceneRoot();
+        List<PhysicsControl> pcList
+                = MySpatial.listControls(sceneRoot, PhysicsControl.class, null);
+        for (PhysicsControl pc : pcList) {
+            pc.setPhysicsSpace(null);
+        }
+
+        PhysicsSpace space = getPhysicsSpace();
+        Collection<PhysicsRigidBody> list = space.getRigidBodyList();
+        assert list.isEmpty(); // TODO targetSpace.isEmpty()
+    }
+
+    /**
+     * Add all physics controls to the physics space.
+     */
+    private void fillPhysicsSpace() {
+        PhysicsSpace space = getPhysicsSpace();
+        Node sceneRoot = getSceneRoot();
+        List<PhysicsControl> pcList
+                = MySpatial.listControls(sceneRoot, PhysicsControl.class, null);
+        for (PhysicsControl pc : pcList) {
+            pc.setPhysicsSpace(space);
+        }
+    }
+
+    /**
      * Access the root node of the base scene graph.
      *
      * @return the pre-existing instance (not null)
@@ -1329,7 +1386,7 @@ public class SceneViewCore
          */
         cursor.setLocation(cursorStartLocation.mult(maxExtent));
         /*
-         * Reset the platform size.
+         * Reset the platform diameter.
          */
         EditorModel model = Maud.getModel();
         WhichCgm whichCgm = model.whichCgm(cgm);

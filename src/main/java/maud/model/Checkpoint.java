@@ -76,6 +76,7 @@ public class Checkpoint {
         EditorModel live = Maud.getModel();
         live.preCheckpoint();
         model = new EditorModel(live);
+        live.postCheckpoint();
 
         eventDescriptions.addAll(descriptions);
     }
