@@ -30,6 +30,7 @@ import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.control.KinematicRagdollControl;
 import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.input.InputManager;
@@ -347,9 +348,16 @@ public class SceneView extends SceneViewCore {
         Validate.nonNull(treePosition, "tree position");
         Validate.nonNegative(pcPosition, "control position");
 
+        String result = "?";
         PhysicsControl pc = findPhysicsControl(treePosition, pcPosition);
-        PhysicsCollisionObject pco = (PhysicsCollisionObject) pc;
-        String result = MyObject.objectName(pco);
+        if (pc instanceof PhysicsCollisionObject) {
+            PhysicsCollisionObject pco = (PhysicsCollisionObject) pc;
+            result = MyObject.objectName(pco);
+        } else if (pc instanceof KinematicRagdollControl) {
+            KinematicRagdollControl krc = (KinematicRagdollControl) pc;
+            PhysicsCollisionObject pco = krc.getTorso();
+            result = MyObject.objectName(pco);
+        }
 
         return result;
     }

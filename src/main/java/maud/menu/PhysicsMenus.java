@@ -337,6 +337,7 @@ public class PhysicsMenus {
         MenuBuilder builder = new MenuBuilder();
 
         builder.addEdit("Ghost");
+        builder.addEdit("Ragdoll");
         builder.addEdit("RigidBody");
 
         builder.show("select menuItem Physics -> Add control -> ");
@@ -353,6 +354,10 @@ public class PhysicsMenus {
         switch (remainder) {
             case "Ghost":
                 showShapeTypeMenu(ActionPrefix.newGhostControl);
+                break;
+
+            case "Ragdoll":
+                Maud.getModel().getTarget().getSpatial().addRagdollControl();
                 break;
 
             case "RigidBody":

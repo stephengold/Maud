@@ -37,6 +37,7 @@ import com.jme3.bounding.BoundingSphere;
 import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.GhostControl;
+import com.jme3.bullet.control.KinematicRagdollControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
@@ -205,6 +206,16 @@ public class SelectedSpatial implements JmeCloneable {
 
         Spatial spatial = find();
         editableCgm.getLight().select(newLight, spatial);
+    }
+
+    /**
+     * Add a KinematicRagdollControl to the spatial and select the new control.
+     */
+    public void addRagdollControl() {
+        KinematicRagdollControl krc = new KinematicRagdollControl(0.5f);
+        editableCgm.addSgc(krc, "add a KinematicRagdollControl");
+        Spatial modelSpatial = find();
+        editableCgm.getSgc().select(krc, modelSpatial);
     }
 
     /**
