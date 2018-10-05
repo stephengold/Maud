@@ -66,6 +66,7 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Misc;
+import jme3utilities.MyControl;
 import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
@@ -248,13 +249,17 @@ public class EditableCgm extends LoadedCgm {
         assert newSgc != null;
 
         History.autoAdd();
-        Spatial selectedSpatial = getSpatial().find();
+        Spatial controlledSpatial = getSpatial().find();
         if (newSgc instanceof PhysicsControl) {
             PhysicsControl physicsControl = (PhysicsControl) newSgc;
             SceneView sceneView = getSceneView();
             sceneView.addPhysicsControl(physicsControl);
         }
-        selectedSpatial.addControl(newSgc);
+        controlledSpatial.addControl(newSgc);
+        assert MyControl.findIndex(newSgc, controlledSpatial)
+                != SelectedSgc.noSgcIndex;
+        assert getSpatial().find() == controlledSpatial;
+
         editState.setEdited(eventDescription);
     }
 
