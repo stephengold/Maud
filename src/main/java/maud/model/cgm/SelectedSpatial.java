@@ -212,7 +212,7 @@ public class SelectedSpatial implements JmeCloneable {
      * Add a KinematicRagdollControl to the spatial and select the new control.
      */
     public void addRagdollControl() {
-        KinematicRagdollControl krc = new KinematicRagdollControl(0.5f);
+        KinematicRagdollControl krc = new KinematicRagdollControl();
         editableCgm.addSgc(krc, "add a KinematicRagdollControl");
         Spatial modelSpatial = find();
         editableCgm.getSgc().select(krc, modelSpatial);
