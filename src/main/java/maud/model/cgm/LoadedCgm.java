@@ -300,14 +300,19 @@ public class LoadedCgm extends Cgm {
         getSpatial().postLoad(); // TODO deal separately with sgc and light?
         getTexture().deselectAll();
         getAnimation().loadBindPose();
-
+        /*
+         * If there is only one animation, load it.
+         */
         SelectedAnimControl sac = getAnimControl();
         if (sac.countAnimations() == 1) {
             List<String> names = sac.listRealAnimationsSorted();
             String animationName = names.get(0);
             getAnimation().load(animationName);
         }
-
+        /*
+         * If there are no mesh vertices, show all bones,
+         * otherwise show only the bones that actually influence vertices.
+         */
         ShowBones showBonesInScene;
         if (MySpatial.countVertices(cgmRoot) == 0) {
             showBonesInScene = ShowBones.All;
