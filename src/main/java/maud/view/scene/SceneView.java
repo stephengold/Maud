@@ -50,12 +50,12 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.shader.VarType;
-import com.jme3.util.clone.Cloner;
 import java.nio.Buffer;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
+import jme3utilities.Misc;
 import jme3utilities.MyCamera;
 import jme3utilities.MyLight;
 import jme3utilities.MySpatial;
@@ -142,7 +142,7 @@ public class SceneView extends SceneViewCore {
     public void addPhysicsControl(PhysicsControl physicsControl) {
         Validate.nonNull(physicsControl, "physics control");
 
-        PhysicsControl copy = Cloner.deepClone(physicsControl);
+        PhysicsControl copy = (PhysicsControl) Misc.deepCopy(physicsControl);
         if (copy instanceof RigidBodyControl) {
             /*
              * Force kinematic mode for visualization purposes.
