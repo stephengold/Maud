@@ -578,8 +578,8 @@ public class SelectedAnimControl implements JmeCloneable {
             int index = list.indexOf(animControl);
             assert index != -1;
             int numAnimControls = list.size();
-            int nextIndex = MyMath.modulo(index - 1, numAnimControls);
-            animControl = list.get(nextIndex);
+            int prevIndex = MyMath.modulo(index - 1, numAnimControls);
+            animControl = list.get(prevIndex);
             cgm.getSgc().select(animControl);
         }
     }
