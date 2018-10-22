@@ -130,7 +130,7 @@ public class SceneViewCore
     /**
      * local copy of {@link com.jme3.math.Quaternion#IDENTITY}
      */
-    final private static Quaternion rotationIdentity = new Quaternion();
+    final private static Quaternion rotateIdentity = new Quaternion();
     /**
      * local copy of {@link com.jme3.math.Transform#IDENTITY}
      */
@@ -1106,8 +1106,7 @@ public class SceneViewCore
             int numBones = skeleton.getBoneCount();
             for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
                 Bone bone = skeleton.getBone(boneIndex);
-                bone.setUserTransforms(translateIdentity, rotationIdentity,
-                        scaleIdentity);
+                MySkeleton.setLocalTransform(bone, transformIdentity);
             }
             skeleton.updateWorldVectors();
             skeletonControl.update(0f);
@@ -1206,7 +1205,8 @@ public class SceneViewCore
      */
     private void createSkeletonVisualizer() {
         AssetManager assetManager = Locators.getAssetManager();
-        skeletonVisualizer = new SkeletonVisualizer(assetManager);
+        skeletonVisualizer
+                = new SkeletonVisualizer(assetManager, skeletonControl);
         overlayRoot.addControl(skeletonVisualizer);
     }
 

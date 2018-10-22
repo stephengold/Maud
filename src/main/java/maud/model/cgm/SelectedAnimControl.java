@@ -526,7 +526,7 @@ public class SelectedAnimControl implements JmeCloneable {
     }
 
     /**
-     * Update after (for instance) selecting a different spatial or S-G control.
+     * Update after selecting a different S-G control.
      */
     void postSelect() {
         AnimControl found = find();
@@ -549,7 +549,7 @@ public class SelectedAnimControl implements JmeCloneable {
         assert index != -1;
         List<AnimControl> animControls = cgm.listSgcs(AnimControl.class);
         AnimControl animControl = animControls.get(index);
-        cgm.getSgc().select(animControl);
+        cgm.getSgc().select(animControl); // TODO set last
     }
 
     /**
@@ -564,7 +564,7 @@ public class SelectedAnimControl implements JmeCloneable {
             int numAnimControls = list.size();
             int nextIndex = MyMath.modulo(index + 1, numAnimControls);
             animControl = list.get(nextIndex);
-            cgm.getSgc().select(animControl);
+            cgm.getSgc().select(animControl); // TODO set last
         }
     }
 
@@ -580,7 +580,7 @@ public class SelectedAnimControl implements JmeCloneable {
             int numAnimControls = list.size();
             int prevIndex = MyMath.modulo(index - 1, numAnimControls);
             animControl = list.get(prevIndex);
-            cgm.getSgc().select(animControl);
+            cgm.getSgc().select(animControl); // TODO set last
         }
     }
 

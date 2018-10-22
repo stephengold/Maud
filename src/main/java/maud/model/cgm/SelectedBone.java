@@ -140,7 +140,8 @@ public class SelectedBone implements Cloneable {
     }
 
     /**
-     * Read the name of an indexed child of the selected bone.
+     * Read the name of an indexed child of the selected bone. TODO rename
+     * childName()
      *
      * @param childIndex which child (&ge;0)
      * @return name, or null if none
@@ -166,7 +167,8 @@ public class SelectedBone implements Cloneable {
     }
 
     /**
-     * Read the index of the selected bone in the selected skeleton.
+     * Read the index of the selected bone in the selected skeleton. TODO rename
+     * index()
      *
      * @return the bone index, or noBoneIndex if none selected
      */
@@ -176,7 +178,7 @@ public class SelectedBone implements Cloneable {
     }
 
     /**
-     * Read the name of the selected bone.
+     * Read the name of the selected bone. TODO rename name()
      *
      * @return the name or noBone (not null)
      */
@@ -193,7 +195,7 @@ public class SelectedBone implements Cloneable {
     }
 
     /**
-     * Read the name of the parent of the selected bone.
+     * Read the name of the parent of the selected bone. TODO rename parentName
      *
      * @return name, or null if none
      */

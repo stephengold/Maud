@@ -56,7 +56,7 @@ class ResetAction {
     /**
      * local copy of {@link com.jme3.math.Quaternion#IDENTITY}
      */
-    final private static Quaternion rotationIdentity = new Quaternion();
+    final private static Quaternion rotateIdentity = new Quaternion();
     /**
      * negative Y-axis
      */
@@ -135,7 +135,7 @@ class ResetAction {
                 break;
 
             case Action.resetSpatialRotation:
-                target.setSpatialRotation(rotationIdentity);
+                target.setSpatialRotation(rotateIdentity);
                 break;
 
             case Action.resetSpatialScale:
@@ -147,7 +147,7 @@ class ResetAction {
                 break;
 
             case Action.resetTwist:
-                Maud.getModel().getMap().setTwist(rotationIdentity);
+                Maud.getModel().getMap().setTwist(rotateIdentity);
                 break;
 
             case Action.resetVertexSelection:

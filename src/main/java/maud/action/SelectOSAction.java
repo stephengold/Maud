@@ -142,6 +142,7 @@ class SelectOSAction {
                 EnumMenus.selectShowBones(ActionPrefix.selectScoreBonesWhen,
                         currentOption);
                 break;
+
             case Action.selectSgc:
                 ShowMenus.selectSgc();
                 break;

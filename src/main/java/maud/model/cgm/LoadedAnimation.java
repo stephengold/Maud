@@ -1106,7 +1106,8 @@ public class LoadedAnimation implements Cloneable {
         if (ss.isSelected()) {
             Skeleton skeleton = ss.find();
             Spatial subtree = ss.findSpatial();
-            influencers = InfluenceUtil.addAllInfluencers(subtree, skeleton, null);
+            influencers
+                    = InfluenceUtil.addAllInfluencers(subtree, skeleton, null);
         }
 
         float duration = getDuration();
