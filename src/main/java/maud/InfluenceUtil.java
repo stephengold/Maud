@@ -166,7 +166,7 @@ public class InfluenceUtil {
         if (subtree instanceof Geometry) {
             Geometry geometry = (Geometry) subtree;
             Mesh mesh = geometry.getMesh();
-            if (MaudUtil.isAnimated(mesh)) {
+            if (MyMesh.isAnimated(mesh)) {
                 addDirectInfluencers(mesh, storeResult);
             }
 

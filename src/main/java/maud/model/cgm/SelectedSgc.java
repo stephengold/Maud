@@ -26,7 +26,8 @@
  */
 package maud.model.cgm;
 
-import com.jme3.bullet.control.KinematicRagdollControl;
+import com.jme3.bullet.animation.DynamicAnimControl;
+import com.jme3.bullet.animation.TorsoLink;
 import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.scene.Spatial;
@@ -259,10 +260,14 @@ public class SelectedSgc implements JmeCloneable {
                 }
             }
 
-        } else if (selected instanceof KinematicRagdollControl) {
-            KinematicRagdollControl krc = (KinematicRagdollControl) selected;
-            KinematicRagdollControl.Mode mode = krc.getMode();
-            result = mode.toString();
+        } else if (selected instanceof DynamicAnimControl) {
+            DynamicAnimControl dac = (DynamicAnimControl) selected;
+            TorsoLink torso = dac.getTorsoLink();
+            if (torso.getRigidBody().isKinematic()) {
+                result = "Kinematic";
+            } else {
+                result = "Dynamic";
+            }
         }
 
         return result;
@@ -325,6 +330,7 @@ public class SelectedSgc implements JmeCloneable {
         controlled = spatial;
         cgm.getSkeleton().postSelect();
         cgm.getAnimControl().postSelect();
+        //TODO cgm.getRagdoll().postSelect();
     }
 
     /**
@@ -372,6 +378,7 @@ public class SelectedSgc implements JmeCloneable {
         selected = null;
         cgm.getSkeleton().postSelect();
         cgm.getAnimControl().postSelect();
+        // TODO cgm.getRagdoll().postSelect();
     }
 
     /**

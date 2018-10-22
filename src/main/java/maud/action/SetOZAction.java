@@ -265,7 +265,7 @@ class SetOZAction {
             if (args.length >= 2) {
                 SkeletonColors use = SkeletonColors.valueOf(args[0]);
                 String colorText = MyString.remainder(arg, args[0] + " ");
-                ColorRGBA color = MyColor.parseColor(colorText);
+                ColorRGBA color = MyColor.parse(colorText);
                 model.getScene().getSkeleton().setColor(use, color);
             } else {
                 handled = false;
@@ -340,7 +340,7 @@ class SetOZAction {
 
         } else if (actionString.startsWith(ActionPrefix.setVertexColor)) {
             arg = MyString.remainder(actionString, ActionPrefix.setVertexColor);
-            ColorRGBA color = MyColor.parseColor(arg);
+            ColorRGBA color = MyColor.parse(arg);
             model.getScene().getVertex().setColor(color);
 
         } else if (actionString.startsWith(ActionPrefix.setVertexPointSize)) {

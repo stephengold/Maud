@@ -28,9 +28,9 @@ package maud.view.scene;
 
 import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.animation.DynamicAnimControl;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.CollisionShape;
-import com.jme3.bullet.control.KinematicRagdollControl;
 import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.input.InputManager;
@@ -67,6 +67,7 @@ import jme3utilities.minie.MyObject;
 import maud.Maud;
 import maud.PhysicsUtil;
 import maud.model.cgm.Cgm;
+//import maud.model.cgm.SelectedRagdoll;
 
 /**
  * An editor view containing a 3-D visualization of a loaded C-G model.
@@ -317,6 +318,16 @@ public class SceneView extends SceneViewCore {
     }
 
     /**
+     * Add a BoneLink for the named bone to the selected DynamicAnimControl.
+     *
+     * @param boneName the name of the bone to add (not null, not empty)
+     */
+    public void linkBone(String boneName) {
+        // TODO DynamicAnimControl dac = selectedRagdoll();
+        //dac.link(boneName, 1f, new JointPreset());
+    }
+
+    /**
      * Enumerate all collision objects in the physics space, excluding those
      * added by this view.
      *
@@ -353,9 +364,9 @@ public class SceneView extends SceneViewCore {
         if (pc instanceof PhysicsCollisionObject) {
             PhysicsCollisionObject pco = (PhysicsCollisionObject) pc;
             result = MyObject.objectName(pco);
-        } else if (pc instanceof KinematicRagdollControl) {
-            KinematicRagdollControl krc = (KinematicRagdollControl) pc;
-            PhysicsCollisionObject pco = krc.getTorso();
+        } else if (pc instanceof DynamicAnimControl) {
+            DynamicAnimControl dac = (DynamicAnimControl) pc;
+            PhysicsCollisionObject pco = dac.getTorsoLink().getRigidBody();
             result = MyObject.objectName(pco);
         }
 
@@ -759,6 +770,18 @@ public class SceneView extends SceneViewCore {
     }
 
     /**
+     * Delete the named bone link.
+     *
+     * @param boneName name of the link to remove (not null, not empty)
+     */
+    public void unlinkBone(String boneName) {
+        Validate.nonEmpty(boneName, "bone name");
+
+        //DynamicAnimControl dac = selectedRagdoll();
+        //dac.unlink(boneName);
+    }
+
+    /**
      * Copy the world transform of the C-G model, based on an animated geometry
      * if possible.
      *
@@ -837,5 +860,22 @@ public class SceneView extends SceneViewCore {
 
         assert material != null;
         return material;
+    }
+
+    /**
+     * Access the selected ragdoll in this view's copy of its C-G model.
+     *
+     * @return the pre-existing control (not null)
+     */
+    private DynamicAnimControl selectedRagdoll() { // TODO
+        //SelectedRagdoll ragdoll = getCgm().getRagdoll();
+        //List<Integer> treePosition = ragdoll.treePosition();
+        //int pcPosition = ragdoll.pcPosition();
+        //PhysicsControl pc = findPhysicsControl(treePosition, pcPosition);
+        //DynamicAnimControl dac = (DynamicAnimControl) pc;
+
+        //assert dac != null;
+        DynamicAnimControl dac = null;
+        return dac;
     }
 }

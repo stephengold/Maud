@@ -86,6 +86,9 @@ class SetANAction {
                 EditorDialogs.setAnisotropy();
                 break;
 
+            //case Action.setBoneLinkMass:
+            // TODO EditorDialogs.setBoneLinkMass();
+            //break;
             case Action.setBufferInstanceSpan:
                 EditorDialogs.setBufferInstanceSpan();
                 break;
@@ -159,7 +162,7 @@ class SetANAction {
             if (args.length >= 2) {
                 int index = Integer.parseInt(args[0]);
                 String colorText = MyString.remainder(arg, args[0] + " ");
-                ColorRGBA color = MyColor.parseColor(colorText);
+                ColorRGBA color = MyColor.parse(colorText);
                 model.getScene().getCursor().setColor(index, color);
             } else {
                 handled = false;
@@ -202,7 +205,7 @@ class SetANAction {
             if (args.length >= 2) {
                 Background which = Background.valueOf(args[0]);
                 String colorText = MyString.remainder(arg, args[0] + " ");
-                ColorRGBA color = MyColor.parseColor(colorText);
+                ColorRGBA color = MyColor.parse(colorText);
                 model.setBackgroundColor(which, color);
             } else {
                 handled = false;
@@ -210,7 +213,7 @@ class SetANAction {
 
         } else if (actionString.startsWith(ActionPrefix.setBoundsColor)) {
             arg = MyString.remainder(actionString, ActionPrefix.setBoundsColor);
-            ColorRGBA color = MyColor.parseColor(arg);
+            ColorRGBA color = MyColor.parse(arg);
             model.getScene().getBounds().setColor(color);
 
         } else if (actionString.startsWith(ActionPrefix.setBoundsLineWidth)) {

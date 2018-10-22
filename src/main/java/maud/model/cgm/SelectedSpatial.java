@@ -35,9 +35,9 @@ import com.jme3.asset.AssetManager;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bounding.BoundingSphere;
 import com.jme3.bounding.BoundingVolume;
+import com.jme3.bullet.animation.DynamicAnimControl;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.GhostControl;
-import com.jme3.bullet.control.KinematicRagdollControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
@@ -70,6 +70,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import jme3utilities.MyAsset;
+import jme3utilities.MyMesh;
 import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
@@ -209,13 +210,13 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Add a KinematicRagdollControl to the spatial and select the new control.
+     * Add a DynamicAnimControl to the spatial and select the new control.
      */
     public void addRagdollControl() {
-        KinematicRagdollControl krc = new KinematicRagdollControl();
-        editableCgm.addSgc(krc, "add a KinematicRagdollControl");
+        DynamicAnimControl dac = new DynamicAnimControl();
+        editableCgm.addSgc(dac, "add a DynamicAnimControl");
         Spatial modelSpatial = find();
-        editableCgm.getSgc().select(krc, modelSpatial);
+        editableCgm.getSgc().select(dac, modelSpatial);
     }
 
     /**
@@ -833,7 +834,7 @@ public class SelectedSpatial implements JmeCloneable {
         if (mesh == null) {
             return false;
         } else {
-            return MaudUtil.isAnimated(mesh);
+            return MyMesh.isAnimated(mesh);
         }
     }
 

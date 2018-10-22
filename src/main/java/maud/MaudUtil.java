@@ -43,10 +43,8 @@ import com.jme3.math.Transform;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.math.Vector4f;
-import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.control.Control;
 import com.jme3.shader.VarType;
 import com.jme3.texture.Image;
@@ -475,23 +473,6 @@ public class MaudUtil {
         } else {
             result = false;
         }
-
-        return result;
-    }
-
-    /**
-     * Test whether the specified mesh is animated. Unlike mesh.isAnimated()
-     * this method checks for bone weights and ignores HW buffers.
-     *
-     * @param mesh which mesh to test (not null, unaffected)
-     * @return true if animated, otherwise false
-     */
-    public static boolean isAnimated(Mesh mesh) {
-        VertexBuffer indices = mesh.getBuffer(VertexBuffer.Type.BoneIndex);
-        boolean hasIndices = indices != null;
-        VertexBuffer weights = mesh.getBuffer(VertexBuffer.Type.BoneWeight);
-        boolean hasWeights = weights != null;
-        boolean result = hasIndices && hasWeights;
 
         return result;
     }
