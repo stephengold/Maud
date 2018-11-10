@@ -158,6 +158,7 @@ class SelectOSAction {
 
             case Action.selectSgcSpatial:
                 target.getSpatial().selectControlled();
+                Maud.gui.tools.select("spatial");
                 break;
 
             case Action.selectShadowMode:
