@@ -293,24 +293,24 @@ public class LoadedCgm extends Cgm {
         getSceneView().loadCgm(cgmRoot);
         updateSceneWireframe();
         /*
-         * Reset the selected bone/spatial/texture
-         * and also the loaded animation. TODO other selections?
+         * Reset the selected bone/spatial/texture TODO other selections?
          */
         getBone().deselect();
         getSpatial().postLoad(); // TODO deal separately with sgc and light?
         getTexture().deselectAll();
-        getAnimation().loadBindPose();
         /*
-         * If there is only one animation, load it.
+         * If there is only one animation, load it; otherwise load bind pose.
          */
         SelectedAnimControl sac = getAnimControl();
         if (sac.countAnimations() == 1) {
             List<String> names = sac.listRealAnimationsSorted();
             String animationName = names.get(0);
             getAnimation().load(animationName);
+        } else {
+            getAnimation().loadBindPose();
         }
         /*
-         * If there are no mesh vertices, show all bones,
+         * If there are no mesh vertices, show all bones;
          * otherwise show only the bones that actually influence vertices.
          */
         ShowBones showBonesInScene;
