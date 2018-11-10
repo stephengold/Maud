@@ -139,7 +139,7 @@ public class InfluenceUtil {
             for (int wIndex = 0; wIndex < 4; wIndex++) {
                 float weight = weightBuffer.get();
                 int boneIndex = MyMesh.readIndex(boneIndexBuffer);
-                if (wIndex < maxWeightsPerVert && weight > 0f) {
+                if (wIndex < maxWeightsPerVert && weight != 0f) {
                     storeResult.set(boneIndex);
                 }
             }
