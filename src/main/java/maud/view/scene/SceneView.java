@@ -29,6 +29,8 @@ package maud.view.scene;
 import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.animation.DynamicAnimControl;
+import com.jme3.bullet.animation.PhysicsLink;
+import com.jme3.bullet.animation.RangeOfMotion;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.PhysicsControl;
@@ -67,7 +69,7 @@ import jme3utilities.minie.MyObject;
 import maud.Maud;
 import maud.PhysicsUtil;
 import maud.model.cgm.Cgm;
-//import maud.model.cgm.SelectedRagdoll;
+import maud.model.cgm.SelectedRagdoll;
 
 /**
  * An editor view containing a 3-D visualization of a loaded C-G model.
@@ -157,6 +159,25 @@ public class SceneView extends SceneViewCore {
 
         PhysicsSpace space = getPhysicsSpace();
         space.add(copy);
+    }
+
+    /**
+     * Add an AttachmentLink for the named bone and the specified model to the
+     * selected DynamicAnimControl.
+     *
+     * @param boneName the name of the bone to add (not null, not empty)
+     * @param child spatial to clone (not null, unaffected)
+     */
+    public void attachBone(String boneName, Spatial child) {
+        Validate.nonEmpty(boneName, "bone name");
+
+        Spatial clone = child.clone();
+
+        DynamicAnimControl dac = selectedRagdoll();
+        Spatial controlledSpatial = dac.getSpatial();
+        controlledSpatial.removeControl(dac);
+        dac.attach(boneName, 1f, clone);
+        controlledSpatial.addControl(dac);
     }
 
     /**
@@ -323,8 +344,11 @@ public class SceneView extends SceneViewCore {
      * @param boneName the name of the bone to add (not null, not empty)
      */
     public void linkBone(String boneName) {
-        // TODO DynamicAnimControl dac = selectedRagdoll();
-        //dac.link(boneName, 1f, new JointPreset());
+        DynamicAnimControl dac = selectedRagdoll();
+        Spatial controlledSpatial = dac.getSpatial();
+        controlledSpatial.removeControl(dac);
+        dac.link(boneName, 1f, new RangeOfMotion());
+        controlledSpatial.addControl(dac);
     }
 
     /**
@@ -563,6 +587,20 @@ public class SceneView extends SceneViewCore {
     }
 
     /**
+     * Alter the mass of the named physics link.
+     *
+     * @param linkName name of the link (not null, not empty)
+     * @param mass (&gt;0)
+     */
+    public void setLinkMass(String linkName, float mass) {
+        Validate.nonEmpty(linkName, "link name");
+
+        DynamicAnimControl dac = selectedRagdoll();
+        PhysicsLink link = dac.findLink(linkName);
+        dac.setMass(link, mass);
+    }
+
+    /**
      * Apply the specified material to the selected spatial.
      *
      * @param modelMaterial MVC model's material (not null, unaffected)
@@ -770,15 +808,27 @@ public class SceneView extends SceneViewCore {
     }
 
     /**
-     * Delete the named bone link.
+     * Delete the AttachmentLink for the named bone.
      *
-     * @param boneName name of the link to remove (not null, not empty)
+     * @param boneName name of the associated bone (not null, not empty)
+     */
+    public void unlinkAttachment(String boneName) {
+        Validate.nonEmpty(boneName, "bone name");
+
+        DynamicAnimControl dac = selectedRagdoll();
+        dac.unlinkAttachment(boneName);
+    }
+
+    /**
+     * Delete the BoneLink for the named bone.
+     *
+     * @param boneName name of the bone (not null, not empty)
      */
     public void unlinkBone(String boneName) {
         Validate.nonEmpty(boneName, "bone name");
 
-        //DynamicAnimControl dac = selectedRagdoll();
-        //dac.unlink(boneName);
+        DynamicAnimControl dac = selectedRagdoll();
+        dac.unlinkBone(boneName);
     }
 
     /**
@@ -867,15 +917,14 @@ public class SceneView extends SceneViewCore {
      *
      * @return the pre-existing control (not null)
      */
-    private DynamicAnimControl selectedRagdoll() { // TODO
-        //SelectedRagdoll ragdoll = getCgm().getRagdoll();
-        //List<Integer> treePosition = ragdoll.treePosition();
-        //int pcPosition = ragdoll.pcPosition();
-        //PhysicsControl pc = findPhysicsControl(treePosition, pcPosition);
-        //DynamicAnimControl dac = (DynamicAnimControl) pc;
+    private DynamicAnimControl selectedRagdoll() {
+        SelectedRagdoll ragdoll = getCgm().getRagdoll();
+        List<Integer> treePosition = ragdoll.treePosition();
+        int pcPosition = ragdoll.pcPosition();
+        PhysicsControl pc = findPhysicsControl(treePosition, pcPosition);
+        DynamicAnimControl dac = (DynamicAnimControl) pc;
 
-        //assert dac != null;
-        DynamicAnimControl dac = null;
+        assert dac != null;
         return dac;
     }
 }

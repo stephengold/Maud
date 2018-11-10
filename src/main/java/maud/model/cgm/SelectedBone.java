@@ -30,6 +30,7 @@ import com.jme3.animation.Bone;
 import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.SkeletonControl;
+import com.jme3.bullet.animation.BoneLink;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
@@ -299,6 +300,30 @@ public class SelectedBone implements Cloneable {
         }
 
         return result;
+    }
+
+    /**
+     * Test whether the selected bone is linked in the selected ragdoll.
+     *
+     * @return true if linked, otherwise false
+     */
+    public boolean isLinked() {
+        if (selectedIndex == SelectedSkeleton.noBoneIndex) {
+            return false;
+        } else {
+            SelectedRagdoll ragdoll = cgm.getRagdoll();
+            if (ragdoll.isSelected()) {
+                String name = getName();
+                BoneLink link = cgm.getRagdoll().findBoneLink(name);
+                if (link == null) {
+                    return false;
+                } else {
+                    return true;
+                }
+            } else {
+                return false;
+            }
+        }
     }
 
     /**

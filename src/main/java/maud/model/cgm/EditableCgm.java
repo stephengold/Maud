@@ -34,6 +34,11 @@ import com.jme3.animation.Skeleton;
 import com.jme3.animation.SkeletonControl;
 import com.jme3.animation.SpatialTrack;
 import com.jme3.animation.Track;
+import com.jme3.bullet.animation.AttachmentLink;
+import com.jme3.bullet.animation.BoneLink;
+import com.jme3.bullet.animation.DynamicAnimControl;
+import com.jme3.bullet.animation.PhysicsLink;
+import com.jme3.bullet.animation.RangeOfMotion;
 import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.export.binary.BinaryExporter;
 import com.jme3.light.Light;
@@ -241,7 +246,7 @@ public class EditableCgm extends LoadedCgm {
     /**
      * Add a newly-created S-G control to the selected spatial.
      *
-     * @param newSgc (not null)
+     * @param newSgc (not null, alias created)
      * @param eventDescription a textual description of the event for the edit
      * history (not null, not empty)
      */
@@ -305,7 +310,29 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Attach a child subtree to the specified parent node.
+     * Add an AttachmentLink for the named bone and specified model to the
+     * selected ragdoll.
+     *
+     * @param boneName (not null, not empty)
+     * @param child (not null, unaffected)
+     */
+    void attachBone(String boneName, Spatial child) {
+        Validate.nonEmpty(boneName, "bone name");
+
+        SelectedRagdoll ragdoll = getRagdoll();
+        DynamicAnimControl dac = ragdoll.find();
+
+        History.autoAdd();
+        Spatial saveSpatial = ragdoll.setSpatial(null);
+        dac.attach(boneName, 1f, child);
+        ragdoll.setSpatial(saveSpatial);
+        getSceneView().attachBone(boneName, child);
+        String description = "attach model to bone " + MyString.quote(boneName);
+        editState.setEdited(description);
+    }
+
+    /**
+     * Attach the specified child subtree to the specified parent node.
      *
      * @param parent (not null)
      * @param child (not null)
@@ -606,6 +633,36 @@ public class EditableCgm extends LoadedCgm {
         String eventDescription = String.format("insert parent %s",
                 MyString.quote(newNodeName));
         editState.setEdited(eventDescription);
+    }
+
+    /**
+     * Add a BoneLink for the named bone to the selected ragdoll.
+     *
+     * @param boneName (not null, not empty)
+     * @return true if successful, otherwise false
+     */
+    public boolean linkBone(String boneName) {
+        Validate.nonEmpty(boneName, "bone name");
+
+        SelectedRagdoll ragdoll = getRagdoll();
+        DynamicAnimControl dac = ragdoll.find();
+
+        History.autoAdd();
+        Spatial saveSpatial = ragdoll.setSpatial(null);
+        dac.link(boneName, 1f, new RangeOfMotion());
+        try {
+            ragdoll.setSpatial(saveSpatial);
+        } catch (IllegalArgumentException e) {
+            dac.unlinkBone(boneName);
+            ragdoll.setSpatial(saveSpatial);
+            String description = "failed link bone " + MyString.quote(boneName);
+            editState.setEdited(description);
+            return false;
+        }
+        getSceneView().linkBone(boneName);
+        String description = "link bone " + MyString.quote(boneName);
+        editState.setEdited(description);
+        return true;
     }
 
     /**
@@ -1164,6 +1221,26 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
+     * Alter the mass of the selected physics link.
+     *
+     * @param mass the desired mass (&gt;0)
+     */
+    public void setLinkMass(float mass) {
+        Validate.positive(mass, "mass");
+
+        PhysicsLink link = getLink().find();
+        String linkName = link.name();
+        DynamicAnimControl dac = getRagdoll().find();
+        String description = String.format("set %s mass to %f",
+                MyString.quote(linkName), mass);
+
+        History.autoAdd();
+        dac.setMass(link, mass);
+        getSceneView().setLinkMass(linkName, mass);
+        editState.setEdited(description);
+    }
+
+    /**
      * Apply the specified material to the selected spatial.
      *
      * @param newMaterial replacement material (not null)
@@ -1505,6 +1582,29 @@ public class EditableCgm extends LoadedCgm {
             ss.toggleBoundType();
             editState.setEdited("alter bound type");
         }
+    }
+
+    /**
+     * Delete the selected attachment/bone link. The invoker is responsible for
+     * de-selecting the link, if it was selected.
+     */
+    void unlink(PhysicsLink link) {
+        assert link instanceof BoneLink || link instanceof AttachmentLink;
+
+        SelectedRagdoll ragdoll = getRagdoll();
+        DynamicAnimControl dac = ragdoll.find();
+        String boneName = link.boneName();
+
+        History.autoAdd();
+        if (link instanceof BoneLink) {
+            dac.unlinkBone(boneName);
+            getSceneView().unlinkBone(boneName);
+        } else {
+            dac.unlinkAttachment(boneName);
+            getSceneView().unlinkAttachment(boneName);
+        }
+        String description = "unlink " + link.name();
+        editState.setEdited(description);
     }
 
     /**

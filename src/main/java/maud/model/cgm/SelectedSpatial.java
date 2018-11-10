@@ -213,10 +213,19 @@ public class SelectedSpatial implements JmeCloneable {
      * Add a DynamicAnimControl to the spatial and select the new control.
      */
     public void addRagdollControl() {
+        /*
+         * Make sure the correct skeleton is selected, so that
+         * SelectedSkeleton.postSelect() won't cause SceneView
+         * to create new S-G controls.
+         */
+        Spatial spatial = find();
+        SkeletonControl skeletonControl
+                = spatial.getControl(SkeletonControl.class);
+        editableCgm.getSgc().select(skeletonControl, spatial);
+
         DynamicAnimControl dac = new DynamicAnimControl();
         editableCgm.addSgc(dac, "add a DynamicAnimControl");
-        Spatial modelSpatial = find();
-        editableCgm.getSgc().select(dac, modelSpatial);
+        editableCgm.getSgc().select(dac, spatial);
     }
 
     /**

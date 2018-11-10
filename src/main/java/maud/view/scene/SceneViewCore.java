@@ -1336,7 +1336,7 @@ public class SceneViewCore
         result.setDebugFilter(platform);
 
         result.setDebugEnabled(true);
-        result.setSpeed(0f);
+        result.setSpeed(1f);
         result.setThreadingType(BulletAppState.ThreadingType.PARALLEL);
 
         Maud application = Maud.getApplication();
@@ -1372,7 +1372,7 @@ public class SceneViewCore
          */
         setSkeleton(selectedSkeleton, false);
         /*
-         * Configure the transform.
+         * Configure the transform and calculate the model's size.
          */
         float maxExtent = configureTransform();
         /*
@@ -1482,8 +1482,16 @@ public class SceneViewCore
 
         for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
             pose.userTransform(boneIndex, transform);
+
             Bone bone = skeleton.getBone(boneIndex);
+            boolean haveControl = bone.hasUserControl();
+            if (!haveControl) {
+                bone.setUserControl(true);
+            }
             bone.setUserTransforms(translation, rotation, scale);
+            if (!haveControl) {
+                bone.setUserControl(false);
+            }
 
             List<Integer> nodePosition = ss.attachmentsPosition(boneIndex);
             if (nodePosition != null) {

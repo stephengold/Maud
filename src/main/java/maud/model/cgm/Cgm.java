@@ -33,6 +33,7 @@ import com.jme3.animation.Skeleton;
 import com.jme3.animation.SpatialTrack;
 import com.jme3.animation.Track;
 import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.animation.DynamicAnimControl;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.joints.PhysicsJoint;
@@ -122,7 +123,7 @@ public class Cgm implements Cloneable {
      */
     private ScoreView scoreView = null;
     /**
-     * which anim control is selected
+     * which AnimControl is selected
      */
     private SelectedAnimControl selectedAnimControl = new SelectedAnimControl();
     /**
@@ -146,6 +147,10 @@ public class Cgm implements Cloneable {
      */
     private SelectedLight selectedLight = new SelectedLight();
     /**
+     * which PhysicsLink is selected in the selected DynamicAnimControl
+     */
+    private SelectedLink selectedLink = new SelectedLink();
+    /**
      * which material parameter is selected in the selected spatial's material
      */
     private SelectedMatParam selectedMatParam = new SelectedMatParam();
@@ -157,6 +162,10 @@ public class Cgm implements Cloneable {
      * which material-parameter override is selected in the selected spatial
      */
     private SelectedOverride selectedOverride = new SelectedOverride();
+    /**
+     * which DynamicAnimControl is selected
+     */
+    private SelectedRagdoll selectedRagdoll = new SelectedRagdoll();
     /**
      * which scene-graph control is selected in the selected spatial
      */
@@ -215,9 +224,11 @@ public class Cgm implements Cloneable {
         selectedFrame.setCgm(cgm);
         selectedJoint.setCgm(cgm);
         selectedLight.setCgm(cgm);
+        selectedLink.setCgm(cgm);
         selectedMatParam.setCgm(cgm);
         selectedObject.setCgm(cgm);
         selectedOverride.setCgm(cgm);
+        selectedRagdoll.setCgm(cgm);
         selectedSgc.setCgm(cgm);
         selectedShape.setCgm(cgm);
         selectedSkeleton.setCgm(cgm);
@@ -482,6 +493,16 @@ public class Cgm implements Cloneable {
     }
 
     /**
+     * Access the selected physics link.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public SelectedLink getLink() {
+        assert selectedLink != null;
+        return selectedLink;
+    }
+
+    /**
      * Access the local transform of the spatial in the specified tree position.
      * Accounts for the effects of spatial tracks but not those of bone
      * attachments.
@@ -546,6 +567,16 @@ public class Cgm implements Cloneable {
     public PlayOptions getPlay() {
         assert playOptions != null;
         return playOptions;
+    }
+
+    /**
+     * Access the selected DynamicAnimControl.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public SelectedRagdoll getRagdoll() {
+        assert selectedRagdoll != null;
+        return selectedRagdoll;
     }
 
     /**
@@ -844,6 +875,29 @@ public class Cgm implements Cloneable {
     }
 
     /**
+     * Enumerate all ragdolls in the model and assign them names.
+     *
+     * @return a new list of names
+     */
+    public List<String> listRagdollNames() {
+        List<DynamicAnimControl> controlList
+                = listSgcs(DynamicAnimControl.class);
+        int numControls = controlList.size();
+
+        List<String> nameList = new ArrayList<>(numControls);
+        for (int index = 0; index < numControls; index++) {
+            DynamicAnimControl control = controlList.get(index);
+            Spatial sp = control.getSpatial();
+            String spName = sp.getName();
+            spName = MyString.quote(spName);
+            nameList.add(spName);
+        }
+        MyString.dedup(nameList, " #");
+
+        return nameList;
+    }
+
+    /**
      * Enumerate all physics joints with the specified name prefix.
      *
      * @param namePrefix (not null)
@@ -1073,6 +1127,7 @@ public class Cgm implements Cloneable {
          */
         selectedBone.deselect();
         selectedJoint.selectNone();
+        selectedLink.selectNone();
         selectedObject.selectNone();
         selectedShape.selectNone();
         selectedVertex.deselect();
@@ -1116,9 +1171,11 @@ public class Cgm implements Cloneable {
         clone.selectedFrame = selectedFrame.clone();
         clone.selectedJoint = selectedJoint.clone();
         clone.selectedLight = cloner.clone(selectedLight);
+        clone.selectedLink = cloner.clone(selectedLink);
         clone.selectedMatParam = selectedMatParam.clone();
         clone.selectedObject = selectedObject.clone();
         clone.selectedOverride = selectedOverride.clone();
+        clone.selectedRagdoll = cloner.clone(selectedRagdoll);
         clone.selectedSgc = cloner.clone(selectedSgc);
         clone.selectedShape = selectedShape.clone();
         clone.selectedSkeleton = cloner.clone(selectedSkeleton);
@@ -1128,7 +1185,7 @@ public class Cgm implements Cloneable {
         clone.selectedUserData = selectedUserData.clone();
         clone.selectedVertex = selectedVertex.clone();
         /*
-         * Redirect the back pointers to the clone.
+         * Redirect all the back pointers to the clone.
          */
         clone.getAnimation().setCgm(clone);
         clone.getAnimControl().setCgm(clone);
@@ -1136,9 +1193,11 @@ public class Cgm implements Cloneable {
         clone.getFrame().setCgm(clone);
         clone.getJoint().setCgm(clone);
         clone.getLight().setCgm(clone);
+        clone.getLink().setCgm(clone);
         clone.getObject().setCgm(clone);
         clone.getPlay().setCgm(clone);
         clone.getPose().setCgm(clone);
+        clone.getRagdoll().setCgm(clone);
         clone.getScenePov().setCgm(clone);
         clone.getSceneView().setCgm(clone);
         clone.getScorePov().setCgm(clone);

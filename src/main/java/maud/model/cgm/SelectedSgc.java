@@ -330,7 +330,7 @@ public class SelectedSgc implements JmeCloneable {
         controlled = spatial;
         cgm.getSkeleton().postSelect();
         cgm.getAnimControl().postSelect();
-        //TODO cgm.getRagdoll().postSelect();
+        cgm.getRagdoll().postSelect();
     }
 
     /**
@@ -378,7 +378,7 @@ public class SelectedSgc implements JmeCloneable {
         selected = null;
         cgm.getSkeleton().postSelect();
         cgm.getAnimControl().postSelect();
-        // TODO cgm.getRagdoll().postSelect();
+        cgm.getRagdoll().postSelect();
     }
 
     /**
