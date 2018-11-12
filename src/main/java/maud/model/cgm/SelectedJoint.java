@@ -27,6 +27,7 @@
 package maud.model.cgm;
 
 import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.joints.JointEnd;
 import com.jme3.bullet.joints.PhysicsJoint;
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import java.util.ArrayList;
@@ -35,7 +36,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
+import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
+import jme3utilities.minie.MyObject;
 
 /**
  * The selected physics joint in the Maud application.
@@ -66,6 +69,35 @@ public class SelectedJoint implements Cloneable {
     // new methods exposed
 
     /**
+     * Determine the name of the selected joint's specified end body.
+     *
+     * @param end which end of the joint (not null)
+     * @return the object name, or null if no joint selected
+     */
+    public String endName(JointEnd end) {
+        Validate.nonNull(end, "end");
+
+        String result = null;
+        PhysicsJoint joint = find();
+        if (joint != null) {
+            PhysicsRigidBody rigidBody;
+            switch (end) {
+                case A:
+                    rigidBody = joint.getBodyA();
+                    break;
+                case B:
+                    rigidBody = joint.getBodyB();
+                    break;
+                default:
+                    throw new IllegalArgumentException(end.toString());
+            }
+            result = MyObject.objectName(rigidBody);
+        }
+
+        return result;
+    }
+
+    /**
      * Access the selected joint.
      *
      * @return the pre-existing instance, or null if not found
@@ -81,38 +113,6 @@ public class SelectedJoint implements Cloneable {
         }
 
         return null;
-    }
-
-    /**
-     * Read the id of the selected joint's A body.
-     *
-     * @return id, or -1L if none
-     */
-    public long getBodyAId() {
-        long result = -1L;
-        PhysicsJoint joint = find();
-        if (joint != null) {
-            PhysicsRigidBody prb = joint.getBodyA();
-            result = prb.getObjectId();
-        }
-
-        return result;
-    }
-
-    /**
-     * Read the id of the selected joint's B body.
-     *
-     * @return id, or -1L if none
-     */
-    public long getBodyBId() {
-        long result = -1L;
-        PhysicsJoint joint = find();
-        if (joint != null) {
-            PhysicsRigidBody prb = joint.getBodyB();
-            result = prb.getObjectId();
-        }
-
-        return result;
     }
 
     /**

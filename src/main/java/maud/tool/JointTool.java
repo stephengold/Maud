@@ -26,6 +26,7 @@
  */
 package maud.tool;
 
+import com.jme3.bullet.joints.JointEnd;
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
 import maud.DescribeUtil;
@@ -81,7 +82,13 @@ class JointTool extends Tool {
     private void updateDescription() {
         SelectedJoint joint = Maud.getModel().getTarget().getJoint();
         String type = joint.getType();
-        setStatusText("jointType", type);
+        setStatusText("jointType", " " + type);
+
+        String nameA = joint.endName(JointEnd.A);
+        setButtonText("jointBodyA", nameA);
+
+        String nameB = joint.endName(JointEnd.B);
+        setButtonText("jointBodyB", nameB);
     }
 
     /**
@@ -94,7 +101,7 @@ class JointTool extends Tool {
         Cgm target = Maud.getModel().getTarget();
         int numJoints = target.countJoints();
         if (numJoints > 0) {
-            selectButton = "Select";
+            selectButton = "Select joint";
         }
 
         SelectedJoint joint = target.getJoint();

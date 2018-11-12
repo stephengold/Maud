@@ -26,6 +26,7 @@
  */
 package maud.action;
 
+import com.jme3.bullet.joints.JointEnd;
 import com.jme3.material.RenderState;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
@@ -377,6 +378,14 @@ class SelectANAction {
             arg = MyString.remainder(actionString, ActionPrefix.selectJoint);
             long id = Long.parseLong(arg, 16);
             target.getJoint().select(id);
+
+        } else if (actionString.startsWith(ActionPrefix.selectJointBody)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectJointBody);
+            JointEnd end = JointEnd.valueOf(arg);
+            String bodyName = target.getJoint().endName(end);
+            target.getObject().select(bodyName);
+            Maud.gui.tools.select("object");
 
         } else if (actionString.startsWith(ActionPrefix.selectKeyframe)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectKeyframe);

@@ -1036,7 +1036,7 @@ the menu bar, status bar, and tool windows.
 
             <control name="window" id="jointTool" title="Joint Tool"
                      hideOnClose="true"
-                     height="140px" width="250px" x="155" y="115">
+                     height="165px" width="200px" x="155" y="115">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="28px">
                         <control name="button" id="jointPreviousButton"
@@ -1051,9 +1051,9 @@ the menu bar, status bar, and tool windows.
                                  width="20px">
                             <interact onRelease="perform(next joint)"/>
                         </control>
-                        <panel width="10px"/>
+                        <panel/>
                         <control name="button" id="jointSelectButton"
-                                 width="60px">
+                                 width="80px">
                             <interact onRelease="perform(select joint)"/>
                         </control>
                     </panel>
@@ -1061,23 +1061,27 @@ the menu bar, status bar, and tool windows.
                         <control name="label" text="Selected:  "/>
                         <control name="label" id="jointName"
                                  backgroundColor="#ffff"
-                                 width="110px"/>
+                                 width="*"/>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Type:  "/>
                         <control name="label" id="jointType"
                                  backgroundColor="#ffff"
-                                 width="140px"/>
+                                 width="*"/>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Body A:  "/>
-                        <control name="label" id="jointBodyA"
-                                 backgroundColor="#ffff"
-                                 width="70px"/>
-                        <control name="label" text="  Body B:  "/>
-                        <control name="label" id="jointBodyB"
-                                 backgroundColor="#ffff"
-                                 width="70px"/>
+                        <control name="button" id="jointBodyAButton"
+                                 width="*">
+                            <interact onRelease="perform(select jointBody A)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Body B:  "/>
+                        <control name="button" id="jointBodyBButton"
+                                 width="*">
+                            <interact onRelease="perform(select jointBody B)"/>
+                        </control>
                     </panel>
                 </panel>
             </control>
