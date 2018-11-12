@@ -64,11 +64,6 @@ public class SelectedRagdoll implements JmeCloneable {
      */
     private DynamicAnimControl last = null;
     /**
-     * editable C-G model, if any, containing the ragdoll (set by
-     * {@link #setCgm(Cgm)})
-     */
-    private EditableCgm editableCgm;
-    /**
      * C-G model containing the ragdoll (set by {@link #setCgm(Cgm)})
      */
     private Cgm cgm = null;
@@ -178,6 +173,49 @@ public class SelectedRagdoll implements JmeCloneable {
     }
 
     /**
+     * Test whether the selected ragdoll has a physics link with the specified
+     * name.
+     *
+     * @param linkName the name (not null, not empty)
+     * @return true if the named link exists, otherwise false
+     */
+    public boolean hasLink(String linkName) {
+        Validate.nonEmpty(linkName, "link name");
+
+        DynamicAnimControl dac = find();
+        PhysicsLink link = dac.findLink(linkName);
+        if (link == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * Test whether the named link is a leaf, with no children.
+     *
+     * @param linkName which link to test (not null, not empty)
+     * @return true for a leaf, otherwise false
+     */
+    public boolean isLeafLink(String linkName) {
+        Validate.nonEmpty(linkName, "link name");
+
+        boolean result = false;
+        DynamicAnimControl dac = find();
+        PhysicsLink link = dac.findLink(linkName);
+        if (link != null) {
+            int numChildren = link.countChildren();
+            if (numChildren == 0) {
+                result = true;
+            } else {
+                result = false;
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Test whether a ragdoll is selected.
      *
      * @return true if one is selected, otherwise false
@@ -189,6 +227,27 @@ public class SelectedRagdoll implements JmeCloneable {
         } else {
             return true;
         }
+    }
+
+    /**
+     * Enumerate all children of the named link in the selected ragdoll.
+     *
+     * @param parentName name of the parent link (not null, not empty)
+     * @return a new list of link names
+     */
+    public List<String> listChildLinkNames(String parentName) {
+        Validate.nonEmpty(parentName, "parent name");
+
+        DynamicAnimControl dac = find();
+        PhysicsLink parent = dac.findLink(parentName);
+        PhysicsLink[] children = parent.listChildren();
+        List<String> childLinkNames = new ArrayList<>(children.length);
+        for (PhysicsLink child : children) {
+            String name = child.name();
+            childLinkNames.add(name);
+        }
+
+        return childLinkNames;
     }
 
     /**
@@ -338,17 +397,13 @@ public class SelectedRagdoll implements JmeCloneable {
         assert newCgm.getRagdoll() == this;
 
         cgm = newCgm;
-        if (newCgm instanceof EditableCgm) {
-            editableCgm = (EditableCgm) newCgm;
-        } else {
-            editableCgm = null;
-        }
     }
 
     /**
-     * TODO
-     * @param newSpatial
-     * @return
+     * Alter which spatial the ragdoll controls.
+     *
+     * @param newSpatial (may be null)
+     * @return the former spatial (may be null)
      */
     public Spatial setSpatial(Spatial newSpatial) {
         DynamicAnimControl dac = find();
