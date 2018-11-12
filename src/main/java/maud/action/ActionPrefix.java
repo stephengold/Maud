@@ -321,6 +321,14 @@ public class ActionPrefix {
      */
     final public static String selectLight = "select light ";
     /**
+     * argument is the name of a PhysicsLink
+     */
+    final public static String selectLink = "select link ";
+    /**
+     * argument is the name of a PhysicsLink, possibly preceded by "!"
+     */
+    final public static String selectLinkChild = "select linkChild ";
+    /**
      * argument is the name of a LoadBvhAxisOrder
      */
     final public static String selectLoadBvhAxisOrder
@@ -576,6 +584,10 @@ public class ActionPrefix {
      * argument is a decimal float
      */
     final public static String setHour = "set hour ";
+    /**
+     * argument is a decimal mass
+     */
+    final public static String setLinkMass = "set linkMass ";
     /**
      * argument is a Vector3f value
      */

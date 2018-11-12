@@ -79,6 +79,10 @@ class DeleteAction {
                 target.getLight().delete();
                 break;
 
+            case Action.deleteLink:
+                target.getLink().unlink();
+                break;
+
             case Action.deleteMapping:
                 Maud.getModel().getMap().deleteBoneMapping();
                 break;

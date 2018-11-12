@@ -102,6 +102,14 @@ class NewAction {
                         sourceName);
                 break;
 
+            case Action.newAttachmentLink:
+                model.getTarget().getLink().createAttachmentLink();
+                break;
+
+            case Action.newBoneLink:
+                model.getTarget().getLink().createBoneLink();
+                break;
+
             case Action.newCheckpoint:
                 History.addCheckpoint();
                 HistoryTool historyTool

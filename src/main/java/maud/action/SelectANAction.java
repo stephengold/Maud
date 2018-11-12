@@ -191,6 +191,35 @@ class SelectANAction {
                 target.getSpatial().selectLightOwner();
                 break;
 
+            case Action.selectLink:
+                PhysicsMenus.selectLink();
+                break;
+
+            case Action.selectLinkChild:
+                PhysicsMenus.selectLinkChild();
+                break;
+
+            case Action.selectLinkedBone:
+                String name = target.getLink().boneName();
+                target.getBone().select(name);
+                Maud.gui.tools.select("bone");
+                break;
+
+            case Action.selectLinkedJoint:
+                target.getLink().selectJoint();
+                Maud.gui.tools.select("joint");
+                break;
+
+            case Action.selectLinkedObject:
+                target.getLink().selectObject();
+                Maud.gui.tools.select("object");
+                break;
+
+            case Action.selectLinkParent:
+                String name2 = target.getLink().nameParent();
+                target.getLink().select(name2);
+                break;
+
             case Action.selectLoadBvhAxisOrder:
                 EnumMenus.selectLoadBvhAxisOrder();
                 break;
@@ -358,6 +387,15 @@ class SelectANAction {
         } else if (actionString.startsWith(ActionPrefix.selectLight)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectLight);
             target.getLight().select(arg);
+
+        } else if (actionString.startsWith(ActionPrefix.selectLink)) {
+            arg = MyString.remainder(actionString, ActionPrefix.selectLink);
+            target.getLink().select(arg);
+
+        } else if (actionString.startsWith(ActionPrefix.selectLinkChild)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectLinkChild);
+            PhysicsMenus.selectLinkChild(arg);
 
         } else if (actionString.startsWith(
                 ActionPrefix.selectLoadBvhAxisOrder)) {

@@ -29,6 +29,8 @@ package maud.menu;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.CollisionShape;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -40,6 +42,9 @@ import maud.ShapeType;
 import maud.action.ActionPrefix;
 import maud.dialog.EditorDialogs;
 import maud.model.cgm.Cgm;
+import maud.model.cgm.SelectedBone;
+import maud.model.cgm.SelectedLink;
+import maud.model.cgm.SelectedRagdoll;
 import maud.model.cgm.SelectedShape;
 import maud.model.cgm.SelectedSpatial;
 import maud.model.option.RigidBodyParameter;
@@ -47,8 +52,8 @@ import maud.model.option.ShapeParameter;
 import maud.view.scene.SceneView;
 
 /**
- * Menus in Maud's editor screen that relate to physics shapes, objects, and
- * joints.
+ * Menus in Maud's editor screen that relate to physics shapes, objects, links,
+ * and joints.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -78,6 +83,7 @@ public class PhysicsMenus {
      * @param builder the menu builder to use (not null, modified)
      */
     static void buildPhysicsMenu(MenuBuilder builder) {
+        builder.addSubmenu("Add control");
         builder.addTool("Shape tool");
 
         Cgm target = Maud.getModel().getTarget();
@@ -101,8 +107,6 @@ public class PhysicsMenus {
             builder.addSubmenu("Select object");
         }
 
-        builder.addSubmenu("Add control");
-
         if (target.getObject().hasMass()) {
             builder.addDialog("Mass");
         }
@@ -113,6 +117,20 @@ public class PhysicsMenus {
         int numJoints = PhysicsUtil.countJoints(space);
         if (numJoints > 0) {
             builder.addSubmenu("Select joint");
+        }
+
+        builder.addTool("Link tool");
+
+        int numLinks = target.getRagdoll().countLinks();
+        if (numLinks == 1) {
+            builder.add("Select link");
+        } else if (numLinks > 1) {
+            builder.addSubmenu("Select link");
+        }
+
+        SelectedBone bone = target.getBone();
+        if (bone.isSelected() && !bone.isLinked()) {
+            builder.addEdit("Link selected bone");
         }
     }
 
@@ -125,11 +143,15 @@ public class PhysicsMenus {
     static boolean menuPhysics(String remainder) {
         boolean handled = true;
         String addControlPrefix = "Add control" + EditorMenus.menuPathSeparator;
+        String selectLinkPrefix = "Select link" + EditorMenus.menuPathSeparator;
         if (remainder.startsWith(addControlPrefix)) {
             String arg = MyString.remainder(remainder, addControlPrefix);
             handled = menuPhysicsAddControl(arg);
-
+        } else if (remainder.startsWith(selectLinkPrefix)) {
+            String arg = MyString.remainder(remainder, selectLinkPrefix);
+            handled = menuPhysicsSelectLink(arg);
         } else {
+
             Cgm target = Maud.getModel().getTarget();
             switch (remainder) {
                 case "Add control":
@@ -144,6 +166,14 @@ public class PhysicsMenus {
                     Maud.gui.tools.select("joint");
                     break;
 
+                case "Link selected bone":
+                    target.getLink().createBoneLink();
+                    break;
+
+                case "Link tool":
+                    Maud.gui.tools.select("link");
+                    break;
+
                 case "Mass":
                     EditorDialogs.setPhysicsRbpValue(RigidBodyParameter.Mass);
                     break;
@@ -154,6 +184,10 @@ public class PhysicsMenus {
 
                 case "Select joint":
                     selectJoint(target);
+                    break;
+
+                case "Select link":
+                    selectLink();
                     break;
 
                 case "Select object":
@@ -191,6 +225,99 @@ public class PhysicsMenus {
                 }
                 builder.show(ActionPrefix.selectJoint);
             }
+        }
+    }
+
+    /**
+     * Handle a "select link" action without arguments.
+     */
+    public static void selectLink() {
+        Cgm target = Maud.getModel().getTarget();
+        SelectedRagdoll selectedRagdoll = target.getRagdoll();
+        SelectedLink selectedLink = target.getLink();
+        boolean isSelected = selectedLink.isSelected();
+
+        if (selectedRagdoll.countLinks() == 1) {
+            if (isSelected) {
+                selectedLink.selectNone();
+            } else {
+                List<String> linkNames = selectedRagdoll.listLinkNames("");
+                assert linkNames.size() == 1 : linkNames.size();
+                String linkName = linkNames.get(0);
+                selectedLink.select(linkName);
+            }
+            return;
+        }
+
+        MenuBuilder builder = new MenuBuilder();
+
+        builder.addSubmenu("By name");
+        builder.addSubmenu("By parent");
+
+        int numChildren = selectedLink.countChildren();
+        if (numChildren == 1) {
+            builder.add("Child");
+        } else if (numChildren > 1) {
+            builder.addSubmenu("Child");
+        }
+
+        if (isSelected) {
+            builder.add("Parent");
+            builder.add("Next");
+            builder.add("None");
+            builder.add("Previous");
+        }
+
+        builder.show("select menuItem Physics -> Select link -> ");
+    }
+
+    /**
+     * Handle a "select linkChild" action without arguments.
+     */
+    public static void selectLinkChild() {
+        SelectedLink link = Maud.getModel().getTarget().getLink();
+        if (link.countChildren() == 1) {
+            List<String> linkNames = link.childNames();
+            assert linkNames.size() == 1 : linkNames.size();
+            String linkName = linkNames.get(0);
+            link.select(linkName);
+            return;
+        }
+
+        MenuBuilder builder = new MenuBuilder();
+        List<String> childNames = link.childNames();
+
+        for (String childName : childNames) {
+            builder.add(childName);
+        }
+
+        builder.show(ActionPrefix.selectLink);
+    }
+
+    /**
+     * Handle a "select linkChild" action with an argument.
+     *
+     * @param argument action argument (not null)
+     */
+    public static void selectLinkChild(String argument) {
+        Cgm target = Maud.getModel().getTarget();
+        if (argument.startsWith("!")) {
+            String name = argument.substring(1);
+            target.getLink().select(name);
+        } else {
+            SelectedRagdoll ragdoll = target.getRagdoll();
+            List<String> linkNames = ragdoll.listChildLinkNames(argument);
+
+            MenuBuilder builder = new MenuBuilder();
+            builder.add("!" + argument);
+            for (String linkName : linkNames) {
+                if (ragdoll.isLeafLink(linkName)) {
+                    builder.add("!" + linkName);
+                } else {
+                    builder.add(linkName);
+                }
+            }
+            builder.show(ActionPrefix.selectLinkChild);
         }
     }
 
@@ -337,11 +464,11 @@ public class PhysicsMenus {
     private static void addControl() {
         MenuBuilder builder = new MenuBuilder();
 
-        builder.addEdit("Ghost");
         SelectedSpatial ss = Maud.getModel().getTarget().getSpatial();
         if (ss.hasSkeletonControls()) {
-            builder.addEdit("Ragdoll");
+            builder.addEdit("DynamicAnim");
         }
+        builder.addEdit("Ghost");
         builder.addEdit("RigidBody");
 
         builder.show("select menuItem Physics -> Add control -> ");
@@ -356,12 +483,12 @@ public class PhysicsMenus {
     private static boolean menuPhysicsAddControl(String remainder) {
         boolean handled = true;
         switch (remainder) {
-            case "Ghost":
-                showShapeTypeMenu(ActionPrefix.newGhostControl);
+            case "DynamicAnim":
+                Maud.getModel().getTarget().getSpatial().addRagdollControl();
                 break;
 
-            case "Ragdoll":
-                Maud.getModel().getTarget().getSpatial().addRagdollControl();
+            case "Ghost":
+                showShapeTypeMenu(ActionPrefix.newGhostControl);
                 break;
 
             case "RigidBody":
@@ -373,5 +500,92 @@ public class PhysicsMenus {
         }
 
         return handled;
+    }
+
+    /**
+     * Handle a "select menuItem" action from the "Physics -> Select link" menu.
+     *
+     * @param remainder not-yet-parsed portion of the menu path (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private static boolean menuPhysicsSelectLink(String remainder) {
+        boolean handled = true;
+
+        SelectedLink selectedLink = Maud.getModel().getTarget().getLink();
+        switch (remainder) {
+            case "By name":
+                selectLinkByName();
+                break;
+
+            case "By parent":
+                selectLinkByParent();
+                break;
+
+            case "Child":
+                selectLinkChild();
+                break;
+
+            case "Next":
+                selectedLink.selectNext();
+                break;
+
+            case "None":
+                selectedLink.selectNone();
+                break;
+
+            case "Parent":
+                selectedLink.selectParent();
+                break;
+
+            case "Previous":
+                selectedLink.selectPrevious();
+                break;
+
+            default:
+                handled = false;
+        }
+
+        return handled;
+    }
+
+    /**
+     * Select a link by name, using submenus if necessary.
+     */
+    private static void selectLinkByName() {
+        SelectedRagdoll ragdoll = Maud.getModel().getTarget().getRagdoll();
+        List<String> nameList = ragdoll.listLinkNames("");
+        showLinkSubmenu(nameList);
+    }
+
+    /**
+     * Select a link by parent, using submenus.
+     */
+    private static void selectLinkByParent() {
+        List<String> linkNames = new ArrayList<>(1);
+        linkNames.add("Torso:");
+        Maud.gui.showPopupMenu(ActionPrefix.selectLinkChild, linkNames);
+    }
+
+    /**
+     * Display a submenu for selecting a physics link by name using the "select
+     * link " action prefix.
+     *
+     * @param nameList list of names from which to select (not null)
+     */
+    private static void showLinkSubmenu(List<String> nameList) {
+        assert nameList != null;
+
+        MyString.reduce(nameList, ShowMenus.maxItems);
+        Collections.sort(nameList);
+
+        MenuBuilder builder = new MenuBuilder();
+        for (String linkName : nameList) {
+            if (Maud.getModel().getTarget().getRagdoll().hasLink(linkName)) {
+                builder.add(linkName);
+            } else {
+                builder.addEllipsis(linkName);
+            }
+        }
+        builder.show(ActionPrefix.selectLink);
     }
 }

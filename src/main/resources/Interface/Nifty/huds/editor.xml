@@ -1378,6 +1378,81 @@ the menu bar, status bar, and tool windows.
                 </panel>
             </control>
 
+            <control name="window" id="linkTool" title="Link Tool"
+                     hideOnClose="true"
+                     height="200px" width="320px" x="205" y="65">
+                <panel childLayout="vertical">
+                    <panel height="3px"/>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="button" id="linkPreviousButton"
+                                 width="20px">
+                            <interact onRelease="perform(previous link)"/>
+                        </control>
+                        <control name="label" id="linkIndex"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="75px"/>
+                        <control name="button" id="linkNextButton"
+                                 width="20px">
+                            <interact onRelease="perform(next link)"/>
+                        </control>
+                        <panel/>
+                        <control name="button" id="linkAddBoneLinkButton"
+                                 width="74px">
+                            <interact onRelease="perform(new boneLink)"/>
+                        </control>
+                        <panel/>
+                        <control name="button" id="linkSelectButton"
+                                 width="74px">
+                            <interact onRelease="perform(select link)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Link name:  "/>
+                        <control name="label" id="linkName"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="button" id="linkSelectBoneButton"
+                                 width="110px">
+                            <interact onRelease="perform(select linkedBone)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Parent:  "/>
+                        <control name="button" id="linkSelectParentButton"
+                                 width="*">
+                            <interact onRelease="perform(select linkParent)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Children:  "/>
+                        <control name="button" id="linkSelectChildButton"
+                                 width="*">
+                            <interact onRelease="perform(select linkChild)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Joint:  "/>
+                        <control name="button" id="linkSelectJointButton"
+                                 width="75px">
+                            <interact onRelease="perform(select linkedJoint)"/>
+                        </control>
+                        <control name="label" text="    Object:  "/>
+                        <control name="button" id="linkSelectObjectButton"
+                                 width="105px">
+                            <interact onRelease="perform(select linkedObject)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Mass:  "/>
+                        <control name="button" id="linkMassButton"
+                                 width="75px">
+                            <interact onRelease="perform(set linkMass)"/>
+                        </control>
+                    </panel>
+                </panel>
+            </control>
+
             <control name="window" id="mappingTool" title="Mapping Tool"
                      hideOnClose="true"
                      height="220px" width="400px" x="140" y="130">

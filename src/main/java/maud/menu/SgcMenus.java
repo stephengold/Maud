@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -115,6 +115,10 @@ class SgcMenus {
         switch (remainder) {
             case "Anim":
                 spatial.addAnimControl();
+                break;
+
+            case "DynamicAnim":
+                spatial.addRagdollControl();
                 break;
 
             case "Ghost":

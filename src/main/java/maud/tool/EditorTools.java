@@ -89,6 +89,7 @@ public class EditorTools {
     final private LightPositionTool lightPosition;
 
     final private LightsTool lights;
+    final private LinkTool link;
     final private MappingTool mapping;
     final private MaterialTool material;
     final private MeshTool mesh;
@@ -97,9 +98,9 @@ public class EditorTools {
     final private PhysicsTool physics;
     final private PlatformTool platform;
     final private RenderTool render;
+
     final private RetargetTool retarget;
     final private SceneLightingTool sceneLighting;
-
     final private SceneVertexTool sceneVertex;
     final private ScoreTool score;
     final private SettingsTool settings;
@@ -108,9 +109,9 @@ public class EditorTools {
     final private SkeletonTool skeleton;
     final private SkyTool sky;
     final private SourceAnimationTool sourceAnimation;
+
     final private SpatialDetailsTool spatialDetails;
     final private SpatialRotationTool spatialRotation;
-
     final private SpatialScaleTool spatialScale;
     final private SpatialTool spatial;
     final private SpatialTranslationTool spatialTranslation;
@@ -119,6 +120,7 @@ public class EditorTools {
     final private TweeningTool tweening;
     final private TwistTool twist;
     final private UserDataTool userData;
+
     final private VertexTool vertex;
     // *************************************************************************
     // constructors
@@ -152,8 +154,9 @@ public class EditorTools {
         lightColor = new LightColorTool(screen);
         lightDirection = new LightDirectionTool(screen);
         lightPosition = new LightPositionTool(screen);
-        lights = new LightsTool(screen);
 
+        lights = new LightsTool(screen);
+        link = new LinkTool(screen);
         mapping = new MappingTool(screen);
         material = new MaterialTool(screen);
         mesh = new MeshTool(screen);
@@ -162,9 +165,9 @@ public class EditorTools {
         physics = new PhysicsTool(screen);
         platform = new PlatformTool(screen);
         render = new RenderTool(screen);
+
         retarget = new RetargetTool(screen);
         sceneLighting = new SceneLightingTool(screen);
-
         sceneVertex = new SceneVertexTool(screen);
         score = new ScoreTool(screen);
         settings = new SettingsTool(screen);
@@ -173,9 +176,9 @@ public class EditorTools {
         skeleton = new SkeletonTool(screen);
         sky = new SkyTool(screen);
         sourceAnimation = new SourceAnimationTool(screen);
+
         spatialDetails = new SpatialDetailsTool(screen);
         spatialRotation = new SpatialRotationTool(screen);
-
         spatialScale = new SpatialScaleTool(screen);
         spatial = new SpatialTool(screen);
         spatialTranslation = new SpatialTranslationTool(screen);
@@ -184,6 +187,7 @@ public class EditorTools {
         tweening = new TweeningTool(screen);
         twist = new TwistTool(screen);
         userData = new UserDataTool(screen);
+
         vertex = new VertexTool(screen);
     }
     // *************************************************************************
@@ -198,7 +202,7 @@ public class EditorTools {
         stateManager.attachAll(animation, axes, background, bone, boneRotation,
                 boneScale, boneTranslation, bounds, camera, cgm, cursor,
                 displaySettings, extract, extremeVertex, history, keyframe,
-                joint, lightColor, lightDirection, lightPosition, lights,
+                joint, lightColor, lightDirection, lightPosition, lights, link,
                 mapping, material, mesh, object, overrides, physics, platform,
                 render, retarget, sceneLighting, sceneVertex, score, settings,
                 sgc, shape, skeleton, sky, sourceAnimation, spatial,

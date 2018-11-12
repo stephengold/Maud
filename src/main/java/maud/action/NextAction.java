@@ -97,6 +97,10 @@ class NextAction {
                 target.getLight().selectNext();
                 break;
 
+            case Action.nextLink:
+                target.getLink().selectNext();
+                break;
+
             case Action.nextMapping:
                 model.getMap().selectNext();
                 break;

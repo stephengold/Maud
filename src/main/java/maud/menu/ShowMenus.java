@@ -121,6 +121,10 @@ public class ShowMenus {
         MenuBuilder builder = new MenuBuilder();
 
         builder.addEdit("Anim");
+        SelectedSpatial ss = Maud.getModel().getTarget().getSpatial();
+        if (ss.hasSkeletonControls()) {
+            builder.addEdit("DynamicAnim");
+        }
         builder.addEdit("Ghost");
         builder.addEdit("RigidBody");
         builder.addEdit("Skeleton");

@@ -86,9 +86,6 @@ class SetANAction {
                 EditorDialogs.setAnisotropy();
                 break;
 
-            //case Action.setBoneLinkMass:
-            // TODO EditorDialogs.setBoneLinkMass();
-            //break;
             case Action.setBufferInstanceSpan:
                 EditorDialogs.setBufferInstanceSpan();
                 break;
@@ -115,6 +112,10 @@ class SetANAction {
 
             case Action.setLightDirReverse:
                 target.getLight().reverseDirection();
+                break;
+
+            case Action.setLinkMass:
+                EditorDialogs.setLinkMass();
                 break;
 
             case Action.setMatParamValue:
@@ -276,6 +277,11 @@ class SetANAction {
             arg = MyString.remainder(actionString, ActionPrefix.setHour);
             float hour = Float.valueOf(arg);
             model.getScene().getRender().setHour(hour);
+
+        } else if (actionString.startsWith(ActionPrefix.setLinkMass)) {
+            arg = MyString.remainder(actionString, ActionPrefix.setLinkMass);
+            float mass = Float.valueOf(arg);
+            target.setLinkMass(mass);
 
         } else if (actionString.startsWith(ActionPrefix.setMainDirection)) {
             arg = MyString.remainder(actionString,

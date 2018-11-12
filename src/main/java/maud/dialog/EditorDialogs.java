@@ -75,6 +75,7 @@ import maud.model.cgm.SelectedBone;
 import maud.model.cgm.SelectedBuffer;
 import maud.model.cgm.SelectedFrame;
 import maud.model.cgm.SelectedLight;
+import maud.model.cgm.SelectedLink;
 import maud.model.cgm.SelectedObject;
 import maud.model.cgm.SelectedOverride;
 import maud.model.cgm.SelectedShape;
@@ -739,6 +740,22 @@ public class EditorDialogs {
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter the anisotropy:", defaultText,
                 ActionPrefix.setAnisotropy, controller);
+    }
+
+    /**
+     * Display a "set linkMass " dialog to enter the new mass.
+     */
+    public static void setLinkMass() {
+        DialogController controller = new FloatDialog("Set", Float.MIN_VALUE,
+                Float.MAX_VALUE, false);
+
+        SelectedLink boneLink = Maud.getModel().getTarget().getLink();
+        float oldMass = boneLink.mass();
+        String defaultText = Float.toString(oldMass);
+
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter the mass:", defaultText,
+                ActionPrefix.setLinkMass, controller);
     }
 
     /**

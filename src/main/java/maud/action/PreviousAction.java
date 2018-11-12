@@ -97,6 +97,10 @@ class PreviousAction {
                 target.getLight().selectPrevious();
                 break;
 
+            case Action.previousLink:
+                target.getLink().selectPrevious();
+                break;
+
             case Action.previousMapping:
                 model.getMap().selectPrevious();
                 break;
