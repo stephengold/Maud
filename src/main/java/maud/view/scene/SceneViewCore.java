@@ -35,7 +35,6 @@ import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.control.PhysicsControl;
-import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.collision.CollisionResult;
 import com.jme3.input.InputManager;
 import com.jme3.light.AmbientLight;
@@ -67,7 +66,6 @@ import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
 import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -571,8 +569,7 @@ public class SceneViewCore
      */
     public void postCheckpoint() {
         PhysicsSpace space = getPhysicsSpace();
-        Collection<PhysicsRigidBody> list = space.getRigidBodyList();
-        assert list.isEmpty(); // TODO targetSpace.isEmpty()
+        assert space.isEmpty();
 
         fillPhysicsSpace();
     }
@@ -583,8 +580,7 @@ public class SceneViewCore
      */
     public void postMakeLive() {
         PhysicsSpace space = getPhysicsSpace();
-        Collection<PhysicsRigidBody> list = space.getRigidBodyList();
-        assert list.isEmpty(); // TODO targetSpace.isEmpty()
+        assert space.isEmpty();
         /*
          * Detach any old visualization from the scene graph.
          */
