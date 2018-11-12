@@ -205,15 +205,16 @@ public class BoneMenus {
             builder.addBone("Mapped");
         }
 
-        int numChildren = target.getBone().countChildren();
+        SelectedBone bone = target.getBone();
+        int numChildren = bone.countChildren();
         if (numChildren == 1) {
             builder.addBone("Child");
         } else if (numChildren > 1) {
             builder.addSubmenu("Child");
         }
 
-        boolean isSelected = target.getBone().isSelected();
-        boolean isRoot = target.getBone().isRootBone();
+        boolean isSelected = bone.isSelected();
+        boolean isRoot = bone.isRootBone();
         if (isSelected && !isRoot) {
             builder.addBone("Parent");
         }
@@ -279,7 +280,7 @@ public class BoneMenus {
             MenuBuilder builder = new MenuBuilder();
             builder.addBone("!" + argument);
             for (String name : names) {
-                if (target.getSkeleton().isLeafBone(name)) {
+                if (skeleton.isLeafBone(name)) {
                     builder.addBone("!" + name);
                 } else {
                     builder.add(name);
@@ -441,7 +442,7 @@ public class BoneMenus {
     }
 
     /**
-     * Select a bone by name, using submenus.
+     * Select a bone by name, using submenus if necessary.
      */
     private static void selectBoneByName() {
         Cgm target = Maud.getModel().getTarget();

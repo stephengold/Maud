@@ -612,10 +612,6 @@ public class SceneViewCore
      */
     public void preCheckpoint() {
         emptyPhysicsSpace();
-
-        PhysicsSpace space = getPhysicsSpace();
-        Collection<PhysicsRigidBody> list = space.getRigidBodyList();
-        assert list.isEmpty(); // TODO targetSpace.isEmpty()
     }
 
     /**
@@ -1272,8 +1268,7 @@ public class SceneViewCore
         }
 
         PhysicsSpace space = getPhysicsSpace();
-        Collection<PhysicsRigidBody> list = space.getRigidBodyList();
-        assert list.isEmpty(); // TODO targetSpace.isEmpty()
+        assert space.isEmpty();
     }
 
     /**

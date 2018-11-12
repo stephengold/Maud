@@ -320,7 +320,7 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Select a rigid-body parameter to display in ObjectTool.
+     * Select a rigid-body parameter to view/edit in ObjectTool.
      *
      * @param newParameter an enum value (not null)
      */
