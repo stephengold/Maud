@@ -28,18 +28,22 @@ package maud.model.cgm;
 
 import com.jme3.bullet.animation.DynamicAnimControl;
 import com.jme3.bullet.animation.PhysicsLink;
+import com.jme3.bullet.animation.TorsoLink;
 import com.jme3.bullet.joints.PhysicsJoint;
 import com.jme3.bullet.objects.PhysicsRigidBody;
+import com.jme3.scene.Spatial;
 import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import jme3utilities.Misc;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import jme3utilities.minie.MyObject;
 import maud.Maud;
+import maud.view.scene.SceneView;
 
 /**
  * The MVC model of the selected PhysicsLink in a selected DynamicAnimControl.
@@ -130,7 +134,9 @@ public class SelectedLink implements JmeCloneable {
      */
     public void createAttachmentLink() {
         String boneName = editableCgm.getBone().getName();
-        editableCgm.attachBone(boneName, null); // TODO specify model
+        Spatial cgmRoot = Maud.getModel().getSource().getRootSpatial();
+        Spatial cloneCgm = (Spatial) Misc.deepCopy(cgmRoot);
+        editableCgm.attachBone(boneName, cloneCgm);
         select("Attachment:" + boneName);
     }
 
@@ -189,16 +195,16 @@ public class SelectedLink implements JmeCloneable {
     }
 
     /**
-     * Read the name of the physics joint.
+     * Determine the name of the joint of the selected link.
      *
-     * @return the joint name, or null if none selected
+     * @return the joint name, or null if none
      */
     public String jointName() {
         String result = null;
-        if (link != null) {
+        if (link != null && !(link instanceof TorsoLink)) {
             PhysicsJoint joint = link.getJoint();
             if (joint != null) {
-                long id = joint.getObjectId();
+                long id = jointId();
                 result = Long.toHexString(id);
             }
         }
@@ -250,14 +256,17 @@ public class SelectedLink implements JmeCloneable {
     }
 
     /**
-     * Read the name of the collision object.
+     * Determine the name of the collision object of the selected link.
      *
-     * @return the object name, or null if none selected
+     * @return the object name, or null if no link selected
      */
     public String objectName() {
         String result = null;
         if (link != null) {
-            PhysicsRigidBody rigidBody = link.getRigidBody();
+            SceneView sceneView = cgm.getSceneView();
+            String linkName = link.name();
+            PhysicsLink viewLink = sceneView.findLink(linkName);
+            PhysicsRigidBody rigidBody = viewLink.getRigidBody();
             result = MyObject.objectName(rigidBody);
         }
 
@@ -265,21 +274,21 @@ public class SelectedLink implements JmeCloneable {
     }
 
     /**
-     * Select the described link.
+     * Select the named link.
      *
-     * @param description the textual description (not null, not empty)
+     * @param linkName the name (not null, not empty)
      */
-    public void select(String description) {
-        Validate.nonEmpty(description, "description");
+    public void select(String linkName) {
+        Validate.nonEmpty(linkName, "link name");
 
         DynamicAnimControl dac = cgm.getRagdoll().find();
-        if (description.startsWith("Bone:")) {
-            String boneName = MyString.remainder(description, "Bone:");
+        if (linkName.startsWith("Bone:")) {
+            String boneName = MyString.remainder(linkName, "Bone:");
             link = dac.findBoneLink(boneName);
-        } else if (description.equals("Torso:")) {
+        } else if (linkName.equals("Torso:")) {
             link = dac.getTorsoLink();
         } else {
-            String boneName = MyString.remainder(description, "Attachment:");
+            String boneName = MyString.remainder(linkName, "Attachment:");
             link = dac.findAttachmentLink(boneName);
         }
     }
@@ -288,8 +297,7 @@ public class SelectedLink implements JmeCloneable {
      * Select physics joint of the selected link.
      */
     public void selectJoint() {
-        PhysicsJoint joint = link.getJoint();
-        long jointId = joint.getObjectId();
+        long jointId = jointId();
         cgm.getJoint().select(jointId);
     }
 
@@ -321,6 +329,15 @@ public class SelectedLink implements JmeCloneable {
     public void selectObject() {
         String name = objectName();
         cgm.getObject().select(name);
+    }
+
+    /**
+     * Select the parent link in the hierarchy.
+     */
+    public void selectParent() {
+        PhysicsLink parent = link.getParent();
+        String parentName = parent.name();
+        select(parentName);
     }
 
     /**
@@ -407,5 +424,28 @@ public class SelectedLink implements JmeCloneable {
         } catch (CloneNotSupportedException exception) {
             throw new RuntimeException(exception);
         }
+    }
+    // *************************************************************************
+    // private methods
+
+    /**
+     * Determine the object ID of the joint of the selected link.
+     *
+     * @return the unique identifier, or 0 if none
+     */
+    private long jointId() {
+        SceneView sceneView = cgm.getSceneView();
+        String linkName = link.name();
+        PhysicsLink viewLink = sceneView.findLink(linkName);
+        PhysicsJoint viewJoint = viewLink.getJoint();
+
+        long jointId;
+        if (viewJoint == null) {
+            jointId = 0L;
+        } else {
+            jointId = viewJoint.getObjectId();
+        }
+
+        return jointId;
     }
 }
