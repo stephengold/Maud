@@ -84,20 +84,6 @@ public class PhysicsUtil {
     // new methods exposed
 
     /**
-     * Count the joints in the specified physics space. TODO PhysicsSpace method
-     *
-     * @param space which physics space (not null, unaffected)
-     * @return count (&ge;0)
-     */
-    public static int countJoints(PhysicsSpace space) {
-        Collection<PhysicsJoint> joints = space.getJointList();
-        int count = joints.size();
-
-        assert count >= 0 : count;
-        return count;
-    }
-
-    /**
      * Find the named collision object in the specified physics space.
      *
      * @param name generated name (not null)

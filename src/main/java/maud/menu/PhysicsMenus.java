@@ -114,7 +114,7 @@ public class PhysicsMenus {
         builder.addTool("Joint tool");
 
         PhysicsSpace space = sceneView.getPhysicsSpace();
-        int numJoints = PhysicsUtil.countJoints(space);
+        int numJoints = space.countJoints();
         if (numJoints > 0) {
             builder.addSubmenu("Select joint");
         }
