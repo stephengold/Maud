@@ -310,6 +310,20 @@ public class SceneView extends SceneViewCore {
     }
 
     /**
+     * Access the named link in the selected DynamicAnimControl.
+     *
+     * @param linkName which link to find (not null, not empty)
+     * @return the pre-existing link, or null if not found
+     */
+    public PhysicsLink findLink(String linkName) {
+        Validate.nonEmpty(linkName, "link name");
+
+        DynamicAnimControl dac = selectedRagdoll();
+        PhysicsLink result = dac.findLink(linkName);
+        return result;
+    }
+
+    /**
      * Test whether the indexed axis points toward or away from the camera.
      *
      * @param axisIndex which axis: 0&rarr;X, 1&rarr;Y, 2&rarr;Z
@@ -899,7 +913,8 @@ public class SceneView extends SceneViewCore {
     }
 
     /**
-     * Access the selected material in this view's copy of its C-G model.
+     * Access the selected material in this view's copy of its C-G model. TODO
+     * rename getSelectedMaterial
      *
      * @return the pre-existing material (not null)
      */
@@ -913,7 +928,8 @@ public class SceneView extends SceneViewCore {
     }
 
     /**
-     * Access the selected ragdoll in this view's copy of its C-G model.
+     * Access the selected ragdoll in this view's copy of its C-G model. TODO
+     * rename getSelectedRagdoll
      *
      * @return the pre-existing control (not null)
      */
