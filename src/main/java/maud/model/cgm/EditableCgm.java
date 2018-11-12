@@ -653,6 +653,7 @@ public class EditableCgm extends LoadedCgm {
         try {
             ragdoll.setSpatial(saveSpatial);
         } catch (IllegalArgumentException e) {
+            ragdoll.setSpatial(null);
             dac.unlinkBone(boneName);
             ragdoll.setSpatial(saveSpatial);
             String description = "failed link bone " + MyString.quote(boneName);
