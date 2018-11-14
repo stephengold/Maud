@@ -84,10 +84,12 @@ class JointTool extends Tool {
         String type = joint.getType();
         setStatusText("jointType", " " + type);
 
-        String nameA = joint.endName(JointEnd.A);
+        String nameA = "", nameB = "";
+        if (joint.isSelected()) {
+            nameA = joint.endName(JointEnd.A);
+            nameB = joint.endName(JointEnd.B);
+        }
         setButtonText("jointBodyA", nameA);
-
-        String nameB = joint.endName(JointEnd.B);
         setButtonText("jointBodyB", nameB);
     }
 
