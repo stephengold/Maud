@@ -78,7 +78,7 @@ public class RenderOptions implements Cloneable {
     /**
      * edge filtering mode for shadows
      */
-    private EdgeFilteringMode edgeFilter = EdgeFilteringMode.Bilinear;
+    private EdgeFilteringMode edgeFilter = EdgeFilteringMode.PCFPOISSON;
     /**
      * opacity of cloud layers (&ge;0, &le;1)
      */
@@ -112,7 +112,7 @@ public class RenderOptions implements Cloneable {
     }
 
     /**
-     * Read the cloudiness for sky simulation.
+     * Read the cloudiness for sky simulation. TODO rename cloudiness
      *
      * @return layer opacity (&ge;0, &le;1)
      */
@@ -134,7 +134,7 @@ public class RenderOptions implements Cloneable {
     }
 
     /**
-     * Read the time of day for sky simulation.
+     * Read the time of day for sky simulation. TODO rename hour
      *
      * @return hours since midnight, solar time (&ge;0, &le;24)
      */
@@ -146,7 +146,7 @@ public class RenderOptions implements Cloneable {
     }
 
     /**
-     * Read the number of shadow-map splits.
+     * Read the number of shadow-map splits. TODO rename numSplits
      *
      * @return number (&ge;1, &le;4)
      */
