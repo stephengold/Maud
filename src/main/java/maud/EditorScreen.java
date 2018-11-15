@@ -396,7 +396,7 @@ public class EditorScreen extends GuiScreenController {
     public void onSliderChanged(final String sliderId,
             final SliderChangedEvent event) {
         Validate.nonNull(sliderId, "slider id");
-        assert sliderId.endsWith("Slider");
+        assert sliderId.endsWith("Slider") : sliderId;
         Validate.nonNull(event, "event");
 
         if (!ignoreGuiChanges && hasStarted()) {
@@ -406,7 +406,7 @@ public class EditorScreen extends GuiScreenController {
                 logger.log(Level.WARNING, "Unknown slider, id={0}",
                         MyString.quote(sliderId));
             } else {
-                manager.onSliderChanged();
+                manager.onSliderChanged(sliderName);
             }
         }
     }
