@@ -57,10 +57,6 @@ class ShapeTool extends Tool {
      */
     final private static Logger logger
             = Logger.getLogger(ShapeTool.class.getName());
-    /**
-     * names of the coordinate axes
-     */
-    final private static String[] axisNames = {"X", "Y", "Z"};
     // *************************************************************************
     // constructors
 
@@ -204,7 +200,7 @@ class ShapeTool extends Tool {
             type = shape.getType();
             int axisIndex = shape.getAxisIndex();
             if (axisIndex != -1) {
-                axisName = axisNames[axisIndex];
+                axisName = DescribeUtil.axisName(axisIndex);
             }
         }
 
