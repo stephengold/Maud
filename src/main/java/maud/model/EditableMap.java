@@ -363,7 +363,7 @@ public class EditableMap extends LoadedMap {
     @Override
     public EditableMap clone() throws CloneNotSupportedException {
         EditableMap clone = (EditableMap) super.clone();
-        editState = editState.clone();
+        clone.editState = editState.clone();
         return clone;
     }
 

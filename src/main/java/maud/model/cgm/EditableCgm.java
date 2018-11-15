@@ -105,7 +105,7 @@ public class EditableCgm extends LoadedCgm {
     // fields
 
     /**
-     * count of unsaved edits and continuous-edit state
+     * count of unsaved edits plus the continuous-edit state
      */
     private EditState editState = new EditState();
     // *************************************************************************
@@ -1673,7 +1673,7 @@ public class EditableCgm extends LoadedCgm {
     @Override
     public EditableCgm clone() throws CloneNotSupportedException {
         EditableCgm clone = (EditableCgm) super.clone();
-        editState = editState.clone();
+        clone.editState = editState.clone();
         return clone;
     }
 
