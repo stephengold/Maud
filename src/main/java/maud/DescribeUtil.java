@@ -28,6 +28,7 @@ package maud;
 
 import com.jme3.animation.Bone;
 import com.jme3.asset.TextureKey;
+import com.jme3.bullet.PhysicsSpace;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Matrix4f;
 import com.jme3.math.Vector3f;
@@ -40,7 +41,7 @@ import jme3utilities.Validate;
 
 /**
  * Utility methods to describe values of various sorts. All methods should be
- * static. TODO move some of these to Describer
+ * static.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -53,6 +54,10 @@ public class DescribeUtil {
      */
     final private static Logger logger
             = Logger.getLogger(DescribeUtil.class.getName());
+    /**
+     * names of the coordinate axes
+     */
+    final private static String[] axisNames = {"X", "Y", "Z"};
     // *************************************************************************
     // constructors
 
@@ -63,6 +68,20 @@ public class DescribeUtil {
     }
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Describe a coordinate axis.
+     *
+     * @param axisIndex the index of the axis: 0&rarr;X, 1&rarr;Y, 2&rarr;Z
+     * @return a textual description (not null, not empty)
+     */
+    public static String axisName(int axisIndex) {
+        Validate.inRange(axisIndex, "axis index", PhysicsSpace.AXIS_X,
+                PhysicsSpace.AXIS_Z);
+
+        String description = axisNames[axisIndex];
+        return description;
+    }
 
     /**
      * Describe a pair of display dimensions.
