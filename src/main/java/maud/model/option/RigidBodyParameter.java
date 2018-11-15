@@ -26,6 +26,10 @@
  */
 package maud.model.option;
 
+import com.jme3.bullet.objects.PhysicsRigidBody;
+import com.jme3.math.Vector3f;
+import jme3utilities.Validate;
+
 /**
  * Enumerate some parameters of rigid bodies.
  *
@@ -75,4 +79,115 @@ public enum RigidBodyParameter {
      *
      */
     Restitution;
+    // *************************************************************************
+    // new methods exposed
+
+    /**
+     * Read the parameter in the specified rigid body.
+     *
+     * @param rigidBody the body to read (not null, unaffected)
+     * @return the parameter value
+     */
+    public float read(PhysicsRigidBody rigidBody) {
+        Validate.nonNull(rigidBody, "rigid body");
+        float result;
+        switch (this) {
+            case AngularDamping:
+                result = rigidBody.getAngularDamping();
+                break;
+            case AngularSleep:
+                result = rigidBody.getAngularSleepingThreshold();
+                break;
+            case Friction:
+                result = rigidBody.getFriction();
+                break;
+            case GravityX:
+                result = rigidBody.getGravity(null).x;
+                break;
+            case GravityY:
+                result = rigidBody.getGravity(null).y;
+                break;
+            case GravityZ:
+                result = rigidBody.getGravity(null).z;
+                break;
+            case LinearDamping:
+                result = rigidBody.getLinearDamping();
+                break;
+            case LinearSleep:
+                result = rigidBody.getLinearSleepingThreshold();
+                break;
+            case Mass:
+                result = rigidBody.getMass();
+                break;
+            case Restitution:
+                result = rigidBody.getRestitution();
+                break;
+            default:
+                throw new IllegalArgumentException(toString());
+        }
+
+        return result;
+    }
+
+    /**
+     * Alter the parameter in the specified rigid body.
+     *
+     * @param rigidBody the body to alter (not null, modified)
+     * @param newValue the new parameter value
+     */
+    public void set(PhysicsRigidBody rigidBody, float newValue) {
+        Validate.nonNull(rigidBody, "rigid body");
+        Vector3f vector;
+
+        switch (this) {
+            case AngularDamping:
+                rigidBody.setAngularDamping(newValue);
+                break;
+
+            case AngularSleep:
+                rigidBody.setAngularSleepingThreshold(newValue);
+                break;
+
+            case Friction:
+                rigidBody.setFriction(newValue);
+                break;
+
+            case GravityX:
+                vector = rigidBody.getGravity(null);
+                vector.x = newValue;
+                rigidBody.setGravity(vector);
+                break;
+
+            case GravityY:
+                vector = rigidBody.getGravity(null);
+                vector.y = newValue;
+                rigidBody.setGravity(vector);
+                break;
+
+            case GravityZ:
+                vector = rigidBody.getGravity(null);
+                vector.z = newValue;
+                rigidBody.setGravity(vector);
+                break;
+
+            case LinearDamping:
+                rigidBody.setLinearDamping(newValue);
+                break;
+
+            case LinearSleep:
+                rigidBody.setLinearSleepingThreshold(newValue);
+                break;
+
+            case Mass:
+                rigidBody.setMass(newValue);
+                break;
+
+            case Restitution:
+                rigidBody.setRestitution(newValue);
+                break;
+
+            default:
+                throw new IllegalArgumentException(toString());
+        }
+    }
 }
