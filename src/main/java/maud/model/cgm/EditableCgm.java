@@ -34,6 +34,7 @@ import com.jme3.animation.Skeleton;
 import com.jme3.animation.SkeletonControl;
 import com.jme3.animation.SpatialTrack;
 import com.jme3.animation.Track;
+import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.animation.AttachmentLink;
 import com.jme3.bullet.animation.BoneLink;
 import com.jme3.bullet.animation.DynamicAnimControl;
@@ -47,6 +48,7 @@ import com.jme3.material.MatParamOverride;
 import com.jme3.material.Material;
 import com.jme3.material.MaterialDef;
 import com.jme3.material.RenderState;
+import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
@@ -96,6 +98,10 @@ public class EditableCgm extends LoadedCgm {
     // *************************************************************************
     // constants and loggers
 
+    /**
+     * number of coordinate axes
+     */
+    final private static int numAxes = 3;
     /**
      * message logger for this class
      */
@@ -1219,6 +1225,48 @@ public class EditableCgm extends LoadedCgm {
             spatialTrack.setKeyframes(times, translations, rotations, scales);
         }
         editState.setEdited("replace keyframes");
+    }
+
+    /**
+     * Alter the range of motion of one axis of the the selected PhysicsLink.
+     *
+     * @param axisIndex which axis to alter (0&rarr;X, 1&rarr;Y, 2&rarr;Z)
+     * @param maxAngle the desired maximum rotation angle (in radians)
+     * @param minAngle the desired minimum rotation angle (in radians)
+     */
+    public void setLinkAxisLimits(int axisIndex, float maxAngle,
+            float minAngle) {
+        Validate.inRange(axisIndex, "axis index", PhysicsSpace.AXIS_X,
+                PhysicsSpace.AXIS_Z);
+        Validate.inRange(maxAngle, "maximum angle", minAngle, FastMath.PI);
+        Validate.inRange(minAngle, "minimum angle", -FastMath.PI, maxAngle);
+
+        SelectedLink selectedLink = getLink();
+
+        RangeOfMotion oldRom = selectedLink.getRangeOfMotion();
+        float max[] = new float[numAxes];
+        float min[] = new float[numAxes];
+        for (int axis = 0; axis < numAxes; ++axis) {
+            if (axis == axisIndex) {
+                max[axis] = maxAngle;
+                min[axis] = minAngle;
+            } else {
+                max[axis] = oldRom.getMaxRotation(axis);
+                min[axis] = oldRom.getMinRotation(axis);
+            }
+        }
+        RangeOfMotion newRom = new RangeOfMotion(
+                max[PhysicsSpace.AXIS_X], min[PhysicsSpace.AXIS_X],
+                max[PhysicsSpace.AXIS_Y], min[PhysicsSpace.AXIS_Y],
+                max[PhysicsSpace.AXIS_Z], min[PhysicsSpace.AXIS_Z]);
+
+        DynamicAnimControl dac = getRagdoll().find();
+        String boneName = selectedLink.boneName();
+        dac.setJointLimits(boneName, newRom);
+        getSceneView().setRangeOfMotion(boneName, newRom);
+
+        String linkName = selectedLink.name();
+        editState.setEditedRangeOfMotion(linkName);
     }
 
     /**

@@ -1384,7 +1384,7 @@ the menu bar, status bar, and tool windows.
 
             <control name="window" id="linkTool" title="Link Tool"
                      hideOnClose="true"
-                     height="200px" width="320px" x="205" y="65">
+                     height="280px" width="320px" x="205" y="65">
                 <panel childLayout="vertical">
                     <panel height="3px"/>
                     <panel childLayout="horizontal" height="28px">
@@ -1407,7 +1407,7 @@ the menu bar, status bar, and tool windows.
                         </control>
                         <panel/>
                         <control name="button" id="linkSelectButton"
-                                 width="74px">
+                                 width="80px">
                             <interact onRelease="perform(select link)"/>
                         </control>
                     </panel>
@@ -1453,6 +1453,33 @@ the menu bar, status bar, and tool windows.
                                  width="75px">
                             <interact onRelease="perform(set linkMass)"/>
                         </control>
+                        <panel/>
+                        <control name="button" id="rotationMode4Button"
+                                 width="70px">
+                            <interact onRelease="perform(next rotationDisplay)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="button" id="linkAxisButton"
+                                 width="20px">
+                            <interact onRelease="perform(select linkToolAxis)"/>
+                        </control>
+                        <control name="label" text="-axis range of motion:    "/>
+                        <control name="label" id="linkAngleStatus"
+                                 hAlign="center"
+                                 width="*"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="horizontalSlider" id="minLinkAngleSlider"
+                                 buttonStepSize="1"
+                                 max="3.14" min="-3.14" stepSize="0.01"
+                                 width="*"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="horizontalSlider" id="maxLinkAngleSlider"
+                                 buttonStepSize="1"
+                                 max="3.14" min="-3.14" stepSize="0.01"
+                                 width="*"/>
                     </panel>
                 </panel>
             </control>

@@ -59,9 +59,10 @@ public class EditState implements Cloneable {
      * <li> "lc" + light being recolored, or
      * <li> "lpd" + light being repositioned/redirected, or
      * <li> "pp" + physics collision object being repositioned, or
+     * <li> "rom" + physics link with changes to range of motion, or
      * <li> "ss" + physics collision shape being resized, or
      * <li> "st" + tree position of the spatial being transformed, or
-     * <li> "tw" + name of target bone being twisted in the skeleton map
+     * <li> "tw" + name of target bone being twisted in the skeleton map, or
      * <li> "" for no continuous edit in progress
      * </ul>
      */
@@ -153,6 +154,24 @@ public class EditState implements Cloneable {
             String description = String.format(
                     "reposition and/or redirect light named %s",
                     MyString.quote(lightName));
+            History.addEvent(description);
+        }
+    }
+
+    /**
+     * If not a continuation of the previous range-of-motion edit, create a
+     * checkpoint and update the edit count.
+     *
+     * @param linkName name of the link being edited (not null)
+     */
+    public void setEditedRangeOfMotion(String linkName) {
+        String newState = "rom" + linkName;
+        if (!newState.equals(continousEditState)) {
+            History.autoAdd();
+            ++editCount;
+            continousEditState = newState;
+            String description = String.format("alter range of motion for %s",
+                    MyString.quote(linkName));
             History.addEvent(description);
         }
     }

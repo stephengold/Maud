@@ -207,6 +207,7 @@ public class Action {
     final static String selectLinkedJoint = "select linkedJoint";
     final static String selectLinkedObject = "select linkedObject";
     final static String selectLinkParent = "select linkParent";
+    final static String selectLinkToolAxis = "select linkToolAxis";
     final static String selectLoadBvhAxisOrder = "select loadBvhAxisOrder";
     final static String selectMapSourceBone = "select mapSourceBone";
     final static String selectMapTargetBone = "select mapTargetBone";

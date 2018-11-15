@@ -37,6 +37,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import maud.DescribeUtil;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.menu.AnimationMenus;
 import maud.menu.BoneMenus;
 import maud.menu.EditorMenus;
@@ -219,6 +220,10 @@ class SelectANAction {
             case Action.selectLinkParent:
                 String name2 = target.getLink().nameParent();
                 target.getLink().select(name2);
+                break;
+
+            case Action.selectLinkToolAxis:
+                PhysicsMenus.selectLinkToolAxis();
                 break;
 
             case Action.selectLoadBvhAxisOrder:
@@ -405,6 +410,12 @@ class SelectANAction {
             arg = MyString.remainder(actionString,
                     ActionPrefix.selectLinkChild);
             PhysicsMenus.selectLinkChild(arg);
+
+        } else if (actionString.startsWith(ActionPrefix.selectLinkToolAxis)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectLinkToolAxis);
+            int axisIndex = MaudUtil.axisIndex(arg);
+            model.getMisc().selectLinkToolAxis(axisIndex);
 
         } else if (actionString.startsWith(
                 ActionPrefix.selectLoadBvhAxisOrder)) {

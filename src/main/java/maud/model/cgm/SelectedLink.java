@@ -26,8 +26,10 @@
  */
 package maud.model.cgm;
 
+import com.jme3.bullet.animation.BoneLink;
 import com.jme3.bullet.animation.DynamicAnimControl;
 import com.jme3.bullet.animation.PhysicsLink;
+import com.jme3.bullet.animation.RangeOfMotion;
 import com.jme3.bullet.animation.TorsoLink;
 import com.jme3.bullet.joints.PhysicsJoint;
 import com.jme3.bullet.objects.PhysicsRigidBody;
@@ -179,6 +181,35 @@ public class SelectedLink implements JmeCloneable {
         }
 
         return index;
+    }
+
+    /**
+     * Read the link's range of motion.
+     *
+     * @return the pre-existing object, or null if none
+     */
+    public RangeOfMotion getRangeOfMotion() {
+        RangeOfMotion result = null;
+        if (link instanceof BoneLink) {
+            DynamicAnimControl dac = cgm.getRagdoll().find();
+            String boneName = link.boneName();
+            result = dac.getJointLimits(boneName);
+        }
+
+        return result;
+    }
+
+    /**
+     * Test whether the selected link is a BoneLink.
+     *
+     * @return true if it's a BoneLink, otherwise false
+     */
+    public boolean isBoneLink() {
+        if (link instanceof BoneLink) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**

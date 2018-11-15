@@ -26,15 +26,23 @@
  */
 package maud.tool;
 
+import com.jme3.bullet.animation.RangeOfMotion;
+import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
+import jme3utilities.math.MyMath;
 import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.SliderTransform;
 import maud.DescribeUtil;
 import maud.Maud;
+import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
+import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedBone;
 import maud.model.cgm.SelectedLink;
 import maud.model.cgm.SelectedRagdoll;
+import maud.model.option.MiscOptions;
+import maud.model.option.RotationDisplayMode;
 
 /**
  * The controller for the Link tool in Maud's editor screen.
@@ -50,6 +58,10 @@ class LinkTool extends Tool {
      */
     final private static Logger logger
             = Logger.getLogger(LinkTool.class.getName());
+    /**
+     * transform for an angle slider
+     */
+    final private static SliderTransform angleSt = SliderTransform.None;
     // *************************************************************************
     // constructors
 
@@ -66,6 +78,44 @@ class LinkTool extends Tool {
     // Tool methods
 
     /**
+     * Enumerate this tool's sliders.
+     *
+     * @return a new list of names (unique id prefixes)
+     */
+    @Override
+    protected List<String> listSliders() {
+        List<String> result = super.listSliders();
+        result.add("maxLinkAngle");
+        result.add("minLinkAngle");
+
+        return result;
+    }
+
+    /**
+     * Update the MVC model based on the sliders.
+     *
+     * @param sliderName the name (unique id prefix) of the slider (not null)
+     */
+    @Override
+    public void onSliderChanged(String sliderName) {
+        EditorModel model = Maud.getModel();
+        int axisIndex = model.getMisc().linkToolAxis();
+        float maxAngle = readSlider("maxLinkAngle", angleSt);
+        float minAngle = readSlider("minLinkAngle", angleSt);
+
+        if (maxAngle < minAngle) {
+            if (sliderName.equals("maxLinkAngle")) {
+                minAngle = maxAngle;
+            } else {
+                maxAngle = minAngle;
+            }
+        }
+
+        EditableCgm target = model.getTarget();
+        target.setLinkAxisLimits(axisIndex, maxAngle, minAngle);
+    }
+
+    /**
      * Callback to update this tool prior to rendering. (Invoked once per frame
      * while this tool is displayed.)
      */
@@ -75,6 +125,7 @@ class LinkTool extends Tool {
         updateIndex();
         updateName();
         updateParent();
+        updateRangeOfMotion();
 
         String addButton = "";
         String jointButton = "";
@@ -212,5 +263,51 @@ class LinkTool extends Tool {
         }
 
         setButtonText("linkSelectParent", button);
+    }
+
+    /**
+     * Update the range of motion.
+     */
+    private void updateRangeOfMotion() {
+        EditorModel model = Maud.getModel();
+        MiscOptions misc = model.getMisc();
+        int axisIndex = misc.linkToolAxis();
+
+        String axisName = DescribeUtil.axisName(axisIndex);
+        setButtonText("linkAxis", axisName);
+
+        RotationDisplayMode rdm = misc.rotationDisplayMode();
+        String modeName = rdm.toString();
+        setButtonText("rotationMode4", modeName);
+
+        String status;
+        SelectedLink selectedLink = model.getTarget().getLink();
+        if (selectedLink.isBoneLink()) {
+            RangeOfMotion rom = selectedLink.getRangeOfMotion();
+            float maxAngle = rom.getMaxRotation(axisIndex);
+            float minAngle = rom.getMinRotation(axisIndex);
+            switch (rdm) {
+                case Degrees:
+                    float min = MyMath.toDegrees(minAngle);
+                    float max = MyMath.toDegrees(maxAngle);
+                    status = String.format("%+.0f to %+.0f degrees", min, max);
+                    break;
+                case Radians:
+                    status = String.format("%+.2f to %+.2f radians", minAngle,
+                            maxAngle);
+                    break;
+                default:
+                    status = "";
+            }
+            setSlider("maxLinkAngle", angleSt, maxAngle);
+            setSlider("minLinkAngle", angleSt, minAngle);
+            setSliderEnabled("maxLinkAngle", true);
+            setSliderEnabled("minLinkAngle", true);
+        } else {
+            status = "";
+            setSliderEnabled("maxLinkAngle", false);
+            setSliderEnabled("minLinkAngle", false);
+        }
+        setStatusText("linkAngleStatus", status);
     }
 }

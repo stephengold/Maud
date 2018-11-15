@@ -333,6 +333,10 @@ public class ActionPrefix {
      */
     final public static String selectLinkChild = "select linkChild ";
     /**
+     * argument is the name of a coordinate axis
+     */
+    final public static String selectLinkToolAxis = "select linkToolAxis ";
+    /**
      * argument is the name of a LoadBvhAxisOrder
      */
     final public static String selectLoadBvhAxisOrder

@@ -43,6 +43,7 @@ import jme3utilities.minie.MyShape;
 import maud.PhysicsUtil;
 import maud.model.History;
 import maud.model.option.RigidBodyParameter;
+import maud.view.scene.SceneView;
 
 /**
  * The selected physics collision object of a C-G model in the Maud application.
@@ -134,7 +135,7 @@ public class SelectedObject implements Cloneable {
     }
 
     /**
-     * Read the specified parameter of the selected rigid body.
+     * Read the specified parameter of the selected rigid body. TODO rename
      *
      * @param parameter which parameter to read (not null)
      * @return parameter value (as a string) or "" if not applicable (not null)
@@ -146,41 +147,7 @@ public class SelectedObject implements Cloneable {
         PhysicsCollisionObject object = find();
         if (object instanceof PhysicsRigidBody) {
             PhysicsRigidBody prb = (PhysicsRigidBody) object;
-            float value;
-            switch (parameter) {
-                case AngularDamping:
-                    value = prb.getAngularDamping();
-                    break;
-                case AngularSleep:
-                    value = prb.getAngularSleepingThreshold();
-                    break;
-                case Friction:
-                    value = prb.getFriction();
-                    break;
-                case GravityX:
-                    value = prb.getGravity(null).x;
-                    break;
-                case GravityY:
-                    value = prb.getGravity(null).y;
-                    break;
-                case GravityZ:
-                    value = prb.getGravity(null).z;
-                    break;
-                case LinearDamping:
-                    value = prb.getLinearDamping();
-                    break;
-                case LinearSleep:
-                    value = prb.getLinearSleepingThreshold();
-                    break;
-                case Mass:
-                    value = prb.getMass();
-                    break;
-                case Restitution:
-                    value = prb.getRestitution();
-                    break;
-                default:
-                    throw new IllegalArgumentException();
-            }
+            float value = parameter.read(prb);
             result = Float.toString(value);
         }
 
@@ -189,7 +156,7 @@ public class SelectedObject implements Cloneable {
     }
 
     /**
-     * Read the id of the object's shape.
+     * Read the id of the object's shape. TODO rename
      *
      * @return id of the shape, or -1L if none
      */
@@ -204,7 +171,7 @@ public class SelectedObject implements Cloneable {
     }
 
     /**
-     * Access the type of the object.
+     * Access the type of the object. TODO rename
      *
      * @return abbreviated name for the class
      */
@@ -398,6 +365,10 @@ public class SelectedObject implements Cloneable {
         if (pco instanceof PhysicsRigidBody) {
             History.autoAdd();
             set(parameter, newValue);
+
+            SceneView sceneView = editableCgm.getSceneView();
+            sceneView.setRigidBodyParameter(parameter, newValue);
+
             String eventDescription = String.format(
                     "set %s of rigid body to %f", parameter, newValue);
             editableCgm.getEditState().setEdited(eventDescription);
@@ -452,7 +423,7 @@ public class SelectedObject implements Cloneable {
     // private methods
 
     /**
-     * Access the shape of the object.
+     * Access the object's collision shape.
      *
      * @return the shape, or null if none
      */
@@ -477,47 +448,7 @@ public class SelectedObject implements Cloneable {
 
         PhysicsCollisionObject object = find();
         PhysicsRigidBody prb = (PhysicsRigidBody) object;
-        Vector3f vector;
-
-        switch (parameter) {
-            case AngularDamping:
-                prb.setAngularDamping(newValue);
-                break;
-            case AngularSleep:
-                prb.setAngularSleepingThreshold(newValue);
-                break;
-            case Friction:
-                prb.setFriction(newValue);
-                break;
-            case GravityX:
-                vector = prb.getGravity(null);
-                vector.x = newValue;
-                prb.setGravity(vector);
-                break;
-            case GravityY:
-                vector = prb.getGravity(null);
-                vector.y = newValue;
-                prb.setGravity(vector);
-                break;
-            case GravityZ:
-                vector = prb.getGravity(null);
-                vector.z = newValue;
-                prb.setGravity(vector);
-                break;
-            case LinearDamping:
-                prb.setLinearDamping(newValue);
-                break;
-            case LinearSleep:
-                prb.setLinearSleepingThreshold(newValue);
-                break;
-            case Mass:
-                prb.setMass(newValue);
-                break;
-            case Restitution:
-                prb.setRestitution(newValue);
-                break;
-            default:
-                throw new IllegalArgumentException();
-        }
+        parameter.set(prb, newValue);
+        // TODO sceneView
     }
 }

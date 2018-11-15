@@ -70,6 +70,7 @@ import maud.Maud;
 import maud.PhysicsUtil;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedRagdoll;
+import maud.model.option.RigidBodyParameter;
 
 /**
  * An editor view containing a 3-D visualization of a loaded C-G model.
@@ -771,6 +772,30 @@ public class SceneView extends SceneViewCore {
     }
 
     /**
+     * Alter the range of motion of the named linked bone.
+     *
+     * @param boneName the name of the linked bone (not null, not empty)
+     * @param newRom the new range of motion (not null)
+     */
+    public void setRangeOfMotion(String boneName, RangeOfMotion newRom) {
+        Validate.nonEmpty(boneName, "bone name");
+        Validate.nonNull(newRom, "new range of motion");
+
+        DynamicAnimControl dac = selectedRagdoll();
+        dac.setJointLimits(boneName, newRom);
+    }
+
+    /**
+     *
+     * @param parameter
+     * @param newValue
+     */
+    public void setRigidBodyParameter(RigidBodyParameter parameter,
+            float newValue) {
+        //TODO
+    }
+
+    /**
      * Alter the shadow mode of the selected spatial.
      *
      * @param newMode new value for shadow mode (not null)
@@ -929,7 +954,7 @@ public class SceneView extends SceneViewCore {
 
     /**
      * Access the selected ragdoll in this view's copy of its C-G model. TODO
-     * rename getSelectedRagdoll
+     * rename findSelectedRagdoll
      *
      * @return the pre-existing control (not null)
      */

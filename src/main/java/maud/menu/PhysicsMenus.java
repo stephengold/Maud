@@ -36,6 +36,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.minie.MyObject;
+import maud.DescribeUtil;
 import maud.Maud;
 import maud.PhysicsUtil;
 import maud.ShapeType;
@@ -319,6 +320,25 @@ public class PhysicsMenus {
             }
             builder.show(ActionPrefix.selectLinkChild);
         }
+    }
+
+    /**
+     * Handle a "select linkToolAxis" action without arguments.
+     */
+    public static void selectLinkToolAxis() {
+        int selectedAxis = Maud.getModel().getMisc().linkToolAxis();
+        MenuBuilder builder = new MenuBuilder();
+
+        for (int axisIndex = PhysicsSpace.AXIS_X;
+                axisIndex <= PhysicsSpace.AXIS_Z;
+                ++axisIndex) {
+            if (axisIndex != selectedAxis) {
+                String axisName = DescribeUtil.axisName(axisIndex);
+                builder.add(axisName);
+            }
+        }
+
+        builder.show(ActionPrefix.selectLinkToolAxis);
     }
 
     /**
