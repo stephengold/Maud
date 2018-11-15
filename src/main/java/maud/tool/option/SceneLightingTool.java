@@ -101,9 +101,11 @@ public class SceneLightingTool extends Tool {
 
     /**
      * Update the MVC model based on the sliders.
+     *
+     * @param sliderName the name (unique id prefix) of the slider (not null)
      */
     @Override
-    public void onSliderChanged() {
+    public void onSliderChanged(String sliderName) {
         LightsOptions options = Maud.getModel().getScene().getLights();
 
         Vector3f direction = readVectorBank("Dir", directionSt, null);

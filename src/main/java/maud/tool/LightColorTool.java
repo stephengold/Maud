@@ -90,9 +90,11 @@ class LightColorTool extends Tool {
 
     /**
      * Update the MVC model based on the sliders.
+     *
+     * @param sliderName the name (unique id prefix) of the slider (not null)
      */
     @Override
-    public void onSliderChanged() {
+    public void onSliderChanged(String sliderName) {
         ColorRGBA color = readColorBank("lc", colorSt, null);
         float level = readSlider("lightLevel", levelSt);
         color.r *= level;

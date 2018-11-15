@@ -90,8 +90,10 @@ abstract public class Tool extends GuiWindowController {
 
     /**
      * Update the MVC model based on this tool's sliders, if any.
+     *
+     * @param sliderName the name (unique id prefix) of the slider (not null)
      */
-    public void onSliderChanged() {
+    public void onSliderChanged(String sliderName) {
         logger.warning("unexpected slider change ignored");
     }
     // *************************************************************************

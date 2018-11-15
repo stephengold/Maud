@@ -96,9 +96,11 @@ class SpatialRotationTool extends Tool {
 
     /**
      * Update the MVC model based on the sliders.
+     *
+     * @param name the name (unique id prefix) of the slider (not null)
      */
     @Override
-    public void onSliderChanged() {
+    public void onSliderChanged(String name) {
         float[] sliderPositions = new float[numAxes];
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             String sliderName = axisNames[iAxis] + "Sa";

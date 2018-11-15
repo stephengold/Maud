@@ -100,9 +100,11 @@ class SpatialScaleTool extends Tool {
 
     /**
      * Update the MVC model based on the sliders.
+     *
+     * @param sliderName the name (unique id prefix) of the slider (not null)
      */
     @Override
-    public void onSliderChanged() {
+    public void onSliderChanged(String sliderName) {
         Vector3f scales = readVectorBank("Ss", axisSt, null);
         /*
          * Avoid scale factors near zero.

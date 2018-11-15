@@ -88,9 +88,11 @@ public class BackgroundTool extends Tool {
 
     /**
      * Update the MVC model based on the sliders.
+     *
+     * @param sliderName the name (unique id prefix) of the slider (not null)
      */
     @Override
-    public void onSliderChanged() {
+    public void onSliderChanged(String sliderName) {
         EditorModel editorModel = Maud.getModel();
         RenderOptions forScenes = editorModel.getScene().getRender();
         ScoreOptions forScores = editorModel.getScore();

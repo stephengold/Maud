@@ -107,9 +107,11 @@ class LightPositionTool extends Tool {
 
     /**
      * Update the MVC model based on the sliders.
+     *
+     * @param sliderName the name (unique id prefix) of the slider (not null)
      */
     @Override
-    public void onSliderChanged() {
+    public void onSliderChanged(String sliderName) {
         Vector3f offsets = readVectorBank("LPos", axisSt, null);
         float masterScale = readSlider("lPosMaster", masterSt);
         offsets.multLocal(masterScale);

@@ -123,9 +123,11 @@ public class BoundsTool extends Tool {
 
     /**
      * Update the MVC model based on the sliders.
+     *
+     * @param sliderName the name (unique id prefix) of the slider (not null)
      */
     @Override
-    public void onSliderChanged() {
+    public void onSliderChanged(String sliderName) {
         BoundsOptions options = Maud.getModel().getScene().getBounds();
 
         float lineWidth = readSlider("boundsLineWidth", widthSt);
