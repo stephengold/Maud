@@ -26,12 +26,14 @@
  */
 package maud.model.option;
 
+import com.jme3.bullet.PhysicsSpace;
 import com.jme3.math.FastMath;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
+import maud.DescribeUtil;
 import maud.MaudUtil;
 import maud.action.ActionPrefix;
 
@@ -99,6 +101,10 @@ public class MiscOptions implements Cloneable {
      * starting point for displayed indices (0 or 1)
      */
     private int indexBase = 1;
+    /**
+     * bone axis to view/edit in LinkTool: 0&rarr;X, 1&rarr;Y, 2&rarr;Z
+     */
+    private int linkToolAxis = PhysicsSpace.AXIS_X;
     /**
      * axis order for BVH loading (not null)
      */
@@ -189,6 +195,18 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
+     * Read the bone axis to view/edit in LinkTool
+     *
+     * @return axis index: 0&rarr;X, 1&rarr;Y, 2&rarr;Z
+     */
+    public int linkToolAxis() {
+        assert linkToolAxis == PhysicsSpace.AXIS_X
+                || linkToolAxis == PhysicsSpace.AXIS_Y
+                || linkToolAxis == PhysicsSpace.AXIS_Z : linkToolAxis;
+        return linkToolAxis;
+    }
+
+    /**
      * Read the axis order for loading BVH assets.
      *
      * @return display X-coordinate (&gt;0, &lt;1)
@@ -236,6 +254,18 @@ public class MiscOptions implements Cloneable {
     public void selectBackground(Background newBackground) {
         Validate.nonNull(newBackground, "new background");
         background = newBackground;
+    }
+
+    /**
+     * Alter the bone axis to view/edit in LinkTool
+     *
+     * @param axisIndex the index of the desired axis: 0&rarr;X, 1&rarr;Y,
+     * 2&rarr;Z
+     */
+    public void selectLinkToolAxis(int axisIndex) {
+        Validate.inRange(axisIndex, "axis index", PhysicsSpace.AXIS_X,
+                PhysicsSpace.AXIS_Z);
+        linkToolAxis = axisIndex;
     }
 
     /**
@@ -563,6 +593,10 @@ public class MiscOptions implements Cloneable {
         MaudUtil.writePerformAction(writer, action);
 
         action = ActionPrefix.selectIndexBase + Integer.toString(indexBase);
+        MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.selectLinkToolAxis
+                + DescribeUtil.axisName(linkToolAxis);
         MaudUtil.writePerformAction(writer, action);
 
         action = ActionPrefix.selectLoadBvhAxisOrder + axisOrder.toString();
