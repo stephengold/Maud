@@ -63,6 +63,38 @@ public class SpatialMenus {
     // new methods exposed
 
     /**
+     * Build a Spatial menu.
+     *
+     * @param builder the menu builder to use (not null, modified)
+     */
+    static void buildSpatialMenu(MenuBuilder builder) {
+        builder.addTool("Tool");
+        builder.addSubmenu("Select");
+        builder.addSubmenu("Add new");
+
+        builder.addTool("Details tool");
+        builder.addTool("Lights tool");
+        builder.addTool("Material tool");
+        builder.addTool("Mesh tool");
+        builder.addTool("Overrides tool");
+        builder.addTool("Rotate tool");
+        builder.addTool("Scale tool");
+        builder.addTool("Translate tool");
+        builder.addTool("User-Data tool");
+
+        Cgm target = Maud.getModel().getTarget();
+        if (!target.getSpatial().isCgmRoot()) {
+            builder.addEdit("Delete");
+        }
+        if (target.hasExtraSpatials()) {
+            builder.addEdit("Delete extras");
+        }
+        if (target.getSpatial().hasMaterial()) {
+            builder.addSubmenu("Edit material");
+        }
+    }
+
+    /**
      * Display a "Spatial -&gt; Edit material" menu.
      */
     public static void editMaterial() {

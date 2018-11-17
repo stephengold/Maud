@@ -450,11 +450,11 @@ public class BuildMenus {
                 break;
 
             case "SGC":
-                buildSgcMenu();
+                SgcMenus.buildSgcMenu(builder);
                 break;
 
             case "Spatial":
-                buildSpatialMenu();
+                SpatialMenus.buildSpatialMenu(builder);
                 break;
 
             case "Track":
@@ -727,49 +727,6 @@ public class BuildMenus {
         builder.add("Update startup script");
         if (Maud.isStartupScriptCustomized()) {
             builder.add("Revert startup script to default");
-        }
-    }
-
-    /**
-     * Build an SGC menu.
-     */
-    private void buildSgcMenu() {
-        builder.addTool("Tool");
-        builder.addSubmenu("Select");
-        builder.addSubmenu("Add new");
-        if (Maud.getModel().getTarget().getSgc().isSelected()) {
-            builder.addDialog("Delete"); // user must confirm
-            builder.add("Deselect");
-        }
-    }
-
-    /**
-     * Build a Spatial menu.
-     */
-    private void buildSpatialMenu() {
-        builder.addTool("Tool");
-        builder.addSubmenu("Select");
-        builder.addSubmenu("Add new");
-
-        builder.addTool("Details tool");
-        builder.addTool("Lights tool");
-        builder.addTool("Material tool");
-        builder.addTool("Mesh tool");
-        builder.addTool("Overrides tool");
-        builder.addTool("Rotate tool");
-        builder.addTool("Scale tool");
-        builder.addTool("Translate tool");
-        builder.addTool("User-Data tool");
-
-        Cgm target = Maud.getModel().getTarget();
-        if (!target.getSpatial().isCgmRoot()) {
-            builder.addEdit("Delete");
-        }
-        if (target.hasExtraSpatials()) {
-            builder.addEdit("Delete extras");
-        }
-        if (target.getSpatial().hasMaterial()) {
-            builder.addSubmenu("Edit material");
         }
     }
 }

@@ -59,6 +59,21 @@ class SgcMenus {
     // new methods exposed
 
     /**
+     * Build an SGC menu.
+     *
+     * @param builder the menu builder to use (not null, modified)
+     */
+    static void buildSgcMenu(MenuBuilder builder) {
+        builder.addTool("Tool");
+        builder.addSubmenu("Select");
+        builder.addSubmenu("Add new");
+        if (Maud.getModel().getTarget().getSgc().isSelected()) {
+            builder.addDialog("Delete"); // user must confirm
+            builder.add("Deselect");
+        }
+    }
+
+    /**
      * Handle a "select menuItem" action from the SGC menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
