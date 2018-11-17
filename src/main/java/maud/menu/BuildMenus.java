@@ -45,7 +45,6 @@ import maud.model.LoadedMap;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.LoadedCgm;
 import maud.model.cgm.SelectedTexture;
-import maud.model.option.ViewMode;
 
 /**
  * Build menus in Maud's editor screen.
@@ -463,7 +462,7 @@ public class BuildMenus {
                 break;
 
             case "View":
-                buildViewMenu();
+                ViewMenus.buildViewMenu(builder);
                 break;
 
             default:
@@ -771,24 +770,6 @@ public class BuildMenus {
         }
         if (target.getSpatial().hasMaterial()) {
             builder.addSubmenu("Edit material");
-        }
-    }
-
-    /**
-     * Build a View menu.
-     */
-    private void buildViewMenu() {
-        builder.addSubmenu("Select mode");
-
-        ViewMode viewMode = Maud.getModel().getMisc().viewMode();
-        if (viewMode.equals(ViewMode.Scene)
-                || viewMode.equals(ViewMode.Hybrid)) {
-            builder.addSubmenu("Scene options");
-        }
-
-        if (viewMode.equals(ViewMode.Score)
-                || viewMode.equals(ViewMode.Hybrid)) {
-            builder.addSubmenu("Score options");
         }
     }
 }

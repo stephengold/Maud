@@ -57,6 +57,24 @@ public class ViewMenus {
     // new methods exposed
 
     /**
+     * Build a View menu.
+     */
+    static void buildViewMenu(MenuBuilder builder) {
+        builder.addSubmenu("Select mode");
+
+        ViewMode viewMode = Maud.getModel().getMisc().viewMode();
+        if (viewMode.equals(ViewMode.Scene)
+                || viewMode.equals(ViewMode.Hybrid)) {
+            builder.addSubmenu("Scene options");
+        }
+
+        if (viewMode.equals(ViewMode.Score)
+                || viewMode.equals(ViewMode.Hybrid)) {
+            builder.addSubmenu("Score options");
+        }
+    }
+
+    /**
      * Handle a "select menuItem" action from the View menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
