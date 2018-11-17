@@ -203,8 +203,10 @@ public class EditorInputMode extends InputMode {
                 case "select":
                     if (words.length > 1) {
                         char w1c0 = words[1].charAt(0);
-                        if (w1c0 < 'o') {
-                            handled = SelectANAction.process(actionString);
+                        if (w1c0 < 'f') {
+                            handled = SelectAEAction.process(actionString);
+                        } else if (w1c0 < 'o') {
+                            handled = SelectFNAction.process(actionString);
                         } else if (w1c0 < 't') {
                             handled = SelectOSAction.process(actionString);
                         } else {
