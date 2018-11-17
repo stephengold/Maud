@@ -786,9 +786,10 @@ public class SceneView extends SceneViewCore {
     }
 
     /**
+     * Alter the value of a parameter of the selected rigid body.
      *
-     * @param parameter
-     * @param newValue
+     * @param parameter which parameter to modify (not null)
+     * @param newValue the desired value for the parameter
      */
     public void setRigidBodyParameter(RigidBodyParameter parameter,
             float newValue) {

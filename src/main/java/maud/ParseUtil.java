@@ -80,7 +80,7 @@ public class ParseUtil {
     /**
      * Determine the index of the named coordinate axis.
      *
-     * @param axisName
+     * @param axisName the name of the axis (not null, not empty)
      * @return the index of the axis: 0&rarr;X, 1&rarr;Y, 2&rarr;Z
      * @see maud.DescribeUtil#axisName(int)
      */

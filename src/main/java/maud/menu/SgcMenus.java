@@ -116,7 +116,7 @@ class SgcMenus {
         return handled;
     }
     // *************************************************************************
-    // private exposed
+    // private methods
 
     /**
      * Handle a "select menuItem" action from the "SGC -> Add new" menu.

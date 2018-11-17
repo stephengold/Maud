@@ -58,6 +58,8 @@ public class ViewMenus {
 
     /**
      * Build a View menu.
+     *
+     * @param builder the menu builder to use (not null, modified)
      */
     static void buildViewMenu(MenuBuilder builder) {
         builder.addSubmenu("Select mode");
