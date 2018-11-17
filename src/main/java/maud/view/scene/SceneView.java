@@ -174,7 +174,7 @@ public class SceneView extends SceneViewCore {
 
         Spatial clone = child.clone();
 
-        DynamicAnimControl dac = selectedRagdoll();
+        DynamicAnimControl dac = getSelectedRagdoll();
         Spatial controlledSpatial = dac.getSpatial();
         controlledSpatial.removeControl(dac);
         dac.attach(boneName, 1f, clone);
@@ -253,7 +253,7 @@ public class SceneView extends SceneViewCore {
      * Clear the selected material parameter.
      */
     public void deleteMatParam() {
-        Material material = selectedMaterial();
+        Material material = getSelectedMaterial();
         String parameterName = getCgm().getMatParam().getName();
         material.clearParam(parameterName);
     }
@@ -319,7 +319,7 @@ public class SceneView extends SceneViewCore {
     public PhysicsLink findLink(String linkName) {
         Validate.nonEmpty(linkName, "link name");
 
-        DynamicAnimControl dac = selectedRagdoll();
+        DynamicAnimControl dac = getSelectedRagdoll();
         PhysicsLink result = dac.findLink(linkName);
         return result;
     }
@@ -359,7 +359,7 @@ public class SceneView extends SceneViewCore {
      * @param boneName the name of the bone to add (not null, not empty)
      */
     public void linkBone(String boneName) {
-        DynamicAnimControl dac = selectedRagdoll();
+        DynamicAnimControl dac = getSelectedRagdoll();
         Spatial controlledSpatial = dac.getSpatial();
         controlledSpatial.removeControl(dac);
         dac.link(boneName, 1f, new RangeOfMotion());
@@ -573,7 +573,7 @@ public class SceneView extends SceneViewCore {
      * @param newState true &rarr; enable test, false &rarr; disable it
      */
     public void setDepthTest(boolean newState) {
-        Material material = selectedMaterial();
+        Material material = getSelectedMaterial();
         RenderState modelState = material.getAdditionalRenderState();
         modelState.setDepthTest(newState);
     }
@@ -586,7 +586,7 @@ public class SceneView extends SceneViewCore {
     public void setFaceCullMode(RenderState.FaceCullMode newMode) {
         Validate.nonNull(newMode, "new mode");
 
-        Material material = selectedMaterial();
+        Material material = getSelectedMaterial();
         RenderState modelState = material.getAdditionalRenderState();
         modelState.setFaceCullMode(newMode);
     }
@@ -610,7 +610,7 @@ public class SceneView extends SceneViewCore {
     public void setLinkMass(String linkName, float mass) {
         Validate.nonEmpty(linkName, "link name");
 
-        DynamicAnimControl dac = selectedRagdoll();
+        DynamicAnimControl dac = getSelectedRagdoll();
         PhysicsLink link = dac.findLink(linkName);
         dac.setMass(link, mass);
     }
@@ -781,7 +781,7 @@ public class SceneView extends SceneViewCore {
         Validate.nonEmpty(boneName, "bone name");
         Validate.nonNull(newRom, "new range of motion");
 
-        DynamicAnimControl dac = selectedRagdoll();
+        DynamicAnimControl dac = getSelectedRagdoll();
         dac.setJointLimits(boneName, newRom);
     }
 
@@ -855,7 +855,7 @@ public class SceneView extends SceneViewCore {
     public void unlinkAttachment(String boneName) {
         Validate.nonEmpty(boneName, "bone name");
 
-        DynamicAnimControl dac = selectedRagdoll();
+        DynamicAnimControl dac = getSelectedRagdoll();
         dac.unlinkAttachment(boneName);
     }
 
@@ -867,7 +867,7 @@ public class SceneView extends SceneViewCore {
     public void unlinkBone(String boneName) {
         Validate.nonEmpty(boneName, "bone name");
 
-        DynamicAnimControl dac = selectedRagdoll();
+        DynamicAnimControl dac = getSelectedRagdoll();
         dac.unlinkBone(boneName);
     }
 
@@ -939,12 +939,11 @@ public class SceneView extends SceneViewCore {
     }
 
     /**
-     * Access the selected material in this view's copy of its C-G model. TODO
-     * rename getSelectedMaterial
+     * Access the selected material in this view's copy of its C-G model.
      *
      * @return the pre-existing material (not null)
      */
-    private Material selectedMaterial() {
+    private Material getSelectedMaterial() {
         Spatial spatial = selectedSpatial();
         Geometry geometry = (Geometry) spatial;
         Material material = geometry.getMaterial();
@@ -954,12 +953,11 @@ public class SceneView extends SceneViewCore {
     }
 
     /**
-     * Access the selected ragdoll in this view's copy of its C-G model. TODO
-     * rename findSelectedRagdoll
+     * Access the selected ragdoll in this view's copy of its C-G model.
      *
      * @return the pre-existing control (not null)
      */
-    private DynamicAnimControl selectedRagdoll() {
+    private DynamicAnimControl getSelectedRagdoll() {
         SelectedRagdoll ragdoll = getCgm().getRagdoll();
         List<Integer> treePosition = ragdoll.treePosition();
         int pcPosition = ragdoll.pcPosition();
