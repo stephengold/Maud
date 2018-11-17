@@ -30,6 +30,8 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import maud.Maud;
 import maud.menu.AnimationMenus;
+import maud.menu.CgmMenus;
+import maud.menu.EditorMenus;
 import maud.model.EditorModel;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.LoadedCgm;
@@ -76,11 +78,11 @@ class LoadAction {
                 break;
 
             case Action.loadCgm:
-                Maud.gui.buildMenus.loadCgm();
+                CgmMenus.loadCgm();
                 break;
 
             case Action.loadMapAsset:
-                Maud.gui.buildMenus.loadMapAsset();
+                EditorMenus.loadMapAsset();
                 break;
 
             case Action.loadRetargetedPose:
@@ -92,11 +94,11 @@ class LoadAction {
                 break;
 
             case Action.loadSourceCgm:
-                Maud.gui.buildMenus.loadSourceCgm();
+                CgmMenus.loadSourceCgm();
                 break;
 
             case Action.loadTexture:
-                Maud.gui.buildMenus.loadTexture();
+                EditorMenus.loadTexture();
                 break;
 
             default:

@@ -44,7 +44,6 @@ import maud.model.EditorModel;
 import maud.model.LoadedMap;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.LoadedCgm;
-import maud.model.cgm.SelectedSpatial;
 import maud.model.cgm.SelectedTexture;
 import maud.model.option.ViewMode;
 
@@ -66,18 +65,6 @@ public class BuildMenus {
      */
     final private static Logger logger
             = Logger.getLogger(BuildMenus.class.getName());
-    /**
-     * magic specifier for the default location in actions and menus
-     */
-    final private static String defaultLocation = "from classpath";
-    /**
-     * magic specifier for a source-identity map in actions and menus
-     */
-    final private static String identityForSource = "Identity for source";
-    /**
-     * magic specifier for a target-identity map in actions and menus
-     */
-    final private static String identityForTarget = "Identity for target";
     /**
      * magic name for classpath assets whose paths are entered via a dialog box
      */
@@ -122,14 +109,6 @@ public class BuildMenus {
 
         buildFolderMenu(fileMap);
         builder.show(ActionPrefix.newAssetLocation);
-    }
-
-    /**
-     * Handle a "load cgm" action without arguments.
-     */
-    public void loadCgm() {
-        buildLocatorMenu();
-        builder.show(ActionPrefix.loadCgmLocator);
     }
 
     /**
@@ -218,7 +197,7 @@ public class BuildMenus {
      * @param slot load slot (not null)
      */
     public void loadCgmLocator(String spec, LoadedCgm slot) {
-        if (spec.equals(defaultLocation)) {
+        if (spec.equals(EditorMenus.defaultLocation)) {
             buildClasspathCgmMenu();
             if (slot == Maud.getModel().getSource()) {
                 builder.show(ActionPrefix.loadSourceCgmNamed);
@@ -238,20 +217,6 @@ public class BuildMenus {
         } else {
             EditorDialogs.loadCgmAsset(spec, slot);
         }
-    }
-
-    /**
-     * Display a "load map asset" action without arguments.
-     */
-    public void loadMapAsset() {
-        buildLocatorMenu();
-        if (Maud.getModel().getSource().getSkeleton().isSelected()) {
-            builder.add(identityForSource);
-        }
-        if (Maud.getModel().getTarget().getSkeleton().isSelected()) {
-            builder.add(identityForTarget);
-        }
-        builder.show(ActionPrefix.loadMapLocator);
     }
 
     /**
@@ -313,17 +278,17 @@ public class BuildMenus {
     public void loadMapLocator(String spec) {
         EditorModel model = Maud.getModel();
         switch (spec) {
-            case defaultLocation:
+            case EditorMenus.defaultLocation:
                 buildClasspathMapMenu();
                 builder.show(ActionPrefix.loadMapNamed);
                 break;
 
-            case identityForSource:
+            case EditorMenus.identityForSource:
                 Cgm source = model.getSource();
                 model.getMap().loadIdentityFor(source);
                 break;
 
-            case identityForTarget:
+            case EditorMenus.identityForTarget:
                 Cgm target = model.getTarget();
                 model.getMap().loadIdentityFor(target);
                 break;
@@ -339,22 +304,6 @@ public class BuildMenus {
                     EditorDialogs.loadMapAsset(spec);
                 }
         }
-    }
-
-    /**
-     * Handle a "load sourceAnimation" action without arguments.
-     */
-    public void loadSourceCgm() {
-        buildLocatorMenu();
-        builder.show(ActionPrefix.loadSourceCgmLocator);
-    }
-
-    /**
-     * Handle a "load texture" action without arguments.
-     */
-    public void loadTexture() {
-        buildLocatorMenu();
-        builder.show(ActionPrefix.loadTextureLocator);
     }
 
     /**
@@ -434,7 +383,7 @@ public class BuildMenus {
      * @param spec URL specification or defaultLocation (not null, not empty)
      */
     public void loadTextureLocator(String spec) {
-        if (spec.equals(defaultLocation)) {
+        if (spec.equals(EditorMenus.defaultLocation)) {
             buildClasspathTextureMenu();
             builder.show(ActionPrefix.loadTextureAsset + "-1 /");
 
@@ -470,7 +419,7 @@ public class BuildMenus {
                 break;
 
             case "CGM":
-                buildCgmMenu();
+                CgmMenus.buildCgmMenu(builder);
                 break;
 
             case "Help":
@@ -560,26 +509,6 @@ public class BuildMenus {
     }
     // *************************************************************************
     // private methods
-
-    /**
-     * Build a CGM menu.
-     */
-    private void buildCgmMenu() {
-        builder.addTool("Tool");
-        builder.addSubmenu("Load");
-        builder.addDialog("Save");
-        //builder.add("Export"); TODO
-
-        builder.addSubmenu("Load source model");
-        EditorModel model = Maud.getModel();
-        if (model.getSource().isLoaded()) {
-            SelectedSpatial ss = model.getTarget().getSpatial();
-            if (ss.isNode()) {
-                builder.addEdit("Merge source model");
-            }
-            builder.add("Unload source model");
-        }
-    }
 
     /**
      * Build a menu of models on the classpath.
@@ -760,25 +689,6 @@ public class BuildMenus {
     private void buildHistoryMenu() {
         builder.addTool("Tool");
         builder.add("Clear");
-    }
-
-    /**
-     * Build a "CGM -> Load" or "CGM -> Load source model" menu for selecting an
-     * asset locator.
-     */
-    private void buildLocatorMenu() {
-        builder.reset();
-        List<String> pathList = Maud.getModel().getLocations().listAll();
-        for (String path : pathList) {
-            if (path.endsWith(".jar")) {
-                builder.addJar(path);
-            } else if (path.endsWith(".zip")) {
-                builder.addZip(path);
-            } else {
-                builder.addFolder(path);
-            }
-        }
-        builder.addSubmenu(defaultLocation);
     }
 
     /**

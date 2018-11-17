@@ -28,14 +28,17 @@ package maud.menu;
 
 import java.util.logging.Logger;
 import maud.Maud;
+import maud.action.ActionPrefix;
 import maud.dialog.EditorDialogs;
+import maud.model.EditorModel;
+import maud.model.cgm.SelectedSpatial;
 
 /**
  * Menus in Maud's editor screen that deal with computer-graphics models.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class CgmMenus {
+public class CgmMenus {
     // *************************************************************************
     // constants and loggers
 
@@ -56,6 +59,42 @@ class CgmMenus {
     // new methods exposed
 
     /**
+     * Build a CGM menu.
+     */
+    static void buildCgmMenu(MenuBuilder builder) {
+        builder.addTool("Tool");
+        builder.addSubmenu("Load");
+        builder.addDialog("Save");
+        //builder.add("Export"); TODO
+
+        builder.addSubmenu("Load source model");
+        EditorModel model = Maud.getModel();
+        if (model.getSource().isLoaded()) {
+            SelectedSpatial ss = model.getTarget().getSpatial();
+            if (ss.isNode()) {
+                builder.addEdit("Merge source model");
+            }
+            builder.add("Unload source model");
+        }
+    }
+
+    /**
+     * Handle a "load cgm" action without arguments.
+     */
+    public static void loadCgm() {
+        MenuBuilder builder = EditorMenus.newLocationMenu();
+        builder.show(ActionPrefix.loadCgmLocator);
+    }
+
+    /**
+     * Handle a "load sourceCgm" action without arguments.
+     */
+    public static void loadSourceCgm() {
+        MenuBuilder builder = EditorMenus.newLocationMenu();
+        builder.show(ActionPrefix.loadSourceCgmLocator);
+    }
+
+    /**
      * Handle a "select menuItem" action from the CGM menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
@@ -69,11 +108,11 @@ class CgmMenus {
                 break;
 
             case "Load":
-                Maud.gui.buildMenus.loadCgm();
+                loadCgm();
                 break;
 
             case "Load source model":
-                Maud.gui.buildMenus.loadSourceCgm();
+                loadSourceCgm();
                 break;
 
             case "Merge source model":

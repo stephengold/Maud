@@ -27,11 +27,13 @@
 package maud.menu;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 import jme3utilities.Misc;
 import maud.Maud;
+import maud.action.ActionPrefix;
 import maud.dialog.EditorDialogs;
 import static maud.menu.ViewMenus.sceneViewOptions;
 import maud.model.EditableMap;
@@ -55,6 +57,18 @@ public class EditorMenus {
      * magic filename used in "add locator" actions and menus
      */
     final static String addThis = "! add this folder";
+    /**
+     * magic specifier for the default asset location in actions and menus
+     */
+    final static String defaultLocation = "from classpath";
+    /**
+     * magic specifier for a source-identity map in actions and menus
+     */
+    final static String identityForSource = "Identity for source";
+    /**
+     * magic specifier for a target-identity map in actions and menus
+     */
+    final static String identityForTarget = "Identity for target";
     /**
      * level separator in menu paths
      */
@@ -111,6 +125,50 @@ public class EditorMenus {
         }
 
         return result;
+    }
+
+    /**
+     * Display a "load map asset" action without arguments.
+     */
+    public static void loadMapAsset() {
+        MenuBuilder builder = newLocationMenu();
+        if (Maud.getModel().getSource().getSkeleton().isSelected()) {
+            builder.add(identityForSource);
+        }
+        if (Maud.getModel().getTarget().getSkeleton().isSelected()) {
+            builder.add(identityForTarget);
+        }
+        builder.show(ActionPrefix.loadMapLocator);
+    }
+
+    /**
+     * Handle a "load texture" action without arguments.
+     */
+    public static void loadTexture() {
+        MenuBuilder builder = newLocationMenu();
+        builder.show(ActionPrefix.loadTextureLocator);
+    }
+
+    /**
+     * Create a menu for selecting an asset location.
+     *
+     * @return a new menu builder (not null)
+     */
+    static MenuBuilder newLocationMenu() {
+        MenuBuilder builder = new MenuBuilder();
+        List<String> pathList = Maud.getModel().getLocations().listAll();
+        for (String path : pathList) {
+            if (path.endsWith(".jar")) {
+                builder.addJar(path);
+            } else if (path.endsWith(".zip")) {
+                builder.addZip(path);
+            } else {
+                builder.addFolder(path);
+            }
+        }
+        builder.addSubmenu(defaultLocation);
+
+        return builder;
     }
 
     /**
@@ -265,7 +323,7 @@ public class EditorMenus {
                 map.invert();
                 break;
             case "Load":
-                Maud.gui.buildMenus.loadMapAsset();
+                loadMapAsset();
                 break;
             case "Save":
                 EditorDialogs.saveMap();
