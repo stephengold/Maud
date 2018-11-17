@@ -110,7 +110,7 @@ class SelectOSAction {
                 break;
 
             case Action.selectPhysicsShape:
-                long shapeId = target.getObject().getShapeId();
+                long shapeId = target.getObject().shapeId();
                 if (shapeId != -1) {
                     target.getShape().select(shapeId);
                     Maud.gui.tools.select("shape");

@@ -125,69 +125,6 @@ public class SelectedObject implements Cloneable {
     }
 
     /**
-     * Read the name of the selected object.
-     *
-     * @return constructed name, or "" if none selected (not null)
-     */
-    public String getName() {
-        assert isSelected();
-        return selectedName;
-    }
-
-    /**
-     * Read the specified parameter of the selected rigid body. TODO rename
-     *
-     * @param parameter which parameter to read (not null)
-     * @return parameter value (as a string) or "" if not applicable (not null)
-     */
-    public String getRbpValue(RigidBodyParameter parameter) {
-        Validate.nonNull(parameter, "parameter");
-
-        String result = "";
-        PhysicsCollisionObject object = find();
-        if (object instanceof PhysicsRigidBody) {
-            PhysicsRigidBody prb = (PhysicsRigidBody) object;
-            float value = parameter.read(prb);
-            result = Float.toString(value);
-        }
-
-        assert result != null;
-        return result;
-    }
-
-    /**
-     * Read the id of the object's shape. TODO rename
-     *
-     * @return id of the shape, or -1L if none
-     */
-    public long getShapeId() {
-        long result = -1L;
-        CollisionShape shape = getShape();
-        if (shape != null) {
-            result = shape.getObjectId();
-        }
-
-        return result;
-    }
-
-    /**
-     * Access the type of the object. TODO rename
-     *
-     * @return abbreviated name for the class
-     */
-    public String getType() {
-        assert isSelected();
-
-        PhysicsCollisionObject object = find();
-        String type = object.getClass().getSimpleName();
-        if (type.startsWith("Physics")) {
-            type = MyString.remainder(type, "Physics");
-        }
-
-        return type;
-    }
-
-    /**
      * Test whether the object has mass.
      *
      * @return true if the object is a rigid body, otherwise false
@@ -245,6 +182,16 @@ public class SelectedObject implements Cloneable {
         storeResult = PhysicsUtil.location(object, storeResult);
 
         return storeResult;
+    }
+
+    /**
+     * Read the name of the selected object.
+     *
+     * @return constructed name, or "" if none selected (not null)
+     */
+    public String name() {
+        assert isSelected();
+        return selectedName;
     }
 
     /**
@@ -376,6 +323,21 @@ public class SelectedObject implements Cloneable {
     }
 
     /**
+     * Read the id of the object's shape.
+     *
+     * @return id of the shape, or -1L if none
+     */
+    public long shapeId() {
+        long result = -1L;
+        CollisionShape shape = getShape();
+        if (shape != null) {
+            result = shape.getObjectId();
+        }
+
+        return result;
+    }
+
+    /**
      * Calculate the transform of the object.
      *
      * @param storeResult (modified if not null)
@@ -386,6 +348,23 @@ public class SelectedObject implements Cloneable {
         storeResult = PhysicsUtil.transform(object, storeResult);
 
         return storeResult;
+    }
+
+    /**
+     * Read the type of the object.
+     *
+     * @return abbreviated name for the class
+     */
+    public String type() {
+        assert isSelected();
+
+        PhysicsCollisionObject object = find();
+        String type = object.getClass().getSimpleName();
+        if (type.startsWith("Physics")) {
+            type = MyString.remainder(type, "Physics");
+        }
+
+        return type;
     }
 
     /**
@@ -403,6 +382,27 @@ public class SelectedObject implements Cloneable {
             result = PhysicsUtil.usesShape(shape, shapeId);
         }
 
+        return result;
+    }
+
+    /**
+     * Read the specified parameter of the selected rigid body.
+     *
+     * @param parameter which parameter to read (not null)
+     * @return parameter value (as a string) or "" if not applicable (not null)
+     */
+    public String value(RigidBodyParameter parameter) {
+        Validate.nonNull(parameter, "parameter");
+
+        String result = "";
+        PhysicsCollisionObject object = find();
+        if (object instanceof PhysicsRigidBody) {
+            PhysicsRigidBody prb = (PhysicsRigidBody) object;
+            float value = parameter.read(prb);
+            result = Float.toString(value);
+        }
+
+        assert result != null;
         return result;
     }
     // *************************************************************************

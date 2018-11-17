@@ -120,7 +120,7 @@ class ObjectTool extends Tool {
         String name;
         SelectedObject object = Maud.getModel().getTarget().getObject();
         if (object.isSelected()) {
-            name = object.getName();
+            name = object.name();
         } else {
             name = "(none selected)";
         }
@@ -135,7 +135,7 @@ class ObjectTool extends Tool {
         RigidBodyParameter rbp = model.getMisc().rbParameter();
         String rbpName = rbp.toString();
         SelectedObject object = model.getTarget().getObject();
-        String rbpValue = object.getRbpValue(rbp);
+        String rbpValue = object.value(rbp);
 
         setButtonText("physicsRbp", rbpName);
         setButtonText("physicsRbpValue", rbpValue);
@@ -148,7 +148,7 @@ class ObjectTool extends Tool {
         String sButton, shape;
 
         SelectedObject object = Maud.getModel().getTarget().getObject();
-        long id = object.getShapeId();
+        long id = object.shapeId();
         if (id == -1L) {
             shape = "";
             sButton = "";

@@ -1054,7 +1054,7 @@ public class EditorDialogs {
 
         SelectedObject object = Maud.getModel().getTarget().getObject();
         if (object.isSelected()) {
-            String defaultText = object.getRbpValue(parameter);
+            String defaultText = object.value(parameter);
             DialogController controller;
             switch (parameter) {
                 case GravityX:
