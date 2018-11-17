@@ -296,8 +296,7 @@ public class SelectedSgc implements JmeCloneable {
      * S-G control.
      */
     void postLoad() {
-        controlled = null;
-        selected = null;
+        selectNone();
     }
 
     /**

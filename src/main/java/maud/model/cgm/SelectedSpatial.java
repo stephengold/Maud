@@ -1241,10 +1241,7 @@ public class SelectedSpatial implements JmeCloneable {
      * After successfully loading a C-G model, select the root of the model.
      */
     void postLoad() {
-        cgm.getLight().postLoad();
-        cgm.getSgc().postLoad();
-        treePosition.clear();
-        postSelect();
+        selectCgmRoot();
     }
 
     /**
