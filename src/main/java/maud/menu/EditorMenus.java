@@ -35,7 +35,6 @@ import jme3utilities.Misc;
 import maud.Maud;
 import maud.action.ActionPrefix;
 import maud.dialog.EditorDialogs;
-import static maud.menu.ViewMenus.sceneViewOptions;
 import maud.model.EditableMap;
 import maud.model.History;
 
@@ -375,11 +374,11 @@ public class EditorMenus {
                 break;
 
             case "Scene-view options":
-                sceneViewOptions();
+                ViewMenus.sceneViewOptions();
                 break;
 
             case "Score-view options":
-                sceneViewOptions();
+                ViewMenus.scoreViewOptions();
                 break;
 
             case "Tool":
