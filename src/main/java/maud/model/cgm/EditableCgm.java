@@ -83,6 +83,7 @@ import jme3utilities.nifty.dialog.VectorDialog;
 import jme3utilities.wes.TrackEdit;
 import maud.Maud;
 import maud.MaudUtil;
+import maud.ParseUtil;
 import maud.PhysicsUtil;
 import maud.model.EditState;
 import maud.model.History;
@@ -1320,8 +1321,8 @@ public class EditableCgm extends LoadedCgm {
         MatParam oldParam = getMatParam().find();
         VarType varType = oldParam.getVarType();
         String parameterName = oldParam.getName();
-        Object modelValue = MaudUtil.parseMatParam(oldParam, valueString);
-        Object viewValue = MaudUtil.parseMatParam(oldParam, valueString);
+        Object modelValue = ParseUtil.parseMatParam(oldParam, valueString);
+        Object viewValue = ParseUtil.parseMatParam(oldParam, valueString);
 
         Spatial matSpatial = getSpatial().find();
         List<Integer> treePosition = findSpatial(matSpatial);
@@ -1416,8 +1417,8 @@ public class EditableCgm extends LoadedCgm {
         MatParamOverride oldMpo = getOverride().find();
         VarType varType = oldMpo.getVarType();
         String parameterName = oldMpo.getName();
-        Object modelValue = MaudUtil.parseMatParam(oldMpo, valueString);
-        Object viewValue = MaudUtil.parseMatParam(oldMpo, valueString);
+        Object modelValue = ParseUtil.parseMatParam(oldMpo, valueString);
+        Object viewValue = ParseUtil.parseMatParam(oldMpo, valueString);
 
         Spatial spatial = getSpatial().find();
         List<Integer> treePosition = findSpatial(spatial);

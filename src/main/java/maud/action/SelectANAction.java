@@ -37,7 +37,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import maud.DescribeUtil;
 import maud.Maud;
-import maud.MaudUtil;
+import maud.ParseUtil;
 import maud.menu.AnimationMenus;
 import maud.menu.BoneMenus;
 import maud.menu.EditorMenus;
@@ -414,7 +414,7 @@ class SelectANAction {
         } else if (actionString.startsWith(ActionPrefix.selectLinkToolAxis)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.selectLinkToolAxis);
-            int axisIndex = MaudUtil.axisIndex(arg);
+            int axisIndex = ParseUtil.axisIndex(arg);
             model.getMisc().selectLinkToolAxis(axisIndex);
 
         } else if (actionString.startsWith(
