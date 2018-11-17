@@ -139,7 +139,7 @@ public class Drag {
             Vector2f mouseXY = inputManager.getCursorPosition();
             Vector3f world = camera.getWorldCoordinates(mouseXY, 0f);
             float worldX = FastMath.clamp(world.x, 0f, 1f);
-            float duration = cgm.getAnimation().getDuration();
+            float duration = cgm.getAnimation().duration();
             float newTime = worldX * duration;
             cgm.getPlay().setTime(newTime);
         }

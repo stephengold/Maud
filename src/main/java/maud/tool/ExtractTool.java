@@ -89,7 +89,7 @@ class ExtractTool extends Tool {
         setButtonText("extractAnimControl", animControlButton);
 
         LoadedAnimation animation = target.getAnimation();
-        String animationButton = animation.getName();
+        String animationButton = animation.name();
         setButtonText("extractAnimation", animationButton);
 
         String trackButton = "";
@@ -147,7 +147,7 @@ class ExtractTool extends Tool {
             startTimeButton = String.format("%.3f sec", startTime);
 
             float upperLimit = options.getUpperLimit();
-            float duration = target.getAnimation().getDuration();
+            float duration = target.getAnimation().duration();
             float endTime = Math.min(upperLimit, duration);
             endTimeButton = String.format("%.3f sec", endTime);
 

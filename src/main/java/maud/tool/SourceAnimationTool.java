@@ -144,7 +144,7 @@ class SourceAnimationTool extends Tool {
     public void onSliderChanged(String sliderName) {
         Cgm cgm = Maud.getModel().getSource();
 
-        float duration = cgm.getAnimation().getDuration();
+        float duration = cgm.getAnimation().duration();
         if (duration > 0f) {
             float speed = readSlider("sSpeed", speedSt);
             cgm.getPlay().setSpeed(speed);
@@ -276,7 +276,7 @@ class SourceAnimationTool extends Tool {
         setChecked("pongSource", ponging);
 
         String pauseButton = "";
-        float duration = cgm.getAnimation().getDuration();
+        float duration = cgm.getAnimation().duration();
         if (duration > 0f) {
             boolean paused = play.isPaused();
             if (paused) {
@@ -296,7 +296,7 @@ class SourceAnimationTool extends Tool {
 
         Cgm cgm = Maud.getModel().getSource();
         if (cgm.isLoaded()) {
-            String name = cgm.getAnimation().getName();
+            String name = cgm.getAnimation().name();
             if (cgm.getAnimation().isReal()) {
                 nameText = MyString.quote(name);
             } else {
@@ -315,7 +315,7 @@ class SourceAnimationTool extends Tool {
     private void updateSpeed() {
         Cgm cgm = Maud.getModel().getSource();
 
-        float duration = cgm.getAnimation().getDuration();
+        float duration = cgm.getAnimation().duration();
         setSliderEnabled("sSpeed", duration > 0f);
 
         float speed = cgm.getPlay().getSpeed();
@@ -348,7 +348,7 @@ class SourceAnimationTool extends Tool {
     private void updateTrackTime() {
         Cgm cgm = Maud.getModel().getSource();
         LoadedAnimation animation = cgm.getAnimation();
-        float duration = animation.getDuration();
+        float duration = animation.duration();
         /*
          * slider
          */

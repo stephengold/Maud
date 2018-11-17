@@ -234,7 +234,7 @@ public class StaffTrack {
             TweenTransforms tt = Maud.getModel().getTweenTransforms();
             TweenRotations technique = tt.getTweenRotations();
             float times[] = track.getKeyFrameTimes();
-            float duration = cgm.getAnimation().getDuration();
+            float duration = cgm.getAnimation().duration();
             RotationCurve parms;
             parms = technique.precompute(times, duration, rotations);
             Quaternion tempQ = new Quaternion();
@@ -329,7 +329,7 @@ public class StaffTrack {
             TweenTransforms tt = Maud.getModel().getTweenTransforms();
             TweenVectors technique = tt.getTweenScales();
             float times[] = track.getKeyFrameTimes();
-            float duration = cgm.getAnimation().getDuration();
+            float duration = cgm.getAnimation().duration();
             VectorCurve parms = technique.precompute(times, duration, scales);
             Vector3f tempV = new Vector3f();
 
@@ -416,7 +416,7 @@ public class StaffTrack {
             TweenTransforms tt = Maud.getModel().getTweenTransforms();
             TweenVectors technique = tt.getTweenTranslations();
             float times[] = track.getKeyFrameTimes();
-            float duration = cgm.getAnimation().getDuration();
+            float duration = cgm.getAnimation().duration();
             VectorCurve parms
                     = technique.precompute(times, duration, translations);
             Vector3f tempV = new Vector3f();
@@ -528,7 +528,7 @@ public class StaffTrack {
         nts = new float[numFrames];
         System.arraycopy(times, 0, nts, 0, numFrames);
 
-        float duration = cgm.getAnimation().getDuration();
+        float duration = cgm.getAnimation().duration();
         if (duration > 0f) {
             /*
              * Normalize nts[] to range from 0 to 1.

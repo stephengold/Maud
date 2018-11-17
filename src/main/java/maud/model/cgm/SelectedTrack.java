@@ -371,7 +371,7 @@ public class SelectedTrack implements JmeCloneable {
     public boolean endsWithKeyframe() {
         assert selected != null;
 
-        float duration = cgm.getAnimation().getDuration();
+        float duration = cgm.getAnimation().duration();
         int endIndex = MyAnimation.findKeyframeIndex(selected, duration);
         boolean result;
         if (endIndex >= 0) {
@@ -467,7 +467,7 @@ public class SelectedTrack implements JmeCloneable {
         assert selected instanceof BoneTrack;
         float time = cgm.getPlay().getTime();
         assert time > 0f : time;
-        float duration = cgm.getAnimation().getDuration();
+        float duration = cgm.getAnimation().duration();
         assert time <= duration : time;
         assert !cgm.getFrame().isSelected();
 
@@ -529,7 +529,7 @@ public class SelectedTrack implements JmeCloneable {
     public TrackItem item() {
         TrackItem item = null;
         if (selected != null) {
-            String animationName = cgm.getAnimation().getName();
+            String animationName = cgm.getAnimation().name();
             String animControlName = cgm.getAnimControl().name();
             AnimControl animControl = cgm.getAnimControl().find();
             item = new TrackItem(animationName, animControlName, animControl,
@@ -592,8 +592,8 @@ public class SelectedTrack implements JmeCloneable {
      * @return a new instance with no tracks
      */
     Animation newAnimation() {
-        float duration = cgm.getAnimation().getDuration();
-        String name = cgm.getAnimation().getName();
+        float duration = cgm.getAnimation().duration();
+        String name = cgm.getAnimation().name();
         Animation result = new Animation(name, duration);
 
         return result;
@@ -1055,7 +1055,7 @@ public class SelectedTrack implements JmeCloneable {
         for (Track track : oldTracks) {
             Track clone;
             if (track == selected) {
-                float duration = cgm.getAnimation().getDuration();
+                float duration = cgm.getAnimation().duration();
                 clone = TrackEdit.wrap(selected, duration, endWeight);
                 newSelected = clone;
             } else {

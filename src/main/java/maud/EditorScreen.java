@@ -770,7 +770,7 @@ public class EditorScreen extends GuiScreenController {
 
         boolean cont = play.willContinue();
         boolean reverse = play.willReverse();
-        float duration = animation.getDuration();
+        float duration = animation.duration();
         float upperLimit = Math.min(play.getUpperLimit(), duration);
         float lowerLimit = play.getLowerLimit();
         float range = upperLimit - lowerLimit;

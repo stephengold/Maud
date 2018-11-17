@@ -575,7 +575,7 @@ public class ScoreView implements EditorView {
             /*
              * Determine the number of interpolated samples for each sparkline.
              */
-            float duration = cgm.getAnimation().getDuration();
+            float duration = cgm.getAnimation().duration();
             if (duration > 0f) {
                 ScoreView view = cgm.getScoreView();
                 Camera camera = view.getCamera();
@@ -1058,7 +1058,7 @@ public class ScoreView implements EditorView {
      */
     private void attachLimits() {
         float lowerX, upperX;
-        float duration = cgm.getAnimation().getDuration();
+        float duration = cgm.getAnimation().duration();
         if (duration > 0f) {
             PlayOptions options = cgm.getPlay();
             lowerX = options.getLowerLimit() / duration;
@@ -1339,7 +1339,7 @@ public class ScoreView implements EditorView {
      */
     private float gnomonX() {
         float result;
-        float duration = cgm.getAnimation().getDuration();
+        float duration = cgm.getAnimation().duration();
         if (duration > 0f) {
             float time = cgm.getPlay().getTime();
             result = time / duration;

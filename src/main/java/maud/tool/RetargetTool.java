@@ -120,7 +120,7 @@ class RetargetTool extends Tool {
         String animationText = "";
         if (source.isLoaded() && sourceAnimControl.isSelected()) {
             LoadedAnimation animation = source.getAnimation();
-            animationText = animation.getName();
+            animationText = animation.name();
         }
         setButtonText("retargetAnimation", animationText);
 

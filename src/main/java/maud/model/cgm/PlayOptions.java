@@ -233,7 +233,7 @@ public class PlayOptions implements Cloneable {
      * @param newTime seconds since start (&ge;0, &le;duration)
      */
     public void setTime(float newTime) {
-        float duration = cgm.getAnimation().getDuration();
+        float duration = cgm.getAnimation().duration();
         Validate.inRange(newTime, "new time", 0f, duration);
 
         if (duration > 0f) {

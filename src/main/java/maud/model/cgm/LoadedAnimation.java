@@ -103,7 +103,7 @@ public class LoadedAnimation implements Cloneable {
         boolean result = false;
         Animation real = getReal();
         if (real != null) {
-            float duration = getDuration();
+            float duration = duration();
             Track[] tracks = real.getTracks();
             for (Track track : tracks) {
                 int endIndex = MyAnimation.findKeyframeIndex(track, duration);
@@ -183,7 +183,7 @@ public class LoadedAnimation implements Cloneable {
             } else {
                 TweenTransforms techniques = model.getTweenTransforms();
                 float time = cgm.getPlay().getTime();
-                float duration = getDuration();
+                float duration = duration();
                 techniques.transform(track, time, duration, null, storeResult);
             }
         }
@@ -277,7 +277,7 @@ public class LoadedAnimation implements Cloneable {
         float atTime = cgm.getPlay().getTime();
         assert atTime > 0f : atTime;
 
-        float duration = getDuration();
+        float duration = duration();
         Animation newAnimation = new Animation(loadedName, duration);
         Track newSelectedTrack = null;
         Track oldSelectedTrack = cgm.getTrack().get();
@@ -318,7 +318,7 @@ public class LoadedAnimation implements Cloneable {
      * Delete the selected track from the animation.
      */
     public void deleteTrack() {
-        float duration = getDuration();
+        float duration = duration();
         Animation newAnimation = new Animation(loadedName, duration);
 
         SelectedTrack selectedTrack = cgm.getTrack();
@@ -359,6 +359,24 @@ public class LoadedAnimation implements Cloneable {
             }
         }
 
+        return result;
+    }
+
+    /**
+     * Read the duration of the loaded animation.
+     *
+     * @return time (in seconds, &ge;0)
+     */
+    public float duration() {
+        float result;
+        Animation realAnimation = getReal();
+        if (realAnimation == null) {
+            result = 0f;
+        } else {
+            result = realAnimation.getLength();
+        }
+
+        assert result >= 0f : result;
         return result;
     }
 
@@ -460,35 +478,6 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Read the duration of the loaded animation.
-     *
-     * @return time (in seconds, &ge;0)
-     */
-    public float getDuration() {
-        float result;
-        Animation realAnimation = getReal();
-        if (realAnimation == null) {
-            result = 0f;
-        } else {
-            result = realAnimation.getLength();
-        }
-
-        assert result >= 0f : result;
-        return result;
-    }
-
-    /**
-     * Read the name of the loaded animation.
-     *
-     * @return the name, or bindPoseName if in bind pose, or retargetedPoseName
-     * if in retargeted pose (not null)
-     */
-    public String getName() {
-        assert loadedName != null;
-        return loadedName;
-    }
-
-    /**
      * Access the real animation.
      *
      * @return the pre-existing instance, or null if none or in bind/retargeted
@@ -549,7 +538,7 @@ public class LoadedAnimation implements Cloneable {
      */
     public void insertKeyframes() {
         float atTime = cgm.getPlay().getTime();
-        float duration = getDuration();
+        float duration = duration();
         Animation newAnimation = new Animation(loadedName, duration);
         Track newSelectedTrack = null;
         Track oldSelectedTrack = cgm.getTrack().get();
@@ -802,6 +791,17 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
+     * Read the name of the loaded animation.
+     *
+     * @return the name, or bindPoseName if in bind pose, or retargetedPoseName
+     * if in retargeted pose (not null)
+     */
+    public String name() {
+        assert loadedName != null;
+        return loadedName;
+    }
+
+    /**
      * Reduce all bone/spatial tracks in the loaded animation by the specified
      * factor.
      *
@@ -811,7 +811,7 @@ public class LoadedAnimation implements Cloneable {
         Validate.inRange(factor, "reduction factor", 2, Integer.MAX_VALUE);
         assert isReal();
 
-        float duration = getDuration();
+        float duration = duration();
         Animation newAnimation = new Animation(loadedName, duration);
         Track newSelectedTrack = null;
         Track oldSelectedTrack = cgm.getTrack().get();
@@ -850,7 +850,7 @@ public class LoadedAnimation implements Cloneable {
         assert !sac.hasRealAnimation(newName) : newName;
         assert isReal();
 
-        float duration = getDuration();
+        float duration = duration();
         Animation newAnimation = new Animation(newName, duration);
         Track newSelectedTrack = null;
         Track oldSelectedTrack = cgm.getTrack().get();
@@ -876,7 +876,7 @@ public class LoadedAnimation implements Cloneable {
      * Reverse all bone/spatial tracks.
      */
     public void reverse() {
-        float duration = getDuration();
+        float duration = duration();
         Animation newAnimation = new Animation(loadedName, duration);
         Track newSelectedTrack = null;
         Track oldSelectedTrack = cgm.getTrack().get();
@@ -913,7 +913,7 @@ public class LoadedAnimation implements Cloneable {
         Validate.positive(sampleRate, "sample rate");
         assert isReal();
 
-        float duration = getDuration();
+        float duration = duration();
         Animation newAnimation = new Animation(loadedName, duration);
         Track newSelectedTrack = null;
         TweenTransforms techniques = Maud.getModel().getTweenTransforms();
@@ -952,7 +952,7 @@ public class LoadedAnimation implements Cloneable {
         Validate.inRange(numSamples, "number of samples", 2, Integer.MAX_VALUE);
         assert isReal();
 
-        float duration = getDuration();
+        float duration = duration();
         assert duration > 0f : duration;
         Animation newAnimation = new Animation(loadedName, duration);
         Track newSelectedTrack = null;
@@ -1110,7 +1110,7 @@ public class LoadedAnimation implements Cloneable {
                     = InfluenceUtil.addAllInfluencers(subtree, skeleton, null);
         }
 
-        float duration = getDuration();
+        float duration = duration();
         Animation newAnimation = new Animation(loadedName, duration);
         Track newSelectedTrack = null;
         Track oldSelectedTrack = cgm.getTrack().get();

@@ -96,7 +96,7 @@ class NewAction {
                 break;
 
             case Action.newAnimationFromRetarget:
-                String sourceName = model.getSource().getAnimation().getName();
+                String sourceName = model.getSource().getAnimation().name();
                 EditorDialogs.newAnimation(
                         ActionPrefix.newAnimationFromRetarget, "Retarget",
                         sourceName);

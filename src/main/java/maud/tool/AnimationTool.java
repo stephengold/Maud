@@ -161,7 +161,7 @@ class AnimationTool extends Tool {
             cgm = target;
         }
 
-        float duration = cgm.getAnimation().getDuration();
+        float duration = cgm.getAnimation().duration();
         if (duration > 0f) {
             float speed = readSlider("speed", speedSt);
             cgm.getPlay().setSpeed(speed);
@@ -300,7 +300,7 @@ class AnimationTool extends Tool {
         setChecked("pong", ponging);
 
         String pauseButton = "";
-        float duration = cgm.getAnimation().getDuration();
+        float duration = cgm.getAnimation().duration();
         if (duration > 0f) {
             boolean paused = play.isPaused();
             if (paused) {
@@ -319,7 +319,7 @@ class AnimationTool extends Tool {
         String eButton, nameText, rButton;
 
         LoadedAnimation animation = Maud.getModel().getTarget().getAnimation();
-        String name = animation.getName();
+        String name = animation.name();
         if (animation.isReal()) {
             eButton = "Edit";
             nameText = MyString.quote(name);
@@ -347,7 +347,7 @@ class AnimationTool extends Tool {
             cgm = target;
         }
 
-        float duration = cgm.getAnimation().getDuration();
+        float duration = cgm.getAnimation().duration();
         setSliderEnabled("speed", duration > 0f);
 
         float speed = cgm.getPlay().getSpeed();
@@ -386,7 +386,7 @@ class AnimationTool extends Tool {
             cgm = target;
         }
         LoadedAnimation animation = cgm.getAnimation();
-        float duration = animation.getDuration();
+        float duration = animation.duration();
         /*
          * slider
          */

@@ -848,7 +848,7 @@ public class EditableCgm extends LoadedCgm {
         History.autoAdd();
         animControl.removeAnim(oldAnimation);
         animControl.addAnim(newAnimation);
-        float duration = getAnimation().getDuration();
+        float duration = getAnimation().duration();
         if (getPlay().getTime() > duration) {
             getPlay().setTime(duration); // keep animation time in range
         }

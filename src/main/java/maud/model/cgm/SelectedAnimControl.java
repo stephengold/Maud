@@ -108,12 +108,12 @@ public class SelectedAnimControl implements JmeCloneable {
 
         Cgm cgm1 = model.getCgm(which1);
         LoadedAnimation loadedAnimation1 = cgm1.getAnimation();
-        float duration1 = loadedAnimation1.getDuration();
+        float duration1 = loadedAnimation1.duration();
         List<TrackItem> list1 = loadedAnimation1.listTracks();
 
         Cgm cgm2 = model.getCgm(which2);
         LoadedAnimation loadedAnimation2 = cgm2.getAnimation();
-        float duration2 = loadedAnimation2.getDuration();
+        float duration2 = loadedAnimation2.duration();
         List<TrackItem> list2 = loadedAnimation2.listTracks();
 
         float newDuration = duration1 + duration2;
@@ -170,7 +170,7 @@ public class SelectedAnimControl implements JmeCloneable {
 
         LoadedAnimation loaded = cgm.getAnimation();
         Animation oldAnimation = loaded.getReal();
-        float duration = loaded.getDuration();
+        float duration = loaded.duration();
         Animation copyAnim = new Animation(newAnimationName, duration);
         if (oldAnimation != null) {
             Track[] oldTracks = oldAnimation.getTracks();

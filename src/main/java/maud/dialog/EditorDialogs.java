@@ -201,7 +201,7 @@ public class EditorDialogs {
      * Display a "delete animation" dialog.
      */
     public static void deleteAnimation() {
-        String name = Maud.getModel().getTarget().getAnimation().getName();
+        String name = Maud.getModel().getTarget().getAnimation().name();
         String message = String.format("Delete the %s animation?",
                 MyString.quote(name));
         DialogController controller = new MinimalDialog();
@@ -366,8 +366,8 @@ public class EditorDialogs {
         Validate.nonNull(which2, "2nd animation's model");
 
         EditorModel model = Maud.getModel();
-        String animationName1 = model.getCgm(which1).getAnimation().getName();
-        String animationName2 = model.getCgm(which2).getAnimation().getName();
+        String animationName1 = model.getCgm(which1).getAnimation().name();
+        String animationName2 = model.getCgm(which2).getAnimation().name();
         String defaultName = animationName1 + "," + animationName2;
         String actionPrefix = ActionPrefix.newAnimationFromChain + which1 + " "
                 + which2 + " ";
@@ -509,7 +509,7 @@ public class EditorDialogs {
     public static void renameAnimation() {
         LoadedAnimation animation = Maud.getModel().getTarget().getAnimation();
         if (animation.isReal()) {
-            String oldName = animation.getName();
+            String oldName = animation.name();
             DialogController controller = new AnimationNameDialog("Rename");
 
             Maud.gui.closeAllPopups();
@@ -831,7 +831,7 @@ public class EditorDialogs {
      */
     public static void setDurationProportional() {
         LoadedAnimation animation = Maud.getModel().getTarget().getAnimation();
-        float oldDuration = animation.getDuration();
+        float oldDuration = animation.duration();
         String defaultText = Float.toString(oldDuration);
 
         float min;
@@ -854,7 +854,7 @@ public class EditorDialogs {
      */
     public static void setDurationSame() {
         LoadedAnimation animation = Maud.getModel().getTarget().getAnimation();
-        float oldDuration = animation.getDuration();
+        float oldDuration = animation.duration();
         String defaultText = Float.toString(oldDuration);
 
         float finalTime = animation.findLatestKeyframe();
@@ -883,7 +883,7 @@ public class EditorDialogs {
         if (frameIndex < numFrames - 1) {
             maxTime = track.keyframeTime(frameIndex + 1);
         } else {
-            maxTime = target.getAnimation().getDuration();
+            maxTime = target.getAnimation().duration();
         }
 
         float delta = maxTime - minTime;
@@ -1116,7 +1116,7 @@ public class EditorDialogs {
         float lowerLimit = options.getLowerLimit();
         float upperLimit = options.getUpperLimit();
         if (cgm.getAnimation().isReal()) {
-            float duration = cgm.getAnimation().getDuration();
+            float duration = cgm.getAnimation().duration();
             upperLimit = Math.min(upperLimit, duration);
         }
 
@@ -1165,7 +1165,7 @@ public class EditorDialogs {
         PlayOptions options = cgm.getPlay();
         float lowerLimit = options.getLowerLimit();
         float upperLimit = options.getUpperLimit();
-        float duration = cgm.getAnimation().getDuration();
+        float duration = cgm.getAnimation().duration();
         upperLimit = Math.min(upperLimit, duration);
         int numFrames = track.countKeyframes();
 

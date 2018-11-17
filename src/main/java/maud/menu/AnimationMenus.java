@@ -176,7 +176,7 @@ public class AnimationMenus {
         if (time > 0f) {
             builder.addEdit("Delete keyframes");
         }
-        float duration = animation.getDuration();
+        float duration = animation.duration();
         if (duration > 0f) {
             builder.addEdit("Insert keyframes");
             builder.addDialog("Reduce all tracks");
@@ -461,7 +461,7 @@ public class AnimationMenus {
 
             case "Copy":
                 Cgm target = Maud.getModel().getTarget();
-                String originalName = target.getAnimation().getName();
+                String originalName = target.getAnimation().name();
                 EditorDialogs.newAnimation(ActionPrefix.newAnimationFromCopy,
                         "Copy", originalName);
                 break;
@@ -578,7 +578,7 @@ public class AnimationMenus {
         assert nameList != null;
         assert cgm != null;
 
-        String loadedAnimation = cgm.getAnimation().getName();
+        String loadedAnimation = cgm.getAnimation().name();
         boolean success = nameList.remove(loadedAnimation);
         assert success;
 

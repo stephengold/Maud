@@ -522,7 +522,7 @@ public class Cgm implements Cloneable {
         if (track != null) {
             TweenTransforms technique = Maud.getModel().getTweenTransforms();
             float time = playOptions.getTime();
-            float duration = loadedAnimation.getDuration();
+            float duration = loadedAnimation.duration();
             result = technique.interpolate(time, track, duration, result, null);
         }
 
