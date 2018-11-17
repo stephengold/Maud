@@ -49,6 +49,7 @@ import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import jme3utilities.math.MyVector3f;
 import jme3utilities.minie.MyShape;
+import maud.ParseUtil;
 import maud.PhysicsUtil;
 import maud.model.History;
 import maud.model.option.ShapeParameter;
@@ -438,6 +439,16 @@ public class SelectedShape implements Cloneable {
     }
 
     /**
+     * Select the described shape.
+     *
+     * @param description the shape's description (not null, not empty)
+     */
+    public void select(String description) {
+        long id = ParseUtil.parseShapeId(description);
+        select(id);
+    }
+
+    /**
      * Select the 1st child shape of the compound shape.
      */
     public void selectFirstChild() {
@@ -532,7 +543,7 @@ public class SelectedShape implements Cloneable {
             case ScaleX:
             case ScaleY:
             case ScaleZ:
-                // TODO for kinematic controls, alter via the spatial
+            // TODO for kinematic controls, alter via the spatial
 
             default:
                 throw new IllegalArgumentException(parameter.toString());

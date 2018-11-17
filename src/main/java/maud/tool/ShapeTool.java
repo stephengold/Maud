@@ -125,15 +125,21 @@ class ShapeTool extends Tool {
      */
     private void updateIndex() {
         String indexStatus;
-        String nextButton = "", previousButton = "", selectButton = "";
+        String nextButton = "", previousButton = "", selectButton;
 
         Cgm target = Maud.getModel().getTarget();
+        SelectedShape shape = target.getShape();
+        boolean isSelected = shape.isSelected();
         int numShapes = target.getSceneView().shapeMap().size();
-        if (numShapes > 0) {
-            selectButton = "Select";
+
+        if (numShapes == 0) {
+            selectButton = "";
+        } else if (numShapes == 1 && isSelected) {
+            selectButton = "Deselect shape";
+        } else {
+            selectButton = "Select shape";
         }
 
-        SelectedShape shape = target.getShape();
         if (shape.isSelected()) {
             int selectedIndex = shape.index();
             indexStatus = DescribeUtil.index(selectedIndex, numShapes);
@@ -230,12 +236,12 @@ class ShapeTool extends Tool {
                 CollisionShape userShape = PhysicsUtil.findShape(userId, space);
                 if (userShape != null) {
                     usersText = MyShape.describe(userShape);
-                    suButton = "Select";
+                    suButton = "Select user";
                 } else {
                     PhysicsCollisionObject userObject
                             = PhysicsUtil.findObject(userId, space);
                     usersText = MyObject.objectName(userObject);
-                    suButton = "Select";
+                    suButton = "Select user";
                 }
             } else {
                 usersText = String.format("%d users", numUsers);

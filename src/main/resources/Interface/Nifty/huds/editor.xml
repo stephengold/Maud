@@ -2408,9 +2408,9 @@ the menu bar, status bar, and tool windows.
                                  width="20px">
                             <interact onRelease="perform(next shape)"/>
                         </control>
-                        <panel width="10px"/>
+                        <panel/>
                         <control name="button" id="shapeSelectButton"
-                                 width="50px">
+                                 width="95px">
                             <interact onRelease="perform(select shape)"/>
                         </control>
                     </panel>
@@ -2426,7 +2426,7 @@ the menu bar, status bar, and tool windows.
                                  backgroundColor="#ffff"
                                  width="*"/>
                         <control name="button" id="shapeSelectUserButton"
-                                 width="50px">
+                                 width="75px">
                             <interact onRelease="perform(select shapeUser)"/>
                         </control>
                     </panel>

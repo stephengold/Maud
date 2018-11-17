@@ -90,7 +90,9 @@ public class PhysicsMenus {
         Cgm target = Maud.getModel().getTarget();
         SceneView sceneView = target.getSceneView();
         int numShapes = sceneView.shapeMap().size();
-        if (numShapes > 0) {
+        if (numShapes == 1) {
+            builder.add("Select shape");
+        } else if (numShapes > 1) {
             builder.addSubmenu("Select shape");
         }
 
@@ -385,7 +387,21 @@ public class PhysicsMenus {
     public static void selectShape(Cgm cgm) {
         if (cgm.isLoaded()) {
             List<String> names = cgm.listShapes("");
-            if (!names.isEmpty()) {
+            int numShapes = names.size();
+            SelectedShape selectedShape = cgm.getShape();
+            boolean isSelected = selectedShape.isSelected();
+
+            if (numShapes == 1) {
+                if (isSelected) {
+                    selectedShape.selectNone();
+                } else {
+                    String name = names.get(0);
+                    selectedShape.select(name);
+                }
+                return;
+            }
+
+            if (numShapes > 1) {
                 MenuBuilder builder = new MenuBuilder();
                 for (String name : names) {
                     builder.add(name);
