@@ -419,9 +419,9 @@ public class SceneUpdater {
                     dlsr = EditorViewPorts.addShadows(viewPort);
                     skyUpdater.addShadowRenderer(dlsr);
                 } else {
-                    int newMaps = renderOptions.getNumSplits();
+                    int newMaps = renderOptions.numSplits();
                     int oldMaps = dlsr.getNumShadowMaps();
-                    int newSize = renderOptions.getShadowMapSize();
+                    int newSize = renderOptions.shadowMapSize();
                     int oldSize = dlsr.getShadowMapSize();
                     if (newMaps != oldMaps || newSize != oldSize) {
                         viewPort.removeProcessor(dlsr);
@@ -434,7 +434,7 @@ public class SceneUpdater {
 
                 DirectionalLight mainLight = sceneView.getMainLight();
                 dlsr.setLight(mainLight);
-                EdgeFilteringMode edgeFilter = renderOptions.getEdgeFilter();
+                EdgeFilteringMode edgeFilter = renderOptions.edgeFilter();
                 dlsr.setEdgeFilteringMode(edgeFilter);
 
             } else if (dlsr != null) {
@@ -511,10 +511,10 @@ public class SceneUpdater {
         sky.setEnabled(skySimulated);
 
         if (skySimulated) {
-            float cloudiness = renderOptions.getCloudiness();
+            float cloudiness = renderOptions.cloudiness();
             sky.setCloudiness(cloudiness);
 
-            float hour = renderOptions.getHour();
+            float hour = renderOptions.hour();
             sky.getSunAndStars().setHour(hour);
 
             Updater updater = sky.getUpdater();

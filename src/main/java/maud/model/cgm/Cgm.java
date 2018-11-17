@@ -1279,7 +1279,7 @@ public class Cgm implements Cloneable {
         if (subtree instanceof Geometry) {
             boolean setting;
             RenderOptions options = Maud.getModel().getScene().getRender();
-            TriangleMode mode = options.getTriangleMode();
+            TriangleMode mode = options.triangleMode();
             switch (mode) {
                 case PerMaterial:
                     Geometry geometry = (Geometry) subtree;

@@ -112,11 +112,11 @@ public class RenderOptions implements Cloneable {
     }
 
     /**
-     * Read the cloudiness for sky simulation. TODO rename cloudiness
+     * Read the cloudiness for sky simulation.
      *
      * @return layer opacity (&ge;0, &le;1)
      */
-    public float getCloudiness() {
+    public float cloudiness() {
         assert cloudiness >= 0f;
         assert cloudiness <= 1f;
 
@@ -128,53 +128,21 @@ public class RenderOptions implements Cloneable {
      *
      * @return an enum value (not null)
      */
-    public EdgeFilteringMode getEdgeFilter() {
+    public EdgeFilteringMode edgeFilter() {
         assert edgeFilter != null;
         return edgeFilter;
     }
 
     /**
-     * Read the time of day for sky simulation. TODO rename hour
+     * Read the time of day for sky simulation.
      *
      * @return hours since midnight, solar time (&ge;0, &le;24)
      */
-    public float getHour() {
+    public float hour() {
         assert hour >= 0f;
         assert hour <= 24f;
 
         return hour;
-    }
-
-    /**
-     * Read the number of shadow-map splits. TODO rename numSplits
-     *
-     * @return number (&ge;1, &le;4)
-     */
-    public int getNumSplits() {
-        assert numSplits >= 1 : numSplits;
-        assert numSplits <= 4 : numSplits;
-
-        return numSplits;
-    }
-
-    /**
-     * Read the width (and height) of shadow maps.
-     *
-     * @return pixels per side (&gt;0)
-     */
-    public int getShadowMapSize() {
-        assert shadowMapSize > 0 : shadowMapSize;
-        return shadowMapSize;
-    }
-
-    /**
-     * Read the CG-model triangle rendering mode.
-     *
-     * @return an enum value (not null)
-     */
-    public TriangleMode getTriangleMode() {
-        assert triangleMode != null;
-        return triangleMode;
     }
 
     /**
@@ -194,6 +162,18 @@ public class RenderOptions implements Cloneable {
      */
     public boolean isSkySimulated() {
         return skySimulated;
+    }
+
+    /**
+     * Read the number of shadow-map splits.
+     *
+     * @return number (&ge;1, &le;4)
+     */
+    public int numSplits() {
+        assert numSplits >= 1 : numSplits;
+        assert numSplits <= 4 : numSplits;
+
+        return numSplits;
     }
 
     /**
@@ -311,6 +291,16 @@ public class RenderOptions implements Cloneable {
     }
 
     /**
+     * Read the width (and height) of shadow maps.
+     *
+     * @return pixels per side (&gt;0)
+     */
+    public int shadowMapSize() {
+        assert shadowMapSize > 0 : shadowMapSize;
+        return shadowMapSize;
+    }
+
+    /**
      * Copy the background color for a source C-G model with no sky simulation.
      *
      * @param storeResult (modified if not null)
@@ -338,6 +328,16 @@ public class RenderOptions implements Cloneable {
         storeResult.set(targetBackground);
 
         return storeResult;
+    }
+
+    /**
+     * Read the CG-model triangle rendering mode.
+     *
+     * @return an enum value (not null)
+     */
+    public TriangleMode triangleMode() {
+        assert triangleMode != null;
+        return triangleMode;
     }
 
     /**

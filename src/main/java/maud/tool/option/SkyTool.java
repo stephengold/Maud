@@ -146,11 +146,11 @@ public class SkyTool extends Tool {
         boolean isSkySimulated = options.isSkySimulated();
         setChecked("sky", isSkySimulated);
 
-        float cloudiness = options.getCloudiness();
+        float cloudiness = options.cloudiness();
         setSlider("cloudiness", cloudinessSt, cloudiness);
         updateSliderStatus("cloudiness", 100f * cloudiness, "%");
 
-        float hour = options.getHour();
+        float hour = options.hour();
         setSlider("hour", hourSt, hour);
         int second = Math.round(hour * 3_600);
         int minute = second / TimeOfDay.secondsPerMinute;

@@ -133,8 +133,8 @@ public class EditorViewPorts {
 
         AssetManager manager = Locators.getAssetManager();
         RenderOptions options = Maud.getModel().getScene().getRender();
-        int mapSize = options.getShadowMapSize();
-        int numSplits = options.getNumSplits();
+        int mapSize = options.shadowMapSize();
+        int numSplits = options.numSplits();
         DirectionalLightShadowRenderer dlsr
                 = new DirectionalLightShadowRenderer(manager, mapSize,
                         numSplits);

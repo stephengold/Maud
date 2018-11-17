@@ -147,11 +147,11 @@ public class RenderTool extends Tool {
         boolean shadowsFlag = options.areShadowsRendered();
         setChecked("shadows", shadowsFlag);
 
-        TriangleMode mode = options.getTriangleMode();
+        TriangleMode mode = options.triangleMode();
         String modeName = mode.toString();
         setButtonText("triangles", modeName);
 
-        EdgeFilteringMode edgeFilter = options.getEdgeFilter();
+        EdgeFilteringMode edgeFilter = options.edgeFilter();
         modeName = edgeFilter.toString();
         setButtonText("edgeFilter", modeName);
 

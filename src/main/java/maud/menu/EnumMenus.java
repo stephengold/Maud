@@ -244,7 +244,7 @@ public class EnumMenus {
         MenuBuilder builder = new MenuBuilder();
 
         RenderOptions options = Maud.getModel().getScene().getRender();
-        EdgeFilteringMode selectedMode = options.getEdgeFilter();
+        EdgeFilteringMode selectedMode = options.edgeFilter();
         for (EdgeFilteringMode mode : EdgeFilteringMode.values()) {
             if (mode != selectedMode) {
                 String name = mode.toString();
@@ -533,7 +533,7 @@ public class EnumMenus {
         MenuBuilder builder = new MenuBuilder();
 
         RenderOptions options = Maud.getModel().getScene().getRender();
-        TriangleMode selected = options.getTriangleMode();
+        TriangleMode selected = options.triangleMode();
         for (TriangleMode mode : TriangleMode.values()) {
             if (mode != selected) {
                 String modeName = mode.toString();
