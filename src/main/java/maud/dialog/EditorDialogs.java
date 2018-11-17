@@ -145,7 +145,6 @@ public class EditorDialogs {
                 MyString.quote(LibraryVersion.versionShort()));
 
         text += String.format("%n   jme3-blender (BSD license)");
-        text += String.format("%n   jme3-bullet-native (BSD license)");
         text += String.format("%n   jme3-desktop (BSD license)");
         text += String.format("%n   jme3-effects (BSD license)");
         text += String.format("%n   jme3-lwjgl (BSD license)");
@@ -154,7 +153,6 @@ public class EditorDialogs {
         text += String.format("%n   jme3-terrain (BSD license)");
 
         text += String.format("%n   nifty-default-controls (BSD license)");
-        text += String.format("%n   nifty-style-black (BSD license)");
 
         text += String.format("%n   jme-ttf (%s)",
                 "part FPL license, part BSD license");
