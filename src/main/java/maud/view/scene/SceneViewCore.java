@@ -743,10 +743,10 @@ public class SceneViewCore
          */
         SkeletonOptions options = Maud.getModel().getScene().getSkeleton();
         ShowBones showBones = options.getShowBones();
-        int selectedBoneIndex = cgm.getBone().getIndex();
+        int selectedBoneIndex = cgm.getBone().index();
         BitSet boneIndexSet = cgm.getSkeleton().listShown(showBones,
                 selectedBoneIndex, null);
-        int selectedBone = cgm.getBone().getIndex();
+        int selectedBone = cgm.getBone().index();
         if (selectedBone != -1) {
             boneIndexSet.clear(selectedBone);
         }

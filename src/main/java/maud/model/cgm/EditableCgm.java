@@ -161,7 +161,7 @@ public class EditableCgm extends LoadedCgm {
         List<Integer> parentPosition = findSpatial(parent);
         getSceneView().attachSpatial(parentPosition, newNode);
 
-        String boneName = selectedBone.getName();
+        String boneName = selectedBone.name();
         String description
                 = "add attachments node for " + MyString.quote(boneName);
         editState.setEdited(description);
@@ -398,7 +398,7 @@ public class EditableCgm extends LoadedCgm {
         assert success;
         getSceneView().deleteSubtree(nodePosition);
 
-        String boneName = selectedBone.getName();
+        String boneName = selectedBone.name();
         String description = "delete attachments node for "
                 + MyString.quote(boneName);
         editState.setEdited(description);
@@ -682,7 +682,7 @@ public class EditableCgm extends LoadedCgm {
     public boolean renameBone(String newName) {
         Validate.nonNull(newName, "bone name");
 
-        String oldName = getBone().getName();
+        String oldName = getBone().name();
         boolean success;
         if (!getBone().isSelected()) {
             logger.log(Level.WARNING, "Rename failed: no bone selected.",

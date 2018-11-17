@@ -118,7 +118,7 @@ class BoneRotationTool extends Tool {
             } else {
                 rotation.fromAngles(sliderPositions);
             }
-            int boneIndex = target.getBone().getIndex();
+            int boneIndex = target.getBone().index();
             target.getPose().get().setRotation(boneIndex, rotation);
         }
     }

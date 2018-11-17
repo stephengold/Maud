@@ -95,7 +95,7 @@ class BoneTool extends Tool {
                 status = String.format("%d children", numChildren);
                 button = "Select child";
             } else if (numChildren == 1) {
-                String childName = selectedBone.getChildName(0);
+                String childName = selectedBone.childName(0);
                 status = MyString.quote(childName);
                 button = "Select child";
             } else {
@@ -119,7 +119,7 @@ class BoneTool extends Tool {
         if (selectedBone.isSelected()) {
             LoadedAnimation animation = target.getAnimation();
             if (animation.isRetargetedPose()) {
-                String name = selectedBone.getName();
+                String name = selectedBone.name();
                 if (Maud.getModel().getMap().isBoneMapped(name)) {
                     status = "mapped";
                 } else {
@@ -149,7 +149,7 @@ class BoneTool extends Tool {
         Cgm target = Maud.getModel().getTarget();
         int numBones = target.getSkeleton().countBones();
         if (target.getBone().isSelected()) {
-            int selectedIndex = target.getBone().getIndex();
+            int selectedIndex = target.getBone().index();
             indexStatus = DescribeUtil.index(selectedIndex, numBones);
             nextButton = "+";
             previousButton = "-";
@@ -213,7 +213,7 @@ class BoneTool extends Tool {
 
         SelectedBone bone = Maud.getModel().getTarget().getBone();
         if (bone.isSelected()) {
-            String name = bone.getName();
+            String name = bone.name();
             nameStatus = MyString.quote(name);
             renameButton = "Rename";
 
@@ -244,7 +244,7 @@ class BoneTool extends Tool {
                     status = String.format("none (one of %d roots)", numRoots);
                 }
             } else {
-                String parentName = selectedBone.getParentName();
+                String parentName = selectedBone.parentName();
                 status = MyString.quote(parentName);
                 button = "Select parent";
             }

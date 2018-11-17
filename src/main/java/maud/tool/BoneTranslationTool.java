@@ -119,7 +119,7 @@ class BoneTranslationTool extends Tool {
             float masterScale = readSlider("offMaster", masterSt);
             offsets.multLocal(masterScale);
 
-            int boneIndex = target.getBone().getIndex();
+            int boneIndex = target.getBone().index();
             target.getPose().get().setTranslation(boneIndex, offsets);
         }
     }

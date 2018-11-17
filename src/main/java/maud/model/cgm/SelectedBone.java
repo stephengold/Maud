@@ -83,6 +83,32 @@ public class SelectedBone implements Cloneable {
     // new methods exposed
 
     /**
+     * Read the name of an indexed child of the selected bone.
+     *
+     * @param childIndex which child (&ge;0)
+     * @return name, or null if none
+     */
+    public String childName(int childIndex) {
+        assert childIndex >= 0 : childIndex;
+
+        Bone bone = get();
+        String name;
+        if (bone == null) {
+            name = null;
+        } else {
+            List<Bone> children = bone.getChildren();
+            Bone child = children.get(childIndex);
+            if (child == null) {
+                name = null;
+            } else {
+                name = child.getName();
+            }
+        }
+
+        return name;
+    }
+
+    /**
      * Create an attachments node for the selected bone.
      *
      * @return the new instance
@@ -91,7 +117,7 @@ public class SelectedBone implements Cloneable {
         assert !hasAttachmentsNode();
 
         SkeletonControl sc = cgm.getSkeleton().getSkeletonControl();
-        String boneName = getName();
+        String boneName = name();
         Node newNode = sc.getAttachmentsNode(boneName);
 
         assert hasAttachmentsNode();
@@ -141,83 +167,6 @@ public class SelectedBone implements Cloneable {
     }
 
     /**
-     * Read the name of an indexed child of the selected bone. TODO rename
-     * childName()
-     *
-     * @param childIndex which child (&ge;0)
-     * @return name, or null if none
-     */
-    public String getChildName(int childIndex) {
-        assert childIndex >= 0 : childIndex;
-
-        Bone bone = get();
-        String name;
-        if (bone == null) {
-            name = null;
-        } else {
-            List<Bone> children = bone.getChildren();
-            Bone child = children.get(childIndex);
-            if (child == null) {
-                name = null;
-            } else {
-                name = child.getName();
-            }
-        }
-
-        return name;
-    }
-
-    /**
-     * Read the index of the selected bone in the selected skeleton. TODO rename
-     * index()
-     *
-     * @return the bone index, or noBoneIndex if none selected
-     */
-    public int getIndex() {
-        assert selectedIndex >= SelectedSkeleton.noBoneIndex : selectedIndex;
-        return selectedIndex;
-    }
-
-    /**
-     * Read the name of the selected bone. TODO rename name()
-     *
-     * @return the name or noBone (not null)
-     */
-    public String getName() {
-        String name;
-        if (selectedIndex == SelectedSkeleton.noBoneIndex) {
-            name = SelectedSkeleton.noBone;
-        } else {
-            Bone bone = get();
-            name = bone.getName();
-        }
-
-        return name;
-    }
-
-    /**
-     * Read the name of the parent of the selected bone. TODO rename parentName
-     *
-     * @return name, or null if none
-     */
-    public String getParentName() {
-        Bone bone = get();
-        String name;
-        if (bone == null) {
-            name = null;
-        } else {
-            Bone parent = bone.getParent();
-            if (parent == null) {
-                name = null;
-            } else {
-                name = parent.getName();
-            }
-        }
-
-        return name;
-    }
-
-    /**
      * Test whether the selected bone has an attachments node.
      *
      * @return true if a bone has a node, otherwise false
@@ -242,7 +191,7 @@ public class SelectedBone implements Cloneable {
      */
     public boolean hasTrack() {
         boolean result = false;
-        int boneIndex = getIndex();
+        int boneIndex = index();
         if (boneIndex >= 0) {
             BoneTrack track = cgm.getAnimation().findTrackForBone(boneIndex);
             if (track != null) {
@@ -251,6 +200,16 @@ public class SelectedBone implements Cloneable {
         }
 
         return result;
+    }
+
+    /**
+     * Read the index of the selected bone in the selected skeleton.
+     *
+     * @return the bone index, or noBoneIndex if none selected
+     */
+    public int index() {
+        assert selectedIndex >= SelectedSkeleton.noBoneIndex : selectedIndex;
+        return selectedIndex;
     }
 
     /**
@@ -313,7 +272,7 @@ public class SelectedBone implements Cloneable {
         } else {
             SelectedRagdoll ragdoll = cgm.getRagdoll();
             if (ragdoll.isSelected()) {
-                String name = getName();
+                String name = name();
                 BoneLink link = cgm.getRagdoll().findBoneLink(name);
                 if (link == null) {
                     return false;
@@ -431,7 +390,7 @@ public class SelectedBone implements Cloneable {
      */
     public Quaternion modelOrientation(Quaternion storeResult) {
         Pose pose = cgm.getPose().get();
-        int boneIndex = getIndex();
+        int boneIndex = index();
         storeResult = pose.modelOrientation(boneIndex, storeResult);
 
         return storeResult;
@@ -445,10 +404,27 @@ public class SelectedBone implements Cloneable {
      */
     public Transform modelTransform(Transform storeResult) {
         Pose pose = cgm.getPose().get();
-        int boneIndex = getIndex();
+        int boneIndex = index();
         storeResult = pose.modelTransform(boneIndex, storeResult);
 
         return storeResult;
+    }
+
+    /**
+     * Read the name of the selected bone.
+     *
+     * @return the name or noBone (not null)
+     */
+    public String name() {
+        String name;
+        if (selectedIndex == SelectedSkeleton.noBoneIndex) {
+            name = SelectedSkeleton.noBone;
+        } else {
+            Bone bone = get();
+            name = bone.getName();
+        }
+
+        return name;
     }
 
     /**
@@ -469,11 +445,33 @@ public class SelectedBone implements Cloneable {
     }
 
     /**
+     * Read the name of the parent of the selected bone.
+     *
+     * @return name, or null if none
+     */
+    public String parentName() {
+        Bone bone = get();
+        String name;
+        if (bone == null) {
+            name = null;
+        } else {
+            Bone parent = bone.getParent();
+            if (parent == null) {
+                name = null;
+            } else {
+                name = parent.getName();
+            }
+        }
+
+        return name;
+    }
+
+    /**
      * If bone controls are enabled, reset the bone rotation to identity.
      */
     public void resetRotation() {
         if (shouldEnableControls()) {
-            int boneIndex = getIndex();
+            int boneIndex = index();
             editableCgm.getPose().get().resetRotation(boneIndex);
         }
     }
@@ -483,7 +481,7 @@ public class SelectedBone implements Cloneable {
      */
     public void resetScale() {
         if (shouldEnableControls()) {
-            int boneIndex = getIndex();
+            int boneIndex = index();
             editableCgm.getPose().get().resetScale(boneIndex);
         }
     }
@@ -493,7 +491,7 @@ public class SelectedBone implements Cloneable {
      */
     public void resetTranslation() {
         if (shouldEnableControls()) {
-            int boneIndex = getIndex();
+            int boneIndex = index();
             editableCgm.getPose().get().resetTranslation(boneIndex);
         }
     }
@@ -612,7 +610,7 @@ public class SelectedBone implements Cloneable {
      * Select a track that has the selected bone as its target.
      */
     public void selectTrack() {
-        int boneIndex = getIndex();
+        int boneIndex = index();
         if (boneIndex >= 0) {
             BoneTrack track = cgm.getAnimation().findTrackForBone(boneIndex);
             if (track != null) {
@@ -646,7 +644,7 @@ public class SelectedBone implements Cloneable {
      */
     public void setRotationToAnimation() {
         if (shouldEnableControls()) {
-            int boneIndex = getIndex();
+            int boneIndex = index();
             editableCgm.getPose().setRotationToAnimation(boneIndex);
         }
     }
@@ -657,7 +655,7 @@ public class SelectedBone implements Cloneable {
      */
     public void setScaleToAnimation() {
         if (shouldEnableControls()) {
-            int boneIndex = getIndex();
+            int boneIndex = index();
             editableCgm.getPose().setScaleToAnimation(boneIndex);
         }
     }
@@ -668,7 +666,7 @@ public class SelectedBone implements Cloneable {
      */
     public void setTranslationToAnimation() {
         if (shouldEnableControls()) {
-            int boneIndex = getIndex();
+            int boneIndex = index();
             editableCgm.getPose().setTranslationToAnimation(boneIndex);
         }
     }
@@ -698,7 +696,7 @@ public class SelectedBone implements Cloneable {
      */
     public Quaternion userRotation(Quaternion storeResult) {
         Pose pose = cgm.getPose().get();
-        int boneIndex = getIndex();
+        int boneIndex = index();
         storeResult = pose.userRotation(boneIndex, storeResult);
 
         return storeResult;
@@ -712,7 +710,7 @@ public class SelectedBone implements Cloneable {
      */
     public Vector3f userScale(Vector3f storeResult) {
         Pose pose = cgm.getPose().get();
-        int boneIndex = getIndex();
+        int boneIndex = index();
         storeResult = pose.userScale(boneIndex, storeResult);
 
         return storeResult;
@@ -726,7 +724,7 @@ public class SelectedBone implements Cloneable {
      */
     public Vector3f userTranslation(Vector3f storeResult) {
         Pose pose = cgm.getPose().get();
-        int boneIndex = getIndex();
+        int boneIndex = index();
         storeResult = pose.userTranslation(boneIndex, storeResult);
 
         return storeResult;
@@ -740,7 +738,7 @@ public class SelectedBone implements Cloneable {
      */
     public Vector3f worldLocation(Vector3f storeResult) {
         DisplayedPose displayedPose = cgm.getPose();
-        int boneIndex = getIndex();
+        int boneIndex = index();
         storeResult = displayedPose.worldLocation(boneIndex, storeResult);
 
         return storeResult;

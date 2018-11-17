@@ -273,7 +273,7 @@ class MappingTool extends Tool {
         Cgm source = Maud.getModel().getSource();
         String sourceBoneDesc;
         if (source.getBone().isSelected()) {
-            String sourceName = source.getBone().getName();
+            String sourceName = source.getBone().name();
             sourceBoneDesc = MyString.quote(sourceName);
             String target = Maud.getModel().getMap().targetBoneName(sourceName);
             if (target != null) {
@@ -305,7 +305,7 @@ class MappingTool extends Tool {
 
         SelectedBone bone = Maud.getModel().getTarget().getBone();
         if (bone.isSelected()) {
-            String targetName = bone.getName();
+            String targetName = bone.name();
             targetBoneDesc = MyString.quote(targetName);
             String source = Maud.getModel().getMap().sourceBoneName(targetName);
             if (source != null) {

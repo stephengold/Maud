@@ -135,7 +135,7 @@ public class SelectedLink implements JmeCloneable {
      * Add a AttachmentLink for the selected bone and select that link.
      */
     public void createAttachmentLink() {
-        String boneName = editableCgm.getBone().getName();
+        String boneName = editableCgm.getBone().name();
         Spatial cgmRoot = Maud.getModel().getSource().getRootSpatial();
         Spatial cloneCgm = (Spatial) Misc.deepCopy(cgmRoot);
         editableCgm.attachBone(boneName, cloneCgm);
@@ -147,7 +147,7 @@ public class SelectedLink implements JmeCloneable {
      * link.
      */
     public void createBoneLink() {
-        String boneName = editableCgm.getBone().getName();
+        String boneName = editableCgm.getBone().name();
         boolean success = editableCgm.linkBone(boneName);
         if (success) {
             select("Bone:" + boneName);

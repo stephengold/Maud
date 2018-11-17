@@ -456,7 +456,7 @@ public class SceneUpdater {
         SkeletonOptions options = Maud.getModel().getScene().getSkeleton();
         ShowBones showBones = options.getShowBones();
         visualizer.setEnabled(showBones != ShowBones.None);
-        int selectedBoneIndex = cgm.getBone().getIndex();
+        int selectedBoneIndex = cgm.getBone().index();
         BitSet showSet = cgm.getSkeleton().listShown(showBones,
                 selectedBoneIndex, null);
 

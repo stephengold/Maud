@@ -211,8 +211,8 @@ public class EditableMap extends LoadedMap {
                 && source.getBone().isSelected()
                 && target.getBone().isSelected()) {
             History.autoAdd();
-            String sourceBoneName = source.getBone().getName();
-            String targetBoneName = target.getBone().getName();
+            String sourceBoneName = source.getBone().name();
+            String targetBoneName = target.getBone().name();
             /*
              * Remove any prior mappings involving those bones.
              */

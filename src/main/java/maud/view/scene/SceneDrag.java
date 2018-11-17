@@ -290,7 +290,7 @@ public class SceneDrag {
     private static void rotateBone(Quaternion rotation) {
         Cgm cgm = getCgm();
         SelectedBone bone = cgm.getBone();
-        int boneIndex = bone.getIndex();
+        int boneIndex = bone.index();
         assert boneIndex != -1;
         EditorModel model = Maud.getModel();
         EditableMap map = model.getMap();
@@ -455,7 +455,7 @@ public class SceneDrag {
                      * Scale the selected bone in the displayed pose.
                      */
                     Pose pose = cgm.getPose().get();
-                    int boneIndex = cgm.getBone().getIndex();
+                    int boneIndex = cgm.getBone().index();
                     Vector3f userScale = pose.userScale(boneIndex, null);
                     userScale.multLocal(factor);
                     pose.setScale(boneIndex, userScale);
@@ -617,7 +617,7 @@ public class SceneDrag {
                     /*
                      * Translate the selected bone in the displayed pose.
                      */
-                    int boneIndex = bone.getIndex();
+                    int boneIndex = bone.index();
                     Vector3f userTranslation
                             = pose.userTranslation(boneIndex, null);
                     userTranslation.addLocal(userOffset);

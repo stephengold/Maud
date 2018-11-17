@@ -145,7 +145,7 @@ class LinkTool extends Tool {
 
         if (selectedLink.isSelected()) {
             if (selectedBone.isLinked()) {
-                String boneName = selectedBone.getName();
+                String boneName = selectedBone.name();
                 String linkName = selectedLink.name();
                 if (!boneName.equals(linkName)) {
                     selectButton = "Select linked bone";

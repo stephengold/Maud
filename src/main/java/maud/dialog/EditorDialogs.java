@@ -524,7 +524,7 @@ public class EditorDialogs {
     public static void renameBone() {
         SelectedBone bone = Maud.getModel().getTarget().getBone();
         if (bone.isSelected()) {
-            String oldName = bone.getName();
+            String oldName = bone.name();
             DialogController controller = new BoneRenameDialog("Rename");
 
             Maud.gui.closeAllPopups();
@@ -679,7 +679,7 @@ public class EditorDialogs {
         DialogController controller = new IntegerDialog("Select", indexBase,
                 numBones + indexBase - 1, false);
 
-        int oldIndex = target.getBone().getIndex();
+        int oldIndex = target.getBone().index();
         int defaultIndex = (oldIndex == -1) ? indexBase : oldIndex;
         String defaultText = Integer.toString(defaultIndex);
 

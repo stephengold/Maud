@@ -242,13 +242,13 @@ public class LoadedAnimation implements Cloneable {
         Track[] tracks = realAnimation.getTracks();
         Track baseTrack = tracks[0]; // arbitrary choice
         float[] baseTimes = baseTrack.getKeyFrameTimes();
-        int boneIndex = cgm.getBone().getIndex();
+        int boneIndex = cgm.getBone().index();
         Transform identity = new Transform();
         Track newTrack = MyAnimation.newBoneTrack(boneIndex, baseTimes,
                 identity);
 
         String animationName = realAnimation.getName();
-        String boneName = cgm.getBone().getName();
+        String boneName = cgm.getBone().name();
         String eventDescription = String.format(
                 "add an identity track to %s for bone %s",
                 MyString.quote(animationName), MyString.quote(boneName));

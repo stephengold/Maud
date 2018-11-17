@@ -198,7 +198,7 @@ public class BoneMenus {
             builder.addSubmenu("Attached");
         }
 
-        String sourceBoneName = Maud.getModel().getSource().getBone().getName();
+        String sourceBoneName = Maud.getModel().getSource().getBone().name();
         String boneName;
         boneName = Maud.getModel().getMap().targetBoneName(sourceBoneName);
         if (boneName != null && target.getSkeleton().hasBone(boneName)) {
@@ -306,7 +306,7 @@ public class BoneMenus {
                 builder.addSubmenu("Root");
             }
 
-            String targetBoneName = model.getTarget().getBone().getName();
+            String targetBoneName = model.getTarget().getBone().name();
             String boneName = model.getMap().sourceBoneName(targetBoneName);
             if (boneName != null && sourceSkeleton.hasBone(boneName)) {
                 builder.addBone("Mapped");

@@ -150,7 +150,7 @@ public class AnimationMenus {
                 builder.addEdit("Wrap");
             }
         }
-        int boneIndex = target.getBone().getIndex();
+        int boneIndex = target.getBone().index();
         if (boneIndex != SelectedSkeleton.noBoneIndex
                 && target.getAnimation().isReal()
                 && !target.getAnimation().hasTrackForBone(boneIndex)) {
