@@ -118,7 +118,7 @@ class BoneScaleTool extends Tool {
             float masterScale = readSlider("scaMaster", masterSt);
             scales.multLocal(masterScale);
 
-            int boneIndex = target.getBone().getIndex();
+            int boneIndex = target.getBone().index();
             target.getPose().get().setScale(boneIndex, scales);
         }
     }
