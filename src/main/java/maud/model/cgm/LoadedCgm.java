@@ -373,7 +373,7 @@ public class LoadedCgm extends Cgm {
         String result = assetRootPath;
         if (result.isEmpty() || result.endsWith(".jar")
                 || result.endsWith(".zip")) {
-            result = ActionApplication.getWrittenAssetDirPath();
+            result = ActionApplication.writtenAssetPath();
         }
 
         return result;
