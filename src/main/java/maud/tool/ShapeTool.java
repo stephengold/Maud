@@ -89,7 +89,7 @@ class ShapeTool extends Tool {
     // private methods
 
     /**
-     * Update the children and select button.
+     * Update the children and child-select button.
      */
     private void updateChildren() {
         String childrenText = "";
@@ -194,11 +194,12 @@ class ShapeTool extends Tool {
     }
 
     /**
-     * Update the type and axis.
+     * Update the type, axis, and vertex counts.
      */
     private void updateType() {
         String type = "";
         String axisName = "";
+        String vertices = "";
 
         Cgm target = Maud.getModel().getTarget();
         SelectedShape shape = target.getShape();
@@ -208,10 +209,14 @@ class ShapeTool extends Tool {
             if (axisIndex != -1) {
                 axisName = DescribeUtil.axisName(axisIndex);
             }
+
+            int numVertices = shape.countGeneratorVertices();
+            vertices = String.format("%d", numVertices);
         }
 
         setStatusText("shapeType", " " + type);
         setStatusText("shapeAxis", axisName);
+        setStatusText("shapeVertices", " " + vertices);
     }
 
     /**

@@ -34,6 +34,11 @@ import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.bullet.collision.shapes.ConeCollisionShape;
 import com.jme3.bullet.collision.shapes.CylinderCollisionShape;
+import com.jme3.bullet.collision.shapes.GImpactCollisionShape;
+import com.jme3.bullet.collision.shapes.HullCollisionShape;
+import com.jme3.bullet.collision.shapes.MeshCollisionShape;
+import com.jme3.bullet.collision.shapes.MultiSphere;
+import com.jme3.bullet.collision.shapes.SimplexCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.collision.shapes.infos.ChildCollisionShape;
 import com.jme3.math.Quaternion;
@@ -144,7 +149,10 @@ public class SelectedShape implements Cloneable {
             case ScaleX:
             case ScaleY:
             case ScaleZ:
-                result = true; // TODO
+                result = false; // TODO
+                break;
+            case ScaledVolume:
+                result = false; // TODO
                 break;
             default:
                 throw new IllegalArgumentException(parameter.toString());
@@ -183,6 +191,39 @@ public class SelectedShape implements Cloneable {
             CompoundCollisionShape ccs = (CompoundCollisionShape) shape;
             List<ChildCollisionShape> children = ccs.getChildren();
             count = children.size();
+        }
+
+        assert count >= 0 : count;
+        return count;
+    }
+
+    /**
+     * Count the vertices used to generate the shape.
+     *
+     * @return count (&ge;0)
+     */
+    public int countGeneratorVertices() {
+        int count = 0;
+        CollisionShape shape = find();
+        if (shape instanceof CapsuleCollisionShape) {
+            count = 2;
+        } else if (shape instanceof GImpactCollisionShape) {
+            GImpactCollisionShape giShape = (GImpactCollisionShape) shape;
+            count = giShape.countMeshVertices();
+        } else if (shape instanceof HullCollisionShape) {
+            HullCollisionShape hullShape = (HullCollisionShape) shape;
+            count = hullShape.countMeshVertices();
+        } else if (shape instanceof MeshCollisionShape) {
+            MeshCollisionShape meshShape = (MeshCollisionShape) shape;
+            count = meshShape.countMeshVertices();
+        } else if (shape instanceof MultiSphere) {
+            MultiSphere multiSphereShape = (MultiSphere) shape;
+            count = multiSphereShape.countSpheres();
+        } else if (shape instanceof SimplexCollisionShape) {
+            SimplexCollisionShape simplexShape = (SimplexCollisionShape) shape;
+            count = simplexShape.countMeshVertices();
+        } else if (shape instanceof SphereCollisionShape) {
+            count = 1;
         }
 
         assert count >= 0 : count;
@@ -310,6 +351,9 @@ public class SelectedShape implements Cloneable {
                     break;
                 case ScaleZ:
                     result = shape.getScale(null).z;
+                    break;
+                case ScaledVolume:
+                    result = MyShape.volume(shape);
                     break;
                 default:
                     throw new IllegalArgumentException(parameter.toString());

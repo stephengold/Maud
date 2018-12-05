@@ -2393,7 +2393,7 @@ the menu bar, status bar, and tool windows.
 
             <control name="window" id="shapeTool" title="Shape Tool"
                      hideOnClose="true"
-                     height="195px" width="230px" x="85" y="185">
+                     height="222px" width="235px" x="85" y="185">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="28px">
                         <control name="button" id="shapePreviousButton"
@@ -2440,6 +2440,12 @@ the menu bar, status bar, and tool windows.
                                  backgroundColor="#ffff"
                                  textHAlign="center"
                                  width="20px"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Mesh vertices:  "/>
+                        <control name="label" id="shapeVertices"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="button" id="shapeParmButton"

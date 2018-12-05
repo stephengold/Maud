@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2018, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -36,39 +36,43 @@ public enum ShapeParameter {
     // values
 
     /**
-     * half extent on the local X axis (a float)
+     * unscaled half extent on the local X axis
      */
     HalfExtentX,
     /**
-     * half extent on the local Y axis (a float)
+     * unscaled half extent on the local Y axis
      */
     HalfExtentY,
     /**
-     * half extent on the local Z axis (a float)
+     * unscaled half extent on the local Z axis
      */
     HalfExtentZ,
     /**
-     *
+     * unscaled height
      */
     Height,
     /**
-     *
+     * margin
      */
     Margin,
     /**
-     *
+     * unscaled radius
      */
     Radius,
     /**
-     * X-component of the scale (a float)
+     * X-component of the scale
      */
     ScaleX,
     /**
-     * Y-component of the scale (a float)
+     * Y-component of the scale
      */
     ScaleY,
     /**
-     * Z-component of the scale (a float)
+     * Z-component of the scale
      */
-    ScaleZ;
+    ScaleZ,
+    /**
+     * scaled volume
+     */
+    ScaledVolume;
 }
