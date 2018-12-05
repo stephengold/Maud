@@ -34,10 +34,11 @@ import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.bullet.collision.shapes.ConeCollisionShape;
 import com.jme3.bullet.collision.shapes.CylinderCollisionShape;
+import com.jme3.bullet.collision.shapes.MultiSphere;
+import com.jme3.bullet.collision.shapes.SimplexCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.collision.shapes.infos.ChildCollisionShape;
 import com.jme3.bullet.control.PhysicsControl;
-import com.jme3.bullet.joints.PhysicsJoint;
 import com.jme3.bullet.objects.PhysicsCharacter;
 import com.jme3.bullet.objects.PhysicsGhostObject;
 import com.jme3.bullet.objects.PhysicsRigidBody;
@@ -57,6 +58,7 @@ import java.util.TreeSet;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
+import jme3utilities.math.RectangularSolid;
 
 /**
  * Physics utility methods. All methods should be static.
@@ -186,12 +188,12 @@ public class PhysicsUtil {
     }
 
     /**
-     * Create a collision shape of the specified type with the specified half
-     * extents and margin.
+     * Create a symmetrical collision shape of the specified type with the
+     * specified half extents and margin.
      *
-     * @param shapeType type of shape (not null)
-     * @param halfExtents desired half extents relative to the center (not null,
-     * all non-negative, unaffected)
+     * @param shapeType type of shape (not null, not Hull)
+     * @param halfExtents desired half extents relative to the center, not
+     * including margin (not null, all non-negative, unaffected)
      * @param margin desired margin (&ge;0, ignored for sphere and capsule)
      * @return a new instance
      */
@@ -204,6 +206,21 @@ public class PhysicsUtil {
         CollisionShape result;
         float axisHalfExtent, height, radius;
         int axis;
+        if (halfExtents.x >= halfExtents.y && halfExtents.x >= halfExtents.z) {
+            radius = Math.max(halfExtents.y, halfExtents.z);
+            axisHalfExtent = halfExtents.x;
+            axis = PhysicsSpace.AXIS_X;
+        } else if (halfExtents.y >= halfExtents.z) {
+            radius = Math.max(halfExtents.x, halfExtents.z);
+            axisHalfExtent = halfExtents.y;
+            axis = PhysicsSpace.AXIS_Y;
+        } else {
+            radius = Math.max(halfExtents.x, halfExtents.y);
+            axisHalfExtent = halfExtents.z;
+            axis = PhysicsSpace.AXIS_Z;
+        }
+        height = 2f * (axisHalfExtent - radius);
+        assert height >= 0f : height;
 
         switch (shapeType) {
             case Box:
@@ -212,22 +229,6 @@ public class PhysicsUtil {
                 break;
 
             case Capsule:
-                if (halfExtents.x >= halfExtents.y
-                        && halfExtents.x >= halfExtents.z) {
-                    radius = Math.max(halfExtents.y, halfExtents.z);
-                    axisHalfExtent = halfExtents.x;
-                    axis = PhysicsSpace.AXIS_X;
-                } else if (halfExtents.y >= halfExtents.z) {
-                    radius = Math.max(halfExtents.x, halfExtents.z);
-                    axisHalfExtent = halfExtents.y;
-                    axis = PhysicsSpace.AXIS_Y;
-                } else {
-                    radius = Math.max(halfExtents.x, halfExtents.y);
-                    axisHalfExtent = halfExtents.z;
-                    axis = PhysicsSpace.AXIS_Z;
-                }
-                height = 2f * (axisHalfExtent - radius);
-                assert height >= 0f : height;
                 result = new CapsuleCollisionShape(radius, height, axis);
                 // no margin
                 break;
@@ -271,6 +272,34 @@ public class PhysicsUtil {
             case CylinderZ:
                 result = new CylinderCollisionShape(halfExtents,
                         PhysicsSpace.AXIS_Z);
+                result.setMargin(margin);
+                break;
+
+            case MsBox:
+                RectangularSolid solid = new RectangularSolid(halfExtents);
+                result = new MultiSphere(solid);
+                result.setMargin(margin);
+                break;
+
+            case MsCapsule:
+                result = new MultiSphere(radius, height, axis);
+                result.setMargin(margin);
+                break;
+
+            case MsSphere:
+                radius = MyMath.max(halfExtents.x, halfExtents.y,
+                        halfExtents.z); // TODO average?
+                assert radius >= 0f : radius;
+                result = new MultiSphere(radius);
+                result.setMargin(margin);
+                break;
+
+            case Simplex:
+                Vector3f v1 = halfExtents.clone().multLocal(-1f, -1f, -1f);
+                Vector3f v2 = halfExtents.clone().multLocal(+1f, -1f, +1f);
+                Vector3f v3 = halfExtents.clone().multLocal(-1f, +1f, +1f);
+                Vector3f v4 = halfExtents.clone().multLocal(+1f, +1f, -1f);
+                result = new SimplexCollisionShape(v1, v2, v3, v4);
                 result.setMargin(margin);
                 break;
 

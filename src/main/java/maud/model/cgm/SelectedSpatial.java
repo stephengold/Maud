@@ -36,6 +36,8 @@ import com.jme3.bounding.BoundingBox;
 import com.jme3.bounding.BoundingSphere;
 import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.animation.DynamicAnimControl;
+import com.jme3.bullet.animation.LinkConfig;
+import com.jme3.bullet.animation.RagUtils;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -52,6 +54,7 @@ import com.jme3.material.MaterialDef;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
+import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
@@ -110,6 +113,10 @@ public class SelectedSpatial implements JmeCloneable {
      * dummy buffer description, used to indicate that no buffer is selected
      */
     final public static String noBuffer = "( no buffer )";
+    /**
+     * local copy of {@link com.jme3.math.Vector3f#ZERO}
+     */
+    final private static Vector3f translateIdentity = new Vector3f(0f, 0f, 0f);
     // *************************************************************************
     // fields
 
@@ -152,12 +159,7 @@ public class SelectedSpatial implements JmeCloneable {
     public void addGhostControl(ShapeType shapeType) {
         Validate.nonNull(shapeType, "shape type");
 
-        SceneView sceneView = cgm.getSceneView();
-        Spatial viewSpatial = sceneView.selectedSpatial();
-        Vector3f halfExtents = MaudUtil.halfExtents(viewSpatial);
-        float margin = 0.04f;
-        CollisionShape shape
-                = PhysicsUtil.makeShape(shapeType, halfExtents, margin);
+        CollisionShape shape = makeShape(shapeType);
         GhostControl ghostControl = new GhostControl(shape);
         ghostControl.setApplyScale(true);
 
@@ -236,12 +238,7 @@ public class SelectedSpatial implements JmeCloneable {
     public void addRigidBodyControl(ShapeType shapeType) {
         Validate.nonNull(shapeType, "shape type");
 
-        SceneView sceneView = cgm.getSceneView();
-        Spatial viewSpatial = sceneView.selectedSpatial();
-        Vector3f halfExtents = MaudUtil.halfExtents(viewSpatial);
-        float margin = 0.04f;
-        CollisionShape shape
-                = PhysicsUtil.makeShape(shapeType, halfExtents, margin);
+        CollisionShape shape = makeShape(shapeType);
         float mass = 1f;
         RigidBodyControl rbc = new RigidBodyControl(shape, mass);
         rbc.setApplyScale(true);
@@ -1438,11 +1435,10 @@ public class SelectedSpatial implements JmeCloneable {
      */
     void toggleBoundType() {
         BoundingVolume.Type oldType = getWorldBoundType();
-        BoundingVolume newBound;
+        BoundingVolume newBound = null;
         if (oldType == BoundingVolume.Type.AABB) {
             newBound = new BoundingSphere();
-        } else {
-            assert oldType == BoundingVolume.Type.Sphere;
+        } else if (oldType == BoundingVolume.Type.Sphere) {
             newBound = new BoundingBox();
         }
 
@@ -1559,6 +1555,33 @@ public class SelectedSpatial implements JmeCloneable {
         }
 
         return result;
+    }
+
+    /**
+     * Create a shape of the specified type for the selected spatial.
+     *
+     * @param shapeType (not null)
+     * @return a new shape (not null)
+     */
+    private CollisionShape makeShape(ShapeType shapeType) {
+        SceneView sceneView = cgm.getSceneView();
+        Spatial viewSpatial = sceneView.selectedSpatial();
+        CollisionShape shape;
+        if (shapeType == ShapeType.Hull) {
+            Transform localToWorld = viewSpatial.getWorldTransform();
+            Transform worldToLocal = localToWorld.invert();
+            Collection<Vector3f> vertexLocations
+                    = RagUtils.vertexLocations(viewSpatial, null);
+            LinkConfig config = new LinkConfig();
+            shape = config.createShape(worldToLocal, translateIdentity,
+                    vertexLocations);
+        } else {
+            Vector3f halfExtents = MaudUtil.halfExtents(viewSpatial);
+            float margin = 0.04f;
+            shape = PhysicsUtil.makeShape(shapeType, halfExtents, margin);
+        }
+
+        return shape;
     }
 
     /**

@@ -35,33 +35,53 @@ public enum ShapeType {
      */
     Box,
     /**
-     * CapsuleCollisionShape
+     * CapsuleCollisionShape, height on longest axis
      */
     Capsule,
     /**
-     * ConeCollisionShape on X axis
+     * ConeCollisionShape, height on X axis
      */
     ConeX,
     /**
-     * ConeCollisionShape on Y axis
+     * ConeCollisionShape, height on Y axis
      */
     ConeY,
     /**
-     * ConeCollisionShape on Z axis
+     * ConeCollisionShape, height on Z axis
      */
     ConeZ,
     /**
-     * CylinderCollisionShape on X axis
+     * CylinderCollisionShape, height on X axis
      */
     CylinderX,
     /**
-     * CylinderCollisionShape on Y axis
+     * CylinderCollisionShape, height on Y axis
      */
     CylinderY,
     /**
-     * CylinderCollisionShape on Z axis
+     * CylinderCollisionShape, height on Z axis
      */
     CylinderZ,
+    /**
+     * HullCollisionShape
+     */
+    Hull,
+    /**
+     * MultiSphere axis-aligned rounded box
+     */
+    MsBox,
+    /**
+     * MultiSphere capsule, height on longest axis
+     */
+    MsCapsule,
+    /**
+     * MultiSphere sphere
+     */
+    MsSphere,
+    /**
+     * SimplexCollisionShape
+     */
+    Simplex,
     /**
      * SphereCollisionShape
      */
