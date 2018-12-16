@@ -51,7 +51,7 @@
             height="30"/>
     </style>
 
-    <!-- custom style for a scrollpanel without the rendering bug -->
+    <!-- custom style for a scrollpanel without the rendering bug (JME issue 99) -->
     <style id="bats-scroll-panel#scrollpanel">
         <attributes backgroundColor="#ffff"/>
         <effect overlay="true">

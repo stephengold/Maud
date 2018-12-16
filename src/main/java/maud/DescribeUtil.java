@@ -70,7 +70,7 @@ public class DescribeUtil {
     // new methods exposed
 
     /**
-     * Describe a coordinate axis.
+     * Describe a coordinate axis. TODO use MyString
      *
      * @param axisIndex the index of the axis: 0&rarr;X, 1&rarr;Y, 2&rarr;Z
      * @return a textual description (not null, not empty)
