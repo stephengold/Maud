@@ -50,7 +50,7 @@ public class QuitDialog extends MinimalDialog {
 
     /**
      * Callback to update the dialog box prior to rendering. (Invoked once per
-     * render pass.)
+     * frame.)
      *
      * @param dialogElement (not null)
      * @param ignored time interval between frames (in seconds, &ge;0)
