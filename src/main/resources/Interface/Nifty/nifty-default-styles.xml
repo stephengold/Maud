@@ -22,5 +22,4 @@
     <useStyles filename="hint/nifty-hint.xml"/>
     <useStyles filename="treebox/nifty-treebox.xml"/>
     <useStyles filename="messagebox/nifty-messagebox.xml"/>
-    >
 </nifty-styles>
