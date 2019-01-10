@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -464,7 +464,7 @@ public class SceneUpdater {
         visualizer.setLineWidth(lineWidth);
 
         float pointSize = options.getPointSize();
-        AppSettings current = Maud.getSettings();
+        AppSettings current = Maud.getApplication().getSettings();
         int msaaSamples = current.getSamples();
         if (msaaSamples == 16) { // work around JME issue #878
             pointSize *= 2f;
@@ -550,7 +550,7 @@ public class SceneUpdater {
             material.setColor("Color", color);
 
             float pointSize = options.getPointSize();
-            AppSettings current = Maud.getSettings();
+            AppSettings current = Maud.getApplication().getSettings();
             int msaaSamples = current.getSamples();
             if (msaaSamples == 16) { // work around JME issue #878
                 pointSize *= 2f;

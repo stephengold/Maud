@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -197,7 +197,7 @@ public class ScoreResources {
          * wireframe materials for axes
          */
         float pointSize = 3f;
-        AppSettings current = Maud.getSettings();
+        AppSettings current = Maud.getApplication().getSettings();
         int msaaSamples = current.getSamples();
         if (msaaSamples == 16) { // work around JME issue #878
             pointSize *= 2f;

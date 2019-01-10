@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -133,16 +133,6 @@ public class Maud extends GuiApplication {
     public static EditorModel getModel() {
         assert editorModel != null;
         return editorModel;
-    }
-
-    /**
-     * Access the live display settings.
-     *
-     * @return the pre-existing instance (not null)
-     */
-    public static AppSettings getSettings() {
-        assert application.settings != null;
-        return application.settings;
     }
 
     /**
