@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,7 +31,6 @@ import com.jme3.material.RenderState;
 import com.jme3.scene.Mesh;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
-import maud.DescribeUtil;
 import maud.Maud;
 import maud.ParseUtil;
 import maud.menu.EditorMenus;
@@ -42,7 +41,6 @@ import maud.menu.SpatialMenus;
 import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
-import maud.model.option.DisplaySettings;
 import maud.model.option.LoadBvhAxisOrder;
 import maud.model.option.scene.MovementMode;
 
@@ -178,10 +176,6 @@ class SelectFNAction {
                 EnumMenus.selectMeshMode();
                 break;
 
-            case Action.selectMsaaFactor:
-                ShowMenus.selectMsaaFactor();
-                break;
-
             default:
                 handled = testForPrefixes(actionString);
         }
@@ -278,19 +272,6 @@ class SelectFNAction {
             arg = MyString.remainder(actionString, ActionPrefix.selectMovement);
             MovementMode mode = MovementMode.valueOf(arg);
             model.getScene().getCamera().setMode(mode);
-
-        } else if (actionString.startsWith(ActionPrefix.selectMsaaFactor)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.selectMsaaFactor);
-            int factor = 16;
-            for (int f : new int[]{1, 2, 4, 6, 8}) {
-                String aaDescription = DescribeUtil.msaaFactor(f);
-                if (arg.equals(aaDescription)) {
-                    factor = f;
-                    break;
-                }
-            }
-            DisplaySettings.setMsaaFactor(factor);
 
         } else {
             handled = false;

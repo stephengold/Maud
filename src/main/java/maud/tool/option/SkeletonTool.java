@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,11 +31,11 @@ import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.SliderTransform;
+import jme3utilities.nifty.Tool;
 import maud.Maud;
 import maud.model.option.ShowBones;
 import maud.model.option.scene.SkeletonColors;
 import maud.model.option.scene.SkeletonOptions;
-import maud.tool.Tool;
 
 /**
  * The controller for the "Skeleton" tool in Maud's editor screen.

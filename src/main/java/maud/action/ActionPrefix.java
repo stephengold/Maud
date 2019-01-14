@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -281,10 +281,6 @@ public class ActionPrefix {
      */
     final public static String selectBufferUsage = "select bufferUsage ";
     /**
-     * argument is a decimal number of bits
-     */
-    final public static String selectColorDepth = "select colorDepth ";
-    /**
      * argument is the name of a cull hint
      */
     final public static String selectCullHint = "select cullHint ";
@@ -358,11 +354,6 @@ public class ActionPrefix {
      * argument is the name of a movement-mode enum value
      */
     final public static String selectMovement = "select movement ";
-    /**
-     * argument is a number of samples per pixel, formatted using
-     * {@link maud.DescribeUtil#msaaFactor(int)}
-     */
-    final public static String selectMsaaFactor = "select msaaFactor ";
     /**
      * argument is the name of an orbit-center enum value
      */
@@ -571,11 +562,6 @@ public class ActionPrefix {
      */
     final public static String setCloudiness = "set cloudiness ";
     /**
-     * arguments are the decimal width in pixels, an "x", and the decimal height
-     * in pixels
-     */
-    final public static String setDimensions = "set dimensions ";
-    /**
      * argument is a decimal duration in seconds
      */
     final public static String setDurationProportional
@@ -632,10 +618,6 @@ public class ActionPrefix {
      * arguments are whichCgm and a decimal diameter in world units
      */
     final public static String setPlatformDiameter = "set platformDiameter ";
-    /**
-     * argument is a decimal refresh rate in Hertz
-     */
-    final public static String setRefreshRate = "set refreshRate ";
     /**
      * arguments are the parameter name and a decimal float
      */

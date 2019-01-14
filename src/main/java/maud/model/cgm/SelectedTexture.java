@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018, Stephen Gold
+ Copyright (c) 2018-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -532,13 +532,13 @@ public class SelectedTexture implements JmeCloneable {
             Spatial spatial = firstRef.getOverrideSpatial();
             cgm.getSpatial().select(spatial);
             cgm.getOverride().select(parameterName);
-            tool = Maud.gui.getTool("overrides");
+            tool = Maud.gui.findTool("overrides");
         } else {
             assert firstRef.isInMaterial();
             Material material = firstRef.getMaterial();
             cgm.getSpatial().selectMaterial(material);
             cgm.getMatParam().select(parameterName);
-            tool = Maud.gui.getTool("material");
+            tool = Maud.gui.findTool("material");
         }
         tool.select();
     }

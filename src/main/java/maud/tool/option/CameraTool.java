@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -28,12 +28,12 @@ package maud.tool.option;
 
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.Tool;
 import maud.Maud;
 import maud.model.option.scene.CameraOptions;
 import maud.model.option.scene.MovementMode;
 import maud.model.option.scene.OrbitCenter;
 import maud.model.option.scene.ProjectionMode;
-import maud.tool.Tool;
 
 /**
  * The controller for the "Camera" tool in Maud's editor screen. The camera tool

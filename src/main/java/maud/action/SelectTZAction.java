@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -261,7 +261,7 @@ class SelectTZAction {
         if (!handled && actionString.startsWith(ActionPrefix.selectTool)) {
             String toolName = MyString.remainder(actionString,
                     ActionPrefix.selectTool);
-            WindowController tool = Maud.gui.getTool(toolName);
+            WindowController tool = Maud.gui.findTool(toolName);
             if (tool != null) {
                 tool.select();
                 handled = true;
@@ -276,7 +276,7 @@ class SelectTZAction {
                 int x = Integer.parseInt(args[1]);
                 int y = Integer.parseInt(args[2]);
 
-                WindowController tool = Maud.gui.getTool(toolName);
+                WindowController tool = Maud.gui.findTool(toolName);
                 if (tool != null) {
                     tool.select();
                     Element element = tool.getElement();

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -58,7 +58,6 @@ import jme3utilities.sky.Constants;
 import jme3utilities.ui.Locators;
 import jme3utilities.ui.UiVersion;
 import jme3utilities.wes.WesVersion;
-import maud.DescribeUtil;
 import maud.Maud;
 import maud.action.Action;
 import maud.action.ActionPrefix;
@@ -82,7 +81,6 @@ import maud.model.cgm.SelectedShape;
 import maud.model.cgm.SelectedSpatial;
 import maud.model.cgm.SelectedTrack;
 import maud.model.cgm.TrackItem;
-import maud.model.option.DisplaySettings;
 import maud.model.option.RigidBodyParameter;
 import maud.model.option.ShapeParameter;
 
@@ -802,26 +800,6 @@ public class EditorDialogs {
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter the buffer stride in bytes:",
                 defaultText, ActionPrefix.setBufferStride, controller);
-    }
-
-    /**
-     * Display a "set dimensions" dialog to enter the dimensions.
-     */
-    public static void setDimensions() {
-        int height = DisplaySettings.getHeight();
-        int maxHeight = DisplaySettings.maxHeight;
-        int maxWidth = DisplaySettings.maxWidth;
-        int minHeight = DisplaySettings.minHeight;
-        int minWidth = DisplaySettings.minWidth;
-        int width = DisplaySettings.getWidth();
-
-        String defaultText = DescribeUtil.displayDimensions(width, height);
-        DialogController controller = new DimensionsDialog("Set", minWidth,
-                minHeight, maxWidth, maxHeight);
-
-        Maud.gui.closeAllPopups();
-        Maud.gui.showTextEntryDialog("Enter display dimensions in pixels:",
-                defaultText, ActionPrefix.setDimensions, controller);
     }
 
     /**

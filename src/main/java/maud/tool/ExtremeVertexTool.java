@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018, Stephen Gold
+ Copyright (c) 2018-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -29,6 +29,7 @@ package maud.tool;
 import com.jme3.math.Transform;
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.Tool;
 import maud.Maud;
 import maud.model.EditorModel;
 import maud.model.cgm.Cgm;

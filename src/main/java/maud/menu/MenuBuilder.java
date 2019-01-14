@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -30,9 +30,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
+import jme3utilities.nifty.PopupMenuBuilder;
 import maud.Maud;
 
 /**
@@ -40,7 +40,7 @@ import maud.Maud;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class MenuBuilder {
+class MenuBuilder extends PopupMenuBuilder {
     // *************************************************************************
     // constants and loggers
 
@@ -50,58 +50,7 @@ class MenuBuilder {
     final private static Logger logger
             = Logger.getLogger(MenuBuilder.class.getName());
     // *************************************************************************
-    // fields
-
-    /**
-     * list of menu items TODO specify maxItems in the constructor
-     */
-    final private List<String> items = new ArrayList<>(40);
-    /**
-     * list of menu icon asset paths
-     */
-    final private List<String> icons = new ArrayList<>(40);
-    // *************************************************************************
     // new methods exposed
-
-    /**
-     * Add an item without an icon.
-     *
-     * @param item (not null, not empty)
-     */
-    void add(String item) {
-        assert item != null;
-        assert !item.isEmpty();
-
-        items.add(item);
-        icons.add(null);
-    }
-
-    /**
-     * Add an item with the specified icon.
-     *
-     * @param item (not null, not empty)
-     * @param iconAssetPath path to the icon's image asset (may be null)
-     */
-    void add(String item, String iconAssetPath) {
-        assert item != null;
-        assert !item.isEmpty();
-
-        items.add(item);
-        icons.add(iconAssetPath);
-    }
-
-    /**
-     * Add a collection of items without icons.
-     *
-     * @param items (not null, unaffected)
-     */
-    void addAll(Collection<String> items) {
-        assert items != null;
-
-        for (String item : items) {
-            add(item);
-        }
-    }
 
     /**
      * Add an item with the Blender logo to the menu.
@@ -374,36 +323,6 @@ class MenuBuilder {
     }
 
     /**
-     * Copy the icons to a new array.
-     *
-     * @return a new array
-     */
-    String[] copyIcons() {
-        int numIcons = icons.size();
-        String[] result = new String[numIcons];
-        for (int i = 0; i < numIcons; i++) {
-            result[i] = icons.get(i);
-        }
-
-        return result;
-    }
-
-    /**
-     * Copy the items to a new array.
-     *
-     * @return a new array
-     */
-    String[] copyItems() {
-        int numItems = items.size();
-        String[] result = new String[numItems];
-        for (int i = 0; i < numItems; i++) {
-            result[i] = items.get(i);
-        }
-
-        return result;
-    }
-
-    /**
      * Test whether a filename (or zip entry name) has a CGM suffix.
      *
      * @param name the name of the file/entry (not null, not empty)
@@ -436,20 +355,6 @@ class MenuBuilder {
     }
 
     /**
-     * Test whether the menu contains the specified item.
-     *
-     * @param item (not null, not empty)
-     * @return true if found, otherwise false
-     */
-    boolean hasItem(String item) {
-        assert item != null;
-        assert !item.isEmpty();
-
-        boolean result = items.contains(item);
-        return result;
-    }
-
-    /**
      * Test whether a filename (or zip entry name) has a texture suffix.
      *
      * @param name the name of the file/entry (not null, not empty)
@@ -474,38 +379,16 @@ class MenuBuilder {
     }
 
     /**
-     * Test whether the menu is empty.
-     *
-     * @return true if empty, otherwise false
-     */
-    boolean isEmpty() {
-        boolean result = items.isEmpty();
-        return result;
-    }
-
-    /**
-     * Remove everything from the menu and start over.
-     */
-    void reset() {
-        items.clear();
-        icons.clear();
-    }
-
-    /**
      * Display the menu in the editor screen, unless it's empty.
      *
      * @param actionPrefix common prefix of the menu's action strings (not null,
      * usually the final character will be a space)
      */
     void show(String actionPrefix) {
-        assert actionPrefix != null;
-        logger.log(Level.INFO, "actionPrefix = {0}",
-                MyString.quote(actionPrefix));
-
         int numItems = items.size();
         if (numItems > 0) {
             String[] itemArray = copyItems();
-            String[] iconArray = copyIcons();
+            String[] iconArray = copyIconAssetPaths();
             Maud.gui.showPopupMenu(actionPrefix, itemArray, iconArray);
         }
     }

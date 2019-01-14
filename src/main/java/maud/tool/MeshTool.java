@@ -32,6 +32,7 @@ import com.jme3.scene.VertexBuffer;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.Tool;
 import maud.DescribeUtil;
 import maud.Maud;
 import maud.menu.WhichSpatials;

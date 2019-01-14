@@ -47,7 +47,7 @@ Maud was designed for a desktop environment with:
  + a wheel mouse and
  + a display at least 640 pixels wide and 480 pixels tall.
 
-Status as of September 2018: seeking more alpha testers.
+Status as of January 2019: seeking more alpha testers.
 
 ## Contents of this document
 
@@ -174,21 +174,22 @@ Clone the Maud repository using Git:
 
 ### Overview of the user interface
 
-Maud's user interface consists of 3 screens: "Start", "Editor", and "Bind".
+Maud's user interface consists of 4 screens:
+"Start", "Editor", "Display Settings", and "Bind".
 The Start Screen loads first. It merely displays the Maud logo while
 initialization completes.  It should automatically transition to the Editor
 Screen after a few seconds.
 
 The Editor Screen is Maud's main screen, where 3-D models are visualized, browsed,
 and edited.  There's a menu bar across the top and a message bar across the bottom.
-The rest of the user interface
+The rest of its user interface
 is split into overlapping sub-windows called "tools".
 
 ![screenshot](https://i.imgur.com/FA5EX1s.png "Editor Screen with 3 tools visible and a menu active")
 
 #### Tools
 
-At last count, Maud had 51 tools.
+At last count, Maud had 50 tools.
 Each tool can be independently hidden or made visible.
 
 Selecting a tool makes it visible and moves it to the top layer for convenient

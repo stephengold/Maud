@@ -48,14 +48,16 @@ import jme3utilities.debug.PerformanceAppState;
 import jme3utilities.minie.PhysicsDumper;
 import jme3utilities.nifty.GuiApplication;
 import jme3utilities.nifty.bind.BindScreen;
+import jme3utilities.nifty.displaysettings.DsScreen;
 import jme3utilities.ui.ActionApplication;
+import jme3utilities.ui.DisplaySettings;
+import jme3utilities.ui.DisplaySizeLimits;
 import jme3utilities.ui.InputMode;
 import maud.dialog.QuitDialog;
 import maud.model.EditState;
 import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
-import maud.model.option.DisplaySettings;
 import maud.view.scene.SceneView;
 
 /**
@@ -97,6 +99,10 @@ public class Maud extends GuiApplication {
      */
     private static boolean loadStartupScript = true;
     /**
+     * Nifty screen for editing display settings
+     */
+    private static DsScreen displaySettingsScreen;
+    /**
      * MVC model for the editor screen (live copy)
      */
     private static EditorModel editorModel = new EditorModel();
@@ -112,6 +118,15 @@ public class Maud extends GuiApplication {
      * dumper for scene dumps
      */
     final private static PhysicsDumper dumper = new PhysicsDumper();
+    /**
+     * application name for the window's title bar
+     */
+    final private static String applicationName = Maud.class.getSimpleName();
+    /**
+     * path to logo image for the settings dialog
+     */
+    final private static String logoAssetPath
+            = "Textures/icons/Maud-settings.png";
     // *************************************************************************
     // new methods exposed
 
@@ -155,6 +170,20 @@ public class Maud extends GuiApplication {
      * @param arguments array of command-line arguments (not null)
      */
     public static void main(String[] arguments) {
+        application = new Maud();
+        DisplaySizeLimits dsl = new DisplaySizeLimits(
+                640, 480, // min width, height
+                2_048, 1_080 // max width, height
+        );
+        DisplaySettings displaySettings
+                = new DisplaySettings(application, applicationName, dsl) {
+            @Override
+            protected void applyOverrides(AppSettings settings) {
+                super.applyOverrides(settings);
+                settings.setSettingsDialogImage(logoAssetPath);
+            }
+        };
+        displaySettingsScreen = new DsScreen(displaySettings);
         /*
          * Process any command-line arguments.
          */
@@ -162,7 +191,7 @@ public class Maud extends GuiApplication {
             switch (arg) {
                 case "-f":
                 case "--forceDialog":
-                    DisplaySettings.setForceDialog(true);
+                    displaySettings.setForceDialog(true);
                     break;
 
                 case "-s":
@@ -186,9 +215,8 @@ public class Maud extends GuiApplication {
         Logger.getLogger(AssetConfig.class.getName())
                 .setLevel(Level.SEVERE);
 
-        AppSettings appSettings = DisplaySettings.initialize();
+        AppSettings appSettings = displaySettings.initialize();
         if (appSettings != null) {
-            application = new Maud();
             application.setSettings(appSettings);
             /*
              * Don't pause on lost focus.  This simplifies debugging by
@@ -311,6 +339,16 @@ public class Maud extends GuiApplication {
         String message = String.format("unimplemented feature (action = %s)",
                 MyString.quote(actionString));
         editorModel.getMisc().setStatusMessage(message);
+    }
+
+    /**
+     * Access the display-settings screen.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public static DsScreen getDisplaySettingsScreen() {
+        assert displaySettingsScreen != null;
+        return displaySettingsScreen;
     }
 
     /**
@@ -490,9 +528,9 @@ public class Maud extends GuiApplication {
 
         EditorViewPorts.startup1();
         /*
-         * Attach screen controllers for the editor screen and the bind screen.
+         * Attach screen controllers for the 3 major screens.
          */
-        stateManager.attachAll(gui, bindScreen);
+        stateManager.attachAll(gui, bindScreen, displaySettingsScreen);
         /*
          * Configure and attach input mode for the editor screen.
          */

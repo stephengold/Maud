@@ -29,6 +29,7 @@ package maud.tool;
 import com.jme3.bullet.joints.JointEnd;
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.Tool;
 import maud.DescribeUtil;
 import maud.Maud;
 import maud.model.cgm.Cgm;

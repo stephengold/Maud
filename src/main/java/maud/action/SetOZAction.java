@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -34,7 +34,6 @@ import jme3utilities.MyString;
 import jme3utilities.math.MyColor;
 import maud.Maud;
 import maud.dialog.EditorDialogs;
-import maud.menu.ShowMenus;
 import maud.model.EditorModel;
 import maud.model.WhichCgm;
 import maud.model.cgm.Cgm;
@@ -42,7 +41,6 @@ import maud.model.cgm.EditableCgm;
 import maud.model.cgm.PlayOptions;
 import maud.model.cgm.PlayTimes;
 import maud.model.cgm.SelectedOverride;
-import maud.model.option.DisplaySettings;
 import maud.model.option.RigidBodyParameter;
 import maud.model.option.ShapeParameter;
 import maud.model.option.scene.SkeletonColors;
@@ -100,10 +98,6 @@ class SetOZAction {
             case Action.setPhysicsRbpValue:
                 RigidBodyParameter rbp = model.getMisc().rbParameter();
                 EditorDialogs.setPhysicsRbpValue(rbp);
-                break;
-
-            case Action.setRefreshRate:
-                ShowMenus.selectRefreshRate();
                 break;
 
             case Action.setShapeParmValue:
@@ -240,11 +234,6 @@ class SetOZAction {
             } else {
                 handled = false;
             }
-
-        } else if (actionString.startsWith(ActionPrefix.setRefreshRate)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setRefreshRate);
-            int hertz = Integer.parseInt(arg);
-            DisplaySettings.setRefreshRate(hertz);
 
         } else if (actionString.startsWith(ActionPrefix.setShapeParmValue)) {
             arg = MyString.remainder(actionString,

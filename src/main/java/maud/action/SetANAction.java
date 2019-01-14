@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -34,15 +34,12 @@ import jme3utilities.MyString;
 import jme3utilities.math.MyColor;
 import jme3utilities.math.MyVector3f;
 import maud.Maud;
-import maud.dialog.DimensionsDialog;
 import maud.dialog.EditorDialogs;
 import maud.menu.MeshMenus;
-import maud.menu.ShowMenus;
 import maud.model.EditorModel;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedMatParam;
 import maud.model.option.Background;
-import maud.model.option.DisplaySettings;
 
 /**
  * Process actions that start with the word "set" and a letter in the a-n range.
@@ -96,14 +93,6 @@ class SetANAction {
 
             case Action.setBufferStride:
                 EditorDialogs.setBufferStride();
-                break;
-
-            case Action.setDimensions:
-                if (DisplaySettings.isFullscreen()) {
-                    ShowMenus.selectDimensions();
-                } else {
-                    EditorDialogs.setDimensions();
-                }
                 break;
 
             case Action.setLightDirCardinal:
@@ -245,15 +234,6 @@ class SetANAction {
             arg = MyString.remainder(actionString, ActionPrefix.setCloudiness);
             float fraction = Float.parseFloat(arg);
             model.getScene().getRender().setCloudiness(fraction);
-
-        } else if (actionString.startsWith(ActionPrefix.setDimensions)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setDimensions);
-            int[] wh = DimensionsDialog.parseDimensions(arg);
-            if (wh == null) {
-                handled = false;
-            } else {
-                DisplaySettings.setDimensions(wh[0], wh[1]);
-            }
 
         } else if (actionString.startsWith(
                 ActionPrefix.setDurationProportional)) {

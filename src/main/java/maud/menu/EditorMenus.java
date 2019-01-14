@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -361,8 +361,9 @@ public class EditorMenus {
                 ShowMenus.removeAssetLocation();
                 break;
 
-            case "Display-settings tool":
-                Maud.gui.tools.select("displaySettings");
+            case "Display settings":
+                Maud.gui.closeAllPopups();
+                Maud.getDisplaySettingsScreen().activate();
                 break;
 
             case "Hotkeys":

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -43,7 +43,6 @@ import maud.model.History;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedTrack;
-import maud.model.option.DisplaySettings;
 import maud.view.EditorView;
 import maud.view.ViewType;
 import maud.view.scene.SceneDrag;
@@ -148,10 +147,6 @@ public class EditorInputMode extends InputMode {
         String firstWord = words[0];
         if (ongoing) {
             switch (firstWord) {
-                case "apply":
-                    handled = applyAction(actionString);
-                    break;
-
                 case "delete":
                     handled = DeleteAction.process(actionString);
                     break;
@@ -261,22 +256,6 @@ public class EditorInputMode extends InputMode {
     }
     // *************************************************************************
     // private methods
-
-    /**
-     * Process an ongoing action that starts with the word "apply".
-     *
-     * @param actionString textual description of the action (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private boolean applyAction(String actionString) {
-        boolean handled = false;
-        if (actionString.equals(Action.applyDisplaySettings)) {
-            DisplaySettings.applyToDisplay();
-            handled = true;
-        }
-
-        return handled;
-    }
 
     /**
      * Process an ongoing action that starts with the word "launch".
@@ -397,10 +376,7 @@ public class EditorInputMode extends InputMode {
         String baseFilePath;
         boolean handled = true;
 
-        if (actionString.equals(Action.saveDisplaySettings)) {
-            DisplaySettings.save();
-
-        } else if (actionString.startsWith(ActionPrefix.saveCgm)) {
+        if (actionString.startsWith(ActionPrefix.saveCgm)) {
             baseFilePath
                     = MyString.remainder(actionString, ActionPrefix.saveCgm);
             model.getTarget().writeToFile(baseFilePath);

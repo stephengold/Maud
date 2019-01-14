@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -45,8 +45,6 @@ public class Action {
      */
     final private static Logger logger
             = Logger.getLogger(Action.class.getName());
-
-    final static String applyDisplaySettings = "apply displaySettings";
     /**
      * delete the selected animation
      */
@@ -175,8 +173,6 @@ public class Action {
     final static String resetTwist = "reset twist";
     final static String resetVertexSelection = "reset vertex selection";
 
-    final static String saveDisplaySettings = "save displaySettings";
-
     final static String selectAnimationEditMenu = "select animationEditMenu";
     final static String selectAnimControl = "select animControl";
     final static String selectAxesDragEffect = "select axesDragEffect";
@@ -189,7 +185,6 @@ public class Action {
     final static String selectBoneTrack = "select boneTrack";
     final static String selectBuffer = "select buffer";
     final static String selectBufferUsage = "select bufferUsage";
-    final static String selectColorDepth = "select colorDepth";
     final static String selectCullHint = "select cullHint";
     final static String selectEdgeFilter = "select edgeFilter";
     final static String selectFaceCull = "select faceCull";
@@ -214,7 +209,6 @@ public class Action {
     final static String selectMaterialEditMenu = "select materialEditMenu";
     final static String selectMatParam = "select matParam";
     final static String selectMeshMode = "select meshMode";
-    final static String selectMsaaFactor = "select msaaFactor";
     final static String selectOrbitCenter = "select orbitCenter";
     final static String selectOverride = "select override";
     final static String selectPhysics = "select physics";
@@ -255,7 +249,6 @@ public class Action {
     final static String setBufferInstanceSpan = "set bufferInstanceSpan";
     final static String setBufferLimit = "set bufferLimit";
     final static String setBufferStride = "set bufferStride";
-    final static String setDimensions = "set dimensions";
     final static String setLightDirCardinal = "set lightDir cardinal";
     final static String setLightDirReverse = "set lightDir reverse";
     final static String setLinkMass = "set linkMass";
@@ -263,7 +256,6 @@ public class Action {
     final static String setMeshWeights = "set meshWeights";
     final static String setPhysicsRbpValue = "set physicsRbpValue";
     final static String setOverrideValue = "set overrideValue";
-    final static String setRefreshRate = "set refreshRate";
     final static String setShapeParmValue = "set shapeParmValue";
     final static String setSpatialAngleCardinal = "set spatialAngle cardinal";
     final static String setSpatialAngleSnapX = "set spatialAngle snapX";

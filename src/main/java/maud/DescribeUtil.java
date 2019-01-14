@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018, Stephen Gold
+ Copyright (c) 2018-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -80,21 +80,6 @@ public class DescribeUtil {
                 PhysicsSpace.AXIS_Z);
 
         String description = axisNames[axisIndex];
-        return description;
-    }
-
-    /**
-     * Describe a pair of display dimensions.
-     *
-     * @param width width in pixels (&gt;0)
-     * @param height height in pixels (&gt;0)
-     * @return a textual description (not null, not empty)
-     */
-    public static String displayDimensions(int width, int height) {
-        Validate.positive(width, "width");
-        Validate.positive(height, "height");
-
-        String description = String.format("%d x %d", width, height);
         return description;
     }
 
@@ -210,23 +195,6 @@ public class DescribeUtil {
 
         } else {
             description = value.toString();
-        }
-
-        return description;
-    }
-
-    /**
-     * Describe an MSAA sampling factor.
-     *
-     * @param factor samples per pixel (&ge;0, &le;16)
-     * @return a textual description (not null, not empty)
-     */
-    public static String msaaFactor(int factor) {
-        String description;
-        if (factor <= 1) {
-            description = "disabled";
-        } else {
-            description = String.format("%dx", factor);
         }
 
         return description;

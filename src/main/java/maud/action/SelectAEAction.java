@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -37,12 +37,10 @@ import maud.menu.AnimationMenus;
 import maud.menu.BoneMenus;
 import maud.menu.EnumMenus;
 import maud.menu.MeshMenus;
-import maud.menu.ShowMenus;
 import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.option.Background;
-import maud.model.option.DisplaySettings;
 import maud.model.option.scene.AxesDragEffect;
 import maud.model.option.scene.AxesSubject;
 
@@ -135,10 +133,6 @@ class SelectAEAction {
                 EnumMenus.selectBufferUsage();
                 break;
 
-            case Action.selectColorDepth:
-                ShowMenus.selectColorDepth();
-                break;
-
             case Action.selectCullHint:
                 EnumMenus.selectCullHint();
                 break;
@@ -223,12 +217,6 @@ class SelectAEAction {
                     ActionPrefix.selectBufferUsage);
             VertexBuffer.Usage usage = VertexBuffer.Usage.valueOf(arg);
             target.setBufferUsage(usage);
-
-        } else if (actionString.startsWith(ActionPrefix.selectColorDepth)) {
-            arg = MyString.remainder(actionString,
-                    ActionPrefix.selectColorDepth);
-            int bitsPerPixel = Integer.parseInt(arg);
-            DisplaySettings.setColorDepth(bitsPerPixel);
 
         } else if (actionString.startsWith(ActionPrefix.selectCullHint)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectCullHint);

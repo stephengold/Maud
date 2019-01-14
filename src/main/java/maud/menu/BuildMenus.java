@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -718,7 +718,7 @@ public class BuildMenus {
         if (Maud.getModel().getLocations().hasRemovable()) {
             builder.addSubmenu("Remove asset location");
         }
-        builder.addTool("Display-settings tool");
+        builder.add("Display settings");
         builder.add("Hotkeys");
         //builder.add("Locale"); TODO
         builder.addSubmenu("Scene-view options");

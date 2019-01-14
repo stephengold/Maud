@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -264,7 +264,7 @@ public class History {
      * update.
      */
     public static void setAutoScroll() {
-        HistoryTool tool = (HistoryTool) Maud.gui.getTool("history");
+        HistoryTool tool = (HistoryTool) Maud.gui.findTool("history");
         tool.setAutoScroll();
     }
 

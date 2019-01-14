@@ -28,11 +28,11 @@ package maud.tool.option;
 
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.Tool;
 import jme3utilities.wes.TweenRotations;
 import jme3utilities.wes.TweenTransforms;
 import jme3utilities.wes.TweenVectors;
 import maud.Maud;
-import maud.tool.Tool;
 
 /**
  * The controller for the "Tweening" tool in Maud's editor screen.

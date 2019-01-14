@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -45,8 +45,6 @@ import de.lessvoid.nifty.controls.SliderChangedEvent;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.screen.Screen;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyAsset;
@@ -57,6 +55,7 @@ import jme3utilities.Validate;
 import jme3utilities.debug.PerformanceAppState;
 import jme3utilities.math.MyMath;
 import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.Tool;
 import jme3utilities.ui.InputMode;
 import maud.action.EditorInputMode;
 import maud.menu.BuildMenus;
@@ -71,7 +70,6 @@ import maud.model.option.PerformanceMode;
 import maud.model.option.scene.AxesOptions;
 import maud.model.option.scene.CameraOptions;
 import maud.tool.EditorTools;
-import maud.tool.Tool;
 import maud.view.Drag;
 import maud.view.EditorView;
 import maud.view.Selection;
@@ -129,11 +127,6 @@ public class EditorScreen extends GuiScreenController {
     // fields
 
     /**
-     * flag that causes this controller to temporarily ignore change events from
-     * GUI controls during an update
-     */
-    private boolean ignoreGuiChanges = false;
-    /**
      * build menus for this screen
      */
     final public BuildMenus buildMenus = new BuildMenus();
@@ -145,18 +138,6 @@ public class EditorScreen extends GuiScreenController {
      * controllers for tool windows
      */
     final public EditorTools tools = new EditorTools(this);
-    /**
-     * map a check-box name to the tool that manages the check box
-     */
-    final private Map<String, Tool> checkBoxMap = new TreeMap<>();
-    /**
-     * map a slider name to the tool that manages the slider
-     */
-    final private Map<String, Tool> sliderMap = new TreeMap<>();
-    /**
-     * map a tool name to the controller for that tool
-     */
-    final private Map<String, Tool> toolMap = new TreeMap<>();
     /**
      * POV that's being dragged, or null for none
      */
@@ -175,70 +156,11 @@ public class EditorScreen extends GuiScreenController {
     // new methods exposed
 
     /**
-     * Access the controller of a named tool.
-     *
-     * @param toolName which tool to access (not null, not empty)
-     * @return the pre-existing instance, or null if none
-     */
-    public Tool getTool(String toolName) {
-        Validate.nonEmpty(toolName, "tool name");
-        assert !toolMap.isEmpty();
-
-        Tool controller = toolMap.get(toolName);
-        return controller;
-    }
-
-    /**
      * Activate the "Bind" screen.
      */
     public void goBindScreen() {
         closeAllPopups();
         Maud.bindScreen.activate(inputMode);
-    }
-
-    /**
-     * Associate the named check box with the tool that manages it.
-     *
-     * @param checkBoxName the name (unique id prefix) of the check box (not
-     * null)
-     * @param manager (not null, alias created)
-     */
-    public void mapCheckBox(String checkBoxName, Tool manager) {
-        Validate.nonNull(checkBoxName, "check-box name");
-        Validate.nonNull(manager, "manager");
-
-        Tool oldMapping = checkBoxMap.put(checkBoxName, manager);
-        assert oldMapping == null;
-    }
-
-    /**
-     * Associate the named slider with the tool that manages it.
-     *
-     * @param sliderName the name (unique id prefix) of the slider (not null)
-     * @param manager (not null, alias created)
-     */
-    public void mapSlider(String sliderName, Tool manager) {
-        Validate.nonNull(sliderName, "slider name");
-        Validate.nonNull(manager, "manager");
-
-        Tool oldMapping = sliderMap.put(sliderName, manager);
-        assert oldMapping == null;
-    }
-
-    /**
-     * Associate the name tool with its controller.
-     *
-     * @param toolName the name (unique id prefix) of the tool (not null)
-     * @param tool the controller (not null, alias created)
-     */
-    public void mapTool(String toolName, Tool tool) {
-        Validate.nonNull(toolName, "tool name");
-        Validate.nonNull(tool, "tool");
-
-        Tool oldMapping = toolMap.put(toolName, tool);
-        if (oldMapping != null) {
-            throw new RuntimeException("Two tools with the same name.");
-        }
     }
 
     /**
@@ -378,9 +300,9 @@ public class EditorScreen extends GuiScreenController {
         Validate.nonNull(event, "event");
         assert checkBoxId.endsWith("CheckBox");
 
-        if (!ignoreGuiChanges && hasStarted()) {
+        if (!isIgnoreGuiChanges() && hasStarted()) {
             String checkBoxName = MyString.removeSuffix(checkBoxId, "CheckBox");
-            Tool manager = checkBoxMap.get(checkBoxName);
+            Tool manager = findCheckBoxTool(checkBoxName);
             boolean isChecked = event.isChecked();
             manager.onCheckBoxChanged(checkBoxName, isChecked);
         }
@@ -399,9 +321,9 @@ public class EditorScreen extends GuiScreenController {
         assert sliderId.endsWith("Slider") : sliderId;
         Validate.nonNull(event, "event");
 
-        if (!ignoreGuiChanges && hasStarted()) {
+        if (!isIgnoreGuiChanges() && hasStarted()) {
             String sliderName = MyString.removeSuffix(sliderId, "Slider");
-            Tool manager = sliderMap.get(sliderName);
+            Tool manager = findSliderTool(sliderName);
             if (manager == null) {
                 logger.log(Level.WARNING, "Unknown slider, id={0}",
                         MyString.quote(sliderId));
@@ -486,16 +408,6 @@ public class EditorScreen extends GuiScreenController {
             selection.select();
         }
     }
-
-    /**
-     * Alter the "ignore GUI changes" flag.
-     *
-     * @param newSetting true &rarr; ignore events, false &rarr; invoke callback
-     * handlers for events
-     */
-    public void setIgnoreGuiChanges(boolean newSetting) {
-        ignoreGuiChanges = newSetting;
-    }
     // *************************************************************************
     // GuiScreenController methods
 
@@ -544,7 +456,7 @@ public class EditorScreen extends GuiScreenController {
     public void update(float tpf) {
         super.update(tpf);
 
-        if (toolMap.isEmpty()) {
+        if (findTool("spatial") == null) {
             return;
         }
         /*

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -30,6 +30,7 @@ import com.jme3.app.state.AppStateManager;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
+import jme3utilities.nifty.Tool;
 import maud.EditorScreen;
 import maud.Maud;
 import maud.tool.option.AxesTool;
@@ -37,7 +38,6 @@ import maud.tool.option.BackgroundTool;
 import maud.tool.option.BoundsTool;
 import maud.tool.option.CameraTool;
 import maud.tool.option.CursorTool;
-import maud.tool.option.DisplaySettingsTool;
 import maud.tool.option.PhysicsTool;
 import maud.tool.option.PlatformTool;
 import maud.tool.option.RenderTool;
@@ -78,7 +78,6 @@ public class EditorTools {
     final private CgmTool cgm;
 
     final private CursorTool cursor;
-    final private DisplaySettingsTool displaySettings;
     final private ExtractTool extract;
     final private ExtremeVertexTool extremeVertex;
     final private HistoryTool history;
@@ -87,8 +86,8 @@ public class EditorTools {
     final private LightColorTool lightColor;
     final private LightDirectionTool lightDirection;
     final private LightPositionTool lightPosition;
-
     final private LightsTool lights;
+
     final private LinkTool link;
     final private MappingTool mapping;
     final private MaterialTool material;
@@ -98,8 +97,8 @@ public class EditorTools {
     final private PhysicsTool physics;
     final private PlatformTool platform;
     final private RenderTool render;
-
     final private RetargetTool retarget;
+
     final private SceneLightingTool sceneLighting;
     final private SceneVertexTool sceneVertex;
     final private ScoreTool score;
@@ -109,8 +108,8 @@ public class EditorTools {
     final private SkeletonTool skeleton;
     final private SkyTool sky;
     final private SourceAnimationTool sourceAnimation;
-
     final private SpatialDetailsTool spatialDetails;
+
     final private SpatialRotationTool spatialRotation;
     final private SpatialScaleTool spatialScale;
     final private SpatialTool spatial;
@@ -120,7 +119,6 @@ public class EditorTools {
     final private TweeningTool tweening;
     final private TwistTool twist;
     final private UserDataTool userData;
-
     final private VertexTool vertex;
     // *************************************************************************
     // constructors
@@ -128,67 +126,65 @@ public class EditorTools {
     /**
      * Instantiate the tools in the specified screen.
      *
-     * @param screen the screen's controller (not null)
+     * @param screenController the screen's controller (not null)
      */
-    public EditorTools(EditorScreen screen) {
-        Validate.nonNull(screen, "screen");
+    public EditorTools(EditorScreen screenController) {
+        Validate.nonNull(screenController, "screen controller");
 
-        animation = new AnimationTool(screen);
-        axes = new AxesTool(screen);
-        background = new BackgroundTool(screen);
-        boneRotation = new BoneRotationTool(screen);
-        boneScale = new BoneScaleTool(screen);
-        bone = new BoneTool(screen);
-        boneTranslation = new BoneTranslationTool(screen);
-        bounds = new BoundsTool(screen);
-        camera = new CameraTool(screen);
-        cgm = new CgmTool(screen);
+        animation = new AnimationTool(screenController);
+        axes = new AxesTool(screenController);
+        background = new BackgroundTool(screenController);
+        boneRotation = new BoneRotationTool(screenController);
+        boneScale = new BoneScaleTool(screenController);
+        bone = new BoneTool(screenController);
+        boneTranslation = new BoneTranslationTool(screenController);
+        bounds = new BoundsTool(screenController);
+        camera = new CameraTool(screenController);
+        cgm = new CgmTool(screenController);
 
-        cursor = new CursorTool(screen);
-        displaySettings = new DisplaySettingsTool(screen);
-        extract = new ExtractTool(screen);
-        extremeVertex = new ExtremeVertexTool(screen);
-        history = new HistoryTool(screen);
-        joint = new JointTool(screen);
-        keyframe = new KeyframeTool(screen);
-        lightColor = new LightColorTool(screen);
-        lightDirection = new LightDirectionTool(screen);
-        lightPosition = new LightPositionTool(screen);
+        cursor = new CursorTool(screenController);
+        extract = new ExtractTool(screenController);
+        extremeVertex = new ExtremeVertexTool(screenController);
+        history = new HistoryTool(screenController);
+        joint = new JointTool(screenController);
+        keyframe = new KeyframeTool(screenController);
+        lightColor = new LightColorTool(screenController);
+        lightDirection = new LightDirectionTool(screenController);
+        lightPosition = new LightPositionTool(screenController);
+        lights = new LightsTool(screenController);
 
-        lights = new LightsTool(screen);
-        link = new LinkTool(screen);
-        mapping = new MappingTool(screen);
-        material = new MaterialTool(screen);
-        mesh = new MeshTool(screen);
-        object = new ObjectTool(screen);
-        overrides = new OverridesTool(screen);
-        physics = new PhysicsTool(screen);
-        platform = new PlatformTool(screen);
-        render = new RenderTool(screen);
+        link = new LinkTool(screenController);
+        mapping = new MappingTool(screenController);
+        material = new MaterialTool(screenController);
+        mesh = new MeshTool(screenController);
+        object = new ObjectTool(screenController);
+        overrides = new OverridesTool(screenController);
+        physics = new PhysicsTool(screenController);
+        platform = new PlatformTool(screenController);
+        render = new RenderTool(screenController);
+        retarget = new RetargetTool(screenController);
 
-        retarget = new RetargetTool(screen);
-        sceneLighting = new SceneLightingTool(screen);
-        sceneVertex = new SceneVertexTool(screen);
-        score = new ScoreTool(screen);
-        settings = new SettingsTool(screen);
-        sgc = new SgcTool(screen);
-        shape = new ShapeTool(screen);
-        skeleton = new SkeletonTool(screen);
-        sky = new SkyTool(screen);
-        sourceAnimation = new SourceAnimationTool(screen);
+        sceneLighting = new SceneLightingTool(screenController);
+        sceneVertex = new SceneVertexTool(screenController);
+        score = new ScoreTool(screenController);
+        settings = new SettingsTool(screenController);
+        sgc = new SgcTool(screenController);
+        shape = new ShapeTool(screenController);
+        skeleton = new SkeletonTool(screenController);
+        sky = new SkyTool(screenController);
+        sourceAnimation = new SourceAnimationTool(screenController);
+        spatialDetails = new SpatialDetailsTool(screenController);
 
-        spatialDetails = new SpatialDetailsTool(screen);
-        spatialRotation = new SpatialRotationTool(screen);
-        spatialScale = new SpatialScaleTool(screen);
-        spatial = new SpatialTool(screen);
-        spatialTranslation = new SpatialTranslationTool(screen);
-        texture = new TextureTool(screen);
-        track = new TrackTool(screen);
-        tweening = new TweeningTool(screen);
-        twist = new TwistTool(screen);
-        userData = new UserDataTool(screen);
-
-        vertex = new VertexTool(screen);
+        spatialRotation = new SpatialRotationTool(screenController);
+        spatialScale = new SpatialScaleTool(screenController);
+        spatial = new SpatialTool(screenController);
+        spatialTranslation = new SpatialTranslationTool(screenController);
+        texture = new TextureTool(screenController);
+        track = new TrackTool(screenController);
+        tweening = new TweeningTool(screenController);
+        twist = new TwistTool(screenController);
+        userData = new UserDataTool(screenController);
+        vertex = new VertexTool(screenController);
     }
     // *************************************************************************
     // new methods exposed
@@ -201,7 +197,7 @@ public class EditorTools {
     public void attachAll(AppStateManager stateManager) {
         stateManager.attachAll(animation, axes, background, bone, boneRotation,
                 boneScale, boneTranslation, bounds, camera, cgm, cursor,
-                displaySettings, extract, extremeVertex, history, keyframe,
+                extract, extremeVertex, history, keyframe,
                 joint, lightColor, lightDirection, lightPosition, lights, link,
                 mapping, material, mesh, object, overrides, physics, platform,
                 render, retarget, sceneLighting, sceneVertex, score, settings,
@@ -219,7 +215,7 @@ public class EditorTools {
     public void select(String toolName) {
         Validate.nonEmpty(toolName, "tool name");
 
-        Tool tool = Maud.gui.getTool(toolName);
+        Tool tool = Maud.gui.findTool(toolName);
         if (tool == null) {
             String message = String.format("unimplemented feature (tool = %s)",
                     MyString.quote(toolName));

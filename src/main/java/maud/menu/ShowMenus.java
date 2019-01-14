@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -28,16 +28,12 @@ package maud.menu;
 
 import com.jme3.light.Light;
 import com.jme3.scene.control.Control;
-import java.awt.DisplayMode;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
-import maud.DescribeUtil;
 import maud.Maud;
 import maud.action.ActionPrefix;
 import maud.model.cgm.Cgm;
@@ -47,7 +43,6 @@ import maud.model.cgm.SelectedOverride;
 import maud.model.cgm.SelectedSgc;
 import maud.model.cgm.SelectedSpatial;
 import maud.model.cgm.WhichParams;
-import maud.model.option.DisplaySettings;
 
 /**
  * Display simple menus in Maud's editor screen.
@@ -158,78 +153,6 @@ public class ShowMenus {
     }
 
     /**
-     * Display a menu to select the color depth (bits per pixel) for the display
-     * using the "select colorDepth " action prefix.
-     */
-    public static void selectColorDepth() {
-        MenuBuilder builder = new MenuBuilder();
-
-        int depth = DisplaySettings.getColorDepth();
-
-        if (DisplaySettings.isFullscreen()) {
-            int height = DisplaySettings.getHeight();
-            int width = DisplaySettings.getWidth();
-            GraphicsEnvironment environment
-                    = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            GraphicsDevice device = environment.getDefaultScreenDevice();
-            DisplayMode[] modes = device.getDisplayModes();
-            for (DisplayMode mode : modes) {
-                int modeDepth = mode.getBitDepth();
-                int modeHeight = mode.getHeight();
-                int modeWidth = mode.getWidth();
-                if (modeDepth >= 16 && modeDepth != depth
-                        && modeHeight == height && modeWidth == width) {
-                    String modeItem = Integer.toString(modeDepth);
-                    if (!builder.hasItem(modeItem)) {
-                        builder.add(modeItem);
-                    }
-                }
-            }
-
-        } else {
-            if (depth != 24) {
-                builder.add("24");
-            }
-            if (depth != 32) {
-                builder.add("32");
-            }
-        }
-
-        builder.show(ActionPrefix.selectColorDepth);
-    }
-
-    /**
-     * Display a menu to select the (full-screen) display dimensions using the
-     * "set dimensions " action prefix.
-     */
-    public static void selectDimensions() {
-        MenuBuilder builder = new MenuBuilder();
-
-        int height = DisplaySettings.getHeight();
-        int width = DisplaySettings.getWidth();
-
-        GraphicsEnvironment environment
-                = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        GraphicsDevice device = environment.getDefaultScreenDevice();
-        DisplayMode[] modes = device.getDisplayModes();
-        for (DisplayMode mode : modes) {
-            int modeHeight = mode.getHeight();
-            int modeWidth = mode.getWidth();
-            if (modeHeight >= DisplaySettings.minHeight
-                    && modeWidth >= DisplaySettings.minWidth
-                    && (modeHeight != height || modeWidth != width)) {
-                String modeItem
-                        = DescribeUtil.displayDimensions(modeWidth, modeHeight);
-                if (!builder.hasItem(modeItem)) {
-                    builder.add(modeItem);
-                }
-            }
-        }
-
-        builder.show(ActionPrefix.setDimensions);
-    }
-
-    /**
      * Display a menu of files or zip entries.
      *
      * @param names the list of names (not null, unaffected)
@@ -302,24 +225,6 @@ public class ShowMenus {
     }
 
     /**
-     * Display a menu to configure MSAA using the "select msaaFactor " action
-     * prefix.
-     */
-    public static void selectMsaaFactor() {
-        MenuBuilder builder = new MenuBuilder();
-
-        int selectedFactor = DisplaySettings.getMsaaFactor();
-        for (int factor : new int[]{1, 2, 4, 6, 8, 16}) {
-            if (factor != selectedFactor) {
-                String description = DescribeUtil.msaaFactor(factor);
-                builder.add(description);
-            }
-        }
-
-        builder.show(ActionPrefix.selectMsaaFactor);
-    }
-
-    /**
      * Display a menu for selecting a material-parameter override using the
      * "select override " action prefix.
      */
@@ -337,36 +242,6 @@ public class ShowMenus {
         builder.add(SelectedOverride.noParam);
 
         builder.show(ActionPrefix.selectOverride);
-    }
-
-    /**
-     * Display a menu to select the refresh rate for the display using the "set
-     * refreshRate " action prefix.
-     */
-    public static void selectRefreshRate() {
-        if (DisplaySettings.isFullscreen()) {
-            MenuBuilder builder = new MenuBuilder();
-            int refreshRate = DisplaySettings.getRefreshRate();
-            int height = DisplaySettings.getHeight();
-            int width = DisplaySettings.getWidth();
-            GraphicsEnvironment env
-                    = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            GraphicsDevice device = env.getDefaultScreenDevice();
-            DisplayMode[] modes = device.getDisplayModes();
-            for (DisplayMode mode : modes) {
-                int modeHeight = mode.getHeight();
-                int modeRate = mode.getRefreshRate();
-                int modeWidth = mode.getWidth();
-                if (modeRate != refreshRate
-                        && modeHeight == height && modeWidth == width) {
-                    String modeItem = Integer.toString(modeRate);
-                    if (!builder.hasItem(modeItem)) {
-                        builder.add(modeItem);
-                    }
-                }
-            }
-            builder.show(ActionPrefix.setRefreshRate);
-        }
     }
 
     /**

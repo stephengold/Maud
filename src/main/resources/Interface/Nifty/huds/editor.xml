@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -817,62 +817,6 @@ the menu bar, status bar, and tool windows.
                                      textHAlign="center"
                                      width="*"/>
                         </panel>
-                    </panel>
-                </panel>
-            </control>
-
-            <control name="window" id="displaySettingsTool" title="Display-Settings Tool"
-                     hideOnClose="true"
-                     height="223px" width="175px" x="165" y="105">
-                <panel childLayout="vertical">
-                    <panel childLayout="horizontal" height="28px">
-                        <control name="checkbox" id="fullscreenCheckBox"/>
-                        <control name="label" text="  full screen    "/>
-                        <control name="checkbox" id="vSyncCheckBox"/>
-                        <control name="label" text="  vSync"/>
-                    </panel>
-                    <panel childLayout="horizontal" height="28px">
-                        <control name="checkbox" id="gammaCorrectionCheckBox"/>
-                        <control name="label" text="  gamma correction"/>
-                    </panel>
-                    <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="dimensions:  "/>
-                        <control name="button" id="displayDimensionsButton"
-                                 width="80px">
-                            <interact onRelease="perform(set dimensions)"/>
-                        </control>
-                    </panel>
-                    <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="MSAA factor:  "/>
-                        <control name="button" id="displayMsaaButton"
-                                 width="65px">
-                            <interact onRelease="perform(select msaaFactor)"/>
-                        </control>
-                    </panel>
-                    <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="color depth:  "/>
-                        <control name="button" id="colorDepthButton"
-                                 width="55px">
-                            <interact onRelease="perform(select colorDepth)"/>
-                        </control>
-                    </panel>
-                    <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="refresh rate:  "/>
-                        <control name="button" id="refreshRateButton"
-                                 width="65px">
-                            <interact onRelease="perform(set refreshRate)"/>
-                        </control>
-                    </panel>
-                    <panel childLayout="horizontal" height="28px">
-                        <control name="button" id="applyDisplaySettingsButton"
-                                 width="*">
-                            <interact onRelease="perform(apply displaySettings)"/>
-                        </control>
-                        <control name="label" text="   "/>
-                        <control name="button" id="saveDisplaySettingsButton"
-                                 width="*">
-                            <interact onRelease="perform(save displaySettings)"/>
-                        </control>
                     </panel>
                 </panel>
             </control>
