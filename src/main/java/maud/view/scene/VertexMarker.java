@@ -64,7 +64,7 @@ public class VertexMarker {
      * asset path to the texture for the marker
      */
     final private static String markerAssetPath
-            = "Textures/shapes/saltire.png";
+            = "Textures/shapes/ring.png";
     // *************************************************************************
     // fields
 
