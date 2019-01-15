@@ -42,7 +42,6 @@ import maud.tool.option.PhysicsTool;
 import maud.tool.option.PlatformTool;
 import maud.tool.option.RenderTool;
 import maud.tool.option.SceneLightingTool;
-import maud.tool.option.SceneVertexTool;
 import maud.tool.option.ScoreTool;
 import maud.tool.option.SettingsTool;
 import maud.tool.option.SkeletonTool;
@@ -100,7 +99,6 @@ public class EditorTools {
     final private RetargetTool retarget;
 
     final private SceneLightingTool sceneLighting;
-    final private SceneVertexTool sceneVertex;
     final private ScoreTool score;
     final private SettingsTool settings;
     final private SgcTool sgc;
@@ -109,8 +107,8 @@ public class EditorTools {
     final private SkyTool sky;
     final private SourceAnimationTool sourceAnimation;
     final private SpatialDetailsTool spatialDetails;
-
     final private SpatialRotationTool spatialRotation;
+
     final private SpatialScaleTool spatialScale;
     final private SpatialTool spatial;
     final private SpatialTranslationTool spatialTranslation;
@@ -165,7 +163,6 @@ public class EditorTools {
         retarget = new RetargetTool(screenController);
 
         sceneLighting = new SceneLightingTool(screenController);
-        sceneVertex = new SceneVertexTool(screenController);
         score = new ScoreTool(screenController);
         settings = new SettingsTool(screenController);
         sgc = new SgcTool(screenController);
@@ -174,8 +171,8 @@ public class EditorTools {
         sky = new SkyTool(screenController);
         sourceAnimation = new SourceAnimationTool(screenController);
         spatialDetails = new SpatialDetailsTool(screenController);
-
         spatialRotation = new SpatialRotationTool(screenController);
+
         spatialScale = new SpatialScaleTool(screenController);
         spatial = new SpatialTool(screenController);
         spatialTranslation = new SpatialTranslationTool(screenController);
@@ -200,7 +197,7 @@ public class EditorTools {
                 extract, extremeVertex, history, keyframe,
                 joint, lightColor, lightDirection, lightPosition, lights, link,
                 mapping, material, mesh, object, overrides, physics, platform,
-                render, retarget, sceneLighting, sceneVertex, score, settings,
+                render, retarget, sceneLighting, score, settings,
                 sgc, shape, skeleton, sky, sourceAnimation, spatial,
                 spatialDetails, spatialRotation, spatialScale,
                 spatialTranslation, texture, track, tweening, twist, userData,

@@ -327,11 +327,6 @@ class SetOZAction {
             arg = MyString.remainder(actionString, ActionPrefix.setUserData);
             target.setUserData(arg);
 
-        } else if (actionString.startsWith(ActionPrefix.setVertexColor)) {
-            arg = MyString.remainder(actionString, ActionPrefix.setVertexColor);
-            ColorRGBA color = MyColor.parse(arg);
-            model.getScene().getVertex().setColor(color);
-
         } else if (actionString.startsWith(ActionPrefix.setVertexPointSize)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setVertexPointSize);

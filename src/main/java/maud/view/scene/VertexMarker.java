@@ -39,11 +39,13 @@ import com.jme3.system.AppSettings;
 import com.jme3.texture.Texture;
 import java.util.logging.Logger;
 import jme3utilities.MyAsset;
+import jme3utilities.math.MyColor;
 import jme3utilities.mesh.PointMesh;
 import jme3utilities.ui.Locators;
 import maud.Maud;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedVertex;
+import maud.model.option.scene.DddCursorOptions;
 import maud.model.option.scene.VertexOptions;
 
 /**
@@ -68,6 +70,10 @@ public class VertexMarker {
     // *************************************************************************
     // fields
 
+    /**
+     * elapsed time in the current color cycle (&ge;0)
+     */
+    private double colorTime = 0.0;
     /**
      * marker geometry, or null if none
      */
@@ -116,16 +122,27 @@ public class VertexMarker {
         if (geometry == null) {
             geometry = createGeometry();
         }
+
+        DddCursorOptions cursorOptions = Maud.getModel().getScene().getCursor();
+        float cycleTime = cursorOptions.getCycleTime();
+        colorTime = (colorTime + tpf) % cycleTime;
+
         SelectedVertex vertex = cgm.getVertex();
         if (vertex.isSelected()) {
             Vector3f worldLocation = vertex.worldLocation(null);
             geometry.setLocalTranslation(worldLocation);
+
+            double t = Math.sin(Math.PI * colorTime / cycleTime);
+            double t2 = t * t;
+            float fraction = (float) (t2 * t2); // 4th power of sine
+            ColorRGBA color0 = cursorOptions.copyColor(0, null);
+            ColorRGBA color1 = cursorOptions.copyColor(1, null);
+            ColorRGBA newColor
+                    = MyColor.interpolateLinear(fraction, color0, color1);
             Material material = geometry.getMaterial();
+            material.setColor("Color", newColor); // note: creates alias
 
             VertexOptions options = Maud.getModel().getScene().getVertex();
-            ColorRGBA color = options.copyColor(null);
-            material.setColor("Color", color);
-
             float pointSize = options.getPointSize();
             AppSettings current = Maud.getApplication().getSettings();
             int msaaSamples = current.getSamples();

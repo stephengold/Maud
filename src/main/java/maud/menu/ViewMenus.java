@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -136,7 +136,6 @@ public class ViewMenus {
         builder.addTool("Render");
         builder.addTool("Skeleton");
         builder.addTool("Sky");
-        builder.addTool("Vertex");
 
         builder.show("select menuItem View -> Scene options -> ");
     }
@@ -196,9 +195,6 @@ public class ViewMenus {
                 break;
             case "Sky":
                 Maud.gui.tools.select("sky");
-                break;
-            case "Vertex":
-                Maud.gui.tools.select("sceneVertex");
                 break;
             default:
                 handled = false;

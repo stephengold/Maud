@@ -35,10 +35,13 @@ import jme3utilities.nifty.Tool;
 import maud.DescribeUtil;
 import maud.Maud;
 import maud.model.option.scene.DddCursorOptions;
+import maud.model.option.scene.SceneOptions;
+import maud.model.option.scene.VertexOptions;
 
 /**
  * The controller for the "Cursor" tool in Maud's editor screen. The tool
- * controls the appearance of 3-D cursors displayed in "scene" views.
+ * controls the appearance of 3-D cursors and vertex markers displayed in
+ * "scene" views.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -59,6 +62,10 @@ public class CursorTool extends Tool {
      * transform for the cycle slider
      */
     final private static SliderTransform cycleSt = SliderTransform.Log10;
+    /**
+     * transform for the point-size sliders
+     */
+    final private static SliderTransform pointSizeSt = SliderTransform.None;
     /**
      * transform for the size slider
      */
@@ -104,6 +111,7 @@ public class CursorTool extends Tool {
         result.add("cursorB");
         result.add("cursorCycle");
         result.add("cursorSize");
+        result.add("svPointSize");
 
         return result;
     }
@@ -135,7 +143,8 @@ public class CursorTool extends Tool {
      */
     @Override
     public void onSliderChanged(String sliderName) {
-        DddCursorOptions options = Maud.getModel().getScene().getCursor();
+        SceneOptions sOptions = Maud.getModel().getScene();
+        DddCursorOptions options = sOptions.getCursor();
 
         int colorIndex = Maud.getModel().getMisc().colorIndex();
         ColorRGBA color = readColorBank("cursor", colorSt, null);
@@ -146,6 +155,10 @@ public class CursorTool extends Tool {
 
         float size = readSlider("cursorSize", sizeSt);
         options.setSize(size);
+
+        VertexOptions svOptions = sOptions.getVertex();
+        float pointSize = readSlider("svPointSize", pointSizeSt);
+        svOptions.setPointSize(pointSize);
     }
 
     /**
@@ -154,7 +167,8 @@ public class CursorTool extends Tool {
      */
     @Override
     protected void toolUpdate() {
-        DddCursorOptions options = Maud.getModel().getScene().getCursor();
+        SceneOptions sOptions = Maud.getModel().getScene();
+        DddCursorOptions options = sOptions.getCursor();
 
         boolean visible = options.isVisible();
         setChecked("3DCursor", visible);
@@ -173,5 +187,11 @@ public class CursorTool extends Tool {
         float size = options.getSize();
         setSlider("cursorSize", sizeSt, size);
         updateSliderStatus("cursorSize", size, "");
+
+        VertexOptions svOptions = sOptions.getVertex();
+        float pointSize = svOptions.getPointSize();
+        setSlider("svPointSize", pointSizeSt, pointSize);
+        pointSize = Math.round(pointSize);
+        updateSliderStatus("svPointSize", pointSize, " pixels");
     }
 }

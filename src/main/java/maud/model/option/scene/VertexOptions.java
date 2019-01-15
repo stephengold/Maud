@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -26,7 +26,6 @@
  */
 package maud.model.option.scene;
 
-import com.jme3.math.ColorRGBA;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.logging.Logger;
@@ -52,10 +51,6 @@ public class VertexOptions implements Cloneable {
     // fields
 
     /**
-     * color for selected vertices (default: yellow)
-     */
-    private ColorRGBA color = new ColorRGBA(1f, 1f, 0f, 1f);
-    /**
      * point size for selected vertices (in pixels, &ge;0, 0&rarr;hidden)
      */
     private float pointSize = 16f;
@@ -63,22 +58,7 @@ public class VertexOptions implements Cloneable {
     // new methods exposed
 
     /**
-     * Copy the color for selected vertices.
-     *
-     * @param storeResult (modified if not null)
-     * @return color (either storeResult or a new instance)
-     */
-    public ColorRGBA copyColor(ColorRGBA storeResult) {
-        if (storeResult == null) {
-            storeResult = new ColorRGBA();
-        }
-        storeResult.set(color);
-
-        return storeResult;
-    }
-
-    /**
-     * Read the size for selected vertices.
+     * Read the size for the marker.
      *
      * @return size (in pixels, &ge;0)
      */
@@ -88,17 +68,7 @@ public class VertexOptions implements Cloneable {
     }
 
     /**
-     * Alter the color for selected vertices.
-     *
-     * @param newColor (not null, unaffected)
-     */
-    public void setColor(ColorRGBA newColor) {
-        Validate.nonNull(newColor, "color");
-        color.set(newColor);
-    }
-
-    /**
-     * Alter the point size of the bone heads.
+     * Alter the point size of the marker.
      *
      * @param size point size (in pixels, &ge;0, 0&rarr;hidden)
      */
@@ -116,10 +86,8 @@ public class VertexOptions implements Cloneable {
     void writeToScript(Writer writer) throws IOException {
         assert writer != null;
 
-        String action = ActionPrefix.setVertexColor + color.toString();
-        MaudUtil.writePerformAction(writer, action);
-
-        action = ActionPrefix.setVertexPointSize + Float.toString(pointSize);
+        String action
+                = ActionPrefix.setVertexPointSize + Float.toString(pointSize);
         MaudUtil.writePerformAction(writer, action);
     }
     // *************************************************************************
@@ -134,8 +102,6 @@ public class VertexOptions implements Cloneable {
     @Override
     public VertexOptions clone() throws CloneNotSupportedException {
         VertexOptions clone = (VertexOptions) super.clone();
-        clone.color = color.clone();
-
         return clone;
     }
 }
