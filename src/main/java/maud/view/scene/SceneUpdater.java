@@ -29,7 +29,6 @@ package maud.view.scene;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
-import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
@@ -38,7 +37,6 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.ViewPort;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
@@ -57,7 +55,6 @@ import maud.Maud;
 import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedLight;
-import maud.model.cgm.SelectedVertex;
 import maud.model.option.ShowBones;
 import maud.model.option.scene.AxesDragEffect;
 import maud.model.option.scene.AxesOptions;
@@ -68,7 +65,6 @@ import maud.model.option.scene.RenderOptions;
 import maud.model.option.scene.SceneOptions;
 import maud.model.option.scene.SkeletonColors;
 import maud.model.option.scene.SkeletonOptions;
-import maud.model.option.scene.VertexOptions;
 
 /**
  * Utility methods for updating a scene view.
@@ -224,7 +220,7 @@ public class SceneUpdater {
         updateShadows(viewCgm);
         updateSkeleton(viewCgm);
         updateSky(viewCgm);
-        updateVertex(viewCgm);
+        sceneView.getVertex().update(viewCgm, tpf);
     }
     // *************************************************************************
     // private methods
@@ -526,40 +522,6 @@ public class SceneUpdater {
             updateBackground(cgm);
             updateMainLight(sceneView);
             updateShadowIntensity(sceneView);
-        }
-    }
-
-    /**
-     * Update the vertex visualization based on the MVC model.
-     *
-     * @param cgm which C-G model (not null)
-     */
-    private static void updateVertex(Cgm cgm) {
-        Spatial spatial = cgm.getSceneView().getVertexSpatial();
-
-        SelectedVertex vertex = cgm.getVertex();
-        if (vertex.isSelected()) {
-            Vector3f worldLocation = vertex.worldLocation(null);
-            spatial.setLocalTranslation(worldLocation);
-
-            Geometry geometry = (Geometry) spatial;
-            Material material = geometry.getMaterial();
-
-            VertexOptions options = Maud.getModel().getScene().getVertex();
-            ColorRGBA color = options.copyColor(null);
-            material.setColor("Color", color);
-
-            float pointSize = options.getPointSize();
-            AppSettings current = Maud.getApplication().getSettings();
-            int msaaSamples = current.getSamples();
-            if (msaaSamples == 16) { // work around JME issue #878
-                pointSize *= 2f;
-            }
-            material.setFloat("PointSize", pointSize);
-
-            spatial.setCullHint(Spatial.CullHint.Never);
-        } else {
-            spatial.setCullHint(Spatial.CullHint.Always);
         }
     }
 }

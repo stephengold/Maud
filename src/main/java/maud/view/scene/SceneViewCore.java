@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -40,8 +40,6 @@ import com.jme3.input.InputManager;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.MatParamOverride;
-import com.jme3.material.Material;
-import com.jme3.material.RenderState;
 import com.jme3.math.FastMath;
 import com.jme3.math.Matrix4f;
 import com.jme3.math.Quaternion;
@@ -54,14 +52,12 @@ import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue;
-import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
-import com.jme3.texture.Texture;
 import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
 import java.util.ArrayList;
@@ -69,7 +65,6 @@ import java.util.BitSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
-import jme3utilities.MyAsset;
 import jme3utilities.MyCamera;
 import jme3utilities.MyMesh;
 import jme3utilities.MySkeleton;
@@ -81,7 +76,6 @@ import jme3utilities.debug.BoundsVisualizer;
 import jme3utilities.debug.SkeletonVisualizer;
 import jme3utilities.math.MyMath;
 import jme3utilities.math.MyVector3f;
-import jme3utilities.mesh.PointMesh;
 import jme3utilities.minie.MyControlP;
 import jme3utilities.sky.SkyControl;
 import jme3utilities.sky.StarsOption;
@@ -229,9 +223,9 @@ public class SceneViewCore
      */
     private Spatial cgmRoot;
     /**
-     * spatial to visualize the selected vertex
+     * marker for the selected vertex
      */
-    private Spatial vertexSpatial;
+    final private VertexMarker vertexMarker = new VertexMarker(this);
     /**
      * base view port used when the screen is not split, or null for none
      */
@@ -276,7 +270,6 @@ public class SceneViewCore
         createLights();
         createSkeletonVisualizer();
         createSky();
-        createVertex();
     }
     // *************************************************************************
     // new methods exposed
@@ -514,13 +507,13 @@ public class SceneViewCore
     }
 
     /**
-     * Access the spatial that visualizes the selected vertex.
+     * Access the vertex marker for the scene.
      *
      * @return the pre-existing instance (not null)
      */
-    Spatial getVertexSpatial() {
-        assert vertexSpatial != null;
-        return vertexSpatial;
+    public VertexMarker getVertex() {
+        assert vertexMarker != null;
+        return vertexMarker;
     }
 
     /**
@@ -1226,30 +1219,6 @@ public class SceneViewCore
         updater.addViewPort(viewPort2);
         updater.setAmbientLight(ambientLight);
         updater.setMainLight(mainLight);
-    }
-
-    /**
-     * Create a selected-vertex visualization and attach it to the overlay scene
-     * graph.
-     */
-    private void createVertex() {
-        assert vertexSpatial == null;
-
-        AssetManager assetManager = Locators.getAssetManager();
-        Material material = new Material(assetManager,
-                "MatDefs/wireframe/multicolor2.j3md");
-        Texture poseShape = MyAsset.loadTexture(assetManager,
-                "Textures/shapes/saltire.png");
-        material.setTexture("PointShape", poseShape);
-        RenderState rs = material.getAdditionalRenderState();
-        rs.setBlendMode(RenderState.BlendMode.Alpha);
-        rs.setDepthTest(false);
-
-        Mesh mesh = new PointMesh();
-        vertexSpatial = new Geometry("vertex", mesh);
-        vertexSpatial.setMaterial(material);
-        vertexSpatial.setQueueBucket(Bucket.Transparent);
-        overlayRoot.attachChild(vertexSpatial);
     }
 
     /**
