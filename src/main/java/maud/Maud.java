@@ -141,6 +141,16 @@ public class Maud extends GuiApplication {
     }
 
     /**
+     * Access the display-settings screen.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public static DsScreen getDisplaySettingsScreen() {
+        assert displaySettingsScreen != null;
+        return displaySettingsScreen;
+    }
+
+    /**
      * Access the live MVC model for the editor screen.
      *
      * @return the pre-existing instance (not null)
@@ -339,16 +349,6 @@ public class Maud extends GuiApplication {
         String message = String.format("unimplemented feature (action = %s)",
                 MyString.quote(actionString));
         editorModel.getMisc().setStatusMessage(message);
-    }
-
-    /**
-     * Access the display-settings screen.
-     *
-     * @return the pre-existing instance (not null)
-     */
-    public static DsScreen getDisplaySettingsScreen() {
-        assert displaySettingsScreen != null;
-        return displaySettingsScreen;
     }
 
     /**
