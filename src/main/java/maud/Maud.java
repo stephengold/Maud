@@ -32,6 +32,7 @@ import com.jme3.app.state.ScreenshotAppState;
 import com.jme3.asset.AssetConfig;
 import com.jme3.audio.openal.ALAudioRenderer;
 import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.debug.DebugTools;
 import com.jme3.scene.plugins.bvh.BVHLoader;
 import com.jme3.system.AppSettings;
 import java.io.File;
@@ -352,7 +353,7 @@ public class Maud extends GuiApplication {
     }
 
     /**
-     * Initialize this application.
+     * Initialize this application and warn of any configuration issues.
      */
     @Override
     public void guiInitializeApplication() {
@@ -455,6 +456,7 @@ public class Maud extends GuiApplication {
     private void dumpRenderer() {
         //dumper.setDumpBucket(true);
         //dumper.setDumpCull(true);
+        //dumper.setDumpMatParam(true);
         //dumper.setDumpOverride(true);
         dumper.setDumpShadow(true);
         dumper.setDumpTransform(true);
@@ -468,6 +470,7 @@ public class Maud extends GuiApplication {
     private void dumpScene() {
         //dumper.setDumpBucket(true);
         //dumper.setDumpCull(true);
+        //dumper.setDumpMatParam(true);
         //dumper.setDumpOverride(true);
         dumper.setDumpShadow(true);
         dumper.setDumpTransform(true);
@@ -526,6 +529,7 @@ public class Maud extends GuiApplication {
         assetManager.registerLoader(TrueTypeLoader.class, "ttf");
         assetManager.registerLoader(XbufLoader.class, "xbuf");
 
+        DebugTools.setStartupMessageEnabled(false);
         EditorViewPorts.startup1();
         /*
          * Attach screen controllers for the 3 major screens.
