@@ -691,9 +691,9 @@ Approximate minimum screen size: 640x480
                                  backgroundColor="#ffff"
                                  width="*"/>
                         <panel width="20px"/>
-                        <control name="button" label="Load"
+                        <control name="button" label="Load a model"
                                  id="id5ToAvoidNiftyWarning"
-                                 width="40px">
+                                 width="90px">
                             <interact onRelease="perform(load cgm)"/>
                         </control>
                     </panel>
