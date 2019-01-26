@@ -463,6 +463,10 @@ public class EditorInputMode extends InputMode {
                 }
                 break;
 
+            case Action.togglePhysicsDebug:
+                model.getScene().getRender().togglePhysicsRendered();
+                break;
+
             case Action.toggleProjection:
                 model.getScene().getCamera().toggleProjection();
                 break;

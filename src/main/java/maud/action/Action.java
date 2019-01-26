@@ -285,6 +285,7 @@ public class Action {
     final static String togglePause = "toggle pause";
     final static String togglePauseSource = "toggle pause source";
     final static String togglePauseTarget = "toggle pause target";
+    final static String togglePhysicsDebug = "toggle physics debug";
     final static String toggleProjection = "toggle projection";
 
     final static String viewHorizontal = "view horizontal";
