@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -32,12 +32,9 @@ import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.debug.BulletDebugAppState;
-import com.jme3.bullet.objects.PhysicsRigidBody;
-import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.collision.CollisionResult;
 import com.jme3.export.Savable;
 import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
@@ -45,13 +42,10 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
-import com.jme3.terrain.geomipmap.TerrainQuad;
-import com.jme3.terrain.heightmap.AbstractHeightMap;
-import com.jme3.terrain.heightmap.ImageBasedHeightMap;
-import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyAsset;
 import jme3utilities.ui.Locators;
@@ -81,10 +75,6 @@ public class Platform implements BulletDebugAppState.DebugAppStateFilter {
      */
     final private static float squareThickness = 0.01f;
     /**
-     * patch size for terrain quads (in pixels)
-     */
-    final private static int patchSize = 33;
-    /**
      * message logger for this class
      */
     final public static Logger logger
@@ -94,11 +84,6 @@ public class Platform implements BulletDebugAppState.DebugAppStateFilter {
      */
     final private static Mesh squareMesh
             = new Box(squareHalfExtent, squareThickness, squareHalfExtent);
-    /**
-     * asset path of the terrain's height map
-     */
-    final private static String heightMapAssetPath
-            = "Textures/terrain/height/basin.png";
     /**
      * asset path to the texture for platforms
      */
@@ -125,10 +110,6 @@ public class Platform implements BulletDebugAppState.DebugAppStateFilter {
      * {@link #setView(SceneViewCore)})
      */
     private SceneViewCore view;
-    /**
-     * spatial for the landscape, or null if not initialized
-     */
-    private Spatial landscape = null;
     /**
      * spatial attached to the scene graph for visualization, or null if none
      */
@@ -216,10 +197,6 @@ public class Platform implements BulletDebugAppState.DebugAppStateFilter {
 
         if (diameter != oldDiameter || type != oldType) {
             switch (type) {
-                case Landscape:
-                    updateLandscape(diameter);
-                    setPlatform(landscape);
-                    break;
                 case None:
                     setPlatform(null);
                     break;
@@ -246,46 +223,10 @@ public class Platform implements BulletDebugAppState.DebugAppStateFilter {
     @Override
     public boolean displayObject(Savable obj) {
         boolean result = true;
-        if (landscape != null) {
-            Savable landscapeObject
-                    = landscape.getControl(RigidBodyControl.class);
-            if (obj == landscapeObject) {
-                result = false;
-            }
-        }
         return result;
     }
     // *************************************************************************
     // private methods
-
-    /**
-     * Create the landscape spatial.
-     */
-    private void createLandscape() {
-        assert landscape == null;
-
-        AssetManager assetManager = Locators.getAssetManager();
-        ColorRGBA grassColor
-                = new ColorRGBA(0.4f, 0.7f, 0.1f, 1f);
-        Material grass
-                = MyAsset.createShadedMaterial(assetManager, grassColor);
-
-        AbstractHeightMap heightMap = loadHeightMap();
-        int terrainDiameter = heightMap.getSize(); // in pixels
-        int mapSize = terrainDiameter + 1; // number of samples on a side
-        float[] heightArray = heightMap.getHeightMap();
-        landscape
-                = new TerrainQuad("landscape", patchSize, mapSize, heightArray);
-        landscape.setMaterial(grass);
-        landscape.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
-
-        CollisionShape shape = CollisionShapeFactory.createMeshShape(landscape);
-        RigidBodyControl rbc
-                = new RigidBodyControl(shape, PhysicsRigidBody.massForStatic);
-        rbc.setApplyScale(true);
-        rbc.setKinematic(true);
-        landscape.addControl(rbc);
-    }
 
     /**
      * Create the square-slab spatial.
@@ -303,46 +244,10 @@ public class Platform implements BulletDebugAppState.DebugAppStateFilter {
         square.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
 
         BoxCollisionShape shape = new BoxCollisionShape(halfExtents);
-        RigidBodyControl rbc
-                = new RigidBodyControl(shape, PhysicsRigidBody.massForStatic);
+        RigidBodyControl rbc = new RigidBodyControl(shape);
         rbc.setApplyScale(true);
         rbc.setKinematic(true);
         square.addControl(rbc);
-    }
-
-    /**
-     * Load a height-map asset.
-     *
-     * @return a new instance (not null)
-     */
-    private AbstractHeightMap loadHeightMap() {
-        AssetManager assetManager = Locators.getAssetManager();
-
-        Texture heightTexture
-                = MyAsset.loadTexture(assetManager, heightMapAssetPath);
-        Image heightImage = heightTexture.getImage();
-        float heightScale = 1f;
-        AbstractHeightMap heightMap
-                = new ImageBasedHeightMap(heightImage, heightScale);
-        heightMap.load();
-
-        return heightMap;
-    }
-
-    /**
-     * Update the landscape to the specified diameter.
-     *
-     * @param diameter (&ge;0)
-     */
-    private void updateLandscape(float diameter) {
-        if (landscape == null) {
-            createLandscape();
-        }
-
-        float yScale = 0.003f * diameter;
-        float xzScale = 0.01f * diameter;
-        Vector3f scale = new Vector3f(xzScale, yScale, xzScale);
-        landscape.setLocalScale(scale);
     }
 
     /**
@@ -353,6 +258,8 @@ public class Platform implements BulletDebugAppState.DebugAppStateFilter {
      * to any physics space
      */
     private void updateSquare(float diameter) {
+        logger.log(Level.SEVERE, "");
+
         if (square == null) {
             createSquare();
         }
@@ -362,7 +269,7 @@ public class Platform implements BulletDebugAppState.DebugAppStateFilter {
     }
 
     /**
-     * Alter which spatial is attached to the scene graph.
+     * Alter which spatial is attached to the scene graph. TODO re-order methods
      *
      * @param platformSpatial (may be null, alias created)
      */
