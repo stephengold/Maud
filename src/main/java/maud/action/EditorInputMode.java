@@ -42,6 +42,7 @@ import maud.model.EditorModel;
 import maud.model.History;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
+import maud.model.cgm.OutputFormats;
 import maud.model.cgm.SelectedTrack;
 import maud.view.EditorView;
 import maud.view.ViewType;
@@ -373,28 +374,58 @@ public class EditorInputMode extends InputMode {
      */
     private boolean saveAction(String actionString) {
         EditorModel model = Maud.getModel();
-        String baseFilePath;
+        OutputFormats format;
+        String argList, baseFilePath;
+        String[] args;
         boolean handled = true;
 
         if (actionString.startsWith(ActionPrefix.saveCgm)) {
-            baseFilePath
-                    = MyString.remainder(actionString, ActionPrefix.saveCgm);
-            model.getTarget().writeToFile(baseFilePath);
+            argList = MyString.remainder(actionString, ActionPrefix.saveCgm);
+            if (argList.contains(" ")) {
+                args = argList.split(" ");
+                format = OutputFormats.valueOf(args[0]);
+                baseFilePath = MyString.remainder(argList, args[0] + " ");
+                model.getTarget().writeToFile(format, baseFilePath);
+            } else {
+                handled = false;
+            }
 
         } else if (actionString.startsWith(ActionPrefix.saveCgmUnconfirmed)) {
-            baseFilePath = MyString.remainder(actionString,
+            argList = MyString.remainder(actionString,
                     ActionPrefix.saveCgmUnconfirmed);
-            EditorDialogs.confirmOverwrite(ActionPrefix.saveCgm, baseFilePath);
+            if (argList.contains(" ")) {
+                args = argList.split(" ");
+                format = OutputFormats.valueOf(args[0]);
+                baseFilePath = MyString.remainder(argList, args[0] + " ");
+                EditorDialogs.confirmOverwrite(ActionPrefix.saveCgm, format,
+                        baseFilePath);
+            } else {
+                handled = false;
+            }
 
         } else if (actionString.startsWith(ActionPrefix.saveMap)) {
-            baseFilePath
-                    = MyString.remainder(actionString, ActionPrefix.saveMap);
-            model.getMap().writeToFile(baseFilePath);
+            argList = MyString.remainder(actionString, ActionPrefix.saveMap);
+            if (argList.contains(" ")) {
+                args = argList.split(" ");
+                format = OutputFormats.valueOf(args[0]);
+                baseFilePath = MyString.remainder(argList, args[0] + " ");
+                model.getMap().writeToFile(format, baseFilePath);
+            } else {
+                handled = false;
+            }
 
         } else if (actionString.startsWith(ActionPrefix.saveMapUnconfirmed)) {
-            baseFilePath = MyString.remainder(actionString,
+            argList = MyString.remainder(actionString,
                     ActionPrefix.saveMapUnconfirmed);
-            EditorDialogs.confirmOverwrite(ActionPrefix.saveMap, baseFilePath);
+            if (argList.contains(" ")) {
+                args = argList.split(" ");
+                format = OutputFormats.valueOf(args[0]);
+                baseFilePath = MyString.remainder(argList, args[0] + " ");
+                EditorDialogs.confirmOverwrite(ActionPrefix.saveMap, format,
+                        baseFilePath);
+            } else {
+                handled = false;
+            }
 
         } else {
             handled = false;

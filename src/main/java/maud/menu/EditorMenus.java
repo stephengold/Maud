@@ -37,6 +37,7 @@ import maud.action.ActionPrefix;
 import maud.dialog.EditorDialogs;
 import maud.model.EditableMap;
 import maud.model.History;
+import maud.model.cgm.OutputFormats;
 
 /**
  * Menus in Maud's editor screen.
@@ -314,9 +315,15 @@ public class EditorMenus {
     private static boolean menuMap(String remainder) {
         boolean handled = true;
         EditableMap map = Maud.getModel().getMap();
+        String actionPrefix;
         switch (remainder) {
             case "Delete invalid mappings":
                 map.deleteInvalidMappings();
+                break;
+            case "Export to XML":
+                actionPrefix = ActionPrefix.saveMapUnconfirmed
+                        + OutputFormats.XML.toString() + " ";
+                EditorDialogs.saveMap("Export", actionPrefix);
                 break;
             case "Invert":
                 map.invert();
@@ -325,7 +332,9 @@ public class EditorMenus {
                 loadMapAsset();
                 break;
             case "Save":
-                EditorDialogs.saveMap();
+                actionPrefix = ActionPrefix.saveMapUnconfirmed
+                        + OutputFormats.J3O.toString() + " ";
+                EditorDialogs.saveMap("Save", actionPrefix);
                 break;
             case "Tool":
                 Maud.gui.tools.select("mapping");

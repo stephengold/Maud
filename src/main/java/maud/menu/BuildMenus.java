@@ -706,6 +706,7 @@ public class BuildMenus {
             builder.addEdit("Unload");
         }
         builder.addDialog("Save");
+        builder.addDialog("Export to XML");
         builder.addTool("Twist tool");
     }
 

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,6 +31,7 @@ import maud.Maud;
 import maud.action.ActionPrefix;
 import maud.dialog.EditorDialogs;
 import maud.model.EditorModel;
+import maud.model.cgm.OutputFormats;
 import maud.model.cgm.SelectedSpatial;
 
 /**
@@ -65,7 +66,7 @@ public class CgmMenus {
         builder.addTool("Tool");
         builder.addSubmenu("Load");
         builder.addDialog("Save");
-        //builder.add("Export"); TODO
+        builder.addDialog("Export to XML");
 
         builder.addSubmenu("Load source model");
         EditorModel model = Maud.getModel();
@@ -101,8 +102,15 @@ public class CgmMenus {
      * @return true if the action is handled, otherwise false
      */
     static boolean menuCgm(String remainder) {
+        String actionPrefix;
         boolean handled = true;
         switch (remainder) {
+            case "Export to XML":
+                actionPrefix = ActionPrefix.saveCgmUnconfirmed
+                        + OutputFormats.XML.toString() + " ";
+                EditorDialogs.saveCgm("Export", actionPrefix);
+                break;
+
             case "History":
                 Maud.gui.tools.select("history");
                 break;
@@ -120,7 +128,9 @@ public class CgmMenus {
                 break;
 
             case "Save":
-                EditorDialogs.saveCgm();
+                actionPrefix = ActionPrefix.saveCgmUnconfirmed
+                        + OutputFormats.J3O.toString() + " ";
+                EditorDialogs.saveCgm("Save", actionPrefix);
                 break;
 
             case "Tool":

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -41,7 +41,7 @@ import com.jme3.bullet.animation.DynamicAnimControl;
 import com.jme3.bullet.animation.PhysicsLink;
 import com.jme3.bullet.animation.RangeOfMotion;
 import com.jme3.bullet.control.PhysicsControl;
-import com.jme3.export.binary.BinaryExporter;
+import com.jme3.export.JmeExporter;
 import com.jme3.light.Light;
 import com.jme3.material.MatParam;
 import com.jme3.material.MatParamOverride;
@@ -1658,54 +1658,86 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Write the C-G model to the filesystem at the specified base path.
+     * Write the C-G model to the filesystem, in the specified format, at the
+     * specified base path.
      *
      * @param baseFilePath file path without any extension (not null, not empty)
+     * @param format the output format (not null)
      * @return true if successful, otherwise false
      */
-    public boolean writeToFile(String baseFilePath) {
+    public boolean writeToFile(OutputFormats format, String baseFilePath) {
+        Validate.nonNull(format, "format");
         Validate.nonEmpty(baseFilePath, "base file path");
 
-        String filePath = baseFilePath + ".j3o";
+        String filePath = format.extend(baseFilePath);
         File file = new File(filePath);
-        BinaryExporter exporter = BinaryExporter.getInstance();
-
-        boolean success = true;
-        try {
-            exporter.save(rootSpatial, file);
-        } catch (IOException exception) {
-            success = false;
+        /*
+         * create the parent folder (see JME issue #1011)
+         */
+        File parent = file.getParentFile();
+        if (parent != null && !parent.exists()) {
+            parent.mkdirs();
         }
 
         filePath = file.getAbsolutePath();
         filePath = filePath.replaceAll("\\\\", "/");
+        JmeExporter exporter = format.getExporter();
+        boolean success = true;
+        try {
+            exporter.save(rootSpatial, file);
+        } catch (IOException exception) {
+            System.out.println(exception);
+            success = false;
+        }
 
+        String quotedPath = MyString.quote(filePath);
         if (success) {
-            String af = assetFolderForWrite();
-            if (baseFilePath.startsWith(af)) {
-                assetRootPath = af;
-                baseAssetPath = MyString.remainder(baseFilePath, af);
-            } else if (baseFilePath.endsWith(baseAssetPath)
-                    && !baseAssetPath.isEmpty()) {
-                assetRootPath = MyString.removeSuffix(baseFilePath,
-                        baseAssetPath);
-            } else {
-                assetRootPath = "";
-                baseAssetPath = "";
-            }
-            if (baseAssetPath.startsWith("/")) {
-                baseAssetPath = MyString.remainder(baseAssetPath, "/");
-            }
-
-            extension = "j3o";
-            String eventDescription = "write model to " + filePath;
-            editState.setPristine(eventDescription);
-            logger.log(Level.INFO, "Wrote model to file {0}",
-                    MyString.quote(filePath));
+            logger.log(Level.INFO, "Wrote model to file {0}", quotedPath);
         } else {
             logger.log(Level.SEVERE,
                     "I/O exception while writing model to file {0}",
-                    MyString.quote(filePath));
+                    quotedPath);
+        }
+
+        if (success) {
+            boolean maudCanLoadIt = (format == OutputFormats.J3O);
+            String af = assetFolderForWrite();
+            String eventDescription = "write model to " + filePath;
+            if (maudCanLoadIt && baseFilePath.startsWith(af)) {
+                /*
+                 * The CGM was successfully written to the "Written Assets"
+                 * folder in a format that Maud can load, so update the
+                 * origin information and mark as pristine.
+                 */
+                assetRootPath = af;
+                baseAssetPath = MyString.remainder(baseFilePath, af);
+                /*
+                 * In asset paths, a leading slash is always redundant.
+                 */
+                if (baseAssetPath.startsWith("/")) {
+                    baseAssetPath = MyString.remainder(baseAssetPath, "/");
+                }
+                extension = format.extension();
+                editState.setPristine(eventDescription);
+
+            } else if (maudCanLoadIt && baseFilePath.endsWith(baseAssetPath)
+                    && !baseAssetPath.isEmpty()) {
+                /*
+                 * The CGM was successfully written to another part of the
+                 * filesystem in a format that Maud can load, so update the
+                 * origin information and mark as pristine.
+                 */
+                assetRootPath = MyString.removeSuffix(baseFilePath,
+                        baseAssetPath);
+                extension = format.extension();
+                editState.setPristine(eventDescription);
+
+            } else {
+                /*
+                 * Don't update the origin information, don't mark as pristine.
+                 */
+                History.addEvent(eventDescription);
+            }
         }
 
         return success;

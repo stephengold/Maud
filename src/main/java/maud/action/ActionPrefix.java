@@ -225,19 +225,19 @@ public class ActionPrefix {
      */
     final public static String resampleTrack = "resample track ";
     /**
-     * argument is a base file path
+     * arguments are an output-format type and a base file path
      */
     final public static String saveCgm = "save cgm ";
     /**
-     * argument is a base file path
+     * argument are an output-format type and a base file path
      */
     final public static String saveCgmUnconfirmed = "save cgmUnconfirmed ";
     /**
-     * argument is a base file path
+     * arguments are an output-format type and a base file path
      */
     final public static String saveMap = "save map ";
     /**
-     * argument is a base file path
+     * arguments are an output-format type and a base file path
      */
     final public static String saveMapUnconfirmed = "save mapUnconfirmed ";
     /**

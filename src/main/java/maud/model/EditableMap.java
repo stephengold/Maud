@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -26,7 +26,7 @@
  */
 package maud.model;
 
-import com.jme3.export.binary.BinaryExporter;
+import com.jme3.export.JmeExporter;
 import com.jme3.math.Quaternion;
 import com.jme3.scene.plugins.bvh.BoneMapping;
 import java.io.File;
@@ -41,6 +41,7 @@ import jme3utilities.math.MyVector3f;
 import jme3utilities.ui.ActionApplication;
 import maud.Maud;
 import maud.model.cgm.Cgm;
+import maud.model.cgm.OutputFormats;
 import maud.model.cgm.SelectedSkeleton;
 
 /**
@@ -300,53 +301,83 @@ public class EditableMap extends LoadedMap {
     }
 
     /**
-     * Write the map to the specified file.
+     * Write the map to the filesystem, in the specified format, at the
+     * specified base path.
      *
      * @param baseFilePath file path without any extension (not null, not empty)
+     * @param format the output format (not null)
      * @return true if successful, otherwise false
      */
-    public boolean writeToFile(String baseFilePath) {
+    public boolean writeToFile(OutputFormats format, String baseFilePath) {
+        Validate.nonNull(format, "format");
         Validate.nonEmpty(baseFilePath, "base file path");
 
-        String filePath = baseFilePath + ".j3o";
+        String filePath = format.extend(baseFilePath);
         File file = new File(filePath);
-        BinaryExporter exporter = BinaryExporter.getInstance();
-
-        boolean success = true;
-        try {
-            exporter.save(map, file);
-        } catch (IOException exception) {
-            success = false;
+        /*
+         * create the parent folder (see JME issue #1011)
+         */
+        File parent = file.getParentFile();
+        if (parent != null && !parent.exists()) {
+            parent.mkdirs();
         }
 
         filePath = file.getAbsolutePath();
         filePath = filePath.replaceAll("\\\\", "/");
+        JmeExporter exporter = format.getExporter();
+        boolean success = true;
+        try {
+            exporter.save(map, file);
+        } catch (IOException exception) {
+            System.out.println(exception);
+            success = false;
+        }
 
+        String quotedPath = MyString.quote(filePath);
         if (success) {
-            String af = assetFolderForWrite();
-            if (baseFilePath.startsWith(af)) {
-                assetRootPath = af;
-                baseAssetPath = MyString.remainder(baseFilePath, af);
-            } else if (filePath.endsWith(baseAssetPath)
-                    && !baseAssetPath.isEmpty()) {
-                assetRootPath = MyString.removeSuffix(baseFilePath,
-                        baseAssetPath);
-            } else {
-                assetRootPath = "";
-                baseAssetPath = "";
-            }
-            if (baseAssetPath.startsWith("/")) {
-                baseAssetPath = MyString.remainder(baseAssetPath, "/");
-            }
-
-            String eventDescription = "write map to " + filePath;
-            editState.setPristine(eventDescription);
-            logger.log(Level.INFO, "Wrote map to file {0}",
-                    MyString.quote(filePath));
+            logger.log(Level.INFO, "Wrote map to file {0}", quotedPath);
         } else {
             logger.log(Level.SEVERE,
-                    "I/O exception while writing map to file {0}",
-                    MyString.quote(filePath));
+                    "I/O exception while writing map to file {0}", quotedPath);
+        }
+
+        if (success) {
+            boolean maudCanLoadIt = (format == OutputFormats.J3O);
+            String af = assetFolderForWrite();
+            String eventDescription = "write map to " + filePath;
+            if (maudCanLoadIt && baseFilePath.startsWith(af)) {
+                /*
+                 * The map was successfully written to the "Written Assets"
+                 * folder in a format that Maud can load, so update the
+                 * origin information and mark as pristine.
+                 */
+                assetRootPath = af;
+                baseAssetPath = MyString.remainder(baseFilePath, af);
+                /*
+                 * In asset paths, a leading slash is always redundant.
+                 */
+                if (baseAssetPath.startsWith("/")) {
+                    baseAssetPath = MyString.remainder(baseAssetPath, "/");
+                }
+                editState.setPristine(eventDescription);
+
+            } else if (maudCanLoadIt && baseFilePath.endsWith(baseAssetPath)
+                    && !baseAssetPath.isEmpty()) {
+                /*
+                 * The map was successfully written to another part of the
+                 * filesystem in a format that Maud can load, so update the
+                 * origin information and mark as pristine.
+                 */
+                assetRootPath = MyString.removeSuffix(baseFilePath,
+                        baseAssetPath);
+                editState.setPristine(eventDescription);
+
+            } else {
+                /*
+                 * Don't update the origin information, don't mark as pristine.
+                 */
+                History.addEvent(eventDescription);
+            }
         }
 
         return success;

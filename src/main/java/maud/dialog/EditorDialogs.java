@@ -68,6 +68,7 @@ import maud.model.cgm.EditableCgm;
 import maud.model.cgm.LoadedAnimation;
 import maud.model.cgm.LoadedCgm;
 import maud.model.cgm.MatParamRef;
+import maud.model.cgm.OutputFormats;
 import maud.model.cgm.PlayOptions;
 import maud.model.cgm.PlayTimes;
 import maud.model.cgm.SelectedBone;
@@ -173,15 +174,16 @@ public class EditorDialogs {
     /**
      * Display a confirmation dialog for overwriting a file.
      *
-     * @param prefix action prefix (not null, not empty)
+     * @param actionPrefix action prefix before the format (not null, not empty)
      * @param baseFilePath base file path (not null, not empty)
      */
-    public static void confirmOverwrite(String prefix, String baseFilePath) {
-        Validate.nonEmpty(prefix, "prefix");
+    public static void confirmOverwrite(String actionPrefix,
+            OutputFormats format, String baseFilePath) {
+        Validate.nonEmpty(actionPrefix, "action prefix");
         Validate.nonEmpty(baseFilePath, "base file path");
 
-        String action = prefix + baseFilePath;
-        String filePath = baseFilePath + ".j3o";
+        String action = actionPrefix + format.toString() + " " + baseFilePath;
+        String filePath = format.extend(baseFilePath);
         File file = new File(filePath);
         if (file.exists()) {
             String message
@@ -640,28 +642,42 @@ public class EditorDialogs {
     }
 
     /**
-     * Display a "save cgmUnconfirmed" dialog to enter the base file path.
+     * Display a dialog to enter the base file path for saving or exporting the
+     * target CGM.
+     *
+     * @param commitDescription label text for the commit button (not null, not
+     * empty, should fit the button)
+     * @param actionPrefix action prefix (not null, not empty)
      */
-    public static void saveCgm() {
+    public static void saveCgm(String commitDescription, String actionPrefix) {
+        Validate.nonEmpty(commitDescription, "commit description");
+        Validate.nonEmpty(actionPrefix, "action prefix");
+
         EditableCgm target = Maud.getModel().getTarget();
         String baseFilePath = target.baseFilePathForWrite();
-        DialogController controller = new TextEntryDialog("Save");
+        DialogController controller = new TextEntryDialog(commitDescription);
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter base file path for model:",
-                baseFilePath, "Save", ActionPrefix.saveCgmUnconfirmed,
-                controller);
+                baseFilePath, actionPrefix, controller);
     }
 
     /**
-     * Display a "save mapUnconfirmed" dialog to enter the base file path.
+     * Display a dialog to enter the base file path for saving or exporting the
+     * SkeletonMap.
+     *
+     * @param commitDescription label text for the commit button (not null, not
+     * empty, should fit the button)
+     * @param actionPrefix action prefix (not null, not empty)
      */
-    public static void saveMap() {
+    public static void saveMap(String commitDescription, String actionPrefix) {
+        Validate.nonEmpty(commitDescription, "commit description");
+        Validate.nonEmpty(actionPrefix, "action prefix");
+
         String baseFilePath = Maud.getModel().getMap().baseFilePathForWrite();
-        DialogController controller = new TextEntryDialog("Save");
+        DialogController controller = new TextEntryDialog(commitDescription);
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter base file path for map:",
-                baseFilePath, "Save", ActionPrefix.saveMapUnconfirmed,
-                controller);
+                baseFilePath, actionPrefix, controller);
     }
 
     /**
