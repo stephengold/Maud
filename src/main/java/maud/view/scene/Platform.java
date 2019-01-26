@@ -251,24 +251,6 @@ public class Platform implements BulletDebugAppState.DebugAppStateFilter {
     }
 
     /**
-     * Update the square slab to the specified diameter.
-     *
-     * @param diameter (&ge;0)
-     * @return a new, orphaned spatial with its own RigidBodyControl, not added
-     * to any physics space
-     */
-    private void updateSquare(float diameter) {
-        logger.log(Level.SEVERE, "");
-
-        if (square == null) {
-            createSquare();
-        }
-        Vector3f center = new Vector3f(0f, -diameter * squareThickness, 0f);
-        square.setLocalTranslation(center);
-        square.setLocalScale(diameter);
-    }
-
-    /**
      * Alter which spatial is attached to the scene graph. TODO re-order methods
      *
      * @param platformSpatial (may be null, alias created)
@@ -295,5 +277,21 @@ public class Platform implements BulletDebugAppState.DebugAppStateFilter {
             }
             spatial = platformSpatial;
         }
+    }
+
+    /**
+     * Update the square slab to the specified diameter.
+     *
+     * @param diameter (&ge;0)
+     * @return a new, orphaned spatial with its own RigidBodyControl, not added
+     * to any physics space
+     */
+    private void updateSquare(float diameter) {
+        if (square == null) {
+            createSquare();
+        }
+        Vector3f center = new Vector3f(0f, -diameter * squareThickness, 0f);
+        square.setLocalTranslation(center);
+        square.setLocalScale(diameter);
     }
 }
