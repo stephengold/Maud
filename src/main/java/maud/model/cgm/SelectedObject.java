@@ -99,6 +99,33 @@ public class SelectedObject implements JmeCloneable {
     }
 
     /**
+     * Test whether the named parameter can be altered.
+     *
+     * @param parameterName the name of the parameter (not null)
+     * @return true if alterable, otherwise false
+     */
+    public boolean canSet(String parameterName) {
+        Validate.nonEmpty(parameterName, "parameter name");
+
+        boolean result;
+        PhysicsCollisionObject pco = find();
+        if (pco instanceof PhysicsRigidBody) {
+            PhysicsRigidBody body = (PhysicsRigidBody) pco;
+            try {
+                RigidBodyParameter rbp
+                        = RigidBodyParameter.valueOf(parameterName);
+                result = rbp.canSet(body, 1f);
+            } catch (IllegalArgumentException e) {
+                result = false;
+            }
+        } else {
+            result = false;
+        }
+
+        return result;
+    }
+
+    /**
      * Describe the object's shape.
      *
      * @return a description of the shape, or "" if no shape

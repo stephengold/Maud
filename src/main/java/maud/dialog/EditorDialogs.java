@@ -175,6 +175,7 @@ public class EditorDialogs {
      * Display a confirmation dialog for overwriting a file.
      *
      * @param actionPrefix action prefix before the format (not null, not empty)
+     * @param format the output format (not null)
      * @param baseFilePath base file path (not null, not empty)
      */
     public static void confirmOverwrite(String actionPrefix,
@@ -1045,24 +1046,17 @@ public class EditorDialogs {
         Validate.nonNull(parameter, "parameter");
 
         SelectedObject object = Maud.getModel().getTarget().getObject();
-        if (object.isSelected()) {
-            String defaultText = object.value(parameter);
-            DialogController controller;
-            switch (parameter) {
-                case GravityX:
-                case GravityY:
-                case GravityZ:
-                    controller = new FloatDialog("Set", -Float.MAX_VALUE,
-                            Float.MAX_VALUE, false);
-                    break;
-                default:
-                    controller = new FloatDialog("Set", 0f, Float.MAX_VALUE,
-                            false);
-            }
-            String name = parameter.toString();
-            String prompt = String.format("Enter new %s:", name);
-            String prefix = ActionPrefix.setPhysicsRbpValue + name + " ";
+        String parameterName = parameter.toString();
+        if (object.canSet(parameterName)) {
+            float minValue = parameter.minValue();
+            float maxValue = parameter.maxValue();
+            DialogController controller
+                    = new FloatDialog("Set", minValue, maxValue, false);
 
+            String prompt = String.format("Enter new %s:", parameterName);
+            String defaultText = object.value(parameter);
+            String prefix
+                    = ActionPrefix.setPhysicsRbpValue + parameterName + " ";
             Maud.gui.closeAllPopups();
             Maud.gui.showTextEntryDialog(prompt, defaultText, prefix,
                     controller);
