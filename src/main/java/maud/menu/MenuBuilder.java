@@ -36,7 +36,7 @@ import jme3utilities.nifty.PopupMenuBuilder;
 import maud.Maud;
 
 /**
- * A menu builder for Maud.
+ * A menu builder for Maud. TODO implement menu reduction
  *
  * @author Stephen Gold sgold@sonic.net
  */

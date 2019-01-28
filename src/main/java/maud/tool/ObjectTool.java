@@ -112,6 +112,9 @@ class ObjectTool extends Tool {
         setButtonText("physicsNext", nextButton);
         setButtonText("physicsPrevious", previousButton);
         setButtonText("physicsSelectObject", selectButton);
+        // TODO more parameters: user object, collision group,
+        // collideWith groups, debug mesh resolution/normals,
+        // contact-response flag, static flag
     }
 
     /**
