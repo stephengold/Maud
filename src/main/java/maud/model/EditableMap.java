@@ -302,7 +302,7 @@ public class EditableMap extends LoadedMap {
 
     /**
      * Write the map to the filesystem, in the specified format, at the
-     * specified base path.
+     * specified base path. TODO refactor code shared with EditableCgm
      *
      * @param baseFilePath file path without any extension (not null, not empty)
      * @param format the output format (not null)
@@ -329,7 +329,7 @@ public class EditableMap extends LoadedMap {
         try {
             exporter.save(map, file);
         } catch (IOException exception) {
-            System.out.println(exception);
+            System.err.println(exception);
             success = false;
         }
 

@@ -1686,7 +1686,7 @@ public class EditableCgm extends LoadedCgm {
         try {
             exporter.save(rootSpatial, file);
         } catch (IOException exception) {
-            System.out.println(exception);
+            System.err.println(exception);
             success = false;
         }
 

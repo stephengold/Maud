@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -170,8 +170,8 @@ public class LoadedMap implements Cloneable {
         } else {
             try {
                 result = map.clone();
-            } catch (CloneNotSupportedException e) {
-                throw new RuntimeException();
+            } catch (CloneNotSupportedException exception) {
+                throw new RuntimeException(exception);
             }
         }
 

@@ -1293,7 +1293,7 @@ public class Cgm implements Cloneable {
                     setting = true;
                     break;
                 default:
-                    throw new RuntimeException();
+                    throw new RuntimeException(mode.toString());
             }
             List<Integer> treePosition = findSpatial(subtree);
             sceneView.setWireframe(treePosition, setting);
