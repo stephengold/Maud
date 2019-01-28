@@ -1172,7 +1172,7 @@ public class Cgm implements Cloneable {
         clone.selectedLight = cloner.clone(selectedLight);
         clone.selectedLink = cloner.clone(selectedLink);
         clone.selectedMatParam = selectedMatParam.clone();
-        clone.selectedObject = selectedObject.clone();
+        clone.selectedObject = cloner.clone(selectedObject);
         clone.selectedOverride = selectedOverride.clone();
         clone.selectedRagdoll = cloner.clone(selectedRagdoll);
         clone.selectedSgc = cloner.clone(selectedSgc);

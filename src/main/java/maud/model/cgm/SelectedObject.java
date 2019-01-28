@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -34,6 +34,8 @@ import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
+import com.jme3.util.clone.Cloner;
+import com.jme3.util.clone.JmeCloneable;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
@@ -50,7 +52,7 @@ import maud.view.scene.SceneView;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class SelectedObject implements Cloneable {
+public class SelectedObject implements JmeCloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -112,7 +114,7 @@ public class SelectedObject implements Cloneable {
     }
 
     /**
-     * Access the selected object.
+     * Access the selected collision object in the SceneView.
      *
      * @return the pre-existing instance, or null if not found
      */
@@ -127,7 +129,8 @@ public class SelectedObject implements Cloneable {
     /**
      * Test whether the object has mass.
      *
-     * @return true if the object is a rigid body, otherwise false
+     * @return true if the object is a rigid body or subtype thereof, otherwise
+     * false
      */
     public boolean hasMass() {
         PhysicsCollisionObject object = find();
@@ -406,18 +409,45 @@ public class SelectedObject implements Cloneable {
         return result;
     }
     // *************************************************************************
-    // Object methods
+    // JmeCloneable methods
 
     /**
-     * Create a copy of this object.
+     * Don't use this method; use a {@link com.jme3.util.clone.Cloner} instead.
      *
-     * @return a new object, equivalent to this one
-     * @throws CloneNotSupportedException if the superclass isn't cloneable
+     * @return never
+     * @throws CloneNotSupportedException always
      */
     @Override
     public SelectedObject clone() throws CloneNotSupportedException {
-        SelectedObject clone = (SelectedObject) super.clone();
-        return clone;
+        super.clone();
+        throw new CloneNotSupportedException("use a cloner");
+    }
+
+    /**
+     * Callback from {@link com.jme3.util.clone.Cloner} to convert this
+     * shallow-cloned instance into a deep-cloned one, using the specified
+     * cloner and original to resolve copied fields.
+     *
+     * @param cloner the cloner currently cloning this control
+     * @param original the control from which this control was shallow-cloned
+     */
+    @Override
+    public void cloneFields(Cloner cloner, Object original) {
+    }
+
+    /**
+     * Create a shallow clone for the JME cloner.
+     *
+     * @return a new instance
+     */
+    @Override
+    public SelectedObject jmeClone() {
+        try {
+            SelectedObject clone = (SelectedObject) super.clone();
+            return clone;
+        } catch (CloneNotSupportedException exception) {
+            throw new RuntimeException(exception);
+        }
     }
     // *************************************************************************
     // private methods
