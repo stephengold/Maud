@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -106,7 +106,7 @@ class SelectOSAction {
                 break;
 
             case Action.selectPhysicsRbp:
-                PhysicsMenus.selectRbp();
+                PhysicsMenus.selectRbp("");
                 break;
 
             case Action.selectPhysicsShape:
@@ -247,8 +247,16 @@ class SelectOSAction {
         } else if (actionString.startsWith(ActionPrefix.selectPhysicsRbp)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.selectPhysicsRbp);
-            RigidBodyParameter rbp = RigidBodyParameter.valueOf(arg);
-            model.getMisc().selectRbp(rbp);
+            RigidBodyParameter rbp; // TODO utility in ParseUtil
+            try {
+                rbp = RigidBodyParameter.valueOf(arg);
+            } catch (IllegalArgumentException e) {
+                rbp = null;
+                PhysicsMenus.selectRbp(arg);
+            }
+            if (rbp != null) {
+                model.getMisc().selectRbp(rbp);
+            }
 
         } else if (actionString.startsWith(ActionPrefix.selectPlatformType)) {
             arg = MyString.remainder(actionString,

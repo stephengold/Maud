@@ -33,8 +33,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
+import jme3utilities.Validate;
 import jme3utilities.minie.MyObject;
 import maud.DescribeUtil;
 import maud.Maud;
@@ -363,19 +365,36 @@ public class PhysicsMenus {
 
     /**
      * Display a "select physicsRbp" menu to select a rigid-body parameter.
+     *
+     * @param namePrefix prefix for RBP filtering (not null)
      */
-    public static void selectRbp() {
-        MenuBuilder builder = new MenuBuilder();
+    public static void selectRbp(String namePrefix) {
+        Validate.nonNull(namePrefix, "name prefix");
 
+        Set<String> matchingNames = new TreeSet<>();
         RigidBodyParameter selectedRbp
                 = Maud.getModel().getMisc().rbParameter();
         for (RigidBodyParameter rbp : RigidBodyParameter.values()) {
             if (!rbp.equals(selectedRbp)) {
                 String name = rbp.toString();
-                builder.add(name);
+                if (name.startsWith(namePrefix)) {
+                    matchingNames.add(name);
+                }
             }
         }
 
+        List<String> reducedList = new ArrayList<>(matchingNames);
+        MyString.reduce(reducedList, ShowMenus.maxItems);
+        Collections.sort(reducedList);
+
+        MenuBuilder builder = new MenuBuilder();
+        for (String name : reducedList) {
+            if (matchingNames.contains(name)) {
+                builder.add(name);
+            } else {
+                builder.addEllipsis(name);
+            }
+        }
         builder.show(ActionPrefix.selectPhysicsRbp);
     }
 
