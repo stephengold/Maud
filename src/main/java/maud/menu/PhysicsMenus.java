@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -103,7 +103,7 @@ public class PhysicsMenus {
             builder.addEdit("Compound shape");
         }
 
-        builder.addTool("Object tool");
+        builder.addTool("Collision-object tool");
 
         int numObjects = sceneView.objectMap().size();
         if (numObjects > 0) {
@@ -181,7 +181,7 @@ public class PhysicsMenus {
                     EditorDialogs.setPhysicsRbpValue(RigidBodyParameter.Mass);
                     break;
 
-                case "Object tool":
+                case "Collision-object tool":
                     Maud.gui.tools.select("object");
                     break;
 
