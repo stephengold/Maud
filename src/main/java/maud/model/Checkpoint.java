@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -58,17 +58,17 @@ public class Checkpoint {
      */
     final private EditorModel model;
     /**
-     * events since the previous checkpoint
+     * load/save/edit events since the previous checkpoint
      */
-    final private List<String> eventDescriptions = new ArrayList<>(20);
+    final private List<String> eventDescriptions;
     // *************************************************************************
     // constructors
 
     /**
      * Create a new checkpoint based on the application's live state.
      *
-     * @param descriptions events since the previous checkpoint (not null,
-     * unaffected)
+     * @param descriptions descriptions of all load/save/edit events since the
+     * previous checkpoint (not null, unaffected)
      */
     Checkpoint(List<String> descriptions) {
         timestamp = new Date();
@@ -78,7 +78,7 @@ public class Checkpoint {
         model = new EditorModel(live);
         live.postCheckpoint();
 
-        eventDescriptions.addAll(descriptions);
+        eventDescriptions = new ArrayList<>(descriptions);
     }
     // *************************************************************************
     // new methods exposed
@@ -94,9 +94,9 @@ public class Checkpoint {
     }
 
     /**
-     * Enumerate events since the previous checkpoint.
+     * Enumerate load/save/edit events since the previous checkpoint.
      *
-     * @return a new list of descriptions
+     * @return a new list of event descriptions
      */
     public List<String> listEvents() {
         List<String> result = new ArrayList<>(eventDescriptions);
