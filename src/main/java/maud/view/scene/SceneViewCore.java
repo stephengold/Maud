@@ -584,6 +584,7 @@ public class SceneViewCore
         cursor.setView(this);
         platform.setView(this);
         projectile.setView(this);
+        vertexMarker.setView(this);
         /*
          * Attach this visualization.
          */
