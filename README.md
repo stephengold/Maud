@@ -84,7 +84,7 @@ Status as of January 2019: seeking more alpha testers.
 
 ## How to build Maud from source
 
-Maud currently targets Version 3.2.1 of jME.  You are welcome to
+Maud currently targets Version 3.2.2 of jME.  You are welcome to
 use jME without installing its Integrated Development Environment (IDE),
 but I use the IDE, so I tend to assume you will too.
 
@@ -814,7 +814,7 @@ Maud's source code is compatible with JDK 7.
 
 World coordinate system: the Y axis points upward (toward the zenith).
 Prior to loading a model that uses the Z-up convention, select the "+Z up"
-load orientation in the Settings Tools (" Settings" -> "Tool").
+load orientation in the Settings Tool ("Settings" -> "Tool").
 
 The first keyframe in each track must be at time=0.
 
