@@ -146,7 +146,7 @@ public class EditorScreen extends GuiScreenController {
     // constructors
 
     /**
-     * Instantiate an uninitialized, disabled display that will not be enabled
+     * Instantiate an uninitialized, disabled screen that will not be enabled
      * during initialization.
      */
     EditorScreen() {
