@@ -290,13 +290,13 @@ public class EditorScreen extends GuiScreenController {
     /**
      * Callback handler that Nifty invokes after a check box changes.
      *
-     * @param checkBoxId Nifty element id of the check box (not null)
+     * @param checkBoxId Nifty element ID of the check box (not null)
      * @param event details of the event (not null)
      */
     @NiftyEventSubscriber(pattern = ".*CheckBox")
     public void onCheckBoxChanged(final String checkBoxId,
             final CheckBoxStateChangedEvent event) {
-        Validate.nonNull(checkBoxId, "check box id");
+        Validate.nonNull(checkBoxId, "check box ID");
         Validate.nonNull(event, "event");
         assert checkBoxId.endsWith("CheckBox");
 
@@ -311,13 +311,13 @@ public class EditorScreen extends GuiScreenController {
     /**
      * Callback handler that Nifty invokes after a slider changes.
      *
-     * @param sliderId Nifty element id of the slider (not null)
+     * @param sliderId Nifty element ID of the slider (not null)
      * @param event details of the event (not null, ignored)
      */
     @NiftyEventSubscriber(pattern = ".*Slider")
     public void onSliderChanged(final String sliderId,
             final SliderChangedEvent event) {
-        Validate.nonNull(sliderId, "slider id");
+        Validate.nonNull(sliderId, "slider ID");
         assert sliderId.endsWith("Slider") : sliderId;
         Validate.nonNull(event, "event");
 
@@ -325,7 +325,7 @@ public class EditorScreen extends GuiScreenController {
             String sliderName = MyString.removeSuffix(sliderId, "Slider");
             Tool manager = findSliderTool(sliderName);
             if (manager == null) {
-                logger.log(Level.WARNING, "Unknown slider, id={0}",
+                logger.log(Level.WARNING, "Unknown slider, ID={0}",
                         MyString.quote(sliderId));
             } else {
                 manager.onSliderChanged(sliderName);

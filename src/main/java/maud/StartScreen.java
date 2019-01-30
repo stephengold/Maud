@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -47,7 +47,7 @@ class StartScreen extends BasicScreenController {
     final private static Logger logger
             = Logger.getLogger(StartScreen.class.getName());
     /**
-     * Nifty id for this screen
+     * Nifty ID for this screen
      */
     final private static String screenId = "start";
     /**

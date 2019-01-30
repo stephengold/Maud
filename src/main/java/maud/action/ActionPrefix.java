@@ -305,7 +305,7 @@ public class ActionPrefix {
      */
     final public static String selectIndexBase = "select indexBase ";
     /**
-     * argument is the id of a physics joint or a prefix thereof
+     * argument is the ID of a physics joint or a prefix thereof
      */
     final public static String selectJoint = "select joint ";
     /**
@@ -413,7 +413,7 @@ public class ActionPrefix {
      */
     final public static String selectShadowMode = "select shadowMode ";
     /**
-     * argument is the id of a physics shape or a prefix thereof
+     * argument is the name of a physics shape or a prefix thereof
      */
     final public static String selectShape = "select shape ";
     /**
