@@ -44,6 +44,8 @@ import com.jme3.bullet.collision.shapes.infos.ChildCollisionShape;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
+import com.jme3.util.clone.Cloner;
+import com.jme3.util.clone.JmeCloneable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -65,7 +67,7 @@ import maud.view.scene.SceneView;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class SelectedShape implements Cloneable {
+public class SelectedShape implements JmeCloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -727,26 +729,53 @@ public class SelectedShape implements Cloneable {
         return result;
     }
     // *************************************************************************
-    // Object methods
+    // JmeCloneable methods
 
     /**
-     * Create a copy of this object.
+     * Don't use this method; use a {@link com.jme3.util.clone.Cloner} instead.
      *
-     * @return a new object, equivalent to this one
-     * @throws CloneNotSupportedException if the superclass isn't cloneable
+     * @return never
+     * @throws CloneNotSupportedException always
      */
     @Override
     public SelectedShape clone() throws CloneNotSupportedException {
-        SelectedShape clone = (SelectedShape) super.clone();
-        return clone;
+        super.clone();
+        throw new CloneNotSupportedException("use a cloner");
+    }
+
+    /**
+     * Callback from {@link com.jme3.util.clone.Cloner} to convert this
+     * shallow-cloned instance into a deep-cloned one, using the specified
+     * cloner and original to resolve copied fields.
+     *
+     * @param cloner the cloner currently cloning this control
+     * @param original the control from which this control was shallow-cloned
+     */
+    @Override
+    public void cloneFields(Cloner cloner, Object original) {
+    }
+
+    /**
+     * Create a shallow clone for the JME cloner.
+     *
+     * @return a new instance
+     */
+    @Override
+    public SelectedShape jmeClone() {
+        try {
+            SelectedShape clone = (SelectedShape) super.clone();
+            return clone;
+        } catch (CloneNotSupportedException exception) {
+            throw new RuntimeException(exception);
+        }
     }
     // *************************************************************************
     // private methods
 
     /**
-     * Enumerate all shapes in the C-G model in ID order.
+     * Enumerate all shapes in the C-G model in ascending ID order.
      *
-     * @return a new list of shape identifiers
+     * @return a new list of shape IDs
      */
     private List<Long> listShapeIds() {
         SceneView sceneView = cgm.getSceneView();

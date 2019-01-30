@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -30,6 +30,8 @@ import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.joints.JointEnd;
 import com.jme3.bullet.joints.PhysicsJoint;
 import com.jme3.bullet.objects.PhysicsRigidBody;
+import com.jme3.util.clone.Cloner;
+import com.jme3.util.clone.JmeCloneable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -45,7 +47,7 @@ import jme3utilities.minie.MyObject;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class SelectedJoint implements Cloneable {
+public class SelectedJoint implements JmeCloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -233,18 +235,45 @@ public class SelectedJoint implements Cloneable {
         cgm = newCgm;
     }
     // *************************************************************************
-    // Object methods
+    // JmeCloneable methods
 
     /**
-     * Create a copy of this object.
+     * Don't use this method; use a {@link com.jme3.util.clone.Cloner} instead.
      *
-     * @return a new object, equivalent to this one
-     * @throws CloneNotSupportedException if the superclass isn't cloneable
+     * @return never
+     * @throws CloneNotSupportedException always
      */
     @Override
     public SelectedJoint clone() throws CloneNotSupportedException {
-        SelectedJoint clone = (SelectedJoint) super.clone();
-        return clone;
+        super.clone();
+        throw new CloneNotSupportedException("use a cloner");
+    }
+
+    /**
+     * Callback from {@link com.jme3.util.clone.Cloner} to convert this
+     * shallow-cloned instance into a deep-cloned one, using the specified
+     * cloner and original to resolve copied fields.
+     *
+     * @param cloner the cloner currently cloning this control
+     * @param original the control from which this control was shallow-cloned
+     */
+    @Override
+    public void cloneFields(Cloner cloner, Object original) {
+    }
+
+    /**
+     * Create a shallow clone for the JME cloner.
+     *
+     * @return a new instance
+     */
+    @Override
+    public SelectedJoint jmeClone() {
+        try {
+            SelectedJoint clone = (SelectedJoint) super.clone();
+            return clone;
+        } catch (CloneNotSupportedException exception) {
+            throw new RuntimeException(exception);
+        }
     }
     // *************************************************************************
     // private methods
