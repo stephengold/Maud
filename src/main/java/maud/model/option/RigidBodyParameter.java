@@ -184,6 +184,8 @@ public enum RigidBodyParameter {
             case AngularVelocityX:
             case AngularVelocityY:
             case AngularVelocityZ:
+            case CcdRadius:
+            case CcdThreshold:
             case Friction:
             case GravityX:
             case GravityY:
@@ -221,7 +223,6 @@ public enum RigidBodyParameter {
      */
     public float maxValue() {
         switch (this) {
-            case AngularDamping:
             case AngularFactorX:
             case AngularFactorY:
             case AngularFactorZ:
@@ -235,7 +236,6 @@ public enum RigidBodyParameter {
             case GravityX:
             case GravityY:
             case GravityZ:
-            case LinearDamping:
             case LinearFactorX:
             case LinearFactorY:
             case LinearFactorZ:
@@ -250,6 +250,8 @@ public enum RigidBodyParameter {
             case Restitution:
                 return Float.MAX_VALUE;
 
+            case AngularDamping:
+            case LinearDamping:
             case OrientationW:
             case OrientationX:
             case OrientationY:
