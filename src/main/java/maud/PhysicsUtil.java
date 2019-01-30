@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -86,7 +86,8 @@ public class PhysicsUtil {
     // new methods exposed
 
     /**
-     * Find the named collision object in the specified physics space.
+     * Find the named collision object in the specified physics space. TODO move
+     * to Minie
      *
      * @param name generated name (not null)
      * @param space which physics space (not null, unaffected)
@@ -100,8 +101,7 @@ public class PhysicsUtil {
         if (name.length() < 6) {
             return null;
         }
-        String idString = name.substring(5);
-        long findId = Long.parseLong(idString);
+        long findId = ParseUtil.parseObjectId(name);
 
         String typePrefix = name.substring(0, 5);
         switch (typePrefix) {
@@ -672,7 +672,7 @@ public class PhysicsUtil {
      * shape.
      *
      * @param user (not null, unaffected)
-     * @param shapeId id of the shape to find
+     * @param shapeId the ID of the shape to find
      * @return true if used/identical, otherwise false
      */
     public static boolean usesShape(CollisionShape user, long shapeId) {

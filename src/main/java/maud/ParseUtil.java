@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -99,10 +99,30 @@ public class ParseUtil {
     }
 
     /**
-     * Parse the id of a shape from its description. TODO move to MyShape
+     * Parse the ID of a collision object from its name. TODO move to MyObject
+     *
+     * @param name input text (not null, not empty)
+     * @return the object's ID
+     *
+     * @see
+     * jme3utilities.minie.MyObject#objectName(com.jme3.bullet.collision.PhysicsCollisionObject)
+     */
+    public static long parseObjectId(String name) {
+        Validate.nonEmpty(name, "name");
+
+        assert name.length() > 5 : name;
+        String decimal = name.substring(5);
+        long result = Long.parseLong(decimal);
+
+        return result;
+    }
+
+    /**
+     * Parse the ID of a collision shape from its description. TODO move to
+     * MyShape
      *
      * @param description input text (not null, not empty)
-     * @return the shape's id
+     * @return the shape's ID
      *
      * @see
      * jme3utilities.minie.MyShape#describe(com.jme3.bullet.collision.shapes.CollisionShape)
