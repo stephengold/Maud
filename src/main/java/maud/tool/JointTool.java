@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -102,7 +102,7 @@ class JointTool extends Tool {
         String nextButton = "", previousButton = "", selectButton = "";
 
         Cgm target = Maud.getModel().getTarget();
-        int numJoints = target.countJoints();
+        int numJoints = target.getPhysics().countJoints();
         if (numJoints > 0) {
             selectButton = "Select joint";
         }
@@ -136,8 +136,7 @@ class JointTool extends Tool {
         String name;
         SelectedJoint joint = Maud.getModel().getTarget().getJoint();
         if (joint.isSelected()) {
-            long id = joint.getId();
-            name = Long.toHexString(id);
+            name = joint.name();
         } else {
             name = "(none selected)";
         }

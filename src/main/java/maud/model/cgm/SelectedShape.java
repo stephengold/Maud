@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -26,7 +26,6 @@
  */
 package maud.model.cgm;
 
-import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
@@ -47,23 +46,22 @@ import com.jme3.math.Vector3f;
 import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
+import jme3utilities.Misc;
+import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import jme3utilities.math.MyVector3f;
 import jme3utilities.minie.MyShape;
-import maud.ParseUtil;
 import maud.PhysicsUtil;
 import maud.model.History;
 import maud.model.option.ShapeParameter;
-import maud.view.scene.SceneView;
 
 /**
- * The selected physics shape in the Maud application.
+ * The selected collision shape in the Maud application.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -84,14 +82,14 @@ public class SelectedShape implements JmeCloneable {
      */
     private Cgm cgm = null;
     /**
+     * selected shape (in the MVC model) or null if none
+     */
+    private CollisionShape selectedShape = null;
+    /**
      * editable C-G model, if any, containing the selected shape (set by
      * {@link #setCgm(Cgm)})
      */
     private EditableCgm editableCgm = null;
-    /**
-     * id of the selected shape, or -1L for none
-     */
-    private long selectedId = -1L;
     // *************************************************************************
     // new methods exposed
 
@@ -103,11 +101,11 @@ public class SelectedShape implements JmeCloneable {
      * The child shape cannot itself be a compound shape.
      */
     public void addParent() {
-        CollisionShape child = find();
-        if (child != null && !(child instanceof CompoundCollisionShape)) {
+        if (selectedShape != null
+                && !(selectedShape instanceof CompoundCollisionShape)) {
             CompoundCollisionShape parent = new CompoundCollisionShape();
             Vector3f location = new Vector3f();
-            parent.addChildShape(child, location);
+            parent.addChildShape(selectedShape, location);
 
             replaceInObjects(parent,
                     "replace collision shape with a compound shape");
@@ -126,13 +124,12 @@ public class SelectedShape implements JmeCloneable {
         if (!isSelected()) {
             return false;
         }
-        CollisionShape shape = find();
 
-        boolean box = shape instanceof BoxCollisionShape;
-        boolean capsule = shape instanceof CapsuleCollisionShape;
-        boolean cone = shape instanceof ConeCollisionShape;
-        boolean cylinder = shape instanceof CylinderCollisionShape;
-        boolean sphere = shape instanceof SphereCollisionShape;
+        boolean box = selectedShape instanceof BoxCollisionShape;
+        boolean capsule = selectedShape instanceof CapsuleCollisionShape;
+        boolean cone = selectedShape instanceof ConeCollisionShape;
+        boolean cylinder = selectedShape instanceof CylinderCollisionShape;
+        boolean sphere = selectedShape instanceof SphereCollisionShape;
 
         boolean result;
         switch (parameter) {
@@ -145,52 +142,22 @@ public class SelectedShape implements JmeCloneable {
             case Radius:
                 result = box || capsule || cone || cylinder || sphere;
                 break;
-            case Margin:
-                result = !sphere && !capsule;
-                break;
-            case ScaleX:
-            case ScaleY:
-            case ScaleZ:
-                result = false; // TODO
-                break;
-            case ScaledVolume:
-                result = false; // TODO
-                break;
             default:
-                throw new IllegalArgumentException(parameter.toString());
+                result = parameter.canSet(selectedShape, 1f);
         }
 
         return result;
     }
 
     /**
-     * Copy the scale of the shape. TODO remove?
-     *
-     * @param storeResult (modified if not null)
-     * @return a scale vector (either storeResult or a new instance)
-     */
-    public Vector3f copyScale(Vector3f storeResult) {
-        if (storeResult == null) {
-            storeResult = new Vector3f();
-        }
-
-        CollisionShape shape = find();
-        shape.getScale(storeResult);
-
-        assert MyVector3f.isAllNonNegative(storeResult);
-        return storeResult;
-    }
-
-    /**
-     * Count the children in a compound shape.
+     * Count the children of the selected compound shape.
      *
      * @return count (&ge;0)
      */
     public int countChildren() {
         int count = 0;
-        CollisionShape shape = find();
-        if (shape instanceof CompoundCollisionShape) {
-            CompoundCollisionShape ccs = (CompoundCollisionShape) shape;
+        if (selectedShape instanceof CompoundCollisionShape) {
+            CompoundCollisionShape ccs = (CompoundCollisionShape) selectedShape;
             List<ChildCollisionShape> children = ccs.getChildren();
             count = children.size();
         }
@@ -206,25 +173,27 @@ public class SelectedShape implements JmeCloneable {
      */
     public int countGeneratorVertices() {
         int count = 0;
-        CollisionShape shape = find();
-        if (shape instanceof CapsuleCollisionShape) {
+
+        if (selectedShape instanceof CapsuleCollisionShape) {
             count = 2;
-        } else if (shape instanceof GImpactCollisionShape) {
-            GImpactCollisionShape giShape = (GImpactCollisionShape) shape;
+        } else if (selectedShape instanceof GImpactCollisionShape) {
+            GImpactCollisionShape giShape
+                    = (GImpactCollisionShape) selectedShape;
             count = giShape.countMeshVertices();
-        } else if (shape instanceof HullCollisionShape) {
-            HullCollisionShape hullShape = (HullCollisionShape) shape;
+        } else if (selectedShape instanceof HullCollisionShape) {
+            HullCollisionShape hullShape = (HullCollisionShape) selectedShape;
             count = hullShape.countMeshVertices();
-        } else if (shape instanceof MeshCollisionShape) {
-            MeshCollisionShape meshShape = (MeshCollisionShape) shape;
+        } else if (selectedShape instanceof MeshCollisionShape) {
+            MeshCollisionShape meshShape = (MeshCollisionShape) selectedShape;
             count = meshShape.countMeshVertices();
-        } else if (shape instanceof MultiSphere) {
-            MultiSphere multiSphereShape = (MultiSphere) shape;
+        } else if (selectedShape instanceof MultiSphere) {
+            MultiSphere multiSphereShape = (MultiSphere) selectedShape;
             count = multiSphereShape.countSpheres();
-        } else if (shape instanceof SimplexCollisionShape) {
-            SimplexCollisionShape simplexShape = (SimplexCollisionShape) shape;
+        } else if (selectedShape instanceof SimplexCollisionShape) {
+            SimplexCollisionShape simplexShape
+                    = (SimplexCollisionShape) selectedShape;
             count = simplexShape.countMeshVertices();
-        } else if (shape instanceof SphereCollisionShape) {
+        } else if (selectedShape instanceof SphereCollisionShape) {
             count = 1;
         }
 
@@ -233,55 +202,17 @@ public class SelectedShape implements JmeCloneable {
     }
 
     /**
-     * Describe the shape.
-     *
-     * @return a brief description of the shape, or "" if none selected
-     */
-    public String describe() {
-        String result = "";
-        CollisionShape shape = find();
-        if (shape != null) {
-            result = MyShape.describe(shape);
-        }
-
-        return result;
-    }
-
-    /**
-     * Access the selected shape.
-     *
-     * @return the pre-existing instance, or null if not found
-     */
-    CollisionShape find() {
-        PhysicsSpace space = cgm.getSceneView().getPhysicsSpace();
-        Map<Long, CollisionShape> map = PhysicsUtil.shapeMap(space);
-        CollisionShape result = map.get(selectedId);
-
-        return result;
-    }
-
-    /**
-     * Determine the axis index of the shape. TODO rename axisIndex()
+     * Determine the main axis of the shape. TODO rename mainAxisIndex()
      *
      * @return 0&rarr;X, 1&rarr;Y, 2&rarr;Z, -1&rarr;doesn't have an axis
      */
     public int getAxisIndex() {
-        CollisionShape shape = find();
         int result = -1;
-        if (shape != null) {
-            result = MyShape.axisIndex(shape);
+        if (selectedShape != null) {
+            result = MyShape.mainAxisIndex(selectedShape);
         }
 
         return result;
-    }
-
-    /**
-     * Read the Bullet id of the selected shape. TODO rename id()
-     *
-     * @return id, or -1L if none selected
-     */
-    public long getId() {
-        return selectedId;
     }
 
     /**
@@ -291,9 +222,8 @@ public class SelectedShape implements JmeCloneable {
      */
     public String getType() {
         String type = "";
-        CollisionShape shape = find();
-        if (shape != null) {
-            type = MyShape.describeType(shape);
+        if (selectedShape != null) {
+            type = MyShape.describeType(selectedShape);
         }
 
         assert type != null;
@@ -304,62 +234,14 @@ public class SelectedShape implements JmeCloneable {
      * Read the specified parameter of the shape. TODO rename value()
      *
      * @param parameter which parameter to read (not null)
-     * @return parameter value (&ge;0) or NaN if not applicable
+     * @return the parameter value (&ge;0) or NaN if not applicable
      */
     public float getValue(ShapeParameter parameter) {
         Validate.nonNull(parameter, "parameter");
 
         float result = Float.NaN;
         if (isSelected()) {
-            CollisionShape shape = find();
-            if (shape instanceof CompoundCollisionShape) {
-                switch (parameter) {
-                    case HalfExtentX:
-                    case HalfExtentY:
-                    case HalfExtentZ:
-                    case Height:
-                    case Radius:
-                        return Float.NaN;
-                }
-            }
-            switch (parameter) {
-                case HalfExtentX:
-                case HalfExtentY:
-                case HalfExtentZ:
-                    Vector3f halfExtents = MyShape.halfExtents(shape, null);
-                    if (parameter == ShapeParameter.HalfExtentX) {
-                        result = halfExtents.x;
-                    } else if (parameter == ShapeParameter.HalfExtentY) {
-                        result = halfExtents.y;
-                    } else if (parameter == ShapeParameter.HalfExtentZ) {
-                        result = halfExtents.z;
-                    }
-                    break;
-
-                case Height:
-                    result = MyShape.height(shape);
-                    break;
-                case Margin:
-                    result = shape.getMargin();
-                    break;
-                case Radius:
-                    result = MyShape.radius(shape);
-                    break;
-                case ScaleX:
-                    result = shape.getScale(null).x;
-                    break;
-                case ScaleY:
-                    result = shape.getScale(null).y;
-                    break;
-                case ScaleZ:
-                    result = shape.getScale(null).z;
-                    break;
-                case ScaledVolume:
-                    result = MyShape.volume(shape);
-                    break;
-                default:
-                    throw new IllegalArgumentException(parameter.toString());
-            }
+            result = parameter.read(selectedShape);
         }
 
         assert Float.isNaN(result) || result >= 0f : result;
@@ -374,21 +256,19 @@ public class SelectedShape implements JmeCloneable {
      * or a new instance)
      */
     public Vector3f halfExtents(Vector3f storeResult) {
-        CollisionShape shape = find();
-        storeResult = MyShape.halfExtents(shape, storeResult);
-
-        return storeResult;
+        Vector3f result = MyShape.halfExtents(selectedShape, storeResult);
+        return result;
     }
 
     /**
-     * Find the index of the shape among all shapes in the C-G model in ID
-     * order.
+     * Find the index of the selected shape among all shapes in the C-G model in
+     * ID order.
      *
      * @return index (&ge;0)
      */
     public int index() {
-        List<Long> ids = listShapeIds();
-        int index = ids.indexOf(selectedId);
+        CollisionShape[] shapes = cgm.getPhysics().listShapes();
+        int index = Arrays.binarySearch(shapes, selectedShape);
 
         assert index >= 0 : index;
         return index;
@@ -400,21 +280,18 @@ public class SelectedShape implements JmeCloneable {
      * @return true if compound, otherwise false
      */
     public boolean isCompound() {
-        CollisionShape shape = find();
-        boolean result = shape instanceof CompoundCollisionShape;
-
+        boolean result = selectedShape instanceof CompoundCollisionShape;
         return result;
     }
 
     /**
-     * Test whether a collision shape is selected.
+     * Test whether any collision shape is selected.
      *
      * @return true if selected, otherwise false
      */
     public boolean isSelected() {
-        CollisionShape shape = find();
         boolean result;
-        if (shape == null) {
+        if (selectedShape == null) {
             result = false;
         } else {
             result = true;
@@ -433,15 +310,15 @@ public class SelectedShape implements JmeCloneable {
         Validate.nonNull(prefix, "prefix");
 
         List<String> result;
-        CollisionShape shape = find();
-        if (shape instanceof CompoundCollisionShape) {
-            CompoundCollisionShape compound = (CompoundCollisionShape) shape;
+        if (selectedShape instanceof CompoundCollisionShape) {
+            CompoundCollisionShape compound
+                    = (CompoundCollisionShape) selectedShape;
             List<ChildCollisionShape> children = compound.getChildren();
             int count = children.size();
             result = new ArrayList<>(count);
             for (int childIndex = 0; childIndex < count; childIndex++) {
                 ChildCollisionShape child = children.get(childIndex);
-                String description = MyShape.describe(child.getShape());
+                String description = MyShape.name(child.getShape());
                 if (description.startsWith(prefix)) {
                     result.add(description);
                 }
@@ -451,6 +328,17 @@ public class SelectedShape implements JmeCloneable {
         }
 
         return result;
+    }
+
+    /**
+     * Construct the name of the selected shape (based on the MVC model).
+     *
+     * @return the constructed name (not null, not empty)
+     */
+    public String name() {
+        assert isSelected();
+        String name = MyShape.name(selectedShape);
+        return name;
     }
 
     /**
@@ -467,58 +355,69 @@ public class SelectedShape implements JmeCloneable {
             Vector3f he = halfExtents(null);
             he.multLocal(factors);
             setHalfExtents(he);
-            String shapeName = find().toString();
+            String shapeName = selectedShape.toString();
             editableCgm.getEditState().setEditedShapeSize(shapeName);
         }
     }
 
     /**
-     * Select the identified shape.
+     * Select the specified shape.
      *
-     * @param shapeId which shape
+     * @param shape the desired shape (not null)
      */
-    public void select(long shapeId) {
-        SceneView sceneView = cgm.getSceneView();
-        Map<Long, CollisionShape> map = sceneView.shapeMap();
-        assert map.containsKey(shapeId) : shapeId;
-        selectedId = shapeId;
+    public void select(CollisionShape shape) {
+        Validate.nonNull(shape, "shape");
+        selectedShape = shape;
     }
 
     /**
-     * Select the described shape.
+     * Select the identified shape.
      *
-     * @param description the shape's description (not null, not empty)
+     * @param shapeId the ID of the desired shape
      */
-    public void select(String description) {
-        long id = ParseUtil.parseShapeId(description);
+    public void select(long shapeId) {
+        CollisionShape shape = cgm.getPhysics().findShape(shapeId);
+        select(shape);
+    }
+
+    /**
+     * Select the named shape.
+     *
+     * @param name the shape's name (not null, not empty)
+     */
+    public void select(String name) {
+        Validate.nonEmpty(name, "name");
+        long id = MyShape.parseId(name);
         select(id);
     }
 
     /**
-     * Select the 1st child shape of the compound shape.
+     * Select the 1st child shape of the selected compound shape.
      */
     public void selectFirstChild() {
-        CollisionShape parent = find();
-        if (parent instanceof CompoundCollisionShape) {
-            CompoundCollisionShape ccs = (CompoundCollisionShape) parent;
+        if (selectedShape instanceof CompoundCollisionShape) {
+            CompoundCollisionShape ccs = (CompoundCollisionShape) selectedShape;
             List<ChildCollisionShape> children = ccs.getChildren();
             if (!children.isEmpty()) {
                 ChildCollisionShape child = children.get(0);
-                selectedId = child.getShape().getObjectId();
+                CollisionShape shape = child.getShape();
+                select(shape);
             }
         }
     }
 
     /**
-     * Select the next shape in the C-G model in cyclic ID order.
+     * Select the next shape in the C-G model (in cyclical ID order).
      */
     public void selectNext() {
-        List<Long> ids = listShapeIds();
-        int index = ids.indexOf(selectedId);
-        if (index != -1) {
-            int numObjects = ids.size();
-            int newIndex = MyMath.modulo(index + 1, numObjects);
-            selectedId = ids.get(newIndex);
+        if (isSelected()) {
+            CollisionShape[] shapes = cgm.getPhysics().listShapes();
+            int index = Arrays.binarySearch(shapes, selectedShape);
+            assert index >= 0 : index;
+            int numShapes = shapes.length;
+            int nextIndex = MyMath.modulo(index + 1, numShapes);
+            CollisionShape nextShape = shapes[nextIndex];
+            select(nextShape);
         }
     }
 
@@ -526,73 +425,28 @@ public class SelectedShape implements JmeCloneable {
      * Deselect the selected shape, if any.
      */
     public void selectNone() {
-        selectedId = -1L;
+        selectedShape = null;
     }
 
     /**
-     * Select the previous shape in the C-G model in cyclic ID order.
+     * Select the shape of the selected collision object.
+     */
+    public void selectPcoShape() {
+        selectedShape = cgm.getObject().getShape();
+    }
+
+    /**
+     * Select the previous shape in the C-G model (in cyclical ID order).
      */
     public void selectPrevious() {
-        List<Long> ids = listShapeIds();
-        int index = ids.indexOf(selectedId);
-        if (index != -1) {
-            int numObjects = ids.size();
-            int newIndex = MyMath.modulo(index - 1, numObjects);
-            selectedId = ids.get(newIndex);
-        }
-    }
-
-    /**
-     * Alter the value of specified parameter of the shape.
-     *
-     * @param parameter which parameter to alter (not null)
-     * @param newValue new value for the parameter (&ge;0)
-     */
-    void set(ShapeParameter parameter, float newValue) {
-        assert parameter != null;
-        assert newValue >= 0f : newValue;
-        assert isSelected();
-
-        CollisionShape shape = find();
-        Vector3f halfExtents;
-        switch (parameter) {
-            case HalfExtentX:
-                halfExtents = MyShape.halfExtents(shape, null);
-                halfExtents.x = newValue;
-                setHalfExtents(halfExtents);
-                break;
-
-            case HalfExtentY:
-                halfExtents = MyShape.halfExtents(shape, null);
-                halfExtents.y = newValue;
-                setHalfExtents(halfExtents);
-                break;
-
-            case HalfExtentZ:
-                halfExtents = MyShape.halfExtents(shape, null);
-                halfExtents.z = newValue;
-                setHalfExtents(halfExtents);
-                break;
-
-            case Height:
-                setHeight(newValue);
-                break;
-
-            case Margin:
-                shape.setMargin(newValue);
-                break;
-
-            case Radius:
-                setRadius(newValue);
-                break;
-
-            case ScaleX:
-            case ScaleY:
-            case ScaleZ:
-            // TODO for kinematic controls, alter via the spatial
-
-            default:
-                throw new IllegalArgumentException(parameter.toString());
+        if (isSelected()) {
+            CollisionShape[] shapes = cgm.getPhysics().listShapes();
+            int index = Arrays.binarySearch(shapes, selectedShape);
+            assert index >= 0 : index;
+            int numShapes = shapes.length;
+            int previousIndex = MyMath.modulo(index - 1, numShapes);
+            CollisionShape previousShape = shapes[previousIndex];
+            select(previousShape);
         }
     }
 
@@ -611,22 +465,6 @@ public class SelectedShape implements JmeCloneable {
             editableCgm = (EditableCgm) newCgm;
         } else {
             editableCgm = null;
-        }
-    }
-
-    /**
-     * Replace the shape with new shape that has different half extents.
-     *
-     * @param newHalfExtents (not null, all elements non-negative)
-     */
-    void setHalfExtents(Vector3f newHalfExtents) {
-        assert newHalfExtents != null;
-        assert MyVector3f.isAllNonNegative(newHalfExtents) : newHalfExtents;
-
-        CollisionShape shape = find();
-        CollisionShape newShape = MyShape.setHalfExtents(shape, newHalfExtents);
-        if (newShape != null) {
-            replaceForResize(newShape);
         }
     }
 
@@ -652,7 +490,7 @@ public class SelectedShape implements JmeCloneable {
                 }
             } else {
                 set(parameter, newValue);
-                String shapeName = find().toString();
+                String shapeName = selectedShape.toString();
                 editableCgm.getEditState().setEditedShapeSize(shapeName);
             }
         }
@@ -670,6 +508,7 @@ public class SelectedShape implements JmeCloneable {
         }
 
         SelectedObject selectedObject = cgm.getObject();
+        long selectedId = id();
         if (selectedObject.usesShape(selectedId)) {
             selectedObject.transform(storeResult);
             // further transform if part of a compound shape
@@ -681,14 +520,13 @@ public class SelectedShape implements JmeCloneable {
                 userSet.toArray(userIds);
                 long userId = userIds[0];
 
-                PhysicsSpace space = cgm.getSceneView().getPhysicsSpace();
                 PhysicsCollisionObject objectUser
-                        = PhysicsUtil.findObject(userId, space);
+                        = cgm.getPhysics().findPco(userId);
                 if (objectUser != null) {
                     PhysicsUtil.transform(objectUser, storeResult);
                 } else {
                     CollisionShape shapeUser
-                            = PhysicsUtil.findShape(userId, space);
+                            = cgm.getPhysics().findShape(userId);
                     CompoundCollisionShape compound
                             = (CompoundCollisionShape) shapeUser;
                     List<ChildCollisionShape> children = compound.getChildren();
@@ -720,12 +558,10 @@ public class SelectedShape implements JmeCloneable {
      * Enumerate all collision objects and compound shapes that reference the
      * selected shape.
      *
-     * @return a new set of ids of objects/shapes
+     * @return a new set of IDs of collision objects and compound shapes
      */
     public Set<Long> userSet() {
-        PhysicsSpace space = cgm.getSceneView().getPhysicsSpace();
-        Set<Long> result = PhysicsUtil.userSet(selectedId, space);
-
+        Set<Long> result = cgm.getPhysics().userSet(selectedShape);
         return result;
     }
     // *************************************************************************
@@ -753,6 +589,7 @@ public class SelectedShape implements JmeCloneable {
      */
     @Override
     public void cloneFields(Cloner cloner, Object original) {
+        selectedShape = cloner.clone(selectedShape);
     }
 
     /**
@@ -773,17 +610,16 @@ public class SelectedShape implements JmeCloneable {
     // private methods
 
     /**
-     * Enumerate all shapes in the C-G model in ascending ID order.
+     * Read the Bullet ID of the selected shape.
      *
-     * @return a new list of shape IDs
+     * @return id, or -1L if none selected
      */
-    private List<Long> listShapeIds() {
-        SceneView sceneView = cgm.getSceneView();
-        Map<Long, CollisionShape> map = sceneView.shapeMap();
-        List<Long> result = new ArrayList<>(map.keySet());
-        Collections.sort(result);
-
-        return result;
+    private long id() {
+        if (selectedShape == null) {
+            return -1L;
+        } else {
+            return selectedShape.getObjectId();
+        }
     }
 
     /**
@@ -795,15 +631,15 @@ public class SelectedShape implements JmeCloneable {
         assert newShape != null;
         assert !(newShape instanceof CompoundCollisionShape);
 
-        PhysicsSpace space = cgm.getSceneView().getPhysicsSpace();
-        CollisionShape shape = find();
-        PhysicsUtil.replaceInObjects(space, shape, newShape);
-        PhysicsUtil.replaceInCompounds(space, shape, newShape);
+        CollisionShape cloneShape = (CollisionShape) Misc.deepCopy(newShape);
+        CgmPhysics physics = cgm.getPhysics();
 
-        editableCgm.getEditState().replaceForResize(shape, newShape);
+        History.autoAdd();
+        physics.replaceInCompounds(selectedShape, newShape, cloneShape);
+        physics.replaceInObjects(selectedShape, newShape, cloneShape);
+        editableCgm.getEditState().replaceForResize(selectedShape, newShape);
 
-        long newShapeId = newShape.getObjectId();
-        selectedId = newShapeId;
+        select(newShape);
     }
 
     /**
@@ -820,27 +656,123 @@ public class SelectedShape implements JmeCloneable {
         assert eventDescription != null;
         assert !eventDescription.isEmpty();
 
-        CollisionShape shape = find();
-        PhysicsSpace space = cgm.getSceneView().getPhysicsSpace();
+        CollisionShape cloneShape = (CollisionShape) Misc.deepCopy(newShape);
+        CgmPhysics physics = cgm.getPhysics();
 
         History.autoAdd();
-        PhysicsUtil.replaceInObjects(space, shape, newShape);
+        physics.replaceInObjects(selectedShape, newShape, cloneShape);
         editableCgm.getEditState().setEdited(eventDescription);
-        long newShapeId = newShape.getObjectId();
-        selectedId = newShapeId;
+
+        select(newShape);
     }
 
     /**
-     * Replace the shape with a new shape that has a different height.
+     * Alter the value of specified parameter of the shape.
+     *
+     * @param parameter which parameter to alter (not null)
+     * @param newValue new value for the parameter (&ge;0)
+     */
+    private void set(ShapeParameter parameter, float newValue) {
+        assert parameter != null;
+        assert newValue >= 0f : newValue;
+        assert isSelected();
+
+        Vector3f halfExtents;
+        switch (parameter) {
+            case HalfExtentX:
+                halfExtents = MyShape.halfExtents(selectedShape, null);
+                halfExtents.x = newValue;
+                setHalfExtents(halfExtents);
+                break;
+
+            case HalfExtentY:
+                halfExtents = MyShape.halfExtents(selectedShape, null);
+                halfExtents.y = newValue;
+                setHalfExtents(halfExtents);
+                break;
+
+            case HalfExtentZ:
+                halfExtents = MyShape.halfExtents(selectedShape, null);
+                halfExtents.z = newValue;
+                setHalfExtents(halfExtents);
+                break;
+
+            case Height:
+                setHeight(newValue);
+                break;
+
+            case Margin:
+                setMargin(newValue);
+                break;
+
+            case Radius:
+                setRadius(newValue);
+                break;
+
+            case ScaleX:
+            case ScaleY:
+            case ScaleZ:
+            // TODO for kinematic controls, alter via the spatial
+
+            default:
+                throw new IllegalArgumentException(parameter.toString());
+        }
+    }
+
+    /**
+     * Replace the shape with new shape having different half extents.
+     *
+     * @param newHalfExtents (not null, all elements non-negative)
+     */
+    private void setHalfExtents(Vector3f newHalfExtents) {
+        assert newHalfExtents != null;
+        assert MyVector3f.isAllNonNegative(newHalfExtents) : newHalfExtents;
+
+        CollisionShape newShape
+                = MyShape.setHalfExtents(selectedShape, newHalfExtents);
+        if (newShape != null) {
+            replaceForResize(newShape);
+        }
+    }
+
+    /**
+     * Replace the shape with a new shape having a different height.
      *
      * @param newHeight (&ge;0)
      */
     private void setHeight(float newHeight) {
         assert newHeight >= 0f : newHeight;
 
-        CollisionShape shape = find();
-        CollisionShape newShape = MyShape.setHeight(shape, newHeight);
+        CollisionShape newShape = MyShape.setHeight(selectedShape, newHeight);
         replaceForResize(newShape);
+    }
+
+    /**
+     * Alter the shape's margin.
+     *
+     * @param newMargin the desired margin (&ge;0)
+     */
+    private void setMargin(float newMargin) {
+        assert newMargin >= 0f : newMargin;
+
+        ShapeParameter parameter = ShapeParameter.Margin;
+        float oldMargin = parameter.read(selectedShape);
+        if (oldMargin != newMargin
+                && parameter.canSet(selectedShape, newMargin)) {
+            CollisionShape viewShape
+                    = cgm.getPhysics().modelToView(selectedShape);
+            String shapeName = name();
+            String marginText = String.format("%f", newMargin);
+            marginText = MyString.trimFloat(marginText);
+            String eventDescription = String.format("set %s.%s = %s",
+                    shapeName, parameter, marginText);
+
+            History.autoAdd();
+            parameter.set(selectedShape, newMargin);
+            parameter.set(viewShape, newMargin);
+            editableCgm.getEditState().setEdited(eventDescription);
+        }
+
     }
 
     /**
@@ -851,8 +783,7 @@ public class SelectedShape implements JmeCloneable {
     private void setRadius(float newRadius) {
         assert newRadius >= 0f : newRadius;
 
-        CollisionShape shape = find();
-        CollisionShape newShape = MyShape.setRadius(shape, newRadius);
+        CollisionShape newShape = MyShape.setRadius(selectedShape, newRadius);
         replaceForResize(newShape);
     }
 }

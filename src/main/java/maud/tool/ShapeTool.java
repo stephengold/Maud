@@ -26,21 +26,16 @@
  */
 package maud.tool;
 
-import com.jme3.bullet.PhysicsSpace;
-import com.jme3.bullet.collision.PhysicsCollisionObject;
-import com.jme3.bullet.collision.shapes.CollisionShape;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
-import jme3utilities.minie.MyObject;
-import jme3utilities.minie.MyShape;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.Tool;
 import maud.DescribeUtil;
 import maud.Maud;
-import maud.PhysicsUtil;
 import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
+import maud.model.cgm.CgmPhysics;
 import maud.model.cgm.SelectedShape;
 import maud.model.option.ShapeParameter;
 
@@ -131,7 +126,7 @@ class ShapeTool extends Tool {
         Cgm target = Maud.getModel().getTarget();
         SelectedShape shape = target.getShape();
         boolean isSelected = shape.isSelected();
-        int numShapes = target.getSceneView().shapeMap().size();
+        int numShapes = target.getPhysics().countShapes();
 
         if (numShapes == 0) {
             selectButton = "";
@@ -141,7 +136,7 @@ class ShapeTool extends Tool {
             selectButton = "Select shape";
         }
 
-        if (shape.isSelected()) {
+        if (isSelected) {
             int selectedIndex = shape.index();
             indexStatus = DescribeUtil.index(selectedIndex, numShapes);
             if (numShapes > 1) {
@@ -169,7 +164,7 @@ class ShapeTool extends Tool {
         String name;
         SelectedShape shape = Maud.getModel().getTarget().getShape();
         if (shape.isSelected()) {
-            name = shape.describe();
+            name = shape.name();
         } else {
             name = "(none selected)";
         }
@@ -238,17 +233,9 @@ class ShapeTool extends Tool {
                 Long[] ids = new Long[1];
                 userSet.toArray(ids);
                 long userId = ids[0];
-                PhysicsSpace space = target.getSceneView().getPhysicsSpace();
-                CollisionShape userShape = PhysicsUtil.findShape(userId, space);
-                if (userShape != null) {
-                    usersText = MyShape.describe(userShape);
-                    suButton = "Select user";
-                } else {
-                    PhysicsCollisionObject userObject
-                            = PhysicsUtil.findObject(userId, space);
-                    usersText = MyObject.objectName(userObject);
-                    suButton = "Select user";
-                }
+                CgmPhysics physics = target.getPhysics();
+                usersText = physics.name(userId);
+                suButton = "Select user";
             } else {
                 usersText = String.format("%d users", numUsers);
             }

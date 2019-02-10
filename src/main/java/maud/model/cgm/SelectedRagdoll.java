@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018, Stephen Gold
+ Copyright (c) 2018-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -216,7 +216,7 @@ public class SelectedRagdoll implements JmeCloneable {
     }
 
     /**
-     * Test whether a ragdoll is selected.
+     * Test whether any ragdoll is selected.
      *
      * @return true if one is selected, otherwise false
      */
@@ -406,13 +406,22 @@ public class SelectedRagdoll implements JmeCloneable {
      * @return the former spatial (may be null)
      */
     public Spatial setSpatial(Spatial newSpatial) {
+        CgmPhysics physics = cgm.getPhysics();
         DynamicAnimControl dac = find();
         Spatial oldSpatial = dac.getSpatial();
         if (oldSpatial != null) {
+            physics.removePhysicsControl(dac);
+
+            int pcPosition = PhysicsUtil.pcToPosition(oldSpatial, dac);
+            List<Integer> treePosition = cgm.findSpatial(oldSpatial);
+            cgm.getSceneView().removePhysicsControl(treePosition, pcPosition);
+
             oldSpatial.removeControl(dac);
         }
+
         if (newSpatial != null) {
             newSpatial.addControl(dac);
+            physics.addPhysicsControl(dac);
         }
 
         return oldSpatial;

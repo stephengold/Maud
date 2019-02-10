@@ -32,11 +32,7 @@ import com.jme3.animation.Bone;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.SpatialTrack;
 import com.jme3.animation.Track;
-import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.animation.DynamicAnimControl;
-import com.jme3.bullet.collision.PhysicsCollisionObject;
-import com.jme3.bullet.collision.shapes.CollisionShape;
-import com.jme3.bullet.joints.PhysicsJoint;
 import com.jme3.light.Light;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
@@ -49,7 +45,6 @@ import com.jme3.scene.control.Control;
 import com.jme3.util.clone.Cloner;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -60,8 +55,6 @@ import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
-import jme3utilities.minie.MyObject;
-import jme3utilities.minie.MyShape;
 import jme3utilities.wes.TweenTransforms;
 import maud.Maud;
 import maud.MaudUtil;
@@ -92,6 +85,10 @@ public class Cgm implements Cloneable {
     // *************************************************************************
     // fields
 
+    /**
+     * physics information
+     */
+    private CgmPhysics physics = new CgmPhysics();
     /**
      * displayed pose
      */
@@ -211,6 +208,7 @@ public class Cgm implements Cloneable {
     public Cgm() {
         Cgm cgm = this;
 
+        physics.setCgm(cgm);
         displayedPose.setCgm(cgm);
         loadedAnimation.setCgm(cgm);
         playOptions.setCgm(cgm);
@@ -261,20 +259,6 @@ public class Cgm implements Cloneable {
         }
 
         return result;
-    }
-
-    /**
-     * Count physics joints in the C-G model.
-     *
-     * @return number found (&ge;0)
-     */
-    public int countJoints() {
-        PhysicsSpace space = getSceneView().getPhysicsSpace();
-        Collection<PhysicsJoint> joints = space.getJointList();
-        int count = joints.size();
-
-        assert count >= 0 : count;
-        return count;
     }
 
     /**
@@ -385,7 +369,7 @@ public class Cgm implements Cloneable {
     }
 
     /**
-     * Find the specified spatial.
+     * Find the specified Spatial.
      *
      * @param input spatial to search for (not null)
      * @return a new tree-position instance, or null if not found
@@ -404,7 +388,7 @@ public class Cgm implements Cloneable {
     }
 
     /**
-     * Find a spatial with the specified name.
+     * Find a Spatial with the specified name.
      *
      * @param name what name to search for (not null, not empty)
      * @return a new tree-position instance, or null if not found
@@ -423,7 +407,7 @@ public class Cgm implements Cloneable {
     }
 
     /**
-     * Access the loaded animation.
+     * Access the LoadedAnimation.
      *
      * @return the pre-existing instance (not null)
      */
@@ -433,7 +417,7 @@ public class Cgm implements Cloneable {
     }
 
     /**
-     * Access the selected anim control.
+     * Access the SelectedAnimControl.
      *
      * @return the pre-existing instance (not null)
      */
@@ -443,7 +427,7 @@ public class Cgm implements Cloneable {
     }
 
     /**
-     * Access the selected bone.
+     * Access the SelectedBone.
      *
      * @return the pre-existing instance (not null)
      */
@@ -483,7 +467,7 @@ public class Cgm implements Cloneable {
     }
 
     /**
-     * Access the selected light.
+     * Access the SelectedLight.
      *
      * @return the pre-existing instance (not null)
      */
@@ -560,6 +544,16 @@ public class Cgm implements Cloneable {
     }
 
     /**
+     * Access the physics information.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public CgmPhysics getPhysics() {
+        assert physics != null;
+        return physics;
+    }
+
+    /**
      * Access the animation playback options.
      *
      * @return the pre-existing instance (not null)
@@ -580,7 +574,7 @@ public class Cgm implements Cloneable {
     }
 
     /**
-     * Access the displayed pose.
+     * Access the DisplayedPose.
      *
      * @return the pre-existing instance (not null)
      */
@@ -898,32 +892,6 @@ public class Cgm implements Cloneable {
     }
 
     /**
-     * Enumerate all physics joints with the specified name prefix.
-     *
-     * @param namePrefix (not null)
-     * @return a new list of names
-     */
-    public List<String> listJointNames(String namePrefix) {
-        Validate.nonNull(namePrefix, "name prefix");
-
-        PhysicsSpace space = getSceneView().getPhysicsSpace();
-        Collection<PhysicsJoint> joints = space.getJointList();
-        int numJoints = joints.size();
-        List<String> result = new ArrayList<>(numJoints);
-
-        for (PhysicsJoint joint : joints) {
-            long id = joint.getObjectId();
-            String name = Long.toHexString(id);
-            if (name.startsWith(namePrefix)) {
-                result.add(name);
-            }
-        }
-        Collections.sort(result);
-
-        return result;
-    }
-
-    /**
      * Name all lights of the specified type in the same order as
      * {@link #listLights(java.lang.Class)}.
      *
@@ -954,31 +922,6 @@ public class Cgm implements Cloneable {
      */
     <T extends Light> List<T> listLights(Class<T> lightType) {
         List<T> result = MyLight.listLights(rootSpatial, lightType, null);
-        return result;
-    }
-
-    /**
-     * Enumerate all physics collision objects with the specified name prefix.
-     *
-     * @param namePrefix (not null)
-     * @return a new, sorted list of names
-     */
-    public List<String> listObjectNames(String namePrefix) {
-        Validate.nonNull(namePrefix, "name prefix");
-
-        Map<Long, PhysicsCollisionObject> map = sceneView.objectMap();
-        Collection<PhysicsCollisionObject> collection = map.values();
-        int numObjects = collection.size();
-        List<String> result = new ArrayList<>(numObjects);
-
-        for (PhysicsCollisionObject object : collection) {
-            String name = MyObject.objectName(object);
-            if (name.startsWith(namePrefix)) {
-                result.add(name);
-            }
-        }
-        Collections.sort(result);
-
         return result;
     }
 
@@ -1017,31 +960,6 @@ public class Cgm implements Cloneable {
     <T extends Control> List<T> listSgcs(Class<T> sgcType) {
         List<T> sgcList = MySpatial.listControls(rootSpatial, sgcType, null);
         return sgcList;
-    }
-
-    /**
-     * Enumerate all collision shapes whose descriptions begin with the
-     * specified prefix, excluding any added by the scene view.
-     *
-     * @param prefix description prefix (not null, may be empty)
-     * @return a new sorted list of descriptions
-     */
-    public List<String> listShapes(String prefix) {
-        Validate.nonNull(prefix, "prefix");
-
-        Map<Long, CollisionShape> map = sceneView.shapeMap();
-        int numShapes = map.size();
-        List<String> result = new ArrayList<>(numShapes);
-
-        for (CollisionShape shape : map.values()) {
-            String description = MyShape.describe(shape);
-            if (description.startsWith(prefix)) {
-                result.add(description);
-            }
-        }
-        Collections.sort(result);
-
-        return result;
     }
 
     /**
@@ -1156,6 +1074,7 @@ public class Cgm implements Cloneable {
         Cgm clone = (Cgm) super.clone();
         Cloner cloner = new Cloner();
 
+        clone.physics = cloner.clone(physics);
         clone.displayedPose = cloner.clone(displayedPose);
         clone.loadedAnimation = loadedAnimation.clone();
         clone.playOptions = playOptions.clone();
@@ -1194,6 +1113,7 @@ public class Cgm implements Cloneable {
         clone.getLight().setCgm(clone);
         clone.getLink().setCgm(clone);
         clone.getObject().setCgm(clone);
+        clone.getPhysics().setCgm(clone);
         clone.getPlay().setCgm(clone);
         clone.getPose().setCgm(clone);
         clone.getRagdoll().setCgm(clone);

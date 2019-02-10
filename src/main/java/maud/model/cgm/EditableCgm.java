@@ -253,7 +253,7 @@ public class EditableCgm extends LoadedCgm {
     /**
      * Add a newly-created S-G control to the selected spatial.
      *
-     * @param newSgc (not null, alias created)
+     * @param newSgc the SGC in the MVC model (not null, alias created)
      * @param eventDescription a textual description of the event for the edit
      * history (not null, not empty)
      */
@@ -262,12 +262,14 @@ public class EditableCgm extends LoadedCgm {
 
         History.autoAdd();
         Spatial controlledSpatial = getSpatial().find();
-        if (newSgc instanceof PhysicsControl) {
-            PhysicsControl physicsControl = (PhysicsControl) newSgc;
-            SceneView sceneView = getSceneView();
-            sceneView.addPhysicsControl(physicsControl);
-        }
         controlledSpatial.addControl(newSgc);
+        if (newSgc instanceof PhysicsControl) {
+            /*
+             * Notify CgmPhysics about the addition.
+             */
+            PhysicsControl physicsControl = (PhysicsControl) newSgc;
+            getPhysics().addPhysicsControl(physicsControl);
+        }
         assert MyControl.findIndex(newSgc, controlledSpatial)
                 != SelectedSgc.noSgcIndex;
         assert getSpatial().find() == controlledSpatial;
@@ -523,8 +525,15 @@ public class EditableCgm extends LoadedCgm {
             }
 
         } else if (selectedSgc instanceof PhysicsControl) {
-            List<Integer> treePosition = findSpatial(controlled);
+            /*
+             * Notify CgmPhysics about the removal.
+             */
             PhysicsControl pc = (PhysicsControl) selectedSgc;
+            getPhysics().removePhysicsControl(pc);
+            /*
+             * Sychronize with the scene view.
+             */
+            List<Integer> treePosition = findSpatial(controlled);
             int pcPosition = PhysicsUtil.pcToPosition(controlled, pc);
             sceneView.removePhysicsControl(treePosition, pcPosition);
         }
@@ -667,7 +676,6 @@ public class EditableCgm extends LoadedCgm {
             editState.setEdited(description);
             return false;
         }
-        getSceneView().linkBone(boneName);
         String description = "link bone " + MyString.quote(boneName);
         editState.setEdited(description);
         return true;

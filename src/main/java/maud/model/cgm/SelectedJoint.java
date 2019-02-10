@@ -26,16 +26,12 @@
  */
 package maud.model.cgm;
 
-import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.joints.JointEnd;
 import com.jme3.bullet.joints.PhysicsJoint;
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.Arrays;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
@@ -64,14 +60,15 @@ public class SelectedJoint implements JmeCloneable {
      */
     private Cgm cgm = null;
     /**
-     * id of the selected joint, or -1L for none
+     * selected joint (in the MVC model) or null if none
      */
-    private long selectedId = -1L;
+    private PhysicsJoint selectedJoint = null;
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Determine the name of the selected joint's specified end body.
+     * Construct the name of the body at the specified end of the selected
+     * joint.
      *
      * @param end which end of the joint (not null)
      * @return the object name, or null if no joint selected
@@ -80,7 +77,7 @@ public class SelectedJoint implements JmeCloneable {
         Validate.nonNull(end, "end");
 
         String result = null;
-        PhysicsJoint joint = find();
+        PhysicsJoint joint = get();
         if (joint != null) {
             PhysicsRigidBody rigidBody;
             switch (end) {
@@ -104,38 +101,19 @@ public class SelectedJoint implements JmeCloneable {
      *
      * @return the pre-existing instance, or null if not found
      */
-    PhysicsJoint find() {
-        PhysicsSpace space = cgm.getSceneView().getPhysicsSpace();
-        Collection<PhysicsJoint> joints = space.getJointList();
-        for (PhysicsJoint joint : joints) {
-            long id = joint.getObjectId();
-            if (id == selectedId) {
-                return joint;
-            }
-        }
-
-        return null;
+    PhysicsJoint get() {
+        return selectedJoint;
     }
 
     /**
-     * Read the id of the selected joint.
-     *
-     * @return id, or -1L if none selected
-     */
-    public long getId() {
-        return selectedId;
-    }
-
-    /**
-     * Read the type of the selected joint.
+     * Read the type of the selected joint. TODO rename type()
      *
      * @return abbreviated class name, or "" if none selected
      */
     public String getType() {
         String type = "";
-        PhysicsJoint joint = find();
-        if (joint != null) {
-            type = joint.getClass().getSimpleName();
+        if (selectedJoint != null) {
+            type = selectedJoint.getClass().getSimpleName();
             if (type.endsWith("Joint")) {
                 type = MyString.removeSuffix(type, "Joint");
             }
@@ -146,25 +124,26 @@ public class SelectedJoint implements JmeCloneable {
     }
 
     /**
-     * Calculate the index of the selected joint.
+     * Find the index of the selected joint among all joints in the C-G model in
+     * ID order.
      *
      * @return index (&ge;0)
      */
     public int index() {
-        List<Long> ids = listJointIds();
-        int index = ids.indexOf(selectedId);
+        PhysicsJoint[] joints = cgm.getPhysics().listJoints();
+        int index = Arrays.binarySearch(joints, selectedJoint);
 
         assert index >= 0 : index;
         return index;
     }
 
     /**
-     * Test whether a joint is selected.
+     * Test whether any joint is selected.
      *
      * @return true if selected, otherwise false
      */
     public boolean isSelected() {
-        PhysicsJoint joint = find();
+        PhysicsJoint joint = get();
         boolean result;
         if (joint == null) {
             result = false;
@@ -176,26 +155,54 @@ public class SelectedJoint implements JmeCloneable {
     }
 
     /**
-     * Select an identified joint.
+     * Construct the name of the selected joint (based on the MVC model).
      *
-     * @param jointId which joint
+     * @return the constructed name (not null, not empty)
      */
-    public void select(long jointId) {
-        List<Long> ids = listJointIds();
-        assert ids.contains(jointId) : jointId;
-        selectedId = jointId;
+    public String name() {
+        assert isSelected();
+
+        long id = selectedJoint.getObjectId();
+        String name = Long.toHexString(id);
+
+        return name;
     }
 
     /**
-     * Select the next joint (in cyclical index order).
+     * Select the specified joint.
+     *
+     * @param joint the desired joint (not null)
+     */
+    void select(PhysicsJoint joint) {
+        Validate.nonNull(joint, "joint");
+        selectedJoint = joint;
+    }
+
+    /**
+     * Select the named joint.
+     *
+     * @param name the joint's name (not null, not empty)
+     */
+    public void select(String name) {
+        Validate.nonEmpty(name, "name");
+
+        long jointId = Long.parseLong(name, 16);
+        PhysicsJoint joint = cgm.getPhysics().findJoint(jointId);
+        select(joint);
+    }
+
+    /**
+     * Select the next joint in the C-G model (in cyclical ID order).
      */
     public void selectNext() {
-        List<Long> ids = listJointIds();
-        int index = ids.indexOf(selectedId);
-        if (index != -1L) {
-            int numObjects = ids.size();
-            int newIndex = MyMath.modulo(index + 1, numObjects);
-            selectedId = ids.get(newIndex);
+        if (isSelected()) {
+            PhysicsJoint[] joints = cgm.getPhysics().listJoints();
+            int index = Arrays.binarySearch(joints, selectedJoint);
+            assert index >= 0 : index;
+            int numJoints = joints.length;
+            int nextIndex = MyMath.modulo(index + 1, numJoints);
+            PhysicsJoint nextJoint = joints[nextIndex];
+            select(nextJoint);
         }
     }
 
@@ -203,22 +210,21 @@ public class SelectedJoint implements JmeCloneable {
      * Deselect the selected joint, if any.
      */
     public void selectNone() {
-        selectedId = -1L;
+        selectedJoint = null;
     }
 
     /**
-     * Select the previous joint (in cyclical index order).
-     */
-    /**
-     * Select the next object (in cyclical index order).
+     * Select the previous joint in the C-G model (in cyclical ID order).
      */
     public void selectPrevious() {
-        List<Long> ids = listJointIds();
-        int index = ids.indexOf(selectedId);
-        if (index != -1L) {
-            int numObjects = ids.size();
-            int newIndex = MyMath.modulo(index - 1, numObjects);
-            selectedId = ids.get(newIndex);
+        if (isSelected()) {
+            PhysicsJoint[] joints = cgm.getPhysics().listJoints();
+            int index = Arrays.binarySearch(joints, selectedJoint);
+            assert index >= 0 : index;
+            int numJoints = joints.length;
+            int previousIndex = MyMath.modulo(index - 1, numJoints);
+            PhysicsJoint previousJoint = joints[previousIndex];
+            select(previousJoint);
         }
     }
 
@@ -259,6 +265,7 @@ public class SelectedJoint implements JmeCloneable {
      */
     @Override
     public void cloneFields(Cloner cloner, Object original) {
+        selectedJoint = cloner.clone(selectedJoint);
     }
 
     /**
@@ -274,26 +281,5 @@ public class SelectedJoint implements JmeCloneable {
         } catch (CloneNotSupportedException exception) {
             throw new RuntimeException(exception);
         }
-    }
-    // *************************************************************************
-    // private methods
-
-    /**
-     * Enumerate all physics joints in numerical order.
-     *
-     * @return a new list of joint identifiers
-     */
-    private List<Long> listJointIds() {
-        PhysicsSpace space = cgm.getSceneView().getPhysicsSpace();
-        Collection<PhysicsJoint> joints = space.getJointList();
-        int numJoints = joints.size();
-        List<Long> result = new ArrayList<>(numJoints);
-        for (PhysicsJoint joint : joints) {
-            long id = joint.getObjectId();
-            result.add(id);
-        }
-        Collections.sort(result);
-
-        return result;
     }
 }

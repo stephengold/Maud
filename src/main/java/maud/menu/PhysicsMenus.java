@@ -27,8 +27,6 @@
 package maud.menu;
 
 import com.jme3.bullet.PhysicsSpace;
-import com.jme3.bullet.collision.PhysicsCollisionObject;
-import com.jme3.bullet.collision.shapes.CollisionShape;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -37,22 +35,21 @@ import java.util.TreeSet;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
-import jme3utilities.minie.MyObject;
 import maud.DescribeUtil;
 import maud.Maud;
-import maud.PhysicsUtil;
 import maud.ShapeType;
 import maud.action.ActionPrefix;
 import maud.dialog.EditorDialogs;
 import maud.model.cgm.Cgm;
+import maud.model.cgm.CgmPhysics;
 import maud.model.cgm.SelectedBone;
 import maud.model.cgm.SelectedLink;
+import maud.model.cgm.SelectedObject;
 import maud.model.cgm.SelectedRagdoll;
 import maud.model.cgm.SelectedShape;
 import maud.model.cgm.SelectedSpatial;
 import maud.model.option.RigidBodyParameter;
 import maud.model.option.ShapeParameter;
-import maud.view.scene.SceneView;
 
 /**
  * Menus in Maud's editor screen that relate to physics shapes, objects, links,
@@ -90,8 +87,8 @@ public class PhysicsMenus {
         builder.addTool("Shape tool");
 
         Cgm target = Maud.getModel().getTarget();
-        SceneView sceneView = target.getSceneView();
-        int numShapes = sceneView.shapeMap().size();
+        CgmPhysics physics = target.getPhysics();
+        int numShapes = physics.countShapes();
         if (numShapes == 1) {
             builder.add("Select shape");
         } else if (numShapes > 1) {
@@ -107,8 +104,10 @@ public class PhysicsMenus {
 
         builder.addTool("Collision-object tool");
 
-        int numObjects = sceneView.objectMap().size();
-        if (numObjects > 0) {
+        int numObjects = physics.countPcos();
+        if (numObjects == 1) {
+            builder.add("Select object");
+        } else if (numObjects > 1) {
             builder.addSubmenu("Select object");
         }
 
@@ -118,9 +117,10 @@ public class PhysicsMenus {
 
         builder.addTool("Joint tool");
 
-        PhysicsSpace space = sceneView.getPhysicsSpace();
-        int numJoints = space.countJoints();
-        if (numJoints > 0) {
+        int numJoints = physics.countJoints();
+        if (numJoints == 1) {
+            builder.add("Select joint");
+        } else if (numJoints > 1) {
             builder.addSubmenu("Select joint");
         }
 
@@ -222,7 +222,7 @@ public class PhysicsMenus {
      */
     public static void selectJoint(Cgm cgm) {
         if (cgm.isLoaded()) {
-            List<String> names = cgm.listJointNames("");
+            List<String> names = cgm.getPhysics().listJointNames("");
             if (!names.isEmpty()) {
                 MenuBuilder builder = new MenuBuilder();
                 for (String name : names) {
@@ -352,7 +352,7 @@ public class PhysicsMenus {
      */
     public static void selectObject(Cgm cgm) {
         if (cgm.isLoaded()) {
-            List<String> names = cgm.listObjectNames("");
+            List<String> names = cgm.getPhysics().listPcoNames("");
             if (!names.isEmpty()) {
                 MenuBuilder builder = new MenuBuilder();
                 for (String name : names) {
@@ -405,7 +405,7 @@ public class PhysicsMenus {
      */
     public static void selectShape(Cgm cgm) {
         if (cgm.isLoaded()) {
-            List<String> names = cgm.listShapes("");
+            List<String> names = cgm.getPhysics().listShapeNames("");
             int numShapes = names.size();
             SelectedShape selectedShape = cgm.getShape();
             boolean isSelected = selectedShape.isSelected();
@@ -480,16 +480,14 @@ public class PhysicsMenus {
             Long[] ids = new Long[1];
             userSet.toArray(ids);
             long userId = ids[0];
-            PhysicsSpace space = target.getSceneView().getPhysicsSpace();
-            CollisionShape userShape = PhysicsUtil.findShape(userId, space);
-            if (userShape != null) {
-                shape.select(userId);
-            } else {
-                PhysicsCollisionObject userObject
-                        = PhysicsUtil.findObject(userId, space);
-                String name = MyObject.objectName(userObject);
-                target.getObject().select(name);
+            CgmPhysics physics = target.getPhysics();
+            if (physics.hasPco(userId)) {
+                SelectedObject object = target.getObject();
+                object.select(userId);
                 Maud.gui.tools.select("object");
+            } else {
+                shape.select(userId);
+                Maud.gui.tools.select("shape");
             }
         }
     }

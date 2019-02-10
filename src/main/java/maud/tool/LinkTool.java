@@ -158,7 +158,7 @@ class LinkTool extends Tool {
             }
             float mass = selectedLink.mass();
             massButton = Float.toString(mass);
-            objectButton = selectedLink.objectName();
+            objectButton = selectedLink.bodyName();
         }
 
         setButtonText("linkAddBoneLink", addButton);

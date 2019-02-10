@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018, Stephen Gold
+ Copyright (c) 2018-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -45,7 +45,6 @@ import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import jme3utilities.minie.MyObject;
 import maud.Maud;
-import maud.view.scene.SceneView;
 
 /**
  * The MVC model of the selected PhysicsLink in a selected DynamicAnimControl.
@@ -79,6 +78,21 @@ public class SelectedLink implements JmeCloneable {
     private PhysicsLink link = null;
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Determine the name of the rigid body of the selected link.
+     *
+     * @return the object name, or null if no link selected
+     */
+    public String bodyName() {
+        String result = null;
+        if (link != null) {
+            PhysicsRigidBody rigidBody = link.getRigidBody();
+            result = MyObject.objectName(rigidBody);
+        }
+
+        return result;
+    }
 
     /**
      * Name the corresponding bone of selected link.
@@ -235,7 +249,7 @@ public class SelectedLink implements JmeCloneable {
         if (link != null && !(link instanceof TorsoLink)) {
             PhysicsJoint joint = link.getJoint();
             if (joint != null) {
-                long id = jointId();
+                long id = joint.getObjectId();
                 result = Long.toHexString(id);
             }
         }
@@ -287,24 +301,6 @@ public class SelectedLink implements JmeCloneable {
     }
 
     /**
-     * Determine the name of the collision object of the selected link.
-     *
-     * @return the object name, or null if no link selected
-     */
-    public String objectName() {
-        String result = null;
-        if (link != null) {
-            SceneView sceneView = cgm.getSceneView();
-            String linkName = link.name();
-            PhysicsLink viewLink = sceneView.findLink(linkName);
-            PhysicsRigidBody rigidBody = viewLink.getRigidBody();
-            result = MyObject.objectName(rigidBody);
-        }
-
-        return result;
-    }
-
-    /**
      * Select the named link.
      *
      * @param linkName the name (not null, not empty)
@@ -328,8 +324,8 @@ public class SelectedLink implements JmeCloneable {
      * Select physics joint of the selected link.
      */
     public void selectJoint() {
-        long jointId = jointId();
-        cgm.getJoint().select(jointId);
+        PhysicsJoint joint = link.getJoint();
+        cgm.getJoint().select(joint);
     }
 
     /**
@@ -358,7 +354,7 @@ public class SelectedLink implements JmeCloneable {
      * Select the collision object of the selected link.
      */
     public void selectObject() {
-        String name = objectName();
+        String name = bodyName();
         cgm.getObject().select(name);
     }
 
@@ -455,28 +451,5 @@ public class SelectedLink implements JmeCloneable {
         } catch (CloneNotSupportedException exception) {
             throw new RuntimeException(exception);
         }
-    }
-    // *************************************************************************
-    // private methods
-
-    /**
-     * Determine the object ID of the joint of the selected link.
-     *
-     * @return the unique identifier, or 0 if none
-     */
-    private long jointId() {
-        SceneView sceneView = cgm.getSceneView();
-        String linkName = link.name();
-        PhysicsLink viewLink = sceneView.findLink(linkName);
-        PhysicsJoint viewJoint = viewLink.getJoint();
-
-        long jointId;
-        if (viewJoint == null) {
-            jointId = 0L;
-        } else {
-            jointId = viewJoint.getObjectId();
-        }
-
-        return jointId;
     }
 }

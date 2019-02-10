@@ -211,8 +211,7 @@ class SelectFNAction {
 
         } else if (actionString.startsWith(ActionPrefix.selectJoint)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectJoint);
-            long id = Long.parseLong(arg, 16);
-            target.getJoint().select(id);
+            target.getJoint().select(arg);
 
         } else if (actionString.startsWith(ActionPrefix.selectJointBody)) {
             arg = MyString.remainder(actionString,

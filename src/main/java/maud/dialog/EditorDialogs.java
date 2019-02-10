@@ -1073,17 +1073,19 @@ public class EditorDialogs {
 
         SelectedShape shape = Maud.getModel().getTarget().getShape();
         if (shape.canSet(parameter)) {
+            float minValue = parameter.minValue();
+            float maxValue = parameter.maxValue();
+            DialogController controller
+                    = new FloatDialog("Set", minValue, maxValue, false);
+
+            String prompt = String.format("Enter new %s:", parameter);
             float defaultValue = shape.getValue(parameter);
             String defaultText = "";
             if (!Float.isNaN(defaultValue)) {
                 defaultText = Float.toString(defaultValue);
             }
-            DialogController controller
-                    = new FloatDialog("Set", 0f, Float.MAX_VALUE, false);
             String name = parameter.toString();
-            String prompt = String.format("Enter new %s:", name);
             String prefix = ActionPrefix.setShapeParmValue + name + " ";
-
             Maud.gui.closeAllPopups();
             Maud.gui.showTextEntryDialog(prompt, defaultText, prefix,
                     controller);

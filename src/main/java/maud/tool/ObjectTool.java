@@ -87,7 +87,7 @@ class ObjectTool extends Tool {
         String nextButton = "", previousButton = "", selectButton = "";
 
         Cgm target = Maud.getModel().getTarget();
-        int numObjects = target.getSceneView().objectMap().size();
+        int numObjects = target.getPhysics().countPcos();
         if (numObjects > 0) {
             selectButton = "Select";
         }
@@ -152,13 +152,12 @@ class ObjectTool extends Tool {
         String sButton, shape;
 
         SelectedObject object = Maud.getModel().getTarget().getObject();
-        long id = object.shapeId();
-        if (id == -1L) {
+        if (object.isSelected()) {
+            shape = object.shapeName();
+            sButton = "Select";
+        } else {
             shape = "";
             sButton = "";
-        } else {
-            shape = object.describeShape();
-            sButton = "Select";
         }
 
         setStatusText("physicsShape", " " + shape);

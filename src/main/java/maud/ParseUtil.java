@@ -99,46 +99,6 @@ public class ParseUtil {
     }
 
     /**
-     * Parse the ID of a collision object from its name. TODO move to MyObject
-     *
-     * @param name input text (not null, not empty)
-     * @return the object's ID
-     *
-     * @see
-     * jme3utilities.minie.MyObject#objectName(com.jme3.bullet.collision.PhysicsCollisionObject)
-     */
-    public static long parseObjectId(String name) {
-        Validate.nonEmpty(name, "name");
-
-        assert name.length() > 5 : name;
-        String decimal = name.substring(5);
-        long result = Long.parseLong(decimal);
-
-        return result;
-    }
-
-    /**
-     * Parse the ID of a collision shape from its description. TODO move to
-     * MyShape
-     *
-     * @param description input text (not null, not empty)
-     * @return the shape's ID
-     *
-     * @see
-     * jme3utilities.minie.MyShape#describe(com.jme3.bullet.collision.shapes.CollisionShape)
-     */
-    public static long parseShapeId(String description) {
-        Validate.nonEmpty(description, "description");
-
-        String[] parts = description.split(":");
-        assert parts.length == 2 : parts.length;
-        String hexadecimal = parts[1];
-        long result = Long.parseLong(hexadecimal, 16);
-
-        return result;
-    }
-
-    /**
      * Parse a material parameter from the specified text string.
      *
      * @param oldParameter old parameter (not null, unaffected)

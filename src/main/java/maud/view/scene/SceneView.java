@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,8 +31,6 @@ import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.animation.DynamicAnimControl;
 import com.jme3.bullet.animation.PhysicsLink;
 import com.jme3.bullet.animation.RangeOfMotion;
-import com.jme3.bullet.collision.PhysicsCollisionObject;
-import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.input.InputManager;
@@ -54,8 +52,7 @@ import com.jme3.scene.VertexBuffer;
 import com.jme3.shader.VarType;
 import java.nio.Buffer;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Misc;
 import jme3utilities.MyCamera;
@@ -65,12 +62,10 @@ import jme3utilities.Validate;
 import jme3utilities.debug.AxesVisualizer;
 import jme3utilities.math.MyVector3f;
 import jme3utilities.minie.MyControlP;
-import jme3utilities.minie.MyObject;
 import maud.Maud;
 import maud.PhysicsUtil;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedRagdoll;
-import maud.model.option.RigidBodyParameter;
 
 /**
  * An editor view containing a 3-D visualization of a loaded C-G model.
@@ -138,12 +133,14 @@ public class SceneView extends SceneViewCore {
     }
 
     /**
-     * Add a copy of the specified physics control to the selected spatial and
-     * the view's physics space.
+     * Add a copy of the specified PhysicsControl to the selected Spatial and
+     * also to the view's PhysicsSpace.
      *
      * @param physicsControl (not null, unaffected)
+     * @return the new PhysicsControl for this view (not null)
      */
-    public void addPhysicsControl(PhysicsControl physicsControl) {
+    public PhysicsControl addPhysicsControl(PhysicsControl physicsControl) {
+        logger.log(Level.INFO, "");
         Validate.nonNull(physicsControl, "physics control");
 
         PhysicsControl copy = (PhysicsControl) Misc.deepCopy(physicsControl);
@@ -160,6 +157,8 @@ public class SceneView extends SceneViewCore {
 
         PhysicsSpace space = getPhysicsSpace();
         space.add(copy);
+
+        return copy;
     }
 
     /**
@@ -311,20 +310,6 @@ public class SceneView extends SceneViewCore {
     }
 
     /**
-     * Access the named link in the selected DynamicAnimControl.
-     *
-     * @param linkName which link to find (not null, not empty)
-     * @return the pre-existing link, or null if not found
-     */
-    public PhysicsLink findLink(String linkName) {
-        Validate.nonEmpty(linkName, "link name");
-
-        DynamicAnimControl dac = getSelectedRagdoll();
-        PhysicsLink result = dac.findLink(linkName);
-        return result;
-    }
-
-    /**
      * Test whether the indexed axis points toward or away from the camera.
      *
      * @param axisIndex which axis: 0&rarr;X, 1&rarr;Y, 2&rarr;Z
@@ -354,82 +339,25 @@ public class SceneView extends SceneViewCore {
     }
 
     /**
-     * Add a BoneLink for the named bone to the selected DynamicAnimControl.
-     *
-     * @param boneName the name of the bone to add (not null, not empty)
-     */
-    public void linkBone(String boneName) {
-        DynamicAnimControl dac = getSelectedRagdoll();
-        Spatial controlledSpatial = dac.getSpatial();
-        controlledSpatial.removeControl(dac);
-        dac.link(boneName, 1f, new RangeOfMotion());
-        controlledSpatial.addControl(dac);
-    }
-
-    /**
-     * Enumerate all collision objects in the physics space, excluding those
-     * added by this view.
-     *
-     * @return a new map from ids to objects
-     */
-    public Map<Long, PhysicsCollisionObject> objectMap() {
-        PhysicsSpace space = getPhysicsSpace();
-        Map<Long, PhysicsCollisionObject> result = PhysicsUtil.objectMap(space);
-
-        Set<Long> viewIds = listIds(null);
-        for (long id : viewIds) {
-            result.remove(id);
-        }
-
-        return result;
-    }
-
-    /**
-     * Determine the name of the object associated with the indexed physics
-     * control.
-     *
-     * @param treePosition tree position of the controlled spatial (not null,
-     * unaffected)
-     * @param pcPosition position among the physics controls added to the
-     * controlled spatial (&ge;0)
-     * @return name (not null, not empty)
-     */
-    public String objectName(List<Integer> treePosition, int pcPosition) {
-        Validate.nonNull(treePosition, "tree position");
-        Validate.nonNegative(pcPosition, "control position");
-
-        String result = "?";
-        PhysicsControl pc = findPhysicsControl(treePosition, pcPosition);
-        if (pc instanceof PhysicsCollisionObject) {
-            PhysicsCollisionObject pco = (PhysicsCollisionObject) pc;
-            result = MyObject.objectName(pco);
-        } else if (pc instanceof DynamicAnimControl) {
-            DynamicAnimControl dac = (DynamicAnimControl) pc;
-            PhysicsCollisionObject pco = dac.getTorsoLink().getRigidBody();
-            result = MyObject.objectName(pco);
-        }
-
-        return result;
-    }
-
-    /**
      * Remove an existing physics control from the scene graph and the physics
      * space.
      *
      * @param treePosition tree position of the controlled spatial (not null,
      * unaffected)
-     * @param pcPosition position among the physics controls added to the
+     * @param pcPosition index among all physics controls added to the
      * controlled spatial (&ge;0)
      */
     public void removePhysicsControl(List<Integer> treePosition,
             int pcPosition) {
+        logger.log(Level.INFO, "");
         Validate.nonNull(treePosition, "tree position");
         Validate.nonNegative(pcPosition, "control position");
 
         Spatial spatial = findSpatial(treePosition);
         PhysicsControl pc = PhysicsUtil.pcFromPosition(spatial, pcPosition);
         pc.setEnabled(false);
-        spatial.removeControl(pc);
+        boolean success = spatial.removeControl(pc);
+        assert success;
     }
 
     /**
@@ -481,7 +409,7 @@ public class SceneView extends SceneViewCore {
      *
      * @param treePosition tree position of the controlled spatial (not null,
      * unaffected)
-     * @param pcPosition position among the physics controls added to the
+     * @param pcPosition index among all physics controls added to the
      * controlled spatial (&ge;0)
      * @param newSetting true&rarr;apply to local, false&rarr;apply to world
      */
@@ -746,7 +674,7 @@ public class SceneView extends SceneViewCore {
      *
      * @param treePosition tree position of the controlled spatial (not null,
      * unaffected)
-     * @param pcPosition position among the physics controls added to the
+     * @param pcPosition index among all physics controls added to the
      * controlled spatial (&ge;0)
      * @param newSetting true&rarr;enable, false&rarr;disable
      */
@@ -786,17 +714,6 @@ public class SceneView extends SceneViewCore {
     }
 
     /**
-     * Alter the value of a parameter of the selected rigid body.
-     *
-     * @param parameter which parameter to modify (not null)
-     * @param newValue the desired value for the parameter
-     */
-    public void setRigidBodyParameter(RigidBodyParameter parameter,
-            float newValue) {
-        //TODO
-    }
-
-    /**
      * Alter the shadow mode of the selected spatial.
      *
      * @param newMode new value for shadow mode (not null)
@@ -827,24 +744,6 @@ public class SceneView extends SceneViewCore {
         Material material = geometry.getMaterial();
         RenderState renderState = material.getAdditionalRenderState();
         renderState.setWireframe(newSetting);
-    }
-
-    /**
-     * Enumerate all collision shapes in the physics space, excluding those
-     * added by this view.
-     *
-     * @return a new map from ids to shapes
-     */
-    public Map<Long, CollisionShape> shapeMap() {
-        PhysicsSpace space = getPhysicsSpace();
-        Map<Long, CollisionShape> map = PhysicsUtil.shapeMap(space);
-
-        Set<Long> viewIds = listIds(null);
-        for (long id : viewIds) {
-            map.remove(id);
-        }
-
-        return map;
     }
 
     /**

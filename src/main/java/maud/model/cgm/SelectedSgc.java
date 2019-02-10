@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -28,7 +28,7 @@ package maud.model.cgm;
 
 import com.jme3.bullet.animation.DynamicAnimControl;
 import com.jme3.bullet.animation.TorsoLink;
-import com.jme3.bullet.control.PhysicsControl;
+import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
@@ -39,8 +39,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyControl;
 import jme3utilities.Validate;
 import jme3utilities.minie.MyControlP;
-import maud.PhysicsUtil;
-import maud.view.scene.SceneView;
+import jme3utilities.minie.MyObject;
 
 /**
  * The MVC model of the selected scene-graph (S-G) control in a C-G model.
@@ -207,7 +206,7 @@ public class SelectedSgc implements JmeCloneable {
     }
 
     /**
-     * Test whether a scene-graph control is selected.
+     * Test whether any scene-graph control is selected.
      *
      * @return true if selected, otherwise false
      */
@@ -274,18 +273,16 @@ public class SelectedSgc implements JmeCloneable {
     }
 
     /**
-     * Obtain the name of the physics object associated with the S-G control.
+     * Construct the name of the collision object associated with the S-G
+     * control. TODO rename pcoName()
      *
      * @return object name, or "" if unknown
      */
     public String physicsObjectName() {
         String result = "";
-        if (selected instanceof PhysicsControl) {
-            List<Integer> treePosition = cgm.findSpatial(controlled);
-            PhysicsControl pc = (PhysicsControl) selected;
-            int pcPosition = PhysicsUtil.pcToPosition(controlled, pc);
-            SceneView sceneView = cgm.getSceneView();
-            result = sceneView.objectName(treePosition, pcPosition);
+        if (selected instanceof PhysicsCollisionObject) {
+            PhysicsCollisionObject pco = (PhysicsCollisionObject) selected;
+            result = MyObject.objectName(pco);
         }
 
         return result;

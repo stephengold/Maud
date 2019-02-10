@@ -110,9 +110,8 @@ class SelectOSAction {
                 break;
 
             case Action.selectPhysicsShape:
-                long shapeId = target.getObject().shapeId();
-                if (shapeId != -1) {
-                    target.getShape().select(shapeId);
+                if (target.getObject().isSelected()) {
+                    target.getShape().selectPcoShape();
                     Maud.gui.tools.select("shape");
                 }
                 break;
@@ -317,9 +316,7 @@ class SelectOSAction {
             if (colonPosition == -1) {
                 handled = false;
             } else {
-                String hexId = arg.substring(colonPosition + 1);
-                long id = Long.parseLong(hexId, 16);
-                target.getShape().select(id);
+                target.getShape().select(arg);
             }
 
         } else if (actionString.startsWith(ActionPrefix.selectShapeParm)) {

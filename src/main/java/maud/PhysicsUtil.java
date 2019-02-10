@@ -42,19 +42,12 @@ import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.objects.PhysicsCharacter;
 import com.jme3.bullet.objects.PhysicsGhostObject;
 import com.jme3.bullet.objects.PhysicsRigidBody;
-import com.jme3.bullet.objects.PhysicsVehicle;
-import com.jme3.math.Matrix3f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
@@ -84,108 +77,6 @@ public class PhysicsUtil {
     }
     // *************************************************************************
     // new methods exposed
-
-    /**
-     * Find the named collision object in the specified physics space. TODO move
-     * to Minie
-     *
-     * @param name generated name (not null)
-     * @param space which physics space (not null, unaffected)
-     * @return the pre-existing object, or null if not found
-     */
-    public static PhysicsCollisionObject findObject(String name,
-            PhysicsSpace space) {
-        Validate.nonNull(name, "name");
-        Validate.nonNull(space, "space");
-
-        if (name.length() < 6) {
-            return null;
-        }
-        long findId = ParseUtil.parseObjectId(name);
-
-        String typePrefix = name.substring(0, 5);
-        switch (typePrefix) {
-            case "chara":
-                Collection<PhysicsCharacter> charas = space.getCharacterList();
-                for (PhysicsCharacter chara : charas) {
-                    long id = chara.getObjectId();
-                    if (id == findId) {
-                        return chara;
-                    }
-                }
-                break;
-
-            case "ghost":
-                Collection<PhysicsGhostObject> gs = space.getGhostObjectList();
-                for (PhysicsGhostObject ghost : gs) {
-                    long id = ghost.getObjectId();
-                    if (id == findId) {
-                        return ghost;
-                    }
-                }
-                break;
-
-            case "rigid":
-                Collection<PhysicsRigidBody> rigids = space.getRigidBodyList();
-                for (PhysicsRigidBody rigid : rigids) {
-                    long id = rigid.getObjectId();
-                    if (id == findId) {
-                        return rigid;
-                    }
-                }
-                break;
-
-            case "vehic":
-                Collection<PhysicsVehicle> vehics = space.getVehicleList();
-                for (PhysicsVehicle vehic : vehics) {
-                    long id = vehic.getObjectId();
-                    if (id == findId) {
-                        return vehic;
-                    }
-                }
-        }
-
-        return null;
-    }
-
-    /**
-     * Find the identified collision object in the specified physics space.
-     *
-     * @param id object identifier
-     * @param space which physics space (not null, unaffected)
-     * @return the pre-existing object, or null if not found
-     */
-    public static PhysicsCollisionObject findObject(long id,
-            PhysicsSpace space) {
-        Validate.nonNull(space, "space");
-
-        PhysicsCollisionObject result = null;
-        if (id != -1L) {
-            Map<Long, PhysicsCollisionObject> map = objectMap(space);
-            result = map.get(id);
-        }
-
-        return result;
-    }
-
-    /**
-     * Find the identified collision shape in the specified physics space.
-     *
-     * @param id shape identifier
-     * @param space which physics space (not null, unaffected)
-     * @return the pre-existing shape, or null if not found
-     */
-    public static CollisionShape findShape(long id, PhysicsSpace space) {
-        Validate.nonNull(space, "space");
-
-        CollisionShape result = null;
-        if (id != -1L) {
-            Map<Long, CollisionShape> map = shapeMap(space);
-            result = map.get(id);
-        }
-
-        return result;
-    }
 
     /**
      * Create a symmetrical collision shape of the specified type with the
@@ -319,97 +210,30 @@ public class PhysicsUtil {
     }
 
     /**
-     * Determine the location (translation) of the specified collision object.
-     *
-     * @param object (not null, unaffected)
-     * @param storeResult (modified if not null)
-     * @return world coordinates (either storeResult or a new instance)
-     */
-    public static Vector3f location(PhysicsCollisionObject object,
-            Vector3f storeResult) {
-        Validate.nonNull(object, "object");
-        if (storeResult == null) {
-            storeResult = new Vector3f();
-        }
-
-        if (object instanceof PhysicsRigidBody) {
-            PhysicsRigidBody prb = (PhysicsRigidBody) object;
-            prb.getPhysicsLocation(storeResult);
-        } else if (object instanceof PhysicsGhostObject) {
-            PhysicsGhostObject ghost = (PhysicsGhostObject) object;
-            ghost.getPhysicsLocation(storeResult);
-        } else if (object instanceof PhysicsCharacter) {
-            PhysicsCharacter character = (PhysicsCharacter) object;
-            character.getPhysicsLocation(storeResult);
-        } else {
-            throw new IllegalArgumentException();
-        }
-
-        return storeResult;
-    }
-
-    /**
-     * Enumerate all collision objects in the specified physics space.
-     *
-     * @param space which physics space (not null, unaffected)
-     * @return a new map from ids to objects
-     */
-    public static Map<Long, PhysicsCollisionObject> objectMap(
-            PhysicsSpace space) {
-        Map<Long, PhysicsCollisionObject> result = new TreeMap<>();
-
-        Collection<PhysicsCharacter> characters = space.getCharacterList();
-        for (PhysicsCollisionObject pco : characters) {
-            long id = pco.getObjectId();
-            result.put(id, pco);
-        }
-
-        Collection<PhysicsGhostObject> ghosts = space.getGhostObjectList();
-        for (PhysicsCollisionObject pco : ghosts) {
-            long id = pco.getObjectId();
-            result.put(id, pco);
-        }
-
-        Collection<PhysicsRigidBody> rigidBodies = space.getRigidBodyList();
-        for (PhysicsCollisionObject pco : rigidBodies) {
-            long id = pco.getObjectId();
-            result.put(id, pco);
-        }
-
-        Collection<PhysicsVehicle> vehicles = space.getVehicleList();
-        for (PhysicsCollisionObject pco : vehicles) {
-            long id = pco.getObjectId();
-            result.put(id, pco);
-        }
-
-        return result;
-    }
-
-    /**
      * Determine the orientation of the specified collision object.
      *
      * @param object (not null, unaffected)
      * @param storeResult (modified if not null)
-     * @return world orientation (either storeResult or a new instance)
+     * @return orientation (in physics-space coordinates, either storeResult or
+     * a new instance)
      */
     public static Quaternion orientation(PhysicsCollisionObject object,
             Quaternion storeResult) {
         Validate.nonNull(object, "object");
-        if (storeResult == null) {
-            storeResult = new Quaternion();
-        }
+        Quaternion result
+                = (storeResult == null) ? new Quaternion() : storeResult;
 
         if (object instanceof PhysicsRigidBody) {
             PhysicsRigidBody prb = (PhysicsRigidBody) object;
-            prb.getPhysicsRotation(storeResult);
+            prb.getPhysicsRotation(result);
         } else if (object instanceof PhysicsGhostObject) {
             PhysicsGhostObject ghost = (PhysicsGhostObject) object;
-            ghost.getPhysicsRotation(storeResult);
+            ghost.getPhysicsRotation(result);
         } else {
             throw new IllegalArgumentException();
         }
 
-        return storeResult;
+        return result;
     }
 
     /**
@@ -439,7 +263,7 @@ public class PhysicsUtil {
 
     /**
      * Calculate the position of the specified S-G control among the physics
-     * controls in the specified spatial.
+     * controls in the specified Spatial.
      *
      * @param spatial which spatial to scan (not null)
      * @param pc (a control added to that spatial)
@@ -457,81 +281,14 @@ public class PhysicsUtil {
                 ++result;
             }
         }
-        throw new IllegalArgumentException();
-    }
-
-    /**
-     * Replace all uses of the specified shape in compound shapes in the
-     * specified space.
-     *
-     * @param space which physics space (not null)
-     * @param oldShape shape to replace (not null)
-     * @param newShape replacement shape (not null, not a compound shape)
-     */
-    public static void replaceInCompounds(PhysicsSpace space,
-            CollisionShape oldShape, CollisionShape newShape) {
-        Validate.nonNull(space, "space");
-        Validate.nonNull(oldShape, "old shape");
-        Validate.nonNull(newShape, "new shape");
-        assert !(newShape instanceof CompoundCollisionShape);
-
-        long oldShapeId = oldShape.getObjectId();
-        Map<Long, CollisionShape> shapeMap = shapeMap(space);
-        for (CollisionShape shape : shapeMap.values()) {
-            if (shape instanceof CompoundCollisionShape) {
-                CompoundCollisionShape compound
-                        = (CompoundCollisionShape) shape;
-                List<ChildCollisionShape> childList = compound.getChildren();
-                int numChildren = childList.size();
-                ChildCollisionShape[] childArray
-                        = new ChildCollisionShape[numChildren];
-                childList.toArray(childArray);
-                for (ChildCollisionShape child : childArray) {
-                    CollisionShape childShape = child.getShape();
-                    long shapeId = childShape.getObjectId();
-                    if (shapeId == oldShapeId) {
-                        Vector3f location = child.getLocation(null);
-                        Matrix3f rotation = child.getRotation(null);
-                        compound.removeChildShape(childShape);
-                        compound.addChildShape(newShape, location, rotation);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Replace all uses of the specified shape in collision objects in the
-     * specified space.
-     *
-     * @param space which physics space (not null)
-     * @param oldShape shape to replace (not null)
-     * @param newShape replacement shape (not null)
-     */
-    public static void replaceInObjects(PhysicsSpace space,
-            CollisionShape oldShape, CollisionShape newShape) {
-        Validate.nonNull(space, "space");
-        Validate.nonNull(newShape, "new shape");
-
-        long oldShapeId = oldShape.getObjectId();
-
-        Map<Long, PhysicsCollisionObject> objectMap = objectMap(space);
-        for (PhysicsCollisionObject pco : objectMap.values()) {
-            CollisionShape shape = pco.getCollisionShape();
-            long shapeId = shape.getObjectId();
-            if (shapeId == oldShapeId) {
-                space.remove(pco);
-                pco.setCollisionShape(newShape);
-                space.add(pco);
-            }
-        }
+        throw new IllegalArgumentException(Integer.toString(result));
     }
 
     /**
      * Relocate (translate) the specified collision object.
      *
      * @param object (not null, modified)
-     * @param newLocation (not null, unaffected)
+     * @param newLocation (in physics-space coordinates, not null, unaffected)
      */
     public static void setLocation(PhysicsCollisionObject object,
             Vector3f newLocation) {
@@ -556,7 +313,8 @@ public class PhysicsUtil {
      * Reorient (rotate) the specified collision object.
      *
      * @param object (not null, modified)
-     * @param newOrientation in world (not null, unaffected)
+     * @param newOrientation (in physics-space coordinates, not null,
+     * unaffected)
      */
     public static void setOrientation(PhysicsCollisionObject object,
             Quaternion newOrientation) {
@@ -575,35 +333,6 @@ public class PhysicsUtil {
     }
 
     /**
-     * Enumerate all collision shapes in the specified physics space.
-     *
-     * @param space which physics space (not null, unaffected)
-     * @return a new map from ids to shapes
-     */
-    public static Map<Long, CollisionShape> shapeMap(PhysicsSpace space) {
-        Validate.nonNull(space, "space");
-
-        Map<Long, CollisionShape> result = new TreeMap<>();
-        Map<Long, PhysicsCollisionObject> objectMap = objectMap(space);
-        for (PhysicsCollisionObject pco : objectMap.values()) {
-            CollisionShape shape = pco.getCollisionShape();
-            long id = shape.getObjectId();
-            result.put(id, shape);
-            if (shape instanceof CompoundCollisionShape) {
-                CompoundCollisionShape ccs = (CompoundCollisionShape) shape;
-                List<ChildCollisionShape> children = ccs.getChildren();
-                for (ChildCollisionShape child : children) {
-                    CollisionShape childShape = child.getShape();
-                    long childId = childShape.getObjectId();
-                    result.put(childId, childShape);
-                }
-            }
-        }
-
-        return result;
-    }
-
-    /**
      * Calculate the transform of the specified collision object.
      *
      * @param object (not null, unaffected)
@@ -613,56 +342,18 @@ public class PhysicsUtil {
     public static Transform transform(PhysicsCollisionObject object,
             Transform storeResult) {
         Validate.nonNull(object, "object");
-        if (storeResult == null) {
-            storeResult = new Transform();
-        }
+        Transform result
+                = (storeResult == null) ? new Transform() : storeResult;
 
-        Vector3f storeLocation = storeResult.getTranslation();
-        location(object, storeLocation);
+        Vector3f storeLocation = result.getTranslation();
+        object.getPhysicsLocation(storeLocation);
 
-        Quaternion storeOrientation = storeResult.getRotation();
+        Quaternion storeOrientation = result.getRotation();
         orientation(object, storeOrientation);
 
         CollisionShape shape = object.getCollisionShape();
-        Vector3f storeScale = storeResult.getScale();
+        Vector3f storeScale = result.getScale();
         shape.getScale(storeScale);
-
-        return storeResult;
-    }
-
-    /**
-     * Enumerate all collision objects and compound shapes in the specified
-     * physics space that reference the identified shape.
-     *
-     * @param usedShapeId id of the collision shape to find
-     * @param space which physics space to search (not null, unaffected)
-     * @return a new set of ids of objects/shapes
-     */
-    public static Set<Long> userSet(long usedShapeId, PhysicsSpace space) {
-        Validate.nonNull(space, "space");
-
-        Set<Long> result = new TreeSet<>();
-        Map<Long, PhysicsCollisionObject> objectMap = objectMap(space);
-        for (PhysicsCollisionObject pco : objectMap.values()) {
-            CollisionShape shape = pco.getCollisionShape();
-            long shapeId = shape.getObjectId();
-            if (shapeId == usedShapeId) {
-                long pcoId = pco.getObjectId();
-                result.add(pcoId);
-            }
-            if (shape instanceof CompoundCollisionShape) {
-                CompoundCollisionShape ccs = (CompoundCollisionShape) shape;
-                List<ChildCollisionShape> children = ccs.getChildren();
-                for (ChildCollisionShape child : children) {
-                    CollisionShape childShape = child.getShape();
-                    long childId = childShape.getObjectId();
-                    if (childId == usedShapeId) {
-                        long parentId = shape.getObjectId();
-                        result.add(parentId);
-                    }
-                }
-            }
-        }
 
         return result;
     }
