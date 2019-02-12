@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -295,6 +295,10 @@ public class CheckLoaded {
                 = MySpatial.listSpatials(cgmRoot, Spatial.class, null);
         for (Spatial spatial : spatials) {
             String name = spatial.getName();
+            if (name == null || name.isEmpty()) {
+                logger.log(Level.WARNING, "model contains a nameless spatial");
+                return false;
+            }
             if (spatialNames.contains(name)) {
                 logger.log(Level.WARNING,
                         "model contains multiple spatials named {0}",
