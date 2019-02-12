@@ -47,7 +47,7 @@ Maud was designed for a desktop environment with:
  + a wheel mouse and
  + a display at least 640 pixels wide and 480 pixels tall.
 
-Status as of January 2019: seeking more alpha testers.
+Status as of February 2019: seeking more alpha testers.
 
 ## Contents of this document
 
@@ -62,7 +62,7 @@ Status as of January 2019: seeking more alpha testers.
  + [The edit history](#history)
  + [Scripting](#scripting)
  + [Command-line arguments](#args)
- + [Web links](#links)
+ + [External links](#links)
  + [Wish list](#wishlist)
  + [Conventions](#conventions)
  + [History](#history)
@@ -121,6 +121,9 @@ https://jmonkeyengine.github.io/wiki/jme3/requirements.html
     + Menu bar -> "Tools" -> "Plugins" to open the "Plugins" dialog.
     + Click on the "Available Plugins" tab.
     + Check the box next to "Gradle Support" in the "Gradle" category.
+     If this plugin isn't shown in the IDE's "Plugins" tool,
+     you can download it from
+     [GitHub](https://github.com/kelemen/netbeans-gradle-project/releases).
     + Click on the "Install" button to open the the "Plugin Installer" wizard.
     + Click on the "Next >" button.
     + Check the box next to
@@ -135,11 +138,11 @@ https://jmonkeyengine.github.io/wiki/jme3/requirements.html
 
 Clone the Maud repository using Git:
 
- 1. Open the "Clone Repository" wizard in the IDE:
-    Menu bar -> "Team" -> "Git" -> "Clone..." or
-    Menu bar -> "Team" -> "Remote" -> "Clone..."
+ 1. Open the "Clone Repository" wizard in the IDE, either:
+     + Menu bar -> "Team" -> "Git" -> "Clone..." or
+     + Menu bar -> "Team" -> "Remote" -> "Clone..."
  2. For "Repository URL:" specify
-    "https://github.com/stephengold/Maud.git" (without the quotes).
+    `https://github.com/stephengold/Maud.git`
  3. Clear the "User:" and "Password:" text boxes.
  4. For "Clone into:" specify a writable folder (on a local filesystem)
     that doesn't already contain "Maud".
@@ -160,13 +163,13 @@ Clone the Maud repository using Git:
 
 ### In a command-line environment
 
- 1. Set your JAVA_HOME environment variable.
+ 1. Set your `JAVA_HOME` environment variable.
  2. Set your working directory to a writable directory (on a local filesystem)
     that doesn't already contain "Maud".
- 3. git clone https://github.com/stephengold/Maud.git
- 4. cd Maud
- 5. Ensure that the "gradlew" script is executable: chmod +x gradlew
- 6. ./gradlew build
+ 3. `git clone https://github.com/stephengold/Maud.git`
+ 4. `cd Maud`
+ 5. Ensure that the `gradlew` script is executable: `chmod +x gradlew`
+ 6. `./gradlew build`
 
 <a name="use"/>
 
@@ -185,7 +188,7 @@ and edited.  There's a menu bar across the top and a message bar across the bott
 The rest of its user interface
 is split into overlapping sub-windows called "tools".
 
-![screenshot](https://i.imgur.com/FA5EX1s.png "Editor Screen with 3 tools visible and a menu active")
+![screenshot](https://i.imgur.com/1GRhpOB.png "Editor Screen with 3 tools visible and a menu active")
 
 #### Tools
 
@@ -224,7 +227,8 @@ in its bind pose.
 The first 10 items in each menu are numbered.
 For instance, the first item in the menu bar is
 labeled "1] View".  The numbers indicate keyboard shortcuts for
-navigating menus.  In other words, you can select the View Menu by pressing
+navigating menus.  When no popups are open,
+you can select the View Menu by pressing
 the "1" key on the main keyboard (but NOT the "1" key on the numeric keypad).
 
 #### Keyboard shortcuts
@@ -249,7 +253,7 @@ in which case shortcuts described in this document might not work.
 At startup, the Editor Screen displays a "scene" view of a single 3-D model:
 Jaime, from the jme3-testdata library, with no tools selected.
 
-![screenshot](https://i.imgur.com/qRa2dIx.png "Editor Screen at startup")
+![screenshot](https://i.imgur.com/vaKixFI.png "Editor Screen at startup")
 
 Startup actions can be customized using the "Settings -> Update startup script"
 menu item (or by editing the "Scripts/startup.js" asset prior to startup)
@@ -262,11 +266,12 @@ skeleton.  If you load and play an animation in a scene view, you'll see the
 model move, rather like it would in a game.
 
 When the mouse cursor is in a scene view, you can use the "A" and "D" keys
-to rotate the model left and right.  (They don't alter the model itself,
+to rotate the model left and right.  (These keys don't alter the model itself,
 only its orientation in the view.)  You can also press:
 
  + "B" to select the bone closest to the mouse pointer
  + "E" to deselect the selected bone
+ + "Q" to open the "View -> Scene options" menu
  + "V" to select the mesh vertex closest to the mouse pointer
  + "W" to deselect the selected mesh vertex
 
@@ -279,6 +284,7 @@ shortcuts may prove helpful:
  + "B" to select the bone track closest to the mouse pointer
  + "G" to grab the gnomon and (while key is held down) drag it with the mouse pointer
  + "K" to select the keyframe closest to the mouse pointer
+ + "Q" to open the "View -> Score options" menu
 
 While Maud can only *edit* one model at a time, the Editor Screen can be split
 to *display* 2 different models.
@@ -294,9 +300,9 @@ boundary by dragging it with the RMB.
 
 ### Views modes of the Editor Screen
 
-The Editor Screen operates in 3 "view modes", namely:
+The Editor Screen operates in 3 "view modes":
 "Scene Mode", "Score Mode", and "Hybrid Mode".
-You can change the view mode using the "View -> Mode" submenu or
+You can change the view mode using the "View -> Select mode" submenu or
 use the backtick ("`") keyboard shortcut to cycle through these modes.
 
 <table>
@@ -308,18 +314,18 @@ use the backtick ("`") keyboard shortcut to cycle through these modes.
     <tr>
         <td>In Scene Mode...</td>
         <td style="border: 1px solid black;">A full-width scene view of the target model</td>
-        <td style="border: 1px solid black;">A split screen with a scene view of the source model on the left
+        <td style="border: 1px solid black;">A split display with a scene view of the source model on the left
             and a scene view of the target model on the right</td>
     </tr>
     <tr>
         <td>In Score Mode...</td>
         <td style="border: 1px solid black;">A full-width score view of the target model</td>
-        <td style="border: 1px solid black;">A split screen with a score view of the source model on the left
+        <td style="border: 1px solid black;">A split display with a score view of the source model on the left
             and a score view of the target model on the right</td>
     </tr>
     <tr>
         <td>In Hybrid Mode...</td>
-        <td colspan="2" style="border: 1px solid black;">A split screen with a score view of the target model on the left
+        <td colspan="2" style="border: 1px solid black;">A split display with a score view of the target model on the left
             and a scene view of the target model on the right</td>
     </tr>
 </table>
@@ -344,17 +350,17 @@ In orbit mode, the camera orbits a central point.
 In orbit mode, turning the camera also changes its location, making it easy to
 view models from many directions.
 By the default, the central point is the "3-D cursor" -- a user-selected
-location, typically visible as a small, yellow, 6-pointed star
+location, typically visible as a small, black/yellow, 6-pointed star
 at the center of the view.
 
 Move the 3-D cursor to a new location by clicking LMB on an object in the view:
-either the model or its platform.
+either the model or the platform.
 The 3-D cursor doesn't attach to other objects, so moving or altering objects
-in the scene doesn't affect the 3-D cursor.
+in the scene won't affect the location of the 3-D cursor.
 The "Cursor Tool" (selected using "View -> Scene options -> Cursor")
 can alter the appearance of the 3-D cursor.
 The "Camera Tool" (selected using "View -> Scene options -> Camera")
-can be used to redefine the central point.
+can be used to redefine what the camera orbits.
 
 "Fly Mode" is a scene-view camera's alternative movement mode.
 In fly mode, the camera disregards the central point.
@@ -390,19 +396,19 @@ information about the target model.
 
 ### Loading (or importing) models from assets
 
-Models are loaded from assets, which can be located either in the
-Java classpath (built into Maud) or in a local filesystem.
+Models are loaded from assets, which may be located in the
+Java classpath (built into Maud) or in a local filesystem or on a web server.
 
 Before loading a model from a local filesystem, you must specify
-a where the model's assets are located:
-select "Settings -> Asset locations -> Add",
+a where in the filesystem the model's assets are located:
+select "Settings -> Add asset location",
 then navigate to the asset folder (typically it contains a "Model" subfolder),
 and select "! add this folder".
 Or if the assets are in a JAR/ZIP file, simply select that file.
 
-To load a new target model, select the "Models -> Load" menu item,
+To load a model as the target model, select the "Models -> Load" menu item,
 then select an asset location, then navigate to the model file.
-To load a new source model, select "Models -> Source model -> Load",
+To load a model as the source model, select "Models -> Source model -> Load",
 then select an asset location, then navigate to the model file.
 
 Maud can of course load models in jME's native binary format.
@@ -430,8 +436,8 @@ The suffix ".j3o" is automatically appended to the base file path.
 Note that materials and textures are not saved.
 
 By default, models loaded from the classpath or from an archive will be written to a
-"Written assets" folder under Maud's working folder.
-When loading assets, Maud treats this folder as if it were at the head of the classpath.
+"Written Assets" folder under Maud's working folder.
+When loading assets, Maud treats this folder as if it overrides the classpath.
 
 <a name="bones"/>
 
@@ -439,7 +445,7 @@ When loading assets, Maud treats this folder as if it were at the head of the cl
 
 In jME, "bones" are named parts of a 3-D model that can influence
 vertices in the model's meshes.
-A vertex can be influenced by up to 4 bones.
+A single vertex can be influenced by up to 4 bones.
 A bone can also influence other bones, called its "children".
 A bone with no children is a "leaf" bone.
 A bone with no parent is a "root" bone.
@@ -451,8 +457,8 @@ nor even a direction.
 In a scene view, Maud visualizes each bone as a round dot
 (red or green by default)
 connected to its children by lines (white by default).
-(You can customize these colors using the "Skeleton Color Tool":
-"View -> Scene options -> Skeleton color".)
+(You can customize these colors using the "Skeleton Tool":
+"View -> Scene options -> Skeleton".)
 
 In a score view, each bone is represented by horizontal "staff".
 If space permits, the staff includes a rectangular name label on the left.
@@ -466,8 +472,6 @@ and the finials help identify which sparkline is which.
 Before editing a bone in Maud, you must "select" it.
 In a scene view, the selected bone (if any) is typically indicated by
 3 arrows, denoting the axes of its local coordinate axes.
-In a score view, the selected bone is indicated by darker finials and a
-darker background for its name label.
 
 The "Bone Tool" (selected using "Bone -> Tool") controls and describes
 the target model's selected bone.
@@ -486,15 +490,14 @@ target model by name:
  + from among the children of the selected bone.
 
 It also enables you to navigate the bone hierarchy "By parent"
-or cycle through bones in numerical order ("Previous" and "Next").
+or cycle through bones in numeric order ("Previous" and "Next").
 
-The Bone Tool provides a more convenient interfaces to these same
+The Bone Tool ("Bone -> Tool") provides a more convenient interface to these same
 selection options.
 
-The quickest way to select a bone is to click the the right mouse
-button (RMB) on or near it.
-This works in both scene views and in score views, and
-for both the source model and the target model.
+The quickest way to select a bone is to click the right mouse
+button (RMB) on or near it in a scene view.
+This works for both the source model and the target model.
 However, since bones can appear close together in scene views,
 and since the RMB is also used to select objects other than bones,
 use this technique with caution.
@@ -503,11 +506,13 @@ use this technique with caution.
 
 ## Animations
 
-In jME, "animations" are named parts of a 3-D model, each with its own duration.
+In jME, "animations" are usually found as part of a 3-D model.
+Each animation has a name and a duration.
+
 Maud treats the model's bind pose like a zero-duration
 animation for many purposes.
 
-A real animation is stored in an AnimControl and composed of "tracks", usually bone tracks.
+A real animation is stored in an `AnimControl` and composed of "tracks", usually bone tracks.
 Each bone track transforms a single bone.
 An animation need not include a track for every bone.
 Maud refers to bones that have tracks in the loaded animation
@@ -515,7 +520,7 @@ as "tracked bones".
 
 Each track is composed of series of "keyframes", starting at time zero.
 
-The Animation Tool (selected using "Animations -> Tool")
+The (Target) Animation Tool (selected using "Animations -> Tool")
 controls the target model's loaded animation.
 There's also a Source Animation Tool ("Animations -> Source tool")
 to control the source model's loaded animation.
@@ -547,7 +552,7 @@ Using the animation tools, you can instruct Maud to pause and/or reverse
 direction ("pong") instead.
 
 Using the animation tools, you can also "pin" a loaded animation.
-Pinning an animation keeps all its root bones at the model origin
+Pinning an animation forces all its root bones to the model origin
 for display (scene-view) purposes.
 
 <a name="pose"/>
@@ -617,7 +622,7 @@ Furthermore, since jME bones don't have defined tails,
 it's often necessary to adjust bone orientations when retargeting
 animations between models.
 To automate these adjustments, each bone mapping in a jME skeleton
-map includes a "twist" value.
+map includes a "twist" rotation value.
 
 Maud can load skeleton maps from assets, edit
 them, save them, and use them to retarget animations.
@@ -626,12 +631,12 @@ maps Sinbad's skeleton to that of Jaime.
 
 Use the "Mapping Tool" ("Map -> Tool") to load and edit skeleton maps.
 To do anything with a skeleton map, you must have a source model loaded.
-To add a new mapping between 2 bones, select the source bone in the source
+To add a mapping between 2 bones, select the source bone in the source
 model and the target bone in the target model, then click LMB on
 the "Map" button in the lower left or use the equals ("=") keyboard shortcut.
 
 As long as the 2 selected bones map to each other in the loaded map,
-the corresponding bone mapping is selected.
+the corresponding bone mapping stays selected.
 You can unmap the selected bone mapping (with the "Unmap" button) or
 adjust its twist value with the "Twist Tool" ("Map -> Twist tool").
 
@@ -650,7 +655,7 @@ With this pseudo-animation loaded:
 To save the loaded skeleton map, select "Map -> Save".
 
 When you're ready to retarget animations between models,
-use the "Retarget Tool" ("Animations -> Add new -> Retarget").
+use the "Retarget Tool" ("Animations -> Add new -> Retarget source animation").
 
 <a name="history"/>
 
@@ -663,7 +668,7 @@ Tool visibility and positioning are not checkpointed, nor are shortcut
 key bindings, but nearly everything else is, including selections, view mode,
 view options, and loaded models, maps, and animations.
 
-By default, Maud creates a checkpoint before editing/unloading any map/model.
+By default, Maud creates a checkpoint before editing or unloading any map or model.
 You can also create a checkpoint manually using the "X" keyboard shortcut.
 To undo changes since the most recent checkpoint, use the "Z" keyboard shortcut.
 
@@ -675,8 +680,8 @@ Maud places no limit on the number of checkpoints you can create/undo/redo.
 To help you visualize and navigate your edit history,
 Maud provides a "History Tool" (selected using "History -> Tool").
 
-The edit history consumes virtual memory.  To delete the history, select
-"History -> Clear".
+The edit history occupies heap memory.
+To release this memory, you can delete the history using "History -> Clear".
 
 <a name="scripting"/>
 
@@ -688,21 +693,21 @@ on the [Nashorn][] engine.
 During startup, Maud looks for a "/Scripts/startup.js" asset.
 The built-in startup script (on the classpath) simply loads the Jaime model.
 However, if Maud finds a custom script in the "Written Assets" folder,
-it executes the custom script in place of the built-in one.
+it executes the custom script instead of the built-in one.
 
 To auto-generate a custom startup script,
 select "Settings -> Update startup script".
-The generated script will then initialize:
+The generated script will initialize:
 
  + asset locations
  + global options such as view mode, boundary position, menu-bar visibility,
    performance debug mode, base index, and tweening techniques
  + most scene-view and score-view options
- + the screen positions any selected tools
+ + the screen positions of any selected tools
 
 Note that customized hotkeys and display settings
 are not included in the startup script.
-Maud uses other mechanisms to make them persist.
+Maud has other mechanisms to make them persist.
 
 To remove a custom startup script,
 select "Settings -> Revert startup script to default".
@@ -727,7 +732,7 @@ build script) to configure Maud prior to executing its startup script:
 
 <a name="links"/>
 
-## Web links
+## External links
 
 YouTube videos about Maud:
 
@@ -772,7 +777,9 @@ BVH resources:
 [jfrog]: https://www.jfrog.com "JFrog"
 [jme]: http://jmonkeyengine.org  "jMonkeyEngine Project"
 [jme-ttf]: http://1337atr.weebly.com/jttf.html "jME-TTF Rendering System"
+[makehuman]: http://www.makehumancommunity.org/ "MakeHuman Community"
 [markdown]: https://daringfireball.net/projects/markdown "Markdown Project"
+[minie]: https://github.com/stephengold/Minie "Minie Project"
 [nashorn]: https://docs.oracle.com/javase/8/docs/technotes/guides/scripting/nashorn "Nashorn User Guide"
 [netbeans]: https://netbeans.org "NetBeans Project"
 [nifty]: http://nifty-gui.github.io/nifty-gui "Nifty GUI Project"
@@ -785,7 +792,7 @@ BVH resources:
 [utilities]: https://github.com/stephengold/jme3-utilities "jME3 Utilities Project"
 [vegdahl]: http://www.cessen.com "Nathan Vegdahl"
 [winmerge]: http://winmerge.org "WinMerge Project"
-[xbuf]: http://www.xbuf.org "Xbuf Project"
+[xbuf]: https://github.com/xbuf/xbuf "Xbuf Project"
 
 <a name="wishlist"/>
 
@@ -854,7 +861,7 @@ I therefore acknowledge the following artists and software developers:
 + plus the creators of (and contributors to) the following software:
     + [Adobe Photoshop Elements][elements]
     + the [Blender][] 3-D animation suite
-    + the [Bullet][] physics simulation kit
+    + the [Bullet][] real-time physics library
     + the [FindBugs][] source-code analyzer
     + the [Git][] revision-control system and GitK commit viewer
     + the [Google Chrome web browser][chrome]
@@ -862,11 +869,13 @@ I therefore acknowledge the following artists and software developers:
     + the Java compiler, standard doclet, and runtime environment
     + [jMonkeyEngine][jme] and the jME3 Software Development Kit
     + LWJGL, the Lightweight Java Game Library
+    + the [MakeHuman][] Community
     + the [Markdown][] document conversion tool
     + Microsoft Windows
     + the [NetBeans][] integrated development environment
     + the [Nifty][] graphical user interface library
     + [Open Broadcaster Software Studio][obs]
+    + the PMD source-code analyzer
     + the [RealWorld Cursor Editor][rwce]
     + the [WinMerge][] differencing and merging tool
 
