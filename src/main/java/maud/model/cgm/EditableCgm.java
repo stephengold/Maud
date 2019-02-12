@@ -70,6 +70,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Misc;
@@ -77,6 +79,7 @@ import jme3utilities.MyControl;
 import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
+import jme3utilities.NameGenerator;
 import jme3utilities.Validate;
 import jme3utilities.minie.MyControlP;
 import jme3utilities.nifty.dialog.VectorDialog;
@@ -1777,8 +1780,11 @@ public class EditableCgm extends LoadedCgm {
 
         String eventDescription = "load model named " + MyString.quote(name);
         editState.setPristine(eventDescription);
-
-        repair(cgmRoot);
+        /*
+         * Repair any minor issues with the loaded C-G model.
+         */
+        repairSpatials(cgmRoot);
+        repairTracks(cgmRoot);
 
         super.postLoad(cgmRoot);
     }
@@ -1817,12 +1823,61 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Repair minor issues with a C-G model, such as repetitious keyframes and
-     * tracks without a keyframe at t=0.
+     * Repair problems with spatials in a newly-loaded model, including null
+     * names, empty names, and duplicate names.
      *
-     * @param cgmRoot model to correct (not null)
+     * @param cgmRoot the C-G model to repair (not null)
      */
-    private void repair(Spatial cgmRoot) {
+    private void repairSpatials(Spatial cgmRoot) {
+        int numRenamed = 0;
+
+        NameGenerator generate = new NameGenerator();
+        Set<String> namesUsed = new TreeSet<>();
+        List<Spatial> spatials
+                = MySpatial.listSpatials(cgmRoot, Spatial.class, null);
+        for (Spatial spatial : spatials) {
+            String spatialName = spatial.getName();
+            boolean renameIt = false;
+
+            if (spatialName == null) {
+                spatialName = generate.unique("repairNullName");
+                renameIt = true;
+            } else if (spatialName.isEmpty()) {
+                spatialName = generate.unique("repairEmptyName");
+                renameIt = true;
+            }
+
+            while (namesUsed.contains(spatialName)) {
+                spatialName = generate.unique("repairDuplicateName");
+                renameIt = true;
+            }
+
+            if (renameIt) {
+                spatial.setName(spatialName);
+                ++numRenamed;
+            }
+
+            namesUsed.add(spatialName);
+        }
+
+        if (numRenamed > 0) {
+            String description = "renamed ";
+            if (numRenamed == 1) {
+                description += "one spatial";
+            } else {
+                description += String.format("%d spatials", numRenamed);
+            }
+            editState.setEdited(description);
+        }
+    }
+
+    /**
+     * Repair problems with animation tracks in a newly-loaded model, including
+     * 1st keyframe not at t=0 and repetitious keyframes.
+     *
+     * @param cgmRoot the C-G model to repair (not null)
+     */
+    private void repairTracks(Spatial cgmRoot) {
         int numTracksZfed = 0;
         int numTracksRred = 0;
 
