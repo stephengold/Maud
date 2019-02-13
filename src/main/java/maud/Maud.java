@@ -181,28 +181,32 @@ public class Maud extends GuiApplication {
      * @param arguments array of command-line arguments (not null)
      */
     public static void main(String[] arguments) {
-        application = new Maud();
-        DisplaySizeLimits dsl = new DisplaySizeLimits(
-                640, 480, // min width, height
-                2_048, 1_080 // max width, height
-        );
-        DisplaySettings displaySettings
-                = new DisplaySettings(application, applicationName, dsl) {
-            @Override
-            protected void applyOverrides(AppSettings settings) {
-                super.applyOverrides(settings);
-                settings.setSettingsDialogImage(logoAssetPath);
-            }
-        };
-        displaySettingsScreen = new DsScreen(displaySettings);
+        String os = System.getProperty("os.name").toLowerCase();
+        String renderer;
+        if (os.contains("windows")) {
+            renderer = AppSettings.LWJGL_OPENGL2;
+        } else {
+            renderer = AppSettings.LWJGL_OPENGL33;
+        }
+        boolean forceDialog = false;
         /*
          * Process any command-line arguments.
          */
         for (String arg : arguments) {
             switch (arg) {
+                case "-2":
+                case "--openGL2":
+                    renderer = AppSettings.LWJGL_OPENGL2;
+                    break;
+
+                case "-3":
+                case "--openGL33":
+                    renderer = AppSettings.LWJGL_OPENGL33;
+                    break;
+
                 case "-f":
                 case "--forceDialog":
-                    displaySettings.setForceDialog(true);
+                    forceDialog = true;
                     break;
 
                 case "-s":
@@ -215,6 +219,27 @@ public class Maud extends GuiApplication {
                             "Unknown command-line argument {0}",
                             MyString.quote(arg));
             }
+        }
+
+        application = new Maud();
+        DisplaySizeLimits dsl = new DisplaySizeLimits(
+                640, 480, // min width, height
+                2_048, 1_080 // max width, height
+        );
+        final String r = renderer;
+        DisplaySettings displaySettings
+                = new DisplaySettings(application, applicationName, dsl) {
+            @Override
+            protected void applyOverrides(AppSettings settings) {
+                super.applyOverrides(settings);
+                settings.setRenderer(r);
+                settings.setSettingsDialogImage(logoAssetPath);
+            }
+        };
+
+        displaySettingsScreen = new DsScreen(displaySettings);
+        if (forceDialog) {
+            displaySettings.setForceDialog(true);
         }
         /*
          * Mute the chatty loggers found in certain packages.
