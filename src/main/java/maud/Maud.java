@@ -122,7 +122,7 @@ public class Maud extends GuiApplication {
     /**
      * application name for the window's title bar
      */
-    final private static String applicationName = "Maud version 1.0.0-alpha.7";
+    final private static String applicationName = "Maud";
     /**
      * path to logo image for the settings dialog
      */
