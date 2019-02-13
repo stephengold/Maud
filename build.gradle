@@ -44,7 +44,7 @@ repositories {
 
 dependencies {
     // from stephengold's bintray repositories:
-    compile 'jme3utilities:jme3-utilities-nifty:0.9.0'
+    compile 'jme3utilities:jme3-utilities-nifty:0.9.1'
     compile 'jme3utilities:jme3-utilities-ui:0.7.0'
     compile 'jme3utilities:Minie:0.6.5'
     compile 'jme3utilities:SkyControl:0.9.16'
@@ -57,7 +57,7 @@ dependencies {
     compile "org.jmonkeyengine:jme3-plugins:$jmonkeyengineVersion"
     compile 'ch.qos.logback:logback-classic:1.2.3'
     compile 'com.atr:jme-ttf:2.1.2'
-    runtime 'com.github.nifty-gui:nifty-style-black:1.4.3'
+    runtime 'com.github.nifty-gui:nifty-style-black:1.4.2'
 
     // from jitpack repositories:
     compile 'com.github.xbuf.jme3_xbuf:jme3_xbuf_loader:0.9.1'
