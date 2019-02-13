@@ -858,6 +858,7 @@ I therefore acknowledge the following artists and software developers:
     + "Jesterrrrrr"
     + Moff Kalast
     + Adam (aka "safari")
+    + Ryan (aka "yaRnMcDonuts")
 + plus the creators of (and contributors to) the following software:
     + [Adobe Photoshop Elements][elements]
     + the [Blender][] 3-D animation suite
