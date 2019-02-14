@@ -733,6 +733,9 @@ build script) to configure Maud prior to executing its startup script:
   to bypass the startup script.  If this argument is not specified, Maud
   looks for a startup script and attempts to execute it before displaying the
   Editor Screen.
+ + `--verbose` (or `-v`)
+  to generate verbose log output.
+  This output may assist in diagnosing certain issues.
 
 <a name="links"/>
 

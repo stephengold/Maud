@@ -5,19 +5,18 @@ apply plugin: 'java'
 sourceCompatibility = '1.8'
 
 gradle.projectsEvaluated {
-    tasks.withType(JavaCompile) {
-        // compile-time options:
+    tasks.withType(JavaCompile) { // compile-time options:
         options.compilerArgs << '-Xdiags:verbose'
         options.compilerArgs << '-Xlint:unchecked'
         options.deprecation = true
         options.encoding = 'UTF-8'
     }
-    tasks.withType(JavaExec) {
-        // runtime options:
+    tasks.withType(JavaExec) { // runtime options:
         //args '--forceDialog'
-        args '--openGL2'
+        //args '--openGL3'
         //args '--openGL33'
         //args '--skipStartup'
+        //args '--verbose'
         classpath sourceSets.main.runtimeClasspath
         //debug true
         //doFirst { println commandLine }

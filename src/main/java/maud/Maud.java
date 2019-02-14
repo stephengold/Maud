@@ -216,6 +216,11 @@ public class Maud extends GuiApplication {
                     loadStartupScript = false;
                     break;
 
+                case "-v":
+                case "--verbose":
+                    Misc.setLoggingLevels(Level.INFO);
+                    break;
+
                 default:
                     logger.log(Level.WARNING,
                             "Unknown command-line argument {0}",
@@ -297,19 +302,23 @@ public class Maud extends GuiApplication {
      * Initialization performed after the editor-screen tools have initialized.
      */
     void startup3() {
-        logger.info("");
         if (loadStartupScript) {
+            logger.log(Level.INFO, "load {0}",
+                    MyString.quote(startupScriptAssetPath));
             /*
              * Evaluate the startup script.
              */
             UncachedKey key = new UncachedKey(startupScriptAssetPath);
             assetManager.loadAsset(key);
+        } else {
+            logger.info("loadStartupScript=false");
         }
         /*
          * If no target model is loaded, load Jaime as a fallback.
          */
         EditableCgm target = Maud.getModel().getTarget();
         if (!target.isLoaded()) {
+            logger.info("loading Jaime");
             boolean success = target.loadNamed("Jaime");
             assert success;
         }
@@ -505,6 +514,8 @@ public class Maud extends GuiApplication {
      */
     private static void startup0(final boolean forceDialog,
             final String renderer) {
+        logger.log(Level.INFO, "forceDialog={0} renderer={1}",
+                new Object[]{forceDialog, MyString.quote(renderer)});
 
         application = new Maud();
         /*
@@ -526,7 +537,6 @@ public class Maud extends GuiApplication {
             }
         };
         displaySettingsScreen = new DsScreen(displaySettings);
-        //logger.setLevel(Level.INFO);
 
         AppSettings appSettings = displaySettings.initialize();
         if (appSettings != null) {
@@ -563,7 +573,12 @@ public class Maud extends GuiApplication {
         assetManager.registerLoader(TrueTypeLoader.class, "ttf");
         assetManager.registerLoader(XbufLoader.class, "xbuf");
 
-        DebugTools.setStartupMessageEnabled(false);
+        if (!logger.isLoggable(Level.INFO)) {
+            /*
+             * Mute the Libbulletjme startup message.
+             */
+            DebugTools.setStartupMessageEnabled(false);
+        }
         EditorViewPorts.startup1();
         /*
          * Attach screen controllers for the 3 major screens.
