@@ -181,6 +181,15 @@ public class Maud extends GuiApplication {
      * @param arguments array of command-line arguments (not null)
      */
     public static void main(String[] arguments) {
+        /*
+         * Mute the chatty loggers found in certain packages.
+         */
+        Misc.setLoggingLevels(Level.WARNING);
+        Logger.getLogger(ALAudioRenderer.class.getName())
+                .setLevel(Level.SEVERE);
+        Logger.getLogger(AssetConfig.class.getName())
+                .setLevel(Level.SEVERE);
+
         String os = System.getProperty("os.name").toLowerCase();
         String renderer;
         if (os.contains("windows")) {
@@ -524,15 +533,7 @@ public class Maud extends GuiApplication {
         if (forceDialog) {
             displaySettings.setForceDialog(true);
         }
-        /*
-         * Mute the chatty loggers found in certain packages.
-         */
-        Misc.setLoggingLevels(Level.WARNING);
-        Logger.getLogger(ALAudioRenderer.class.getName())
-                .setLevel(Level.SEVERE);
         //logger.setLevel(Level.INFO);
-        Logger.getLogger(AssetConfig.class.getName())
-                .setLevel(Level.SEVERE);
 
         AppSettings appSettings = displaySettings.initialize();
         if (appSettings != null) {
