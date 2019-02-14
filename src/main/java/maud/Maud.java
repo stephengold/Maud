@@ -220,55 +220,7 @@ public class Maud extends GuiApplication {
                             MyString.quote(arg));
             }
         }
-
-        application = new Maud();
-        DisplaySizeLimits dsl = new DisplaySizeLimits(
-                640, 480, // min width, height
-                2_048, 1_080 // max width, height
-        );
-        final String r = renderer;
-        DisplaySettings displaySettings
-                = new DisplaySettings(application, applicationName, dsl) {
-            @Override
-            protected void applyOverrides(AppSettings settings) {
-                super.applyOverrides(settings);
-                settings.setRenderer(r);
-                settings.setSettingsDialogImage(logoAssetPath);
-            }
-        };
-
-        displaySettingsScreen = new DsScreen(displaySettings);
-        if (forceDialog) {
-            displaySettings.setForceDialog(true);
-        }
-        /*
-         * Mute the chatty loggers found in certain packages.
-         */
-        Misc.setLoggingLevels(Level.WARNING);
-        Logger.getLogger(ALAudioRenderer.class.getName())
-                .setLevel(Level.SEVERE);
-        //logger.setLevel(Level.INFO);
-        Logger.getLogger(AssetConfig.class.getName())
-                .setLevel(Level.SEVERE);
-
-        AppSettings appSettings = displaySettings.initialize();
-        if (appSettings != null) {
-            application.setSettings(appSettings);
-            /*
-             * Don't pause on lost focus.  This simplifies debugging by
-             * permitting the application to run while minimized.
-             */
-            //application.setPauseOnLostFocus(false);
-            /*
-             * If the settings dialog should be shown, it was already shown
-             * by DisplaySettings.initialize().
-             */
-            application.setShowSettings(false);
-            application.start();
-            /*
-             * ... and onward to Maud.guiInitializeApplication()!
-             */
-        }
+        startup0(forceDialog, renderer);
     }
 
     /**
@@ -537,6 +489,69 @@ public class Maud extends GuiApplication {
         QuitDialog controller = new QuitDialog();
         gui.showConfirmDialog(message, "", SimpleApplication.INPUT_MAPPING_EXIT,
                 controller);
+    }
+
+    /**
+     * Initialization performed immediately after parsing the command-line
+     * arguments.
+     *
+     * @param forceDialog true&rarr;force startup to show the JME settings
+     * dialog, false&rarr; show the dialog only if persistent settings are
+     * missing
+     * @param renderer the value passed to
+     * {@link com.jme3.system.AppSettings#setRenderer(java.lang.String)}
+     */
+    private static void startup0(final boolean forceDialog,
+            final String renderer) {
+
+        application = new Maud();
+        DisplaySizeLimits dsl = new DisplaySizeLimits(
+                640, 480, // min width, height
+                2_048, 1_080 // max width, height
+        );
+        final String r = renderer;
+        DisplaySettings displaySettings
+                = new DisplaySettings(application, applicationName, dsl) {
+            @Override
+            protected void applyOverrides(AppSettings settings) {
+                super.applyOverrides(settings);
+                settings.setRenderer(r);
+                settings.setSettingsDialogImage(logoAssetPath);
+            }
+        };
+
+        displaySettingsScreen = new DsScreen(displaySettings);
+        if (forceDialog) {
+            displaySettings.setForceDialog(true);
+        }
+        /*
+         * Mute the chatty loggers found in certain packages.
+         */
+        Misc.setLoggingLevels(Level.WARNING);
+        Logger.getLogger(ALAudioRenderer.class.getName())
+                .setLevel(Level.SEVERE);
+        //logger.setLevel(Level.INFO);
+        Logger.getLogger(AssetConfig.class.getName())
+                .setLevel(Level.SEVERE);
+
+        AppSettings appSettings = displaySettings.initialize();
+        if (appSettings != null) {
+            application.setSettings(appSettings);
+            /*
+             * Don't pause on lost focus.  This simplifies debugging by
+             * permitting the application to run while minimized.
+             */
+            //application.setPauseOnLostFocus(false);
+            /*
+             * If the settings dialog should be shown, it was already shown
+             * by DisplaySettings.initialize().
+             */
+            application.setShowSettings(false);
+            application.start();
+            /*
+             * ... and onward to Maud.guiInitializeApplication()!
+             */
+        }
     }
 
     /**
