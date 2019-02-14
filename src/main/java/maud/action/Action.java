@@ -27,6 +27,7 @@
 package maud.action;
 
 import java.util.logging.Logger;
+import jme3utilities.ui.InputMode;
 
 /**
  * Action strings for Maud's "editor" screen. Each string describes a
@@ -301,5 +302,257 @@ public class Action {
      * A private constructor to inhibit instantiation of this class.
      */
     private Action() {
+    }
+    // *************************************************************************
+    // new methods exposed
+
+    /**
+     * Add actions to the specified InputMode without binding them. TODO some of
+     * these may cause crashes
+     *
+     * @param m the InputMode to modify (not null)
+     */
+    public static void addUnbound(InputMode m) {
+        m.addActionName(deleteAnimation);
+        m.addActionName(deleteBuffer);
+        m.addActionName(deleteLight);
+        m.addActionName(deleteLink);
+        m.addActionName(deleteMapping);
+        m.addActionName(deleteMatParam);
+        m.addActionName(deleteOverride);
+        m.addActionName(deleteSgc);
+        m.addActionName(deleteSingleKeyframe);
+        m.addActionName(deleteTrackRotations);
+        m.addActionName(deleteTrackScales);
+        m.addActionName(deleteTrackTranslations);
+        m.addActionName(deleteUserKey);
+
+        m.addActionName(launchProjectile);
+
+        m.addActionName(loadAnimation);
+        m.addActionName(loadCgm);
+        m.addActionName(loadMapAsset);
+        m.addActionName(loadRetargetedPose);
+        m.addActionName(loadSourceAnimation);
+        m.addActionName(loadSourceCgm);
+        m.addActionName(loadTexture);
+
+        m.addActionName(newAnimation);
+        m.addActionName(newAnimationFromExtract);
+        m.addActionName(newAnimationFromPose);
+        m.addActionName(newAnimationFromRetarget);
+        m.addActionName(newAttachmentLink);
+        m.addActionName(newBoneLink);
+        m.addActionName(newCheckpoint);
+        m.addActionName(newLight);
+        m.addActionName(newMapping);
+        m.addActionName(newMatParam);
+        m.addActionName(newOverride);
+        m.addActionName(newSgc);
+        m.addActionName(newSingleKeyframe);
+        m.addActionName(newTexture);
+        m.addActionName(newUserKey);
+
+        m.addActionName(nextAnimation);
+        m.addActionName(nextAnimControl);
+        m.addActionName(nextBone);
+        m.addActionName(nextBuffer);
+        m.addActionName(nextCheckpoint);
+        m.addActionName(nextJoint);
+        m.addActionName(nextLight);
+        m.addActionName(nextLink);
+        m.addActionName(nextMapping);
+        m.addActionName(nextMatParam);
+        m.addActionName(nextOverride);
+        m.addActionName(nextPerformanceMode);
+        m.addActionName(nextPhysics);
+        m.addActionName(nextRotationDisplay);
+        m.addActionName(nextSgc);
+        m.addActionName(nextShape);
+        m.addActionName(nextSourceAnimation);
+        m.addActionName(nextSourceAnimControl);
+        m.addActionName(nextTexture);
+        m.addActionName(nextTrack);
+        m.addActionName(nextUserData);
+        m.addActionName(nextVertex);
+        m.addActionName(nextViewMode);
+
+        m.addActionName(pickAny);
+        m.addActionName(pickBone);
+        m.addActionName(pickGnomon);
+        m.addActionName(pickKeyframe);
+        m.addActionName(pickVertex);
+        m.addActionName(pickViewMenu);
+
+        m.addActionName(previousAnimation);
+        m.addActionName(previousAnimControl);
+        m.addActionName(previousBone);
+        m.addActionName(previousBuffer);
+        m.addActionName(previousCheckpoint);
+        m.addActionName(previousJoint);
+        m.addActionName(previousLight);
+        m.addActionName(previousLink);
+        m.addActionName(previousMapping);
+        m.addActionName(previousMatParam);
+        m.addActionName(previousOverride);
+        m.addActionName(previousPhysics);
+        m.addActionName(previousSgc);
+        m.addActionName(previousShape);
+        m.addActionName(previousSourceAnimation);
+        m.addActionName(previousSourceAnimControl);
+        m.addActionName(previousTexture);
+        m.addActionName(previousTrack);
+        m.addActionName(previousUserData);
+        m.addActionName(previousVertex);
+        m.addActionName(previousViewMode);
+
+        m.addActionName(reduceAnimation);
+        m.addActionName(reduceTrack);
+
+        m.addActionName(renameAnimation);
+        m.addActionName(renameBone);
+        m.addActionName(renameLight);
+        m.addActionName(renameMaterial);
+        m.addActionName(renameOverride);
+        m.addActionName(renameSpatial);
+        m.addActionName(renameUserKey);
+
+        m.addActionName(resetBoneAngleToAnimation);
+        m.addActionName(resetBoneAngleToBind);
+        m.addActionName(resetBoneOffsetToAnimation);
+        m.addActionName(resetBoneOffsetToBind);
+        m.addActionName(resetBoneScaleToAnimation);
+        m.addActionName(resetBoneScaleToBind);
+        m.addActionName(resetBoneSelection);
+        m.addActionName(resetLightColor);
+        m.addActionName(resetLightDir);
+        m.addActionName(resetLightPos);
+        m.addActionName(resetSpatialRotation);
+        m.addActionName(resetSpatialScale);
+        m.addActionName(resetSpatialTranslation);
+        m.addActionName(resetTwist);
+        m.addActionName(resetVertexSelection);
+
+        m.addActionName(selectAnimationEditMenu);
+        m.addActionName(selectAnimControl);
+        m.addActionName(selectAxesDragEffect);
+        m.addActionName(selectAxesSubject);
+        m.addActionName(selectBackground);
+        m.addActionName(selectBatchHint);
+        m.addActionName(selectBone);
+        m.addActionName(selectBoneChild);
+        m.addActionName(selectBoneParent);
+        m.addActionName(selectBoneTrack);
+        m.addActionName(selectBuffer);
+        m.addActionName(selectBufferUsage);
+        m.addActionName(selectCullHint);
+        m.addActionName(selectEdgeFilter);
+        m.addActionName(selectFaceCull);
+        m.addActionName(selectJoint);
+        m.addActionName(selectKeyframeFirst);
+        m.addActionName(selectKeyframeLast);
+        m.addActionName(selectKeyframeNearest);
+        m.addActionName(selectKeyframeNext);
+        m.addActionName(selectKeyframePrevious);
+        m.addActionName(selectLight);
+        m.addActionName(selectLightOwner);
+        m.addActionName(selectLink);
+        m.addActionName(selectLinkChild);
+        m.addActionName(selectLinkedBone);
+        m.addActionName(selectLinkedJoint);
+        m.addActionName(selectLinkedObject);
+        m.addActionName(selectLinkParent);
+        m.addActionName(selectLinkToolAxis);
+        m.addActionName(selectLoadBvhAxisOrder);
+        m.addActionName(selectMapSourceBone);
+        m.addActionName(selectMapTargetBone);
+        m.addActionName(selectMaterialEditMenu);
+        m.addActionName(selectMatParam);
+        m.addActionName(selectMeshMode);
+        m.addActionName(selectOrbitCenter);
+        m.addActionName(selectOverride);
+        m.addActionName(selectPhysics);
+        m.addActionName(selectPhysicsRbp);
+        m.addActionName(selectPhysicsShape);
+        m.addActionName(selectPlatformType);
+        m.addActionName(selectQueueBucket);
+        m.addActionName(selectSceneBones);
+        m.addActionName(selectScoreBonesNone);
+        m.addActionName(selectScoreBonesWhen);
+        m.addActionName(selectSgc);
+        m.addActionName(selectSgcObject);
+        m.addActionName(selectSgcSpatial);
+        m.addActionName(selectShadowMode);
+        m.addActionName(selectShape);
+        m.addActionName(selectShapeChild);
+        m.addActionName(selectShapeParm);
+        m.addActionName(selectShapeUser);
+        m.addActionName(selectSkeletonColor);
+        m.addActionName(selectSourceAnimControl);
+        m.addActionName(selectSourceBone);
+        m.addActionName(selectSpatialChild);
+        m.addActionName(selectSpatialParent);
+        m.addActionName(selectTextureMag);
+        m.addActionName(selectTextureMin);
+        m.addActionName(selectTextureType);
+        m.addActionName(selectTextureUser);
+        m.addActionName(selectTrack);
+        m.addActionName(selectTrackTarget);
+        m.addActionName(selectTriangleMode);
+        m.addActionName(selectTweenRotations);
+        m.addActionName(selectTweenScales);
+        m.addActionName(selectTweenTranslations);
+        m.addActionName(selectUserKey);
+        m.addActionName(selectVertex);
+
+        m.addActionName(setAnisotropy);
+        m.addActionName(setBufferInstanceSpan);
+        m.addActionName(setBufferLimit);
+        m.addActionName(setBufferStride);
+        m.addActionName(setLightDirCardinal);
+        m.addActionName(setLightDirReverse);
+        m.addActionName(setLinkMass);
+        m.addActionName(setMatParamValue);
+        m.addActionName(setMeshWeights);
+        m.addActionName(setPhysicsRbpValue);
+        m.addActionName(setOverrideValue);
+        m.addActionName(setShapeParmValue);
+        m.addActionName(setSpatialAngleCardinal);
+        m.addActionName(setSpatialAngleSnapX);
+        m.addActionName(setSpatialAngleSnapY);
+        m.addActionName(setSpatialAngleSnapZ);
+        m.addActionName(setTextureClone);
+        m.addActionName(setTextureNull);
+        m.addActionName(setTimeLimitLower);
+        m.addActionName(setTimeLimitUpper);
+        m.addActionName(setTrackRotationAll);
+        m.addActionName(setTrackScaleAll);
+        m.addActionName(setTrackTranslationAll);
+        m.addActionName(setTwistCardinal);
+        m.addActionName(setTwistSnapX);
+        m.addActionName(setTwistSnapY);
+        m.addActionName(setTwistSnapZ);
+        m.addActionName(setUserData);
+
+        m.addActionName(toggleBoundType);
+        m.addActionName(toggleCursorColorIndex);
+        m.addActionName(toggleDragSide);
+        m.addActionName(toggleFreezeTarget);
+        m.addActionName(toggleIndexBase);
+        m.addActionName(toggleLoadOrientation);
+        m.addActionName(toggleMenuBar);
+        m.addActionName(toggleMovement);
+        m.addActionName(togglePause);
+        m.addActionName(togglePauseSource);
+        m.addActionName(togglePauseTarget);
+        m.addActionName(togglePhysicsDebug);
+        m.addActionName(toggleProjection);
+
+        m.addActionName(viewHorizontal);
+
+        m.addActionName(warpCursor);
+        m.addActionName(warpLastCheckpoint);
+
+        m.addActionName(wrapTrack);
     }
 }

@@ -126,6 +126,7 @@ public class EditorInputMode extends InputMode {
         setCursor(cursor);
 
         super.initialize(stateManager, application);
+        Action.addUnbound(this);
     }
 
     /**
