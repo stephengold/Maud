@@ -190,25 +190,18 @@ public class Maud extends GuiApplication {
         Logger.getLogger(AssetConfig.class.getName())
                 .setLevel(Level.SEVERE);
 
-        String os = System.getProperty("os.name").toLowerCase();
-        String renderer;
-        if (os.contains("windows")) {
-            renderer = AppSettings.LWJGL_OPENGL2;
-        } else {
-            renderer = AppSettings.LWJGL_OPENGL33;
-        }
+        String renderer = AppSettings.LWJGL_OPENGL2;
         boolean forceDialog = false;
         /*
          * Process any command-line arguments.
          */
         for (String arg : arguments) {
             switch (arg) {
-                case "-2":
-                case "--openGL2":
-                    renderer = AppSettings.LWJGL_OPENGL2;
+                case "-3":
+                case "--openGL3":
+                    renderer = AppSettings.LWJGL_OPENGL3;
                     break;
 
-                case "-3":
                 case "--openGL33":
                     renderer = AppSettings.LWJGL_OPENGL33;
                     break;
@@ -514,25 +507,25 @@ public class Maud extends GuiApplication {
             final String renderer) {
 
         application = new Maud();
+        /*
+         * Instantiate the display-settings screen.
+         */
         DisplaySizeLimits dsl = new DisplaySizeLimits(
                 640, 480, // min width, height
                 2_048, 1_080 // max width, height
         );
-        final String r = renderer;
         DisplaySettings displaySettings
                 = new DisplaySettings(application, applicationName, dsl) {
             @Override
             protected void applyOverrides(AppSettings settings) {
                 super.applyOverrides(settings);
-                settings.setRenderer(r);
+
+                setForceDialog(forceDialog);
+                settings.setRenderer(renderer);
                 settings.setSettingsDialogImage(logoAssetPath);
             }
         };
-
         displaySettingsScreen = new DsScreen(displaySettings);
-        if (forceDialog) {
-            displaySettings.setForceDialog(true);
-        }
         //logger.setLevel(Level.INFO);
 
         AppSettings appSettings = displaySettings.initialize();

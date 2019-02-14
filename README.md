@@ -725,8 +725,12 @@ build script) to configure Maud prior to executing its startup script:
   in case they become corrupted.  If this argument is not
   specified, Maud shows the dialog only if it believes
   (based on JME3 AppSettings) that this is the first time it has run.
+ + `--openGL3` (or `-3`)
+  to force LWJGL to use the core OpenGL3.2 renderer.
+  Forcing this renderer enables Maud to run on systems with
+  non-proprietrary GPU drivers.
  + `--skipStartup` (or `-s`)
-  to bypass Maud's startup script.  If this argument is not specified, Maud
+  to bypass the startup script.  If this argument is not specified, Maud
   looks for a startup script and attempts to execute it before displaying the
   Editor Screen.
 
