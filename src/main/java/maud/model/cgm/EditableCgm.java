@@ -588,21 +588,6 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Delete the selected user data from the selected spatial. The invoker is
-     * responsible for deselecting the user data.
-     */
-    void deleteUserData() {
-        Spatial selectedSpatial = getSpatial().find();
-        String key = getUserData().getKey();
-
-        History.autoAdd();
-        selectedSpatial.setUserData(key, null);
-        String description
-                = String.format("delete user data %s", MyString.quote(key));
-        editState.setEdited(description);
-    }
-
-    /**
      * Access the edit state for this C-G model.
      *
      * @return the pre-existing instance (not null)

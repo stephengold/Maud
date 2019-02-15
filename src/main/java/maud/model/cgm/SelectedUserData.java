@@ -73,7 +73,14 @@ public class SelectedUserData implements Cloneable {
      */
     public void delete() {
         if (isSelected()) {
-            editableCgm.deleteUserData();
+            Spatial selectedSpatial = cgm.getSpatial().find();
+
+            History.autoAdd();
+            selectedSpatial.setUserData(selectedKey, null);
+            String description
+                    = String.format("delete user data %s",
+                            MyString.quote(selectedKey));
+            editableCgm.getEditState().setEdited(description);
             selectedKey = null;
         }
     }
