@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -32,8 +32,10 @@ import com.jme3.shader.VarType;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
+import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
+import maud.model.History;
 
 /**
  * The MVC model of the selected material-parameter override in a loaded C-G
@@ -211,6 +213,42 @@ public class SelectedOverride implements Cloneable {
      */
     public String parameterName() {
         return selectedName;
+    }
+
+    /**
+     * Rename the selected material-parameter override.
+     *
+     * @param newName new parameter name (not null, not empty)
+     */
+    public void rename(String newName) {
+        Validate.nonEmpty(newName, "new name");
+
+        Spatial spatial = cgm.getSpatial().find();
+        MatParamOverride oldMpo = find();
+        MatParamRef oldRef = new MatParamRef(oldMpo, spatial);
+
+        String oldName = oldMpo.getName();
+        Object value = oldMpo.getValue();
+        VarType varType = oldMpo.getVarType();
+
+        MatParamOverride newMpo = new MatParamOverride(varType, newName, value);
+        boolean enabled = oldMpo.isEnabled();
+        newMpo.setEnabled(enabled);
+        MatParamRef newRef = new MatParamRef(newMpo, spatial);
+
+        History.autoAdd();
+        spatial.addMatParamOverride(newMpo);
+        spatial.removeMatParamOverride(oldMpo);
+        cgm.getSceneView().renameOverride(newName);
+        select(newName);
+        cgm.getTexture().replaceRef(oldRef, newRef);
+
+        String description = String.format(
+                "rename material-parameter override %s to %s",
+                MyString.quote(oldName), MyString.quote(newName));
+        editableCgm.getEditState().setEdited(description);
+
+        select(newName);
     }
 
     /**

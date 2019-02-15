@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018, Stephen Gold
+ Copyright (c) 2018-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -138,7 +138,7 @@ class RenameAction {
         } else if (actionString.startsWith(ActionPrefix.renameOverride)) {
             newName = MyString.remainder(actionString,
                     ActionPrefix.renameOverride);
-            target.renameOverride(newName);
+            target.getOverride().rename(newName);
 
         } else if (actionString.startsWith(ActionPrefix.renameSpatial)) {
             newName = MyString.remainder(actionString,

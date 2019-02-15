@@ -750,43 +750,6 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Rename the selected material-parameter override.
-     *
-     * @param newName new parameter name (not null, not empty)
-     */
-    public void renameOverride(String newName) {
-        Validate.nonEmpty(newName, "new name");
-
-        Spatial spatial = getSpatial().find();
-        SelectedOverride override = getOverride();
-        MatParamOverride oldMpo = override.find();
-        MatParamRef oldRef = new MatParamRef(oldMpo, spatial);
-
-        String oldName = oldMpo.getName();
-        Object value = oldMpo.getValue();
-        VarType varType = oldMpo.getVarType();
-
-        MatParamOverride newMpo = new MatParamOverride(varType, newName, value);
-        boolean enabled = oldMpo.isEnabled();
-        newMpo.setEnabled(enabled);
-        MatParamRef newRef = new MatParamRef(newMpo, spatial);
-
-        History.autoAdd();
-        spatial.addMatParamOverride(newMpo);
-        spatial.removeMatParamOverride(oldMpo);
-        getSceneView().renameOverride(newName);
-        override.select(newName);
-        getTexture().replaceRef(oldRef, newRef);
-
-        String description = String.format(
-                "rename material-parameter override %s to %s",
-                MyString.quote(oldName), MyString.quote(newName));
-        editState.setEdited(description);
-
-        override.select(newName);
-    }
-
-    /**
      * Rename the selected spatial.
      *
      * @param newName new name (not null)
