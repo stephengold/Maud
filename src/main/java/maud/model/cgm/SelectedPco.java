@@ -333,14 +333,12 @@ public class SelectedPco implements JmeCloneable {
     }
 
     /**
-     * Alter the specified parameter of the selected rigid body. TODO rename
-     * setParameter()
+     * Alter the specified parameter of the selected rigid body.
      *
      * @param parameter which parameter to alter (not null)
      * @param newValue new parameter value
      */
-    public void setRigidBodyParameter(RigidBodyParameter parameter,
-            float newValue) {
+    public void setParameter(RigidBodyParameter parameter, float newValue) {
         Validate.nonNull(parameter, "parameter");
 
         if (selectedPco instanceof PhysicsRigidBody) {

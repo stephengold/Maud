@@ -218,7 +218,7 @@ class SetOZAction {
             if (args.length == 2) {
                 RigidBodyParameter parm = RigidBodyParameter.valueOf(args[0]);
                 float value = Float.parseFloat(args[1]);
-                target.getPco().setRigidBodyParameter(parm, value);
+                target.getPco().setParameter(parm, value);
             } else {
                 handled = false;
             }
