@@ -202,11 +202,11 @@ public class SelectedShape implements JmeCloneable {
     }
 
     /**
-     * Determine the main axis of the shape. TODO rename mainAxisIndex()
+     * Determine the main axis of the shape.
      *
      * @return 0&rarr;X, 1&rarr;Y, 2&rarr;Z, -1&rarr;doesn't have an axis
      */
-    public int getAxisIndex() {
+    public int mainAxisIndex() {
         int result = -1;
         if (selectedShape != null) {
             result = MyShape.mainAxisIndex(selectedShape);
@@ -216,11 +216,11 @@ public class SelectedShape implements JmeCloneable {
     }
 
     /**
-     * Read the type of the selected shape. TODO rename type()
+     * Read the type of the selected shape. TODO re-order methods
      *
      * @return abbreviated class name, or "" if none selected
      */
-    public String getType() {
+    public String type() {
         String type = "";
         if (selectedShape != null) {
             type = MyShape.describeType(selectedShape);
@@ -231,12 +231,12 @@ public class SelectedShape implements JmeCloneable {
     }
 
     /**
-     * Read the specified parameter of the shape. TODO rename value()
+     * Read the specified parameter of the shape. TODO re-order methods
      *
      * @param parameter which parameter to read (not null)
      * @return the parameter value (&ge;0) or NaN if not applicable
      */
-    public float getValue(ShapeParameter parameter) {
+    public float value(ShapeParameter parameter) {
         Validate.nonNull(parameter, "parameter");
 
         float result = Float.NaN;
@@ -478,7 +478,7 @@ public class SelectedShape implements JmeCloneable {
         Validate.nonNull(parameter, "parameter");
 
         assert canSet(parameter);
-        float oldValue = getValue(parameter);
+        float oldValue = value(parameter);
         if (newValue != oldValue) {
             if (parameter.equals(ShapeParameter.Margin)) {
                 if (newValue > 0f) {

@@ -94,7 +94,7 @@ class ShapeTool extends Tool {
         Cgm target = Maud.getModel().getTarget();
         SelectedShape shape = target.getShape();
         if (shape.isSelected()) {
-            String type = shape.getType();
+            String type = shape.type();
             if (type.equals("Compound")) {
                 int numChildren = shape.countChildren();
                 if (numChildren == 0) {
@@ -181,7 +181,7 @@ class ShapeTool extends Tool {
         setButtonText("shapeParm", name);
 
         SelectedShape shape = model.getTarget().getShape();
-        float value = shape.getValue(parameter);
+        float value = shape.value(parameter);
         String valueString = "";
         if (!Float.isNaN(value)) {
             valueString = Float.toString(value);
@@ -200,8 +200,8 @@ class ShapeTool extends Tool {
         Cgm target = Maud.getModel().getTarget();
         SelectedShape shape = target.getShape();
         if (shape.isSelected()) {
-            type = shape.getType();
-            int axisIndex = shape.getAxisIndex();
+            type = shape.type();
+            int axisIndex = shape.mainAxisIndex();
             if (axisIndex != -1) {
                 axisName = DescribeUtil.axisName(axisIndex);
             }

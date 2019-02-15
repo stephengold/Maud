@@ -1078,7 +1078,7 @@ public class EditorDialogs {
                     = new FloatDialog("Set", minValue, maxValue, false);
 
             String prompt = String.format("Enter new %s:", parameter);
-            float defaultValue = shape.getValue(parameter);
+            float defaultValue = shape.value(parameter);
             String defaultText = "";
             if (!Float.isNaN(defaultValue)) {
                 defaultText = Float.toString(defaultValue);
