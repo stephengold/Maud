@@ -148,7 +148,7 @@ class SelectOSAction {
 
             case Action.selectSgcObject:
                 SelectedSgc sgc = target.getSgc();
-                String objectName = sgc.physicsObjectName();
+                String objectName = sgc.pcoName();
                 if (!objectName.isEmpty() && sgc.isEnabled()) {
                     target.getPco().select(objectName);
                     Maud.gui.tools.select("object");

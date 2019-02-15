@@ -120,7 +120,7 @@ class SgcTool extends Tool {
         if (sgc.isSelected()) {
             boolean isEnabled = sgc.isEnabled();
             setChecked("sgcEnable", isEnabled);
-            objectStatus = sgc.physicsObjectName();
+            objectStatus = sgc.pcoName();
             if (objectStatus.isEmpty()) {
                 disableCheckBox("sgcLocalPhysics");
             } else {

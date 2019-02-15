@@ -274,11 +274,11 @@ public class SelectedSgc implements JmeCloneable {
 
     /**
      * Construct the name of the collision object associated with the S-G
-     * control. TODO rename pcoName()
+     * control. TODO re-order methods
      *
      * @return object name, or "" if unknown
      */
-    public String physicsObjectName() {
+    public String pcoName() {
         String result = "";
         if (selected instanceof PhysicsCollisionObject) {
             PhysicsCollisionObject pco = (PhysicsCollisionObject) selected;
