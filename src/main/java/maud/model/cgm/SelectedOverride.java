@@ -92,8 +92,7 @@ public class SelectedOverride implements Cloneable {
             spatial.removeMatParamOverride(mpo);
             cgm.getSceneView().deleteOverride();
 
-            String description = String.format(
-                    "delete material-parameter override %s",
+            String description = String.format("delete override %s",
                     MyString.quote(parameterName));
             editableCgm.getEditState().setEdited(description);
 
@@ -229,7 +228,7 @@ public class SelectedOverride implements Cloneable {
     }
 
     /**
-     * Rename the selected material-parameter override.
+     * Rename the selected override.
      *
      * @param newName new parameter name (not null, not empty)
      */
@@ -256,8 +255,7 @@ public class SelectedOverride implements Cloneable {
         select(newName);
         cgm.getTexture().replaceRef(oldRef, newRef);
 
-        String description = String.format(
-                "rename material-parameter override %s to %s",
+        String description = String.format("rename override %s to %s",
                 MyString.quote(oldName), MyString.quote(newName));
         editableCgm.getEditState().setEdited(description);
 
@@ -326,7 +324,7 @@ public class SelectedOverride implements Cloneable {
     }
 
     /**
-     * Alter whether the selected material-parameter override is enabled.
+     * Alter whether the selected override is enabled.
      *
      * @param newSetting true&rarr;enable, false&rarr;disable
      */
@@ -341,8 +339,7 @@ public class SelectedOverride implements Cloneable {
 
                 String verb = newSetting ? "enable" : "disable";
                 String parameterName = mpo.getName();
-                String description = String.format(
-                        "%s material-parameter override %s",
+                String description = String.format("%s override %s",
                         verb, MyString.quote(parameterName));
                 editableCgm.getEditState().setEdited(description);
             }
@@ -350,7 +347,7 @@ public class SelectedOverride implements Cloneable {
     }
 
     /**
-     * Alter the value of the selected material-parameter override.
+     * Alter the value of the selected override.
      *
      * @param valueString string representation of the new value (not null)
      */
@@ -374,8 +371,7 @@ public class SelectedOverride implements Cloneable {
         cgm.getSceneView().setOverrideValue(treePosition, parameterName,
                 varType, viewValue);
 
-        String description = String.format(
-                "alter value of material-parameter override %s",
+        String description = String.format("alter value of override %s",
                 MyString.quote(parameterName));
         editableCgm.getEditState().setEdited(description);
     }
