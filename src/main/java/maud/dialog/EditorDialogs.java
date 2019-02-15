@@ -1200,7 +1200,7 @@ public class EditorDialogs {
         if (value instanceof Boolean) {
             boolean oldValue = (boolean) value;
             String newText = Boolean.toString(!oldValue); // toggle value
-            target.setUserData(newText);
+            target.getUserData().setValue(newText);
 
         } else if (value instanceof Float) {
             float oldValue = (float) value;

@@ -325,7 +325,7 @@ class SetOZAction {
 
         } else if (actionString.startsWith(ActionPrefix.setUserData)) {
             arg = MyString.remainder(actionString, ActionPrefix.setUserData);
-            target.setUserData(arg);
+            target.getUserData().setValue(arg);
 
         } else if (actionString.startsWith(ActionPrefix.setVertexPointSize)) {
             arg = MyString.remainder(actionString,

@@ -26,12 +26,16 @@
  */
 package maud.model.cgm;
 
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
+import com.jme3.math.Vector4f;
 import com.jme3.scene.Spatial;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
+import jme3utilities.nifty.dialog.VectorDialog;
 import maud.model.History;
 
 /**
@@ -234,6 +238,53 @@ public class SelectedUserData implements Cloneable {
         } else {
             editableCgm = null;
         }
+    }
+
+    /**
+     * Alter the value of the selected datum.
+     *
+     * @param valueString string representation of the new value (not null)
+     */
+    public void setValue(String valueString) {
+        Validate.nonNull(valueString, "value string");
+
+        Object value = getValue();
+        Spatial spatial = cgm.getSpatial().find();
+        String key = key();
+
+        History.autoAdd();
+        if (value instanceof Boolean) {
+            boolean newValue = Boolean.parseBoolean(valueString);
+            spatial.setUserData(key, newValue);
+
+        } else if (value instanceof Float) {
+            float newValue = Float.parseFloat(valueString);
+            spatial.setUserData(key, newValue);
+
+        } else if (value instanceof Integer) {
+            int newValue = Integer.parseInt(valueString);
+            spatial.setUserData(key, newValue);
+
+        } else if (value instanceof Long) {
+            long newValue = Long.parseLong(valueString);
+            spatial.setUserData(key, newValue);
+
+        } else if (value instanceof String) {
+            spatial.setUserData(key, valueString);
+
+        } else if (value instanceof Vector2f
+                || value instanceof Vector3f
+                || value instanceof Vector4f) {
+            Object newValue = VectorDialog.parseVector(valueString);
+            spatial.setUserData(key, newValue);
+
+        } else {        // TODO bone value
+            throw new IllegalStateException();
+        }
+
+        String description = String.format("alter value of user datum %s",
+                MyString.quote(key));
+        editableCgm.getEditState().setEdited(description);
     }
     // *************************************************************************
     // Object methods

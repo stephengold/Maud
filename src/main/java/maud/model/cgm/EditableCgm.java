@@ -50,16 +50,13 @@ import com.jme3.material.MaterialDef;
 import com.jme3.material.RenderState;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
-import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import com.jme3.math.Vector4f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.UserData;
-import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.control.Control;
 import com.jme3.shader.VarType;
 import com.jme3.texture.Texture;
@@ -81,7 +78,6 @@ import jme3utilities.MyString;
 import jme3utilities.NameGenerator;
 import jme3utilities.Validate;
 import jme3utilities.minie.MyControlP;
-import jme3utilities.nifty.dialog.VectorDialog;
 import jme3utilities.wes.TrackEdit;
 import maud.Maud;
 import maud.MaudUtil;
@@ -1307,54 +1303,6 @@ public class EditableCgm extends LoadedCgm {
                 editState.setEdited(description);
             }
         }
-    }
-
-    /**
-     * Alter the selected user datum.
-     *
-     * @param valueString string representation of the new value (not null)
-     */
-    public void setUserData(String valueString) {
-        Validate.nonNull(valueString, "value string");
-
-        SelectedUserData datum = getUserData();
-        Object value = datum.getValue();
-        Spatial spatial = getSpatial().find();
-        String key = datum.key();
-
-        History.autoAdd();
-        if (value instanceof Boolean) {
-            boolean newValue = Boolean.parseBoolean(valueString);
-            spatial.setUserData(key, newValue);
-
-        } else if (value instanceof Float) {
-            float newValue = Float.parseFloat(valueString);
-            spatial.setUserData(key, newValue);
-
-        } else if (value instanceof Integer) {
-            int newValue = Integer.parseInt(valueString);
-            spatial.setUserData(key, newValue);
-
-        } else if (value instanceof Long) {
-            long newValue = Long.parseLong(valueString);
-            spatial.setUserData(key, newValue);
-
-        } else if (value instanceof String) {
-            spatial.setUserData(key, valueString);
-
-        } else if (value instanceof Vector2f
-                || value instanceof Vector3f
-                || value instanceof Vector4f) {
-            Object newValue = VectorDialog.parseVector(valueString);
-            spatial.setUserData(key, newValue);
-
-        } else {        // TODO bone value
-            throw new IllegalStateException();
-        }
-
-        String description = String.format("alter value of user datum %s",
-                MyString.quote(key));
-        editState.setEdited(description);
     }
 
     /**
