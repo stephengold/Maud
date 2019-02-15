@@ -106,24 +106,6 @@ public class SelectedJoint implements JmeCloneable {
     }
 
     /**
-     * Read the type of the selected joint. TODO re-order methods
-     *
-     * @return abbreviated class name, or "" if none selected
-     */
-    public String type() {
-        String type = "";
-        if (selectedJoint != null) {
-            type = selectedJoint.getClass().getSimpleName();
-            if (type.endsWith("Joint")) {
-                type = MyString.removeSuffix(type, "Joint");
-            }
-        }
-
-        assert type != null;
-        return type;
-    }
-
-    /**
      * Find the index of the selected joint among all joints in the C-G model in
      * ID order.
      *
@@ -239,6 +221,24 @@ public class SelectedJoint implements JmeCloneable {
         assert newCgm.getJoint() == this;
 
         cgm = newCgm;
+    }
+
+    /**
+     * Read the type of the selected joint.
+     *
+     * @return abbreviated class name, or "" if none selected
+     */
+    public String type() {
+        String type = "";
+        if (selectedJoint != null) {
+            type = selectedJoint.getClass().getSimpleName();
+            if (type.endsWith("Joint")) {
+                type = MyString.removeSuffix(type, "Joint");
+            }
+        }
+
+        assert type != null;
+        return type;
     }
     // *************************************************************************
     // JmeCloneable methods

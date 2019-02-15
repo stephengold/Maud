@@ -351,20 +351,20 @@ public class SelectedLink implements JmeCloneable {
     }
 
     /**
-     * Select the collision object of the selected link. TODO re-order methods
-     */
-    public void selectPco() {
-        String name = bodyName();
-        cgm.getPco().select(name);
-    }
-
-    /**
      * Select the parent link in the hierarchy.
      */
     public void selectParent() {
         PhysicsLink parent = link.getParent();
         String parentName = parent.name();
         select(parentName);
+    }
+
+    /**
+     * Select the collision object of the selected link.
+     */
+    public void selectPco() {
+        String name = bodyName();
+        cgm.getPco().select(name);
     }
 
     /**

@@ -239,6 +239,22 @@ public class SelectedSgc implements JmeCloneable {
     }
 
     /**
+     * Construct the name of the collision object associated with the S-G
+     * control.
+     *
+     * @return object name, or "" if unknown
+     */
+    public String pcoName() {
+        String result = "";
+        if (selected instanceof PhysicsCollisionObject) {
+            PhysicsCollisionObject pco = (PhysicsCollisionObject) selected;
+            result = MyObject.objectName(pco);
+        }
+
+        return result;
+    }
+
+    /**
      * Read the name of the physics mode of the S-G control.
      *
      * @return mode name, or "" if unknown
@@ -267,22 +283,6 @@ public class SelectedSgc implements JmeCloneable {
             } else {
                 result = "Dynamic";
             }
-        }
-
-        return result;
-    }
-
-    /**
-     * Construct the name of the collision object associated with the S-G
-     * control. TODO re-order methods
-     *
-     * @return object name, or "" if unknown
-     */
-    public String pcoName() {
-        String result = "";
-        if (selected instanceof PhysicsCollisionObject) {
-            PhysicsCollisionObject pco = (PhysicsCollisionObject) selected;
-            result = MyObject.objectName(pco);
         }
 
         return result;
