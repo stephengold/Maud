@@ -44,7 +44,7 @@ import maud.model.cgm.Cgm;
 import maud.model.cgm.CgmPhysics;
 import maud.model.cgm.SelectedBone;
 import maud.model.cgm.SelectedLink;
-import maud.model.cgm.SelectedObject;
+import maud.model.cgm.SelectedPco;
 import maud.model.cgm.SelectedRagdoll;
 import maud.model.cgm.SelectedShape;
 import maud.model.cgm.SelectedSpatial;
@@ -52,8 +52,8 @@ import maud.model.option.RigidBodyParameter;
 import maud.model.option.ShapeParameter;
 
 /**
- * Menus in Maud's editor screen that relate to physics shapes, objects, links,
- * and joints.
+ * Menus in Maud's editor screen that relate to physics shapes, collision
+ * objects, links, and joints.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -111,7 +111,7 @@ public class PhysicsMenus {
             builder.addSubmenu("Select object");
         }
 
-        if (target.getObject().hasMass()) {
+        if (target.getPco().hasMass()) {
             builder.addDialog("Mass");
         }
 
@@ -482,7 +482,7 @@ public class PhysicsMenus {
             long userId = ids[0];
             CgmPhysics physics = target.getPhysics();
             if (physics.hasPco(userId)) {
-                SelectedObject object = target.getObject();
+                SelectedPco object = target.getPco();
                 object.select(userId);
                 Maud.gui.tools.select("object");
             } else {

@@ -139,7 +139,7 @@ class SelectFNAction {
                 break;
 
             case Action.selectLinkedObject:
-                target.getLink().selectObject();
+                target.getLink().selectPco();
                 Maud.gui.tools.select("object");
                 break;
 
@@ -218,7 +218,7 @@ class SelectFNAction {
                     ActionPrefix.selectJointBody);
             JointEnd end = JointEnd.valueOf(arg);
             String bodyName = target.getJoint().endName(end);
-            target.getObject().select(bodyName);
+            target.getPco().select(bodyName);
             Maud.gui.tools.select("object");
 
         } else if (actionString.startsWith(ActionPrefix.selectKeyframe)) {

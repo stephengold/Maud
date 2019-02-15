@@ -351,11 +351,11 @@ public class SelectedLink implements JmeCloneable {
     }
 
     /**
-     * Select the collision object of the selected link.
+     * Select the collision object of the selected link. TODO re-order methods
      */
-    public void selectObject() {
+    public void selectPco() {
         String name = bodyName();
-        cgm.getObject().select(name);
+        cgm.getPco().select(name);
     }
 
     /**

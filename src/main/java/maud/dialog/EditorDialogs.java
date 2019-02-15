@@ -76,8 +76,8 @@ import maud.model.cgm.SelectedBuffer;
 import maud.model.cgm.SelectedFrame;
 import maud.model.cgm.SelectedLight;
 import maud.model.cgm.SelectedLink;
-import maud.model.cgm.SelectedObject;
 import maud.model.cgm.SelectedOverride;
+import maud.model.cgm.SelectedPco;
 import maud.model.cgm.SelectedShape;
 import maud.model.cgm.SelectedSpatial;
 import maud.model.cgm.SelectedTrack;
@@ -1044,7 +1044,7 @@ public class EditorDialogs {
     public static void setPhysicsRbpValue(RigidBodyParameter parameter) {
         Validate.nonNull(parameter, "parameter");
 
-        SelectedObject object = Maud.getModel().getTarget().getObject();
+        SelectedPco object = Maud.getModel().getTarget().getPco();
         String parameterName = parameter.toString();
         if (object.canSet(parameterName)) {
             float minValue = parameter.minValue();

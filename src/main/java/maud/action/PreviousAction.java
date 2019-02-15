@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -113,8 +113,8 @@ class PreviousAction {
                 target.getOverride().selectPreviousName();
                 break;
 
-            case Action.previousPhysics:
-                target.getObject().selectPrevious();
+            case Action.previousPhysics: // TODO rename action
+                target.getPco().selectPrevious();
                 break;
 
             case Action.previousSgc:

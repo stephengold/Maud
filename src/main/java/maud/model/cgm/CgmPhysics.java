@@ -712,7 +712,7 @@ public class CgmPhysics implements JmeCloneable {
         PhysicsCollisionObject oldPco = pcoModelToView.remove(modelPco);
         assert oldPco != null;
 
-        SelectedObject selectedObject = cgm.getObject();
+        SelectedPco selectedObject = cgm.getPco();
         if (selectedObject.get() == modelPco) {
             selectedObject.selectNone();
         }

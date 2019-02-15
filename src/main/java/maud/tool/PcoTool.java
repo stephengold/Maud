@@ -33,7 +33,7 @@ import maud.DescribeUtil;
 import maud.Maud;
 import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
-import maud.model.cgm.SelectedObject;
+import maud.model.cgm.SelectedPco;
 import maud.model.option.RigidBodyParameter;
 
 /**
@@ -41,7 +41,7 @@ import maud.model.option.RigidBodyParameter;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class ObjectTool extends Tool {
+class PcoTool extends Tool {
     // *************************************************************************
     // constants and loggers
 
@@ -49,7 +49,7 @@ class ObjectTool extends Tool {
      * message logger for this class
      */
     final private static Logger logger
-            = Logger.getLogger(ObjectTool.class.getName());
+            = Logger.getLogger(PcoTool.class.getName());
     // *************************************************************************
     // constructors
 
@@ -59,8 +59,8 @@ class ObjectTool extends Tool {
      * @param screenController the controller of the screen that will contain
      * the tool (not null)
      */
-    ObjectTool(GuiScreenController screenController) {
-        super(screenController, "object");
+    PcoTool(GuiScreenController screenController) {
+        super(screenController, "object"); // TODO rename tool
     }
     // *************************************************************************
     // Tool methods
@@ -92,7 +92,7 @@ class ObjectTool extends Tool {
             selectButton = "Select";
         }
 
-        SelectedObject object = target.getObject();
+        SelectedPco object = target.getPco();
         if (object.isSelected()) {
             int selectedIndex = object.index();
             indexStatus = DescribeUtil.index(selectedIndex, numObjects);
@@ -122,7 +122,7 @@ class ObjectTool extends Tool {
      */
     private void updateName() {
         String name;
-        SelectedObject object = Maud.getModel().getTarget().getObject();
+        SelectedPco object = Maud.getModel().getTarget().getPco();
         if (object.isSelected()) {
             name = object.name();
         } else {
@@ -138,7 +138,7 @@ class ObjectTool extends Tool {
         EditorModel model = Maud.getModel();
         RigidBodyParameter rbp = model.getMisc().rbParameter();
         String rbpName = rbp.toString();
-        SelectedObject object = model.getTarget().getObject();
+        SelectedPco object = model.getTarget().getPco();
         String rbpValue = object.value(rbp);
 
         setButtonText("physicsRbp", rbpName);
@@ -151,7 +151,7 @@ class ObjectTool extends Tool {
     private void updateShape() {
         String sButton, shape;
 
-        SelectedObject object = Maud.getModel().getTarget().getObject();
+        SelectedPco object = Maud.getModel().getTarget().getPco();
         if (object.isSelected()) {
             shape = object.shapeName();
             sButton = "Select";

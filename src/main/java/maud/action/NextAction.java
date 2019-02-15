@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -117,8 +117,8 @@ class NextAction {
                 model.getMisc().selectNextPerformanceMode();
                 break;
 
-            case Action.nextPhysics:
-                target.getObject().selectNext();
+            case Action.nextPhysics: // TODO rename action
+                target.getPco().selectNext();
                 break;
 
             case Action.nextRotationDisplay:

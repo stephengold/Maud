@@ -110,7 +110,7 @@ class SelectOSAction {
                 break;
 
             case Action.selectPhysicsShape:
-                if (target.getObject().isSelected()) {
+                if (target.getPco().isSelected()) {
                     target.getShape().selectPcoShape();
                     Maud.gui.tools.select("shape");
                 }
@@ -150,7 +150,7 @@ class SelectOSAction {
                 SelectedSgc sgc = target.getSgc();
                 String objectName = sgc.physicsObjectName();
                 if (!objectName.isEmpty() && sgc.isEnabled()) {
-                    target.getObject().select(objectName);
+                    target.getPco().select(objectName);
                     Maud.gui.tools.select("object");
                 }
                 break;
@@ -241,7 +241,7 @@ class SelectOSAction {
 
         } else if (actionString.startsWith(ActionPrefix.selectPhysics)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectPhysics);
-            target.getObject().select(arg);
+            target.getPco().select(arg);
 
         } else if (actionString.startsWith(ActionPrefix.selectPhysicsRbp)) {
             arg = MyString.remainder(actionString,

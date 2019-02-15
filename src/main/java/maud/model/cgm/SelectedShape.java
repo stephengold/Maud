@@ -432,7 +432,7 @@ public class SelectedShape implements JmeCloneable {
      * Select the shape of the selected collision object.
      */
     public void selectPcoShape() {
-        selectedShape = cgm.getObject().getShape();
+        selectedShape = cgm.getPco().getShape();
     }
 
     /**
@@ -507,7 +507,7 @@ public class SelectedShape implements JmeCloneable {
             storeResult = new Transform();
         }
 
-        SelectedObject selectedObject = cgm.getObject();
+        SelectedPco selectedObject = cgm.getPco();
         long selectedId = id();
         if (selectedObject.usesShape(selectedId)) {
             selectedObject.transform(storeResult);

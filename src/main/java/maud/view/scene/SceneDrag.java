@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -47,7 +47,7 @@ import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedBone;
 import maud.model.cgm.SelectedLight;
-import maud.model.cgm.SelectedObject;
+import maud.model.cgm.SelectedPco;
 import maud.model.cgm.SelectedSkeleton;
 import maud.model.option.scene.AxesDragEffect;
 import maud.model.option.scene.AxesOptions;
@@ -371,7 +371,7 @@ public class SceneDrag {
 
             case CollisionObject:
                 if (editableCgm != null) {
-                    SelectedObject object = editableCgm.getObject();
+                    SelectedPco object = editableCgm.getPco();
                     if (object.canPosition()) {
                         /*
                          * Rotate the selected physics object.
@@ -626,7 +626,7 @@ public class SceneDrag {
                 break;
 
             case CollisionObject:
-                SelectedObject object = editableCgm.getObject();
+                SelectedPco object = editableCgm.getPco();
                 if (object.canPosition()) {
                     /*
                      * Translate the selected physics object.

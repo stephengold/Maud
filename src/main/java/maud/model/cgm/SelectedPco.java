@@ -48,11 +48,10 @@ import maud.model.option.RigidBodyParameter;
 
 /**
  * The selected PhysicsCollisionObject of a C-G model in the Maud application.
- * TODO rename SelectedPco
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class SelectedObject implements JmeCloneable {
+public class SelectedPco implements JmeCloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -60,7 +59,7 @@ public class SelectedObject implements JmeCloneable {
      * message logger for this class
      */
     final private static Logger logger
-            = Logger.getLogger(SelectedObject.class.getName());
+            = Logger.getLogger(SelectedPco.class.getName());
     // *************************************************************************
     // fields
 
@@ -297,7 +296,7 @@ public class SelectedObject implements JmeCloneable {
      */
     void setCgm(Cgm newCgm) {
         assert newCgm != null;
-        assert newCgm.getObject() == this;
+        assert newCgm.getPco() == this;
 
         cgm = newCgm;
         if (newCgm instanceof EditableCgm) {
@@ -454,7 +453,7 @@ public class SelectedObject implements JmeCloneable {
      * @throws CloneNotSupportedException always
      */
     @Override
-    public SelectedObject clone() throws CloneNotSupportedException {
+    public SelectedPco clone() throws CloneNotSupportedException {
         super.clone();
         throw new CloneNotSupportedException("use a cloner");
     }
@@ -478,9 +477,9 @@ public class SelectedObject implements JmeCloneable {
      * @return a new instance
      */
     @Override
-    public SelectedObject jmeClone() {
+    public SelectedPco jmeClone() {
         try {
-            SelectedObject clone = (SelectedObject) super.clone();
+            SelectedPco clone = (SelectedPco) super.clone();
             return clone;
         } catch (CloneNotSupportedException exception) {
             throw new RuntimeException(exception);

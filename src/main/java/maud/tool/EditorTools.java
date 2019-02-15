@@ -91,8 +91,8 @@ public class EditorTools {
     final private MappingTool mapping;
     final private MaterialTool material;
     final private MeshTool mesh;
-    final private ObjectTool object;
     final private OverridesTool overrides;
+    final private PcoTool pco;
     final private PhysicsTool physics;
     final private PlatformTool platform;
     final private RenderTool render;
@@ -155,8 +155,8 @@ public class EditorTools {
         mapping = new MappingTool(screenController);
         material = new MaterialTool(screenController);
         mesh = new MeshTool(screenController);
-        object = new ObjectTool(screenController);
         overrides = new OverridesTool(screenController);
+        pco = new PcoTool(screenController);
         physics = new PhysicsTool(screenController);
         platform = new PlatformTool(screenController);
         render = new RenderTool(screenController);
@@ -196,7 +196,7 @@ public class EditorTools {
                 boneScale, boneTranslation, bounds, camera, cgm, cursor,
                 extract, extremeVertex, history, keyframe,
                 joint, lightColor, lightDirection, lightPosition, lights, link,
-                mapping, material, mesh, object, overrides, physics, platform,
+                mapping, material, mesh, overrides, pco, physics, platform,
                 render, retarget, sceneLighting, score, settings,
                 sgc, shape, skeleton, sky, sourceAnimation, spatial,
                 spatialDetails, spatialRotation, spatialScale,

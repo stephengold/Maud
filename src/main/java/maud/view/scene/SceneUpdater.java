@@ -141,8 +141,8 @@ public class SceneUpdater {
                 break;
 
             case CollisionObject:
-                if (cgm.getObject().isSelected()) {
-                    transform = cgm.getObject().transform(null);
+                if (cgm.getPco().isSelected()) {
+                    transform = cgm.getPco().transform(null);
                 }
                 break;
 

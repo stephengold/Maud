@@ -152,13 +152,13 @@ public class Cgm implements Cloneable {
      */
     private SelectedMatParam selectedMatParam = new SelectedMatParam();
     /**
-     * which physics collision object is selected
-     */
-    private SelectedObject selectedObject = new SelectedObject();
-    /**
      * which material-parameter override is selected in the selected spatial
      */
     private SelectedOverride selectedOverride = new SelectedOverride();
+    /**
+     * which physics collision object is selected
+     */
+    private SelectedPco selectedPco = new SelectedPco();
     /**
      * which DynamicAnimControl is selected
      */
@@ -224,8 +224,8 @@ public class Cgm implements Cloneable {
         selectedLight.setCgm(cgm);
         selectedLink.setCgm(cgm);
         selectedMatParam.setCgm(cgm);
-        selectedObject.setCgm(cgm);
         selectedOverride.setCgm(cgm);
+        selectedPco.setCgm(cgm);
         selectedRagdoll.setCgm(cgm);
         selectedSgc.setCgm(cgm);
         selectedShape.setCgm(cgm);
@@ -524,16 +524,6 @@ public class Cgm implements Cloneable {
     }
 
     /**
-     * Access the selected physics collision object.
-     *
-     * @return the pre-existing instance (not null)
-     */
-    public SelectedObject getObject() {
-        assert selectedObject != null;
-        return selectedObject;
-    }
-
-    /**
      * Access the selected material-parameter override.
      *
      * @return the pre-existing instance (not null)
@@ -541,6 +531,16 @@ public class Cgm implements Cloneable {
     public SelectedOverride getOverride() {
         assert selectedOverride != null;
         return selectedOverride;
+    }
+
+    /**
+     * Access the selected physics collision object.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public SelectedPco getPco() {
+        assert selectedPco != null;
+        return selectedPco;
     }
 
     /**
@@ -1045,7 +1045,7 @@ public class Cgm implements Cloneable {
         selectedBone.deselect();
         selectedJoint.selectNone();
         selectedLink.selectNone();
-        selectedObject.selectNone();
+        selectedPco.selectNone();
         selectedShape.selectNone();
         selectedVertex.deselect();
 
@@ -1091,8 +1091,8 @@ public class Cgm implements Cloneable {
         clone.selectedLight = cloner.clone(selectedLight);
         clone.selectedLink = cloner.clone(selectedLink);
         clone.selectedMatParam = selectedMatParam.clone();
-        clone.selectedObject = cloner.clone(selectedObject);
         clone.selectedOverride = selectedOverride.clone();
+        clone.selectedPco = cloner.clone(selectedPco);
         clone.selectedRagdoll = cloner.clone(selectedRagdoll);
         clone.selectedSgc = cloner.clone(selectedSgc);
         clone.selectedShape = cloner.clone(selectedShape);
@@ -1112,7 +1112,7 @@ public class Cgm implements Cloneable {
         clone.getJoint().setCgm(clone);
         clone.getLight().setCgm(clone);
         clone.getLink().setCgm(clone);
-        clone.getObject().setCgm(clone);
+        clone.getPco().setCgm(clone);
         clone.getPhysics().setCgm(clone);
         clone.getPlay().setCgm(clone);
         clone.getPose().setCgm(clone);
