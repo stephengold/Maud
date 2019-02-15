@@ -417,7 +417,10 @@ public class EditableCgm extends LoadedCgm {
      */
     public void deleteBuffer() {
         SelectedBuffer buffer = getBuffer();
-        assert buffer.isMapped();
+        if (!buffer.isMapped()) {
+            logger.log(Level.WARNING, "cannot delete unmapped buffer");
+            return;
+        }
         String description = "delete buffer " + buffer.describe();
         VertexBuffer.Type type = buffer.type();
 
