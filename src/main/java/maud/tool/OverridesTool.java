@@ -90,7 +90,7 @@ class OverridesTool extends Tool {
     public void onCheckBoxChanged(String name, boolean isChecked) {
         switch (name) {
             case "mpoEnable":
-                Maud.getModel().getTarget().setOverrideEnabled(isChecked);
+                Maud.getModel().getTarget().getOverride().setEnabled(isChecked);
                 break;
 
             default:

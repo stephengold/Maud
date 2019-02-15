@@ -35,6 +35,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
+import maud.ParseUtil;
 import maud.model.History;
 
 /**
@@ -310,6 +311,61 @@ public class SelectedOverride implements Cloneable {
         } else {
             editableCgm = null;
         }
+    }
+
+    /**
+     * Alter whether the selected material-parameter override is enabled.
+     *
+     * @param newSetting true&rarr;enable, false&rarr;disable
+     */
+    public void setEnabled(boolean newSetting) {
+        MatParamOverride mpo = find();
+        if (mpo != null) {
+            boolean oldSetting = mpo.isEnabled();
+            if (oldSetting != newSetting) {
+                History.autoAdd();
+                mpo.setEnabled(newSetting);
+                cgm.getSceneView().setOverrideEnabled(newSetting);
+
+                String verb = newSetting ? "enable" : "disable";
+                String parameterName = mpo.getName();
+                String description = String.format(
+                        "%s material-parameter override %s",
+                        verb, MyString.quote(parameterName));
+                editableCgm.getEditState().setEdited(description);
+            }
+        }
+    }
+
+    /**
+     * Alter the value of the selected material-parameter override.
+     *
+     * @param valueString string representation of the new value (not null)
+     */
+    public void setValue(String valueString) {
+        Validate.nonNull(valueString, "value string");
+
+        MatParamOverride oldMpo = find();
+        VarType varType = oldMpo.getVarType();
+        String parameterName = oldMpo.getName();
+        Object modelValue = ParseUtil.parseMatParam(oldMpo, valueString);
+        Object viewValue = ParseUtil.parseMatParam(oldMpo, valueString);
+
+        Spatial spatial = cgm.getSpatial().find();
+        List<Integer> treePosition = cgm.findSpatial(spatial);
+
+        History.autoAdd();
+        spatial.removeMatParamOverride(oldMpo);
+        MatParamOverride newMpo
+                = new MatParamOverride(varType, parameterName, modelValue);
+        spatial.addMatParamOverride(newMpo);
+        cgm.getSceneView().setOverrideValue(treePosition, parameterName,
+                varType, viewValue);
+
+        String description = String.format(
+                "alter value of material-parameter override %s",
+                MyString.quote(parameterName));
+        editableCgm.getEditState().setEdited(description);
     }
 
     /**

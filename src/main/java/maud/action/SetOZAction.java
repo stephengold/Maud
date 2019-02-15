@@ -209,7 +209,7 @@ class SetOZAction {
         if (actionString.startsWith(ActionPrefix.setOverrideValue)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setOverrideValue);
-            target.setOverrideValue(arg);
+            target.getOverride().setValue(arg);
 
         } else if (actionString.startsWith(ActionPrefix.setPhysicsRbpValue)) {
             arg = MyString.remainder(actionString,
