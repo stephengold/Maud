@@ -202,53 +202,6 @@ public class SelectedShape implements JmeCloneable {
     }
 
     /**
-     * Determine the main axis of the shape.
-     *
-     * @return 0&rarr;X, 1&rarr;Y, 2&rarr;Z, -1&rarr;doesn't have an axis
-     */
-    public int mainAxisIndex() {
-        int result = -1;
-        if (selectedShape != null) {
-            result = MyShape.mainAxisIndex(selectedShape);
-        }
-
-        return result;
-    }
-
-    /**
-     * Read the type of the selected shape. TODO re-order methods
-     *
-     * @return abbreviated class name, or "" if none selected
-     */
-    public String type() {
-        String type = "";
-        if (selectedShape != null) {
-            type = MyShape.describeType(selectedShape);
-        }
-
-        assert type != null;
-        return type;
-    }
-
-    /**
-     * Read the specified parameter of the shape. TODO re-order methods
-     *
-     * @param parameter which parameter to read (not null)
-     * @return the parameter value (&ge;0) or NaN if not applicable
-     */
-    public float value(ShapeParameter parameter) {
-        Validate.nonNull(parameter, "parameter");
-
-        float result = Float.NaN;
-        if (isSelected()) {
-            result = parameter.read(selectedShape);
-        }
-
-        assert Float.isNaN(result) || result >= 0f : result;
-        return result;
-    }
-
-    /**
      * Calculate the half extents of the selected shape.
      *
      * @param storeResult (modified if not null)
@@ -325,6 +278,20 @@ public class SelectedShape implements JmeCloneable {
             }
         } else {
             result = new ArrayList<>(0);
+        }
+
+        return result;
+    }
+
+    /**
+     * Determine the main axis of the shape.
+     *
+     * @return 0&rarr;X, 1&rarr;Y, 2&rarr;Z, -1&rarr;doesn't have an axis
+     */
+    public int mainAxisIndex() {
+        int result = -1;
+        if (selectedShape != null) {
+            result = MyShape.mainAxisIndex(selectedShape);
         }
 
         return result;
@@ -555,6 +522,21 @@ public class SelectedShape implements JmeCloneable {
     }
 
     /**
+     * Read the type of the selected shape.
+     *
+     * @return abbreviated class name, or "" if none selected
+     */
+    public String type() {
+        String type = "";
+        if (selectedShape != null) {
+            type = MyShape.describeType(selectedShape);
+        }
+
+        assert type != null;
+        return type;
+    }
+
+    /**
      * Enumerate all collision objects and compound shapes that reference the
      * selected shape.
      *
@@ -562,6 +544,24 @@ public class SelectedShape implements JmeCloneable {
      */
     public Set<Long> userSet() {
         Set<Long> result = cgm.getPhysics().userSet(selectedShape);
+        return result;
+    }
+
+    /**
+     * Read the specified parameter of the shape.
+     *
+     * @param parameter which parameter to read (not null)
+     * @return the parameter value (&ge;0) or NaN if not applicable
+     */
+    public float value(ShapeParameter parameter) {
+        Validate.nonNull(parameter, "parameter");
+
+        float result = Float.NaN;
+        if (isSelected()) {
+            result = parameter.read(selectedShape);
+        }
+
+        assert Float.isNaN(result) || result >= 0f : result;
         return result;
     }
     // *************************************************************************
