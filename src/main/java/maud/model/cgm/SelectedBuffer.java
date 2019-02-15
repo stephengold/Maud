@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
+import maud.model.History;
 
 /**
  * The MVC model of the selected vertex buffer in a loaded C-G model.
@@ -353,6 +354,106 @@ public class SelectedBuffer implements Cloneable {
             editableCgm = (EditableCgm) newCgm;
         } else {
             editableCgm = null;
+        }
+    }
+
+    /**
+     * Alter the instance span of the selected buffer.
+     *
+     * @param newSpan 0 &rarr; not instanced, 1 &rarr; each element goes with
+     * one instance, etc.
+     */
+    public void setInstanceSpan(int newSpan) {
+        Validate.nonNegative(newSpan, "new span");
+
+        VertexBuffer buffer = find();
+        int oldSpan = buffer.getInstanceSpan();
+        if (oldSpan != newSpan) {
+            History.autoAdd();
+            buffer.setInstanceSpan(newSpan);
+            cgm.getSceneView().setBufferInstanceSpan(newSpan);
+            String description = String.format(
+                    "set instance span of buffer to %d", newSpan);
+            editableCgm.getEditState().setEdited(description);
+        }
+    }
+
+    /**
+     * Alter the limit of the selected buffer.
+     *
+     * @param newLimit (&ge;1)
+     */
+    public void setLimit(int newLimit) {
+        Validate.positive(newLimit, "new limit");
+
+        VertexBuffer buffer = find();
+        Buffer data = buffer.getData();
+        int oldLimit = data.limit();
+        if (oldLimit != newLimit) {
+            History.autoAdd();
+            data.limit(newLimit);
+            cgm.getSceneView().setBufferLimit(newLimit);
+            String description
+                    = String.format("set limit of buffer to %d", newLimit);
+            editableCgm.getEditState().setEdited(description);
+        }
+    }
+
+    /**
+     * Alter the normalized flag of the selected buffer.
+     *
+     * @param newSetting true&rarr;normalized, false&rarr;not normalized
+     */
+    public void setNormalized(boolean newSetting) {
+        VertexBuffer buffer = find();
+        boolean oldSetting = buffer.isNormalized();
+        if (oldSetting != newSetting) {
+            History.autoAdd();
+            buffer.setNormalized(newSetting);
+            cgm.getSceneView().setBufferNormalized(newSetting);
+            String description = String.format(
+                    "set normalized flag of buffer to %s", newSetting);
+            editableCgm.getEditState().setEdited(description);
+        }
+    }
+
+    /**
+     * Alter the stride of the selected buffer.
+     *
+     * @param newStride new value for stride (&ge;0)
+     */
+    public void setStride(int newStride) {
+        Validate.nonNegative(newStride, "new stride");
+
+        VertexBuffer buffer = find();
+        int oldStride = buffer.getStride();
+        if (oldStride != newStride) {
+            History.autoAdd();
+            buffer.setStride(newStride);
+            cgm.getSceneView().setBufferStride(newStride);
+            String description = String.format(
+                    "set stride of buffer to %d", newStride);
+            editableCgm.getEditState().setEdited(description);
+        }
+    }
+
+    /**
+     * Alter the usage of the selected buffer.
+     *
+     * @param newUsage new value for usage (not null)
+     */
+    public void setUsage(VertexBuffer.Usage newUsage) {
+        Validate.nonNull(newUsage, "new usage");
+
+        VertexBuffer buffer = find();
+        VertexBuffer.Usage oldUsage = buffer.getUsage();
+        if (oldUsage != newUsage) {
+            History.autoAdd();
+            buffer.setUsage(newUsage);
+            cgm.getSceneView().setBufferUsage(newUsage);
+            String description = String.format(
+                    "set usage of buffer to %s", newUsage);
+            editableCgm.getEditState().setEdited(description);
         }
     }
 

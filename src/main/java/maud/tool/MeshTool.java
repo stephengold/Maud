@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018, Stephen Gold
+ Copyright (c) 2018-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -95,7 +95,7 @@ class MeshTool extends Tool {
         EditableCgm target = Maud.getModel().getTarget();
         switch (name) {
             case "vbNormalized":
-                target.setBufferNormalized(isChecked);
+                target.getBuffer().setNormalized(isChecked);
                 break;
 
             default:

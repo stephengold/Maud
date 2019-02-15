@@ -217,18 +217,18 @@ class SetANAction {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setBufferInstanceSpan);
             int span = Integer.parseInt(arg);
-            target.setBufferInstanceSpan(span);
+            target.getBuffer().setInstanceSpan(span);
 
         } else if (actionString.startsWith(ActionPrefix.setBufferLimit)) {
             arg = MyString.remainder(actionString, ActionPrefix.setBufferLimit);
             int limit = Integer.parseInt(arg);
-            target.setBufferLimit(limit);
+            target.getBuffer().setLimit(limit);
 
         } else if (actionString.startsWith(ActionPrefix.setBufferStride)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setBufferStride);
             int stride = Integer.parseInt(arg);
-            target.setBufferStride(stride);
+            target.getBuffer().setStride(stride);
 
         } else if (actionString.startsWith(ActionPrefix.setCloudiness)) {
             arg = MyString.remainder(actionString, ActionPrefix.setCloudiness);

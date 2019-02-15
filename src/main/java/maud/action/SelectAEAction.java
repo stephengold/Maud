@@ -216,7 +216,7 @@ class SelectAEAction {
             arg = MyString.remainder(actionString,
                     ActionPrefix.selectBufferUsage);
             VertexBuffer.Usage usage = VertexBuffer.Usage.valueOf(arg);
-            target.setBufferUsage(usage);
+            target.getBuffer().setUsage(usage);
 
         } else if (actionString.startsWith(ActionPrefix.selectCullHint)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectCullHint);
