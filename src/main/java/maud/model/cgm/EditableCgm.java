@@ -411,34 +411,6 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Delete the selected buffer (which must be a mapped buffer) and deselect
-     * it.
-     */
-    public void deleteBuffer() {
-        SelectedBuffer buffer = getBuffer();
-        if (!buffer.isMapped()) {
-            logger.log(Level.WARNING, "cannot delete unmapped buffer");
-            return;
-        }
-        String description = "delete buffer " + buffer.describe();
-        VertexBuffer.Type type = buffer.type();
-
-        Spatial spatial = getSpatial().find();
-        Geometry geometry = (Geometry) spatial;
-        Mesh mesh = geometry.getMesh();
-
-        History.autoAdd();
-        getSceneView().deleteBuffer();
-        mesh.clearBuffer(type);
-        if (type == VertexBuffer.Type.BoneIndex) {
-            mesh.clearBuffer(VertexBuffer.Type.HWBoneIndex);
-        }
-        editState.setEdited(description);
-
-        buffer.deselect();
-    }
-
-    /**
      * Delete all "extra" spatials in the model, but not the root.
      */
     public void deleteExtraSpatials() {

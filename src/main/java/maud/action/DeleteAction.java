@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018, Stephen Gold
+ Copyright (c) 2018-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -72,7 +72,7 @@ class DeleteAction {
                 break;
 
             case Action.deleteBuffer:
-                target.deleteBuffer();
+                target.getBuffer().delete();
                 break;
 
             case Action.deleteLight:

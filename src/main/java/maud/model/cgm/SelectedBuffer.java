@@ -26,11 +26,14 @@
  */
 package maud.model.cgm;
 
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.util.IntMap;
 import java.nio.Buffer;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
@@ -128,6 +131,33 @@ public class SelectedBuffer implements Cloneable {
 
         assert count >= 0 : count;
         return count;
+    }
+
+    /**
+     * Delete the selected buffer (which must be a mapped buffer) and deselect
+     * it.
+     */
+    public void delete() {
+        if (!isMapped()) {
+            logger.log(Level.WARNING, "cannot delete unmapped buffer");
+            return;
+        }
+        String description = "delete buffer " + describe();
+        VertexBuffer.Type type = type();
+
+        Spatial spatial = cgm.getSpatial().find();
+        Geometry geometry = (Geometry) spatial;
+        Mesh mesh = geometry.getMesh();
+
+        History.autoAdd();
+        cgm.getSceneView().deleteBuffer();
+        mesh.clearBuffer(type);
+        if (type == VertexBuffer.Type.BoneIndex) {
+            mesh.clearBuffer(VertexBuffer.Type.HWBoneIndex);
+        }
+        editableCgm.getEditState().setEdited(description);
+
+        deselect();
     }
 
     /**
