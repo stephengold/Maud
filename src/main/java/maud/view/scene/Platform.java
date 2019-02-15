@@ -45,7 +45,6 @@ import com.jme3.scene.shape.Box;
 import com.jme3.texture.Texture;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyAsset;
 import jme3utilities.ui.Locators;
@@ -251,7 +250,7 @@ public class Platform implements BulletDebugAppState.DebugAppStateFilter {
     }
 
     /**
-     * Alter which spatial is attached to the scene graph. TODO re-order methods
+     * Alter which spatial is attached to the scene graph.
      *
      * @param platformSpatial (may be null, alias created)
      */
