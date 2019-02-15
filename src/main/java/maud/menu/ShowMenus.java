@@ -272,7 +272,7 @@ public class ShowMenus {
 
         EditableCgm target = Maud.getModel().getTarget();
         List<String> keyList = target.getSpatial().listUserKeys();
-        String selectedKey = target.getUserData().getKey();
+        String selectedKey = target.getUserData().key();
         for (String key : keyList) {
             if (!key.equals(selectedKey)) {
                 builder.add(key);

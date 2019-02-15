@@ -1523,7 +1523,7 @@ public class EditableCgm extends LoadedCgm {
         SelectedUserData datum = getUserData();
         Object value = datum.getValue();
         Spatial spatial = getSpatial().find();
-        String key = datum.getKey();
+        String key = datum.key();
 
         History.autoAdd();
         if (value instanceof Boolean) {

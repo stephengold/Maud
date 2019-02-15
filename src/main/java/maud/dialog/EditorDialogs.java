@@ -609,7 +609,7 @@ public class EditorDialogs {
      */
     public static void renameUserKey() {
         EditableCgm target = Maud.getModel().getTarget();
-        String oldName = target.getUserData().getKey();
+        String oldName = target.getUserData().key();
         if (oldName != null) {
             DialogController controller = new UserKeyDialog("Rename");
             Maud.gui.closeAllPopups();

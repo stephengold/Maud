@@ -130,7 +130,7 @@ public class SelectedUserData implements Cloneable {
      *
      * @return a key, or null if none selected
      */
-    public String getKey() {
+    public String key() {
         return selectedKey;
     }
 
@@ -171,7 +171,7 @@ public class SelectedUserData implements Cloneable {
         Validate.nonNull(newKey, "new key");
 
         Spatial spatial = cgm.getSpatial().find();
-        String oldKey = getKey();
+        String oldKey = selectedKey;
         Object value = getValue();
 
         History.autoAdd();
