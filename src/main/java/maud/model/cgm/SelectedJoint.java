@@ -106,11 +106,11 @@ public class SelectedJoint implements JmeCloneable {
     }
 
     /**
-     * Read the type of the selected joint. TODO rename type()
+     * Read the type of the selected joint. TODO re-order methods
      *
      * @return abbreviated class name, or "" if none selected
      */
-    public String getType() {
+    public String type() {
         String type = "";
         if (selectedJoint != null) {
             type = selectedJoint.getClass().getSimpleName();

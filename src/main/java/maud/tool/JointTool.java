@@ -82,7 +82,7 @@ class JointTool extends Tool {
      */
     private void updateDescription() {
         SelectedJoint joint = Maud.getModel().getTarget().getJoint();
-        String type = joint.getType();
+        String type = joint.type();
         setStatusText("jointType", " " + type);
 
         String nameA = "", nameB = "";
