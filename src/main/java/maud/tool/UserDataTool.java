@@ -122,7 +122,7 @@ class UserDataTool extends Tool {
         String dButton, keyText, rButton;
 
         Cgm target = Maud.getModel().getTarget();
-        String key = target.getUserData().getKey();
+        String key = target.getUserData().key();
         if (key == null) {
             dButton = "";
             keyText = "(none selected)";
@@ -159,7 +159,7 @@ class UserDataTool extends Tool {
         String valueButton = "";
 
         SelectedUserData datum = Maud.getModel().getTarget().getUserData();
-        String key = datum.getKey();
+        String key = datum.key();
         if (key != null) {
             Object value = datum.getValue();
             if (value instanceof String) {
