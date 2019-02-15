@@ -481,25 +481,6 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Delete the selected material-parameter override from the selected
-     * spatial. The invoker is responsible for deselecting the override.
-     */
-    void deleteOverride() {
-        Spatial spatial = getSpatial().find();
-        MatParamOverride mpo = getOverride().find();
-        String parameterName = mpo.getName();
-
-        History.autoAdd();
-        spatial.removeMatParamOverride(mpo);
-        getSceneView().deleteOverride();
-
-        String description = String.format(
-                "delete material-parameter override %s",
-                MyString.quote(parameterName));
-        editState.setEdited(description);
-    }
-
-    /**
      * Delete the selected S-G control. The invoker is responsible for
      * deselecting the control.
      */

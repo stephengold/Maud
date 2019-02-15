@@ -84,7 +84,19 @@ public class SelectedOverride implements Cloneable {
     public void delete() {
         if (isSelected() && editableCgm != null) {
             MatParamRef ref = makeRef();
-            editableCgm.deleteOverride();
+            Spatial spatial = cgm.getSpatial().find();
+            MatParamOverride mpo = find();
+            String parameterName = mpo.getName();
+
+            History.autoAdd();
+            spatial.removeMatParamOverride(mpo);
+            cgm.getSceneView().deleteOverride();
+
+            String description = String.format(
+                    "delete material-parameter override %s",
+                    MyString.quote(parameterName));
+            editableCgm.getEditState().setEdited(description);
+
             selectedName = null;
             cgm.getTexture().deselectRef(ref);
         }
