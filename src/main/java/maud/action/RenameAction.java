@@ -148,7 +148,7 @@ class RenameAction {
         } else if (actionString.startsWith(ActionPrefix.renameUserKey)) {
             newName = MyString.remainder(actionString,
                     ActionPrefix.renameUserKey);
-            target.renameUserKey(newName);
+            target.getUserData().renameKey(newName);
 
         } else {
             handled = false;

@@ -783,30 +783,6 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Rename the selected user-data key.
-     *
-     * @param newKey new key name (not null)
-     */
-    public void renameUserKey(String newKey) {
-        Validate.nonNull(newKey, "new key");
-
-        Spatial spatial = getSpatial().find();
-        SelectedUserData datum = getUserData();
-        String oldKey = datum.getKey();
-        Object value = datum.getValue();
-
-        History.autoAdd();
-        spatial.setUserData(oldKey, null);
-        spatial.setUserData(newKey, value);
-
-        String description = String.format("rename user-data key %s to %s",
-                MyString.quote(oldKey), MyString.quote(newKey));
-        editState.setEdited(description);
-
-        getUserData().selectKey(newKey);
-    }
-
-    /**
      * Replace the specified animation with a new one.
      *
      * @param oldAnimation animation to replace (not null)

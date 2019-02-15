@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -29,7 +29,10 @@ package maud.model.cgm;
 import com.jme3.scene.Spatial;
 import java.util.List;
 import java.util.logging.Logger;
+import jme3utilities.MyString;
+import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
+import maud.model.History;
 
 /**
  * The MVC model of the selected user datum in a loaded C-G model.
@@ -150,6 +153,29 @@ public class SelectedUserData implements Cloneable {
         }
 
         return result;
+    }
+
+    /**
+     * Rename the selected user-data key.
+     *
+     * @param newKey new key name (not null)
+     */
+    public void renameKey(String newKey) {
+        Validate.nonNull(newKey, "new key");
+
+        Spatial spatial = cgm.getSpatial().find();
+        String oldKey = getKey();
+        Object value = getValue();
+
+        History.autoAdd();
+        spatial.setUserData(oldKey, null);
+        spatial.setUserData(newKey, value);
+
+        String description = String.format("rename user-data key %s to %s",
+                MyString.quote(oldKey), MyString.quote(newKey));
+        editableCgm.getEditState().setEdited(description);
+
+        selectKey(newKey);
     }
 
     /**
