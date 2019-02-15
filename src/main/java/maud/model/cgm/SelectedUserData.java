@@ -126,15 +126,6 @@ public class SelectedUserData implements Cloneable {
     }
 
     /**
-     * Read the selected datum's key.
-     *
-     * @return a key, or null if none selected
-     */
-    public String key() {
-        return selectedKey;
-    }
-
-    /**
      * Access the selected datum's value.
      *
      * @return the pre-existing instance, or null if none selected
@@ -163,7 +154,16 @@ public class SelectedUserData implements Cloneable {
     }
 
     /**
-     * Rename the selected user-data key.
+     * Read the selected datum's key.
+     *
+     * @return a key, or null if none selected
+     */
+    public String key() {
+        return selectedKey;
+    }
+
+    /**
+     * Change the selected datum's key.
      *
      * @param newKey new key name (not null)
      */
