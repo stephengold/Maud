@@ -1333,7 +1333,7 @@ public class EditableCgm extends LoadedCgm {
             dac.unlinkBone(boneName);
             getSceneView().unlinkBone(boneName);
         } else {
-            dac.unlinkAttachment(boneName);
+            dac.detach(boneName);
             getSceneView().unlinkAttachment(boneName);
         }
         String description = "unlink " + link.name();

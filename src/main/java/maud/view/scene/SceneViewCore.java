@@ -671,7 +671,6 @@ public class SceneViewCore
             skeletonControl.setHardwareSkinningPreferred(false);
 
             skeletonVisualizer.setSubject(skeletonControl);
-            skeletonVisualizer.setSkeleton(skeleton);
             /*
              * Cause the visualizer to add its geometries to the overlay scene
              * graph.
@@ -1099,7 +1098,7 @@ public class SceneViewCore
             RenderManager rm = Maud.getApplication().getRenderManager();
             skeletonControl.render(rm, null);
             skeleton = null;
-            skeletonVisualizer.setSkeleton(null);
+            skeletonVisualizer.setSubject(null);
         }
         /*
          * Remove any skeleton-dependent S-G controls from the base scene graph.

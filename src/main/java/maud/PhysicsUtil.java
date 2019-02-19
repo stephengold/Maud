@@ -47,7 +47,6 @@ import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
-import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
@@ -360,7 +359,7 @@ public class PhysicsUtil {
 
     /**
      * Test whether the specified shape uses (or identifies as) the identified
-     * shape.
+     * shape. TODO redesign to use CompoundCollisionShape.findIndex()
      *
      * @param user (not null, unaffected)
      * @param shapeId the ID of the shape to find
@@ -373,7 +372,7 @@ public class PhysicsUtil {
             result = true;
         } else if (user instanceof CompoundCollisionShape) {
             CompoundCollisionShape compound = (CompoundCollisionShape) user;
-            List<ChildCollisionShape> children = compound.getChildren();
+            ChildCollisionShape[] children = compound.listChildren();
             for (ChildCollisionShape child : children) {
                 id = child.getShape().getObjectId();
                 if (id == shapeId) {

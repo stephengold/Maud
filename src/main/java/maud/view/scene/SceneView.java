@@ -755,7 +755,7 @@ public class SceneView extends SceneViewCore {
         Validate.nonEmpty(boneName, "bone name");
 
         DynamicAnimControl dac = getSelectedRagdoll();
-        dac.unlinkAttachment(boneName);
+        dac.detach(boneName);
     }
 
     /**

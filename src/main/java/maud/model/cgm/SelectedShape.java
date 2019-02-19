@@ -158,8 +158,8 @@ public class SelectedShape implements JmeCloneable {
         int count = 0;
         if (selectedShape instanceof CompoundCollisionShape) {
             CompoundCollisionShape ccs = (CompoundCollisionShape) selectedShape;
-            List<ChildCollisionShape> children = ccs.getChildren();
-            count = children.size();
+            ChildCollisionShape[] children = ccs.listChildren();
+            count = children.length;
         }
 
         assert count >= 0 : count;
@@ -266,11 +266,11 @@ public class SelectedShape implements JmeCloneable {
         if (selectedShape instanceof CompoundCollisionShape) {
             CompoundCollisionShape compound
                     = (CompoundCollisionShape) selectedShape;
-            List<ChildCollisionShape> children = compound.getChildren();
-            int count = children.size();
+            ChildCollisionShape[] children = compound.listChildren();
+            int count = children.length;
             result = new ArrayList<>(count);
             for (int childIndex = 0; childIndex < count; childIndex++) {
-                ChildCollisionShape child = children.get(childIndex);
+                ChildCollisionShape child = children[childIndex];
                 String description = MyShape.name(child.getShape());
                 if (description.startsWith(prefix)) {
                     result.add(description);
@@ -364,9 +364,9 @@ public class SelectedShape implements JmeCloneable {
     public void selectFirstChild() {
         if (selectedShape instanceof CompoundCollisionShape) {
             CompoundCollisionShape ccs = (CompoundCollisionShape) selectedShape;
-            List<ChildCollisionShape> children = ccs.getChildren();
-            if (!children.isEmpty()) {
-                ChildCollisionShape child = children.get(0);
+            ChildCollisionShape children[] = ccs.listChildren();
+            if (children.length > 0) {
+                ChildCollisionShape child = children[0];
                 CollisionShape shape = child.getShape();
                 select(shape);
             }
@@ -496,7 +496,7 @@ public class SelectedShape implements JmeCloneable {
                             = cgm.getPhysics().findShape(userId);
                     CompoundCollisionShape compound
                             = (CompoundCollisionShape) shapeUser;
-                    List<ChildCollisionShape> children = compound.getChildren();
+                    ChildCollisionShape[] children = compound.listChildren();
 
                     Transform parent = new Transform();
                     for (ChildCollisionShape child : children) {

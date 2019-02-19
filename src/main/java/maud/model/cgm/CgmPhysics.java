@@ -217,7 +217,7 @@ public class CgmPhysics implements JmeCloneable {
             }
             if (shape instanceof CompoundCollisionShape) {
                 CompoundCollisionShape ccs = (CompoundCollisionShape) shape;
-                List<ChildCollisionShape> children = ccs.getChildren();
+                ChildCollisionShape[] children = ccs.listChildren();
                 for (ChildCollisionShape child : children) {
                     CollisionShape childShape = child.getShape();
                     if (childShape.getObjectId() == id) {
@@ -385,11 +385,11 @@ public class CgmPhysics implements JmeCloneable {
         } else {
             CollisionShape modelParent = findShape(userId);
             CompoundCollisionShape mccs = (CompoundCollisionShape) modelParent;
-            List<ChildCollisionShape> modelChildren = mccs.getChildren();
-            int numChildren = modelChildren.size();
+            ChildCollisionShape[] modelChildren = mccs.listChildren();
+            int numChildren = modelChildren.length;
             int childIndex;
             for (childIndex = 0; childIndex < numChildren; ++childIndex) {
-                ChildCollisionShape child = modelChildren.get(childIndex);
+                ChildCollisionShape child = modelChildren[childIndex];
                 if (child.getShape() == modelShape) {
                     break;
                 }
@@ -398,8 +398,8 @@ public class CgmPhysics implements JmeCloneable {
 
             CollisionShape viewParent = modelToView(modelParent);
             CompoundCollisionShape vccs = (CompoundCollisionShape) viewParent;
-            List<ChildCollisionShape> viewChildren = vccs.getChildren();
-            ChildCollisionShape viewChild = viewChildren.get(childIndex);
+            ChildCollisionShape[] viewChildren = vccs.listChildren();
+            ChildCollisionShape viewChild = viewChildren[childIndex];
             viewShape = viewChild.getShape();
         }
 
@@ -562,7 +562,7 @@ public class CgmPhysics implements JmeCloneable {
             result.put(id, shape);
             if (shape instanceof CompoundCollisionShape) {
                 CompoundCollisionShape ccs = (CompoundCollisionShape) shape;
-                List<ChildCollisionShape> children = ccs.getChildren();
+                ChildCollisionShape[] children = ccs.listChildren();
                 for (ChildCollisionShape child : children) {
                     CollisionShape childShape = child.getShape();
                     long childId = childShape.getObjectId();
@@ -753,10 +753,7 @@ public class CgmPhysics implements JmeCloneable {
         assert !(newChild instanceof CompoundCollisionShape);
 
         CompoundCollisionShape compound = (CompoundCollisionShape) parent;
-        List<ChildCollisionShape> childList = compound.getChildren();
-        int numChildren = childList.size();
-        ChildCollisionShape[] array = new ChildCollisionShape[numChildren];
-        childList.toArray(array);
+        ChildCollisionShape[] array = compound.listChildren();
         for (ChildCollisionShape child : array) {
             CollisionShape childShape = child.getShape();
             if (childShape == oldChild) {

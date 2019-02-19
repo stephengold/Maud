@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -52,8 +52,8 @@ import jme3utilities.MyAnimation;
 import jme3utilities.MyMesh;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
+import jme3utilities.math.MyArray;
 import jme3utilities.math.MyQuaternion;
-import jme3utilities.math.MyVector3f;
 import jme3utilities.wes.Pose;
 import jme3utilities.wes.SmoothRotations;
 import jme3utilities.wes.SmoothVectors;
@@ -143,7 +143,7 @@ public class SelectedTrack implements JmeCloneable {
         if (selected != null) {
             Vector3f[] scales = MyAnimation.getScales(selected);
             if (scales != null) {
-                count = MyVector3f.countNe(scales);
+                count = MyArray.countNe(scales);
             }
         }
 
@@ -161,7 +161,7 @@ public class SelectedTrack implements JmeCloneable {
         if (selected != null) {
             Vector3f[] translations = MyAnimation.getTranslations(selected);
             if (translations != null) {
-                count = MyVector3f.countNe(translations);
+                count = MyArray.countNe(translations);
             }
         }
 
