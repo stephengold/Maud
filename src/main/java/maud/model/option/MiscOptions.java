@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -32,8 +32,8 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.MyString;
 import jme3utilities.Validate;
-import maud.DescribeUtil;
 import maud.MaudUtil;
 import maud.action.ActionPrefix;
 
@@ -596,7 +596,7 @@ public class MiscOptions implements Cloneable {
         MaudUtil.writePerformAction(writer, action);
 
         action = ActionPrefix.selectLinkToolAxis
-                + DescribeUtil.axisName(linkToolAxis);
+                + MyString.axisName(linkToolAxis);
         MaudUtil.writePerformAction(writer, action);
 
         action = ActionPrefix.selectLoadBvhAxisOrder + axisOrder.toString();

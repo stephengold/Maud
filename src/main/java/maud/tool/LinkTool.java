@@ -274,7 +274,7 @@ class LinkTool extends Tool {
         MiscOptions misc = model.getMisc();
         int axisIndex = misc.linkToolAxis();
 
-        String axisName = DescribeUtil.axisName(axisIndex);
+        String axisName = MyString.axisName(axisIndex);
         setButtonText("linkAxis", axisName);
 
         RotationDisplayMode rdm = misc.rotationDisplayMode();

@@ -35,7 +35,6 @@ import java.util.TreeSet;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
-import maud.DescribeUtil;
 import maud.Maud;
 import maud.ShapeType;
 import maud.action.ActionPrefix;
@@ -337,7 +336,7 @@ public class PhysicsMenus {
                 axisIndex <= PhysicsSpace.AXIS_Z;
                 ++axisIndex) {
             if (axisIndex != selectedAxis) {
-                String axisName = DescribeUtil.axisName(axisIndex);
+                String axisName = MyString.axisName(axisIndex);
                 builder.add(axisName);
             }
         }

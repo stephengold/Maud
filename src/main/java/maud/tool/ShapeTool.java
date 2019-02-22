@@ -29,6 +29,7 @@ package maud.tool;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
+import jme3utilities.MyString;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.Tool;
 import maud.DescribeUtil;
@@ -203,7 +204,7 @@ class ShapeTool extends Tool {
             type = shape.type();
             int axisIndex = shape.mainAxisIndex();
             if (axisIndex != -1) {
-                axisName = DescribeUtil.axisName(axisIndex);
+                axisName = MyString.axisName(axisIndex);
             }
 
             int numVertices = shape.countGeneratorVertices();
