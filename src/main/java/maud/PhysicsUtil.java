@@ -211,22 +211,22 @@ public class PhysicsUtil {
     /**
      * Determine the orientation of the specified collision object.
      *
-     * @param object (not null, unaffected)
+     * @param pco (not null, unaffected)
      * @param storeResult (modified if not null)
      * @return orientation (in physics-space coordinates, either storeResult or
      * a new instance)
      */
-    public static Quaternion orientation(PhysicsCollisionObject object,
+    public static Quaternion orientation(PhysicsCollisionObject pco,
             Quaternion storeResult) {
-        Validate.nonNull(object, "object");
+        Validate.nonNull(pco, "object");
         Quaternion result
                 = (storeResult == null) ? new Quaternion() : storeResult;
 
-        if (object instanceof PhysicsRigidBody) {
-            PhysicsRigidBody prb = (PhysicsRigidBody) object;
+        if (pco instanceof PhysicsRigidBody) {
+            PhysicsRigidBody prb = (PhysicsRigidBody) pco;
             prb.getPhysicsRotation(result);
-        } else if (object instanceof PhysicsGhostObject) {
-            PhysicsGhostObject ghost = (PhysicsGhostObject) object;
+        } else if (pco instanceof PhysicsGhostObject) {
+            PhysicsGhostObject ghost = (PhysicsGhostObject) pco;
             ghost.getPhysicsRotation(result);
         } else {
             throw new IllegalArgumentException();
@@ -286,22 +286,22 @@ public class PhysicsUtil {
     /**
      * Relocate (translate) the specified collision object.
      *
-     * @param object (not null, modified)
+     * @param pco (not null, modified)
      * @param newLocation (in physics-space coordinates, not null, unaffected)
      */
-    public static void setLocation(PhysicsCollisionObject object,
+    public static void setLocation(PhysicsCollisionObject pco,
             Vector3f newLocation) {
-        Validate.nonNull(object, "object");
+        Validate.nonNull(pco, "object");
         Validate.nonNull(newLocation, "new location");
 
-        if (object instanceof PhysicsRigidBody) {
-            PhysicsRigidBody body = (PhysicsRigidBody) object;
+        if (pco instanceof PhysicsRigidBody) {
+            PhysicsRigidBody body = (PhysicsRigidBody) pco;
             body.setPhysicsLocation(newLocation);
-        } else if (object instanceof PhysicsGhostObject) {
-            PhysicsGhostObject ghost = (PhysicsGhostObject) object;
+        } else if (pco instanceof PhysicsGhostObject) {
+            PhysicsGhostObject ghost = (PhysicsGhostObject) pco;
             ghost.setPhysicsLocation(newLocation);
-        } else if (object instanceof PhysicsCharacter) {
-            PhysicsCharacter character = (PhysicsCharacter) object;
+        } else if (pco instanceof PhysicsCharacter) {
+            PhysicsCharacter character = (PhysicsCharacter) pco;
             character.setPhysicsLocation(newLocation);
         } else {
             throw new IllegalStateException();
@@ -311,20 +311,20 @@ public class PhysicsUtil {
     /**
      * Reorient (rotate) the specified collision object.
      *
-     * @param object (not null, modified)
+     * @param pco (not null, modified)
      * @param newOrientation (in physics-space coordinates, not null,
      * unaffected)
      */
-    public static void setOrientation(PhysicsCollisionObject object,
+    public static void setOrientation(PhysicsCollisionObject pco,
             Quaternion newOrientation) {
-        Validate.nonNull(object, "object");
+        Validate.nonNull(pco, "object");
         Validate.nonNull(newOrientation, "new orientation");
 
-        if (object instanceof PhysicsRigidBody) {
-            PhysicsRigidBody body = (PhysicsRigidBody) object;
+        if (pco instanceof PhysicsRigidBody) {
+            PhysicsRigidBody body = (PhysicsRigidBody) pco;
             body.setPhysicsRotation(newOrientation);
-        } else if (object instanceof PhysicsGhostObject) {
-            PhysicsGhostObject ghost = (PhysicsGhostObject) object;
+        } else if (pco instanceof PhysicsGhostObject) {
+            PhysicsGhostObject ghost = (PhysicsGhostObject) pco;
             ghost.setPhysicsRotation(newOrientation);
         } else {
             throw new IllegalStateException();
@@ -334,23 +334,23 @@ public class PhysicsUtil {
     /**
      * Calculate the transform of the specified collision object.
      *
-     * @param object (not null, unaffected)
+     * @param pco (not null, unaffected)
      * @param storeResult (modified if not null)
      * @return world transform (either storeResult or a new instance)
      */
-    public static Transform transform(PhysicsCollisionObject object,
+    public static Transform transform(PhysicsCollisionObject pco,
             Transform storeResult) {
-        Validate.nonNull(object, "object");
+        Validate.nonNull(pco, "object");
         Transform result
                 = (storeResult == null) ? new Transform() : storeResult;
 
         Vector3f storeLocation = result.getTranslation();
-        object.getPhysicsLocation(storeLocation);
+        pco.getPhysicsLocation(storeLocation);
 
         Quaternion storeOrientation = result.getRotation();
-        orientation(object, storeOrientation);
+        orientation(pco, storeOrientation);
 
-        CollisionShape shape = object.getCollisionShape();
+        CollisionShape shape = pco.getCollisionShape();
         Vector3f storeScale = result.getScale();
         shape.getScale(storeScale);
 

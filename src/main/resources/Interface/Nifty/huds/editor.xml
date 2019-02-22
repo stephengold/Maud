@@ -1394,9 +1394,9 @@ Approximate minimum screen size: 640x480
                             <interact onRelease="perform(select linkedJoint)"/>
                         </control>
                         <control name="label" text="    Object:  "/>
-                        <control name="button" id="linkSelectObjectButton"
+                        <control name="button" id="linkSelectPcoButton"
                                  width="105px">
-                            <interact onRelease="perform(select linkedObject)"/>
+                            <interact onRelease="perform(select linkedPco)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
@@ -1770,54 +1770,54 @@ Approximate minimum screen size: 640x480
                 </panel>
             </control>
 
-            <control name="window" id="objectTool" title="Collision-Object Tool"
+            <control name="window" id="pcoTool" title="Collision-Object Tool"
                      hideOnClose="true"
                      height="140px" width="242px" x="130" y="140">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="28px">
-                        <control name="button" id="physicsPreviousButton"
+                        <control name="button" id="pcoPreviousButton"
                                  width="20px">
-                            <interact onRelease="perform(previous physics)"/>
+                            <interact onRelease="perform(previous pco)"/>
                         </control>
-                        <control name="label" id="physicsIndex"
+                        <control name="label" id="pcoIndex"
                                  backgroundColor="#ffff"
                                  textHAlign="center"
                                  width="75px"/>
-                        <control name="button" id="physicsNextButton"
+                        <control name="button" id="pcoNextButton"
                                  width="20px">
-                            <interact onRelease="perform(next physics)"/>
+                            <interact onRelease="perform(next pco)"/>
                         </control>
                         <panel width="10px"/>
-                        <control name="button" id="physicsSelectObjectButton"
+                        <control name="button" id="pcoSelectButton"
                                  width="50px">
-                            <interact onRelease="perform(select physics)"/>
+                            <interact onRelease="perform(select pco)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Selected:  "/>
-                        <control name="label" id="physicsName"
+                        <control name="label" id="pcoName"
                                  backgroundColor="#ffff"
                                  width="110px"/>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Shape:  "/>
-                        <control name="label" id="physicsShape"
+                        <control name="label" id="pcoShape"
                                  backgroundColor="#ffff"
                                  width="*"/>
-                        <control name="button" id="physicsSelectShapeButton"
+                        <control name="button" id="pcoSelectShapeButton"
                                  width="50px">
-                            <interact onRelease="perform(select physicsShape)"/>
+                            <interact onRelease="perform(select pcoShape)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
-                        <control name="button" id="physicsRbpButton"
+                        <control name="button" id="pcoParmButton"
                                  width="100px">
-                            <interact onRelease="perform(select physicsRbp)"/>
+                            <interact onRelease="perform(select pcoParm)"/>
                         </control>
                         <control name="label" text=" =  "/>
-                        <control name="button" id="physicsRbpValueButton"
+                        <control name="button" id="pcoParmValueButton"
                                  width="80px">
-                            <interact onRelease="perform(set physicsRbpValue)"/>
+                            <interact onRelease="perform(set pcoParmValue)"/>
                         </control>
                     </panel>
                 </panel>
@@ -2285,12 +2285,12 @@ Approximate minimum screen size: 640x480
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Object:  "/>
-                        <control name="label" id="sgcObject"
+                        <control name="label" id="sgcPco"
                                  backgroundColor="#ffff"
                                  width="*"/>
-                        <control name="button" id="sgcSelectObjectButton"
+                        <control name="button" id="sgcSelectPcoButton"
                                  width="60px">
-                            <interact onRelease="perform(select sgcObject)"/>
+                            <interact onRelease="perform(select sgcPco)"/>
                         </control>
                     </panel>
                 </panel>

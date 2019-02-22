@@ -1055,7 +1055,7 @@ public class EditorDialogs {
             String prompt = String.format("Enter new %s:", parameterName);
             String defaultText = object.value(parameter);
             String prefix
-                    = ActionPrefix.setPhysicsRbpValue + parameterName + " ";
+                    = ActionPrefix.setPcoParmValue + parameterName + " ";
             Maud.gui.closeAllPopups();
             Maud.gui.showTextEntryDialog(prompt, defaultText, prefix,
                     controller);

@@ -101,15 +101,15 @@ class SelectOSAction {
                 ShowMenus.selectOverride();
                 break;
 
-            case Action.selectPhysics:
-                PhysicsMenus.selectObject(target);
+            case Action.selectPco:
+                PhysicsMenus.selectPco(target);
                 break;
 
-            case Action.selectPhysicsRbp:
+            case Action.selectPcoParm:
                 PhysicsMenus.selectRbp("");
                 break;
 
-            case Action.selectPhysicsShape:
+            case Action.selectPcoShape:
                 if (target.getPco().isSelected()) {
                     target.getShape().selectPcoShape();
                     Maud.gui.tools.select("shape");
@@ -146,12 +146,12 @@ class SelectOSAction {
                 ShowMenus.selectSgc();
                 break;
 
-            case Action.selectSgcObject:
+            case Action.selectSgcPco:
                 SelectedSgc sgc = target.getSgc();
-                String objectName = sgc.pcoName();
-                if (!objectName.isEmpty() && sgc.isEnabled()) {
-                    target.getPco().select(objectName);
-                    Maud.gui.tools.select("object");
+                String pcoName = sgc.pcoName();
+                if (!pcoName.isEmpty() && sgc.isEnabled()) {
+                    target.getPco().select(pcoName);
+                    Maud.gui.tools.select("pco");
                 }
                 break;
 
@@ -239,13 +239,13 @@ class SelectOSAction {
             PerformanceMode mode = PerformanceMode.valueOf(arg);
             model.getMisc().selectPerformanceMode(mode);
 
-        } else if (actionString.startsWith(ActionPrefix.selectPhysics)) {
-            arg = MyString.remainder(actionString, ActionPrefix.selectPhysics);
+        } else if (actionString.startsWith(ActionPrefix.selectPco)) {
+            arg = MyString.remainder(actionString, ActionPrefix.selectPco);
             target.getPco().select(arg);
 
-        } else if (actionString.startsWith(ActionPrefix.selectPhysicsRbp)) {
+        } else if (actionString.startsWith(ActionPrefix.selectPcoParm)) {
             arg = MyString.remainder(actionString,
-                    ActionPrefix.selectPhysicsRbp);
+                    ActionPrefix.selectPcoParm);
             RigidBodyParameter rbp; // TODO utility in ParseUtil
             try {
                 rbp = RigidBodyParameter.valueOf(arg);

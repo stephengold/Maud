@@ -113,7 +113,7 @@ class PreviousAction {
                 target.getOverride().selectPreviousName();
                 break;
 
-            case Action.previousPhysics: // TODO rename action
+            case Action.previousPco:
                 target.getPco().selectPrevious();
                 break;
 

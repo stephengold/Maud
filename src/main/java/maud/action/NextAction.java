@@ -113,12 +113,12 @@ class NextAction {
                 target.getOverride().selectNextName();
                 break;
 
-            case Action.nextPerformanceMode:
-                model.getMisc().selectNextPerformanceMode();
+            case Action.nextPco:
+                target.getPco().selectNext();
                 break;
 
-            case Action.nextPhysics: // TODO rename action
-                target.getPco().selectNext();
+            case Action.nextPerformanceMode:
+                model.getMisc().selectNextPerformanceMode();
                 break;
 
             case Action.nextRotationDisplay:

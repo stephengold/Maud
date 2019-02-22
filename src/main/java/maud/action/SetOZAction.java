@@ -95,7 +95,7 @@ class SetOZAction {
                 }
                 break;
 
-            case Action.setPhysicsRbpValue:
+            case Action.setPcoParmValue:
                 RigidBodyParameter rbp = model.getMisc().rbParameter();
                 EditorDialogs.setPhysicsRbpValue(rbp);
                 break;
@@ -211,9 +211,9 @@ class SetOZAction {
                     ActionPrefix.setOverrideValue);
             target.getOverride().setValue(arg);
 
-        } else if (actionString.startsWith(ActionPrefix.setPhysicsRbpValue)) {
+        } else if (actionString.startsWith(ActionPrefix.setPcoParmValue)) {
             arg = MyString.remainder(actionString,
-                    ActionPrefix.setPhysicsRbpValue);
+                    ActionPrefix.setPcoParmValue);
             String[] args = arg.split(" ");
             if (args.length == 2) {
                 RigidBodyParameter parm = RigidBodyParameter.valueOf(args[0]);

@@ -131,7 +131,7 @@ class LinkTool extends Tool {
         String addButton = "";
         String jointButton = "";
         String massButton = "";
-        String objectButton = "";
+        String pcoButton = "";
         String selectButton = "";
 
         Cgm target = Maud.getModel().getTarget();
@@ -158,14 +158,14 @@ class LinkTool extends Tool {
             }
             float mass = selectedLink.mass();
             massButton = Float.toString(mass);
-            objectButton = selectedLink.bodyName();
+            pcoButton = selectedLink.bodyName();
         }
 
         setButtonText("linkAddBoneLink", addButton);
         setButtonText("linkMass", massButton);
         setButtonText("linkSelectBone", selectButton);
         setButtonText("linkSelectJoint", jointButton);
-        setButtonText("linkSelectObject", objectButton);
+        setButtonText("linkSelectPco", pcoButton);
     }
     // *************************************************************************
     // private methods

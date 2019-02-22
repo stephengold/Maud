@@ -113,15 +113,15 @@ class SgcTool extends Tool {
     protected void toolUpdate() {
         updateIndex();
 
-        String deleteButton, selectObjectButton, selectSpatialButton;
-        String modeStatus, objectStatus, spatialStatus, typeStatus;
+        String deleteButton, selectPcoButton, selectSpatialButton;
+        String modeStatus, pcoStatus, spatialStatus, typeStatus;
 
         SelectedSgc sgc = Maud.getModel().getTarget().getSgc();
         if (sgc.isSelected()) {
             boolean isEnabled = sgc.isEnabled();
             setChecked("sgcEnable", isEnabled);
-            objectStatus = sgc.pcoName();
-            if (objectStatus.isEmpty()) {
+            pcoStatus = sgc.pcoName();
+            if (pcoStatus.isEmpty()) {
                 disableCheckBox("sgcLocalPhysics");
             } else {
                 boolean isLocalPhysics = sgc.isApplyPhysicsLocal();
@@ -129,10 +129,10 @@ class SgcTool extends Tool {
             }
 
             deleteButton = "Delete";
-            if (objectStatus.isEmpty() || !isEnabled) {
-                selectObjectButton = "";
+            if (pcoStatus.isEmpty() || !isEnabled) {
+                selectPcoButton = "";
             } else {
-                selectObjectButton = "Select";
+                selectPcoButton = "Select";
             }
             selectSpatialButton = "Select";
 
@@ -146,20 +146,20 @@ class SgcTool extends Tool {
             disableCheckBox("sgcLocalPhysics");
 
             deleteButton = "";
-            selectObjectButton = "";
+            selectPcoButton = "";
             selectSpatialButton = "";
 
             modeStatus = "(no control selected)";
-            objectStatus = "(no control selected)";
+            pcoStatus = "(no control selected)";
             spatialStatus = "(no control selected)";
             typeStatus = "(no control selected)";
         }
 
         setButtonText("sgcDelete", deleteButton);
-        setButtonText("sgcSelectObject", selectObjectButton);
+        setButtonText("sgcSelectPco", selectPcoButton);
         setButtonText("sgcSelectSpatial", selectSpatialButton);
         setStatusText("sgcMode", " " + modeStatus);
-        setStatusText("sgcObject", " " + objectStatus);
+        setStatusText("sgcPco", " " + pcoStatus);
         setStatusText("sgcSpatial", " " + spatialStatus);
         setStatusText("sgcType", " " + typeStatus);
     }

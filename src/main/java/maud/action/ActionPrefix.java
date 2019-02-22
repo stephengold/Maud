@@ -363,18 +363,18 @@ public class ActionPrefix {
      */
     final public static String selectOverride = "select override ";
     /**
+     * argument is the name of a physics collision object or a prefix thereof
+     */
+    final public static String selectPco = "select pco ";
+    /**
+     * argument is the name of a RigidBodyParameter
+     */
+    final public static String selectPcoParm = "select pcoParm ";
+    /**
      * argument is the name of a performance mode
      */
     final public static String selectPerformanceMode
             = "select performanceMode ";
-    /**
-     * argument is the name of a physics object or a prefix thereof
-     */
-    final public static String selectPhysics = "select physics ";
-    /**
-     * argument is the name of a RigidBodyParameter
-     */
-    final public static String selectPhysicsRbp = "select physicsRbp ";
     /**
      * argument is the name of a PlatformType
      */
@@ -613,7 +613,7 @@ public class ActionPrefix {
     /**
      * arguments are the parameter name and a decimal value
      */
-    final public static String setPhysicsRbpValue = "set physicsRbpValue ";
+    final public static String setPcoParmValue = "set pcoParmValue ";
     /**
      * arguments are whichCgm and a decimal diameter in world units
      */

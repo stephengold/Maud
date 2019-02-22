@@ -37,7 +37,7 @@ import maud.model.cgm.SelectedPco;
 import maud.model.option.RigidBodyParameter;
 
 /**
- * The controller for the "Object" tool in Maud's editor screen.
+ * The controller for the "Collision-Object" tool in Maud's editor screen.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -60,7 +60,7 @@ class PcoTool extends Tool {
      * the tool (not null)
      */
     PcoTool(GuiScreenController screenController) {
-        super(screenController, "object"); // TODO rename tool
+        super(screenController, "pco");
     }
     // *************************************************************************
     // Tool methods
@@ -73,7 +73,7 @@ class PcoTool extends Tool {
     protected void toolUpdate() {
         updateIndex();
         updateName();
-        updateRbp();
+        updateParameter();
         updateShape();
     }
     // *************************************************************************
@@ -87,31 +87,31 @@ class PcoTool extends Tool {
         String nextButton = "", previousButton = "", selectButton = "";
 
         Cgm target = Maud.getModel().getTarget();
-        int numObjects = target.getPhysics().countPcos();
-        if (numObjects > 0) {
+        int numPcos = target.getPhysics().countPcos();
+        if (numPcos > 0) {
             selectButton = "Select";
         }
 
-        SelectedPco object = target.getPco();
-        if (object.isSelected()) {
-            int selectedIndex = object.index();
-            indexStatus = DescribeUtil.index(selectedIndex, numObjects);
-            if (numObjects > 1) {
+        SelectedPco pco = target.getPco();
+        if (pco.isSelected()) {
+            int selectedIndex = pco.index();
+            indexStatus = DescribeUtil.index(selectedIndex, numPcos);
+            if (numPcos > 1) {
                 nextButton = "+";
                 previousButton = "-";
             }
-        } else if (numObjects == 0) {
+        } else if (numPcos == 0) {
             indexStatus = "no objects";
-        } else if (numObjects == 1) {
+        } else if (numPcos == 1) {
             indexStatus = "one object";
         } else {
-            indexStatus = String.format("%d objects", numObjects);
+            indexStatus = String.format("%d objects", numPcos);
         }
 
-        setStatusText("physicsIndex", indexStatus);
-        setButtonText("physicsNext", nextButton);
-        setButtonText("physicsPrevious", previousButton);
-        setButtonText("physicsSelectObject", selectButton);
+        setStatusText("pcoIndex", indexStatus);
+        setButtonText("pcoNext", nextButton);
+        setButtonText("pcoPrevious", previousButton);
+        setButtonText("pcoSelect", selectButton);
         // TODO more parameters: user object, collision group,
         // collideWith groups, debug mesh resolution/normals,
         // contact-response flag, static flag
@@ -128,21 +128,21 @@ class PcoTool extends Tool {
         } else {
             name = "(none selected)";
         }
-        setStatusText("physicsName", " " + name);
+        setStatusText("pcoName", " " + name);
     }
 
     /**
-     * Update the rigid-body parameter buttons.
+     * Update the parameter buttons.
      */
-    private void updateRbp() {
+    private void updateParameter() {
         EditorModel model = Maud.getModel();
         RigidBodyParameter rbp = model.getMisc().rbParameter();
-        String rbpName = rbp.toString();
-        SelectedPco object = model.getTarget().getPco();
-        String rbpValue = object.value(rbp);
+        String name = rbp.toString();
+        SelectedPco pco = model.getTarget().getPco();
+        String value = pco.value(rbp);
 
-        setButtonText("physicsRbp", rbpName);
-        setButtonText("physicsRbpValue", rbpValue);
+        setButtonText("pcoParm", name);
+        setButtonText("pcoParmValue", value);
     }
 
     /**
@@ -151,16 +151,16 @@ class PcoTool extends Tool {
     private void updateShape() {
         String sButton, shape;
 
-        SelectedPco object = Maud.getModel().getTarget().getPco();
-        if (object.isSelected()) {
-            shape = object.shapeName();
+        SelectedPco pco = Maud.getModel().getTarget().getPco();
+        if (pco.isSelected()) {
+            shape = pco.shapeName();
             sButton = "Select";
         } else {
             shape = "";
             sButton = "";
         }
 
-        setStatusText("physicsShape", " " + shape);
-        setButtonText("physicsSelectShape", sButton);
+        setStatusText("pcoShape", " " + shape);
+        setButtonText("pcoSelectShape", sButton);
     }
 }

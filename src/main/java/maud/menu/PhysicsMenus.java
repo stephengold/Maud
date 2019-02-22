@@ -103,10 +103,10 @@ public class PhysicsMenus {
 
         builder.addTool("Collision-object tool");
 
-        int numObjects = physics.countPcos();
-        if (numObjects == 1) {
+        int numPcos = physics.countPcos();
+        if (numPcos == 1) {
             builder.add("Select object");
-        } else if (numObjects > 1) {
+        } else if (numPcos > 1) {
             builder.addSubmenu("Select object");
         }
 
@@ -162,6 +162,10 @@ public class PhysicsMenus {
                     addControl();
                     break;
 
+                case "Collision-object tool":
+                    Maud.gui.tools.select("pco");
+                    break;
+
                 case "Compound shape":
                     target.getShape().addParent();
                     break;
@@ -182,10 +186,6 @@ public class PhysicsMenus {
                     EditorDialogs.setPhysicsRbpValue(RigidBodyParameter.Mass);
                     break;
 
-                case "Collision-object tool":
-                    Maud.gui.tools.select("object");
-                    break;
-
                 case "Select joint":
                     selectJoint(target);
                     break;
@@ -195,7 +195,7 @@ public class PhysicsMenus {
                     break;
 
                 case "Select object":
-                    selectObject(target);
+                    selectPco(target);
                     break;
 
                 case "Select shape":
@@ -345,11 +345,11 @@ public class PhysicsMenus {
     }
 
     /**
-     * Display a "select physics" menu to select a physics object.
+     * Display a "select pco" menu to select a physics object.
      *
      * @param cgm which load slot (not null)
      */
-    public static void selectObject(Cgm cgm) {
+    public static void selectPco(Cgm cgm) {
         if (cgm.isLoaded()) {
             List<String> names = cgm.getPhysics().listPcoNames("");
             if (!names.isEmpty()) {
@@ -357,13 +357,13 @@ public class PhysicsMenus {
                 for (String name : names) {
                     builder.add(name);
                 }
-                builder.show(ActionPrefix.selectPhysics);
+                builder.show(ActionPrefix.selectPco);
             }
         }
     }
 
     /**
-     * Display a "select physicsRbp" menu to select a rigid-body parameter.
+     * Display a "select pcoParm" menu to select a rigid-body parameter.
      *
      * @param namePrefix prefix for RBP filtering (not null)
      */
@@ -394,7 +394,7 @@ public class PhysicsMenus {
                 builder.addEllipsis(name);
             }
         }
-        builder.show(ActionPrefix.selectPhysicsRbp);
+        builder.show(ActionPrefix.selectPcoParm);
     }
 
     /**
@@ -483,7 +483,7 @@ public class PhysicsMenus {
             if (physics.hasPco(userId)) {
                 SelectedPco object = target.getPco();
                 object.select(userId);
-                Maud.gui.tools.select("object");
+                Maud.gui.tools.select("pco");
             } else {
                 shape.select(userId);
                 Maud.gui.tools.select("shape");

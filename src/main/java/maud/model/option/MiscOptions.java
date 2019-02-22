@@ -606,7 +606,7 @@ public class MiscOptions implements Cloneable {
                 + performanceMode.toString();
         MaudUtil.writePerformAction(writer, action);
 
-        action = ActionPrefix.selectPhysicsRbp + rbp.toString();
+        action = ActionPrefix.selectPcoParm + rbp.toString();
         MaudUtil.writePerformAction(writer, action);
 
         action = ActionPrefix.selectRotationDisplay
