@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -142,11 +142,10 @@ public class ScenePov implements Cloneable, Pov {
      */
     public Vector3f location(Vector3f storeResult) {
         if (storeResult == null) {
-            storeResult = new Vector3f();
+            return povLocation.clone();
+        } else {
+            return storeResult.set(povLocation);
         }
-        storeResult.set(povLocation);
-
-        return storeResult;
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -194,16 +194,18 @@ public class DisplayedPose implements JmeCloneable {
      *
      * @param boneIndex which bone to use (&ge;0)
      * @param storeResult (modified if not null)
-     * @return world coordinates (either storeResult or a new instance)
+     * @return a location vector (in world coordinates, either storeResult or a
+     * new instance, not null)
      */
     public Vector3f worldLocation(int boneIndex, Vector3f storeResult) {
         Validate.nonNegative(boneIndex, "bone index");
+        Vector3f result = (storeResult == null) ? new Vector3f() : storeResult;
 
         Transform transform = cgm.getSceneView().worldTransform(null);
         Vector3f modelLocation = pose.modelLocation(boneIndex, null);
-        storeResult = transform.transformVector(modelLocation, storeResult);
+        transform.transformVector(modelLocation, result);
 
-        return storeResult;
+        return result;
     }
     // *************************************************************************
     // JmeCloneable methods

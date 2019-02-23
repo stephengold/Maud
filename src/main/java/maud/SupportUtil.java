@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -213,21 +213,19 @@ public class SupportUtil {
 
     /**
      * Calculate the sensitivity of the indexed vertex to translations of the
-     * indexed bone in the specified pose.
+     * indexed Bone in the specified pose.
      *
      * @param boneIndex which bone to translate (&ge;0)
      * @param geometry (not null)
      * @param vertexIndex index into the geometry's vertices (&ge;0)
      * @param pose (not null, unaffected)
      * @param storeResult (modified if not null)
-     * @return sensitivity matrix (either storeResult or a new instance)
+     * @return the sensitivity matrix (either storeResult or a new instance)
      */
     public static Matrix3f sensitivity(int boneIndex, Geometry geometry,
             int vertexIndex, Pose pose, Matrix3f storeResult) {
         Validate.nonNull(geometry, "geometry");
-        if (storeResult == null) {
-            storeResult = new Matrix3f();
-        }
+        Matrix3f result = (storeResult == null) ? new Matrix3f() : storeResult;
 
         Vector3f testWorld = new Vector3f();
         Vector3f baseWorld = new Vector3f();
@@ -245,7 +243,7 @@ public class SupportUtil {
         testPose.skin(matrices);
         MyMesh.vertexWorldLocation(geometry, vertexIndex, matrices, testWorld);
         testWorld.subtractLocal(baseWorld);
-        storeResult.setColumn(0, testWorld);
+        result.setColumn(0, testWorld);
 
         pose.userTranslation(boneIndex, testWorld);
         testWorld.addLocal(yAxis);
@@ -253,7 +251,7 @@ public class SupportUtil {
         testPose.skin(matrices);
         MyMesh.vertexWorldLocation(geometry, vertexIndex, matrices, testWorld);
         testWorld.subtractLocal(baseWorld);
-        storeResult.setColumn(1, testWorld);
+        result.setColumn(1, testWorld);
 
         pose.userTranslation(boneIndex, testWorld);
         testWorld.addLocal(zAxis);
@@ -261,8 +259,8 @@ public class SupportUtil {
         testPose.skin(matrices);
         MyMesh.vertexWorldLocation(geometry, vertexIndex, matrices, testWorld);
         testWorld.subtractLocal(baseWorld);
-        storeResult.setColumn(2, testWorld);
+        result.setColumn(2, testWorld);
 
-        return storeResult;
+        return result;
     }
 }

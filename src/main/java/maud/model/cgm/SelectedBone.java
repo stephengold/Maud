@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -386,28 +386,35 @@ public class SelectedBone implements Cloneable {
      * Calculate the model orientation of the selected bone.
      *
      * @param storeResult (modified if not null)
-     * @return orientation in model space (either storeResult or a new instance)
+     * @return the orientation in model space (either storeResult or a new
+     * instance, not null)
      */
     public Quaternion modelOrientation(Quaternion storeResult) {
+        Quaternion result
+                = (storeResult == null) ? new Quaternion() : storeResult;
+
         Pose pose = cgm.getPose().get();
         int boneIndex = index();
-        storeResult = pose.modelOrientation(boneIndex, storeResult);
+        pose.modelOrientation(boneIndex, result);
 
-        return storeResult;
+        return result;
     }
 
     /**
      * Calculate the model transform of the selected bone.
      *
      * @param storeResult (modified if not null)
-     * @return transform (either storeResult or a new instance)
+     * @return the Transform (either storeResult or a new instance, not null)
      */
     public Transform modelTransform(Transform storeResult) {
+        Transform result
+                = (storeResult == null) ? new Transform() : storeResult;
+
         Pose pose = cgm.getPose().get();
         int boneIndex = index();
-        storeResult = pose.modelTransform(boneIndex, storeResult);
+        pose.modelTransform(boneIndex, result);
 
-        return storeResult;
+        return result;
     }
 
     /**
@@ -692,14 +699,18 @@ public class SelectedBone implements Cloneable {
      * Calculate the animation/user rotation of the selected bone.
      *
      * @param storeResult (modified if not null)
-     * @return user rotation (either storeResult or a new instance)
+     * @return the user rotation (either storeResult or a new instance, not
+     * null)
      */
     public Quaternion userRotation(Quaternion storeResult) {
+        Quaternion result
+                = (storeResult == null) ? new Quaternion() : storeResult;
+
         Pose pose = cgm.getPose().get();
         int boneIndex = index();
-        storeResult = pose.userRotation(boneIndex, storeResult);
+        pose.userRotation(boneIndex, result);
 
-        return storeResult;
+        return result;
     }
 
     /**
@@ -709,11 +720,13 @@ public class SelectedBone implements Cloneable {
      * @return user scale (either storeResult or a new instance)
      */
     public Vector3f userScale(Vector3f storeResult) {
+        Vector3f result = (storeResult == null) ? new Vector3f() : storeResult;
+
         Pose pose = cgm.getPose().get();
         int boneIndex = index();
-        storeResult = pose.userScale(boneIndex, storeResult);
+        pose.userScale(boneIndex, result);
 
-        return storeResult;
+        return result;
     }
 
     /**
@@ -723,11 +736,13 @@ public class SelectedBone implements Cloneable {
      * @return user translation (either storeResult or a new instance)
      */
     public Vector3f userTranslation(Vector3f storeResult) {
+        Vector3f result = (storeResult == null) ? new Vector3f() : storeResult;
+
         Pose pose = cgm.getPose().get();
         int boneIndex = index();
-        storeResult = pose.userTranslation(boneIndex, storeResult);
+        pose.userTranslation(boneIndex, result);
 
-        return storeResult;
+        return result;
     }
 
     /**
@@ -737,11 +752,13 @@ public class SelectedBone implements Cloneable {
      * @return world coordinates (either storeResult or a new instance)
      */
     public Vector3f worldLocation(Vector3f storeResult) {
+        Vector3f result = (storeResult == null) ? new Vector3f() : storeResult;
+
         DisplayedPose displayedPose = cgm.getPose();
         int boneIndex = index();
-        storeResult = displayedPose.worldLocation(boneIndex, storeResult);
+        displayedPose.worldLocation(boneIndex, result);
 
-        return storeResult;
+        return result;
     }
     // *************************************************************************
     // Object methods

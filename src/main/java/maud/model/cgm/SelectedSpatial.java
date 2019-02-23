@@ -1219,15 +1219,14 @@ public class SelectedSpatial implements JmeCloneable {
      * @return local rotation (either storeResult or a new instance)
      */
     public Quaternion localRotation(Quaternion storeResult) {
-        if (storeResult == null) {
-            storeResult = new Quaternion();
-        }
+        Quaternion result
+                = (storeResult == null) ? new Quaternion() : storeResult;
 
         Spatial spatial = find();
         Quaternion rotation = spatial.getLocalRotation();
-        storeResult.set(rotation);
+        result.set(rotation);
 
-        return storeResult;
+        return result;
     }
 
     /**
@@ -1237,15 +1236,13 @@ public class SelectedSpatial implements JmeCloneable {
      * @return local scale vector (either storeResult or a new instance)
      */
     public Vector3f localScale(Vector3f storeResult) {
-        if (storeResult == null) {
-            storeResult = new Vector3f();
-        }
+        Vector3f result = (storeResult == null) ? new Vector3f() : storeResult;
 
         Spatial spatial = find();
         Vector3f scale = spatial.getLocalScale();
-        storeResult.set(scale);
+        result.set(scale);
 
-        return storeResult;
+        return result;
     }
 
     /**
@@ -1255,15 +1252,13 @@ public class SelectedSpatial implements JmeCloneable {
      * @return local translation vector (either storeResult or a new instance)
      */
     public Vector3f localTranslation(Vector3f storeResult) {
-        if (storeResult == null) {
-            storeResult = new Vector3f();
-        }
+        Vector3f result = (storeResult == null) ? new Vector3f() : storeResult;
 
         Spatial spatial = find();
         Vector3f translation = spatial.getLocalTranslation();
-        storeResult.set(translation);
+        result.set(translation);
 
-        return storeResult;
+        return result;
     }
 
     /**

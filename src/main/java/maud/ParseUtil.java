@@ -174,10 +174,10 @@ public class ParseUtil {
     }
 
     /**
-     * Parse the specified text to obtain a texture key.
+     * Parse the specified text to obtain a TextureKey.
      *
      * @param text the input text (not null, not empty)
-     * @return a new texture key (not null)
+     * @return a new TextureKey (not null)
      * @see maud.DescribeUtil#key(com.jme3.asset.TextureKey)
      */
     public static TextureKey parseTextureKey(String text) {
@@ -187,10 +187,10 @@ public class ParseUtil {
         boolean generateMips = false;
         int anisotropy = 0;
         Texture.Type typeHint = Texture.Type.TwoDimensional;
-        String name;
+        String remainingText = text;
 
         while (true) {
-            Matcher matcher = tagPattern.matcher(text);
+            Matcher matcher = tagPattern.matcher(remainingText);
             if (matcher.find()) {
                 int startPos = matcher.start();
                 String tag = matcher.group(1);
@@ -218,14 +218,13 @@ public class ParseUtil {
                             throw new IllegalArgumentException(tag);
                     }
                 }
-                text = text.substring(0, startPos);
+                remainingText = remainingText.substring(0, startPos);
             } else {
-                name = text;
                 break;
             }
         }
 
-        TextureKey result = new TextureKey(name, flipY);
+        TextureKey result = new TextureKey(remainingText, flipY);
         result.setAnisotropy(anisotropy);
         result.setGenerateMips(generateMips);
         result.setTextureTypeHint(typeHint);

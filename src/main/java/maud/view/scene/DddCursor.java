@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -110,11 +110,10 @@ public class DddCursor {
      */
     public Vector3f location(Vector3f storeResult) {
         if (storeResult == null) {
-            storeResult = new Vector3f();
+            return location.clone();
+        } else {
+            return storeResult.set(location);
         }
-
-        storeResult.set(location);
-        return storeResult;
     }
 
     /**

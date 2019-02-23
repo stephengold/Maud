@@ -471,14 +471,13 @@ public class SelectedShape implements JmeCloneable {
      * @return world transform (either storeResult or a new instance)
      */
     public Transform transform(Transform storeResult) {
-        if (storeResult == null) {
-            storeResult = new Transform();
-        }
+        Transform result
+                = (storeResult == null) ? new Transform() : storeResult;
 
         SelectedPco selectedObject = cgm.getPco();
         long selectedId = id();
         if (selectedObject.usesShape(selectedId)) {
-            selectedObject.transform(storeResult);
+            selectedObject.transform(result);
             // further transform if part of a compound shape
         } else {
             Set<Long> userSet = userSet();
@@ -488,7 +487,7 @@ public class SelectedShape implements JmeCloneable {
                 PhysicsCollisionObject objectUser
                         = cgm.getPhysics().findPco(userId);
                 if (objectUser != null) {
-                    PhysicsUtil.transform(objectUser, storeResult);
+                    PhysicsUtil.transform(objectUser, result);
                 } else {
                     CollisionShape shapeUser
                             = cgm.getPhysics().findShape(userId);
@@ -505,18 +504,18 @@ public class SelectedShape implements JmeCloneable {
                             rot.fromRotationMatrix(child.getRotation(null));
                         }
                     }
-                    storeResult.combineWithParent(parent);
+                    result.combineWithParent(parent);
                 }
 
             } else {
                 /*
                  * shape has multiple users, or none
                  */
-                storeResult.loadIdentity();
+                result.loadIdentity();
             }
         }
 
-        return storeResult;
+        return result;
     }
 
     /**

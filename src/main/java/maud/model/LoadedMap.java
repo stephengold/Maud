@@ -96,10 +96,9 @@ public class LoadedMap implements Cloneable {
      */
     public Transform boneTransform(int boneIndex, Transform storeResult) {
         Validate.nonNegative(boneIndex, "bone index");
-        if (storeResult == null) {
-            storeResult = new Transform();
-        }
-        storeResult.loadIdentity();
+        Transform result
+                = (storeResult == null) ? new Transform() : storeResult;
+        result.loadIdentity();
 
         Cgm source = Maud.getModel().getSource();
         Cgm target = Maud.getModel().getTarget();
@@ -120,32 +119,32 @@ public class LoadedMap implements Cloneable {
                 Quaternion userRotation
                         = targetPose.userForModel(boneIndex, mo, null);
                 Quaternion twist = boneMapping.getTwist();
-                userRotation.mult(twist, storeResult.getRotation());
+                userRotation.mult(twist, result.getRotation());
             }
         }
 
-        return storeResult;
+        return result;
     }
 
     /**
      * Copy the effective twist of the selected bone mapping.
      *
      * @param storeResult (modified if not null)
-     * @return twist rotation (either storeResult or a new instance)
+     * @return the twist rotation (either storeResult or a new instance, not
+     * null)
      */
     public Quaternion copyTwist(Quaternion storeResult) {
-        if (storeResult == null) {
-            storeResult = new Quaternion();
-        }
+        Quaternion result
+                = (storeResult == null) ? new Quaternion() : storeResult;
 
         BoneMapping boneMapping = selectedMapping();
         Quaternion twist = boneMapping.getTwist();
-        storeResult.set(twist);
+        result.set(twist);
         if (isInvertingMap()) {
-            storeResult.inverseLocal();
+            result.inverseLocal();
         }
 
-        return storeResult;
+        return result;
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -93,36 +93,35 @@ public class SkeletonOptions implements Cloneable {
      *
      * @param use which color to copy (not null)
      * @param storeResult (modified if not null)
-     * @return color (either storeResult or a new instance)
+     * @return the color (either storeResult or a new instance, not null)
      */
     public ColorRGBA copyColor(SkeletonColors use, ColorRGBA storeResult) {
         Validate.nonNull(use, "use");
-        if (storeResult == null) {
-            storeResult = new ColorRGBA();
-        }
+        ColorRGBA result
+                = (storeResult == null) ? new ColorRGBA() : storeResult;
 
         switch (use) {
             case IdleBones:
-                storeResult.set(defaultColor);
+                result.set(defaultColor);
                 break;
 
             case Links:
-                storeResult.set(linkColor);
+                result.set(linkColor);
                 break;
 
             case MappedBones:
-                storeResult.set(mappedColor);
+                result.set(mappedColor);
                 break;
 
             case TrackedBones:
-                storeResult.set(trackedColor);
+                result.set(trackedColor);
                 break;
 
             default:
                 throw new IllegalArgumentException();
         }
 
-        return storeResult;
+        return result;
     }
 
     /**

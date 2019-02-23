@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -75,30 +75,29 @@ public class InfluenceUtil {
      * @param skeleton skeleton (not null, unaffected)
      * @param storeResult (modified if not null)
      * @return the set of bones with influence (either storeResult or a new
-     * instance)
+     * instance, not null)
      */
     public static BitSet addAllInfluencers(Spatial subtree, Skeleton skeleton,
             BitSet storeResult) {
         int numBones = skeleton.getBoneCount();
-        if (storeResult == null) {
-            storeResult = new BitSet(numBones);
-        }
+        BitSet result
+                = (storeResult == null) ? new BitSet(numBones) : storeResult;
 
-        addDirectInfluencers(subtree, storeResult);
+        addDirectInfluencers(subtree, result);
 
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
-            if (storeResult.get(boneIndex)) {
+            if (result.get(boneIndex)) {
                 Bone bone = skeleton.getBone(boneIndex);
                 for (Bone parent = bone.getParent();
                         parent != null;
                         parent = parent.getParent()) {
                     int parentIndex = skeleton.getBoneIndex(parent);
-                    storeResult.set(parentIndex);
+                    result.set(parentIndex);
                 }
             }
         }
 
-        return storeResult;
+        return result;
     }
 
     /**
@@ -111,9 +110,7 @@ public class InfluenceUtil {
      * instance)
      */
     public static BitSet addDirectInfluencers(Mesh mesh, BitSet storeResult) {
-        if (storeResult == null) {
-            storeResult = new BitSet(120);
-        }
+        BitSet result = storeResult == null ? new BitSet(120) : storeResult;
 
         int maxWeightsPerVert = mesh.getMaxNumWeights();
         if (maxWeightsPerVert <= 0) {
@@ -140,12 +137,12 @@ public class InfluenceUtil {
                 float weight = weightBuffer.get();
                 int boneIndex = MyMesh.readIndex(boneIndexBuffer);
                 if (wIndex < maxWeightsPerVert && weight != 0f) {
-                    storeResult.set(boneIndex);
+                    result.set(boneIndex);
                 }
             }
         }
 
-        return storeResult;
+        return result;
     }
 
     /**
@@ -159,25 +156,23 @@ public class InfluenceUtil {
      */
     public static BitSet addDirectInfluencers(Spatial subtree,
             BitSet storeResult) {
-        if (storeResult == null) {
-            storeResult = new BitSet(120);
-        }
+        BitSet result = (storeResult == null) ? new BitSet(120) : storeResult;
 
         if (subtree instanceof Geometry) {
             Geometry geometry = (Geometry) subtree;
             Mesh mesh = geometry.getMesh();
             if (MyMesh.isAnimated(mesh)) {
-                addDirectInfluencers(mesh, storeResult);
+                addDirectInfluencers(mesh, result);
             }
 
         } else if (subtree instanceof Node) {
             Node node = (Node) subtree;
             List<Spatial> children = node.getChildren();
             for (Spatial child : children) {
-                addDirectInfluencers(child, storeResult);
+                addDirectInfluencers(child, result);
             }
         }
 
-        return storeResult;
+        return result;
     }
 }

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -559,29 +559,28 @@ public class SelectedLight implements JmeCloneable {
      * Calculate a transform for the light.
      *
      * @param storeResult (modified if not null)
-     * @return world transform (either storeResult or a new instance)
+     * @return a Transform (in world coordinates, either storeResult or a new
+     * instance, not null)
      */
     public Transform transform(Transform storeResult) {
-        if (storeResult == null) {
-            storeResult = new Transform();
-        } else {
-            storeResult.loadIdentity();
-        }
+        Transform result
+                = (storeResult == null) ? new Transform() : storeResult;
+        result.loadIdentity();
 
         Vector3f position = position();
         if (position != null) {
-            storeResult.setTranslation(position);
+            result.setTranslation(position);
         }
         Vector3f direction = direction();
         if (direction != null) {
             Vector3f axis2 = new Vector3f();
             Vector3f axis3 = new Vector3f();
             MyVector3f.generateBasis(direction, axis2, axis3);
-            Quaternion orientation = storeResult.getRotation();
+            Quaternion orientation = result.getRotation();
             orientation.fromAxes(direction, axis2, axis3);
         }
 
-        return storeResult;
+        return result;
     }
     // *************************************************************************
     // JmeCloneable methods

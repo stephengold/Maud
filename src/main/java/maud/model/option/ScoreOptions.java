@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -234,30 +234,30 @@ public class ScoreOptions implements Cloneable {
      * Copy the background color for the source C-G model.
      *
      * @param storeResult (modified if not null)
-     * @return color (either storeResult or a new instance)
+     * @return the background color (either storeResult or a new instance, not
+     * null)
      */
     public ColorRGBA sourceBackgroundColor(ColorRGBA storeResult) {
         if (storeResult == null) {
-            storeResult = new ColorRGBA();
+            return sourceBackground.clone();
+        } else {
+            return storeResult.set(sourceBackground);
         }
-        storeResult.set(sourceBackground);
-
-        return storeResult;
     }
 
     /**
      * Copy the background color for the target C-G model.
      *
      * @param storeResult (modified if not null)
-     * @return color (either storeResult or a new instance)
+     * @return the background color (either storeResult or a new instance, not
+     * null)
      */
     public ColorRGBA targetBackgroundColor(ColorRGBA storeResult) {
         if (storeResult == null) {
-            storeResult = new ColorRGBA();
+            return targetBackground.clone();
+        } else {
+            return storeResult.set(targetBackground);
         }
-        storeResult.set(targetBackground);
-
-        return storeResult;
     }
 
     /**

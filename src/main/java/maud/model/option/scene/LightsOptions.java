@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018, Stephen Gold
+ Copyright (c) 2018-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -75,14 +75,12 @@ public class LightsOptions implements Cloneable {
      * instance)
      */
     public Vector3f direction(Vector3f storeResult) {
+        assert direction.isUnitVector();
         if (storeResult == null) {
-            storeResult = new Vector3f();
+            return direction.clone();
+        } else {
+            return storeResult.set(direction);
         }
-
-        storeResult.set(direction);
-
-        assert storeResult.isUnitVector();
-        return storeResult;
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -82,47 +82,53 @@ public class SelectedVertex implements Cloneable {
      * Copy the bone indices of the vertex.
      *
      * @param storeResult (modified if not null)
-     * @return array of indices (either storeResult or a new instance)
+     * @return an array of bone indices (either storeResult or a new instance,
+     * not null)
      */
     public int[] boneIndices(int[] storeResult) {
         assert selectedIndex >= 0 : selectedIndex;
+        int[] result
+                = (storeResult == null) ? new int[maxWeights] : storeResult;
 
         Mesh mesh = cgm.getSpatial().getMesh();
-        storeResult = MyMesh.vertexBoneIndices(mesh, selectedIndex,
-                storeResult);
+        MyMesh.vertexBoneIndices(mesh, selectedIndex, result);
 
-        return storeResult;
+        return result;
     }
 
     /**
      * Copy the bone weights of the vertex.
      *
      * @param storeResult (modified if not null)
-     * @return array of weights (either storeResult or a new instance)
+     * @return an array of weights (either storeResult or a new instance, not
+     * null)
      */
     public float[] boneWeights(float[] storeResult) {
         assert selectedIndex >= 0 : selectedIndex;
+        float[] result
+                = (storeResult == null) ? new float[maxWeights] : storeResult;
 
         Mesh mesh = cgm.getSpatial().getMesh();
-        storeResult = MyMesh.vertexBoneWeights(mesh, selectedIndex,
-                storeResult);
+        MyMesh.vertexBoneWeights(mesh, selectedIndex, result);
 
-        return storeResult;
+        return result;
     }
 
     /**
      * Copy the color of the selected vertex.
      *
      * @param storeResult (modified if not null)
-     * @return the color (either storeResult or a new instance)
+     * @return a color (either storeResult or a new instance, not null)
      */
     public ColorRGBA color(ColorRGBA storeResult) {
         assert selectedIndex >= 0 : selectedIndex;
+        ColorRGBA result
+                = (storeResult == null) ? new ColorRGBA() : storeResult;
 
         Mesh mesh = cgm.getSpatial().getMesh();
-        storeResult = MyMesh.vertexColor(mesh, selectedIndex, storeResult);
+        MyMesh.vertexColor(mesh, selectedIndex, result);
 
-        return storeResult;
+        return result;
     }
 
     /**
@@ -130,17 +136,17 @@ public class SelectedVertex implements Cloneable {
      *
      * @param bufferType which vertex buffer to read (8 legal values)
      * @param storeResult (modified if not null)
-     * @return the data vector (either storeResult or a new instance)
+     * @return a data vector (either storeResult or a new instance)
      */
     public Vector2f copyVector2f(VertexBuffer.Type bufferType,
             Vector2f storeResult) {
         assert selectedIndex >= 0 : selectedIndex;
+        Vector2f result = (storeResult == null) ? new Vector2f() : storeResult;
 
         Mesh mesh = cgm.getSpatial().getMesh();
-        storeResult = MyMesh.vertexVector2f(mesh, bufferType, selectedIndex,
-                storeResult);
+        MyMesh.vertexVector2f(mesh, bufferType, selectedIndex, result);
 
-        return storeResult;
+        return result;
     }
 
     /**
@@ -148,29 +154,28 @@ public class SelectedVertex implements Cloneable {
      *
      * @param bufferType which vertex buffer to read (5 legal values)
      * @param storeResult (modified if not null)
-     * @return the data vector (either storeResult or a new instance)
+     * @return a data vector (either storeResult or a new instance, not null)
      */
     public Vector3f copyVector3f(VertexBuffer.Type bufferType,
             Vector3f storeResult) {
         assert selectedIndex >= 0 : selectedIndex;
+        Vector3f result = (storeResult == null) ? new Vector3f() : storeResult;
 
         Mesh mesh = cgm.getSpatial().getMesh();
         if (bufferType == VertexBuffer.Type.Position) {
             Pose pose = cgm.getPose().get();
             Matrix4f[] skinningMatrices = pose.skin(null);
-            storeResult = MyMesh.vertexLocation(mesh, selectedIndex,
-                    skinningMatrices, storeResult);
+            MyMesh.vertexLocation(mesh, selectedIndex, skinningMatrices,
+                    result);
         } else if (bufferType == VertexBuffer.Type.Normal) {
             Pose pose = cgm.getPose().get();
             Matrix4f[] skinningMatrices = pose.skin(null);
-            storeResult = MyMesh.vertexNormal(mesh, selectedIndex,
-                    skinningMatrices, storeResult);
+            MyMesh.vertexNormal(mesh, selectedIndex, skinningMatrices, result);
         } else {
-            storeResult = MyMesh.vertexVector3f(mesh, bufferType, selectedIndex,
-                    storeResult);
+            MyMesh.vertexVector3f(mesh, bufferType, selectedIndex, result);
         }
 
-        return storeResult;
+        return result;
     }
 
     /**
@@ -178,24 +183,23 @@ public class SelectedVertex implements Cloneable {
      *
      * @param bufferType which vertex buffer to read (5 legal values)
      * @param storeResult (modified if not null)
-     * @return the data vector (either storeResult or a new instance)
+     * @return a data vector (either storeResult or a new instance)
      */
     public Vector4f copyVector4f(VertexBuffer.Type bufferType,
             Vector4f storeResult) {
         assert selectedIndex >= 0 : selectedIndex;
+        Vector4f result = (storeResult == null) ? new Vector4f() : storeResult;
 
         Mesh mesh = cgm.getSpatial().getMesh();
         if (bufferType == VertexBuffer.Type.Tangent) {
             Pose pose = cgm.getPose().get();
             Matrix4f[] skinningMatrices = pose.skin(null);
-            storeResult = MyMesh.vertexTangent(mesh, selectedIndex,
-                    skinningMatrices, storeResult);
+            MyMesh.vertexTangent(mesh, selectedIndex, skinningMatrices, result);
         } else {
-            storeResult = MyMesh.vertexVector4f(mesh, bufferType, selectedIndex,
-                    storeResult);
+            MyMesh.vertexVector4f(mesh, bufferType, selectedIndex, result);
         }
 
-        return storeResult;
+        return result;
     }
 
     /**
@@ -336,14 +340,16 @@ public class SelectedVertex implements Cloneable {
      * @return world coordinates (either storeResult or a new instance)
      */
     public Vector3f worldLocation(Vector3f storeResult) {
+        Vector3f result = (storeResult == null) ? new Vector3f() : storeResult;
+
         Spatial selectedSpatial = cgm.getSceneView().selectedSpatial();
         Geometry selectedGeometry = (Geometry) selectedSpatial;
         Pose pose = cgm.getPose().get();
         Matrix4f[] matrices = pose.skin(null);
-        storeResult = MyMesh.vertexWorldLocation(selectedGeometry,
-                selectedIndex, matrices, storeResult);
+        MyMesh.vertexWorldLocation(selectedGeometry, selectedIndex, matrices,
+                result);
 
-        return storeResult;
+        return result;
     }
     // *************************************************************************
     // Object methods

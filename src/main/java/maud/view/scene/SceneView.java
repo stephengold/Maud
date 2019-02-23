@@ -775,20 +775,21 @@ public class SceneView extends SceneViewCore {
      * if possible.
      *
      * @param storeResult (modified if not null)
-     * @return world transform (either storeResult or a new instance)
+     * @return the world transform (either storeResult or a new instance)
      */
     public Transform worldTransform(Transform storeResult) {
-        if (storeResult == null) {
-            storeResult = new Transform();
-        }
+        Transform result 
+                = (storeResult == null) ? new Transform() : storeResult;
 
         Spatial transformSpatial = findTransformSpatial();
-        if (!MySpatial.isIgnoringTransforms(transformSpatial)) {
+        if (MySpatial.isIgnoringTransforms(transformSpatial)) {
+            result.loadIdentity();
+        } else {
             Transform alias = transformSpatial.getWorldTransform();
-            storeResult.set(alias);
+            result.set(alias);
         }
 
-        return storeResult;
+        return result;
     }
     // *************************************************************************
     // SceneViewCore methods

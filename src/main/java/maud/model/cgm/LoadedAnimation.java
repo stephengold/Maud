@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -163,32 +163,31 @@ public class LoadedAnimation implements Cloneable {
      * @return transform (either storeResult or a new instance)
      */
     public Transform boneTransform(int boneIndex, Transform storeResult) {
-        if (storeResult == null) {
-            storeResult = new Transform();
-        }
+        Transform result
+                = (storeResult == null) ? new Transform() : storeResult;
 
         EditorModel model = Maud.getModel();
         Animation real = getReal();
         if (real == null) {
             if (isRetargetedPose()) {
                 EditableMap map = model.getMap();
-                map.boneTransform(boneIndex, storeResult);
+                map.boneTransform(boneIndex, result);
             } else {
-                storeResult.loadIdentity();
+                result.loadIdentity();
             }
         } else {
             BoneTrack track = MyAnimation.findBoneTrack(real, boneIndex);
             if (track == null) {
-                storeResult.loadIdentity();
+                result.loadIdentity();
             } else {
                 TweenTransforms techniques = model.getTweenTransforms();
                 float time = cgm.getPlay().getTime();
                 float duration = duration();
-                techniques.transform(track, time, duration, null, storeResult);
+                techniques.transform(track, time, duration, null, result);
             }
         }
 
-        return storeResult;
+        return result;
     }
 
     /**

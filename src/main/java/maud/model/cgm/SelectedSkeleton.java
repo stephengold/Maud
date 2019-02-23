@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -517,135 +517,134 @@ public class SelectedSkeleton implements JmeCloneable {
      * Enumerate which bones are referenced by the specified selection option.
      *
      * @param showBones selection option (not null)
-     * @param boneIndex the index of the selected bone, or noBoneIndex if none
+     * @param selectedBi the index of the selected bone, or noBoneIndex if none
      * @param storeResult (modified if not null)
-     * @return set of bone indices (either storeResult or a new instance)
+     * @return a set of bone indices (either storeResult or a new instance, not
+     * null)
      */
-    public BitSet listShown(ShowBones showBones, int boneIndex,
+    public BitSet listShown(ShowBones showBones, int selectedBi,
             BitSet storeResult) {
         int numBones = countBones();
-        if (storeResult == null) {
-            storeResult = new BitSet(numBones);
-        } else {
-            assert storeResult.size() == numBones : storeResult.size();
-        }
+        BitSet result
+                = (storeResult == null) ? new BitSet(numBones) : storeResult;
+        assert result.size() == numBones : result.size();
 
         if (numBones > 0) {
             Skeleton skeleton = find();
             EditorModel model = Maud.getModel();
             LoadedMap map = model.getMap();
+            int ascentBi = selectedBi;
 
             switch (showBones) {
                 case All:
-                    storeResult.set(0, numBones);
+                    result.set(0, numBones);
                     break;
 
                 case Ancestry:
-                    storeResult.clear();
-                    while (boneIndex != noBoneIndex) {
-                        storeResult.set(boneIndex);
-                        boneIndex = getParentIndex(boneIndex);
+                    result.clear();
+                    while (ascentBi != noBoneIndex) {
+                        result.set(ascentBi);
+                        ascentBi = getParentIndex(ascentBi);
                     }
                     break;
 
                 case Family:
-                    storeResult.clear();
-                    if (boneIndex != noBoneIndex) {
-                        Bone bone = skeleton.getBone(boneIndex);
+                    result.clear();
+                    if (selectedBi != noBoneIndex) {
+                        Bone bone = skeleton.getBone(selectedBi);
                         List<Bone> children = bone.getChildren();
                         for (Bone child : children) {
                             int childIndex = skeleton.getBoneIndex(child);
-                            storeResult.set(childIndex);
+                            result.set(childIndex);
                         }
                     }
-                    while (boneIndex != noBoneIndex) {
-                        storeResult.set(boneIndex);
-                        boneIndex = getParentIndex(boneIndex);
+                    while (ascentBi != noBoneIndex) {
+                        result.set(ascentBi);
+                        ascentBi = getParentIndex(ascentBi);
                     }
                     break;
 
                 case Influencers:
-                    storeResult.clear();
+                    result.clear();
                     Spatial subtree = findSpatial();
-                    InfluenceUtil.addAllInfluencers(subtree, skeleton,
-                            storeResult);
+                    InfluenceUtil.addAllInfluencers(subtree, skeleton, result);
                     break;
 
                 case Leaves:
-                    for (boneIndex = 0; boneIndex < numBones; boneIndex++) {
-                        Bone bone = skeleton.getBone(boneIndex);
+                    for (int loopBi = 0; loopBi < numBones; loopBi++) {
+                        Bone bone = skeleton.getBone(loopBi);
                         int numChildren = bone.getChildren().size();
                         boolean isLeaf = (numChildren == 0);
-                        storeResult.set(boneIndex, isLeaf);
+                        result.set(loopBi, isLeaf);
                     }
                     break;
 
                 case Mapped:
-                    for (boneIndex = 0; boneIndex < numBones; boneIndex++) {
+                    for (int loopBi = 0; loopBi < numBones; loopBi++) {
                         boolean isMapped;
                         if (cgm == model.getSource()) {
-                            isMapped = map.isSourceBoneMapped(boneIndex);
+                            isMapped = map.isSourceBoneMapped(loopBi);
                         } else if (cgm == model.getTarget()) {
-                            isMapped = map.isTargetBoneMapped(boneIndex);
+                            isMapped = map.isTargetBoneMapped(loopBi);
                         } else {
                             throw new IllegalStateException();
                         }
-                        storeResult.set(boneIndex, isMapped);
+                        result.set(loopBi, isMapped);
                     }
                     break;
 
                 case None:
-                    storeResult.clear();
+                    result.clear();
                     break;
 
                 case Roots:
-                    storeResult.clear();
+                    result.clear();
                     Bone[] roots = skeleton.getRoots();
                     for (Bone root : roots) {
-                        boneIndex = skeleton.getBoneIndex(root);
-                        storeResult.set(boneIndex);
+                        int loopBi = skeleton.getBoneIndex(root);
+                        result.set(loopBi);
                     }
                     break;
 
                 case Selected:
-                    storeResult.clear();
-                    if (boneIndex != noBoneIndex) {
-                        storeResult.set(boneIndex);
+                    result.clear();
+                    if (selectedBi != noBoneIndex) {
+                        result.set(selectedBi);
                     }
                     break;
 
                 case Subtree:
-                    storeResult.clear();
-                    if (boneIndex != noBoneIndex) {
-                        for (int boneI = 0; boneI < numBones; boneI++) {
-                            boolean inSubtree = (boneI == boneIndex)
-                                    || MySkeleton.descendsFrom(boneI, boneIndex,
-                                            skeleton);
-                            storeResult.set(boneI, inSubtree);
+                    result.clear();
+                    if (selectedBi != noBoneIndex) {
+                        for (int loopBi = 0; loopBi < numBones; ++loopBi) {
+                            boolean inSubtree = (loopBi == selectedBi)
+                                    || MySkeleton.descendsFrom(loopBi,
+                                            selectedBi, skeleton);
+                            result.set(loopBi, inSubtree);
                         }
                     }
                     break;
 
                 case Tracked:
-                    storeResult.clear();
+                    result.clear();
                     LoadedAnimation animation = cgm.getAnimation();
-                    for (boneIndex = 0; boneIndex < numBones; boneIndex++) {
-                        boolean tracked = animation.hasTrackForBone(boneIndex);
-                        storeResult.set(boneIndex, tracked);
+                    for (int loopBi = 0; loopBi < numBones; ++loopBi) {
+                        boolean tracked = animation.hasTrackForBone(loopBi);
+                        result.set(loopBi, tracked);
                     }
                     break;
 
                 case Unmapped:
-                    for (boneIndex = 0; boneIndex < numBones; boneIndex++) {
+                    for (int loopBi = 0; loopBi < numBones; loopBi++) {
                         boolean isMapped;
                         if (cgm == model.getSource()) {
-                            isMapped = map.isSourceBoneMapped(boneIndex);
+                            isMapped = map.isSourceBoneMapped(loopBi);
                         } else if (cgm == model.getTarget()) {
-                            isMapped = map.isTargetBoneMapped(boneIndex);
+                            isMapped = map.isTargetBoneMapped(loopBi);
                         } else {
                             throw new IllegalStateException();
                         }
-                        storeResult.set(boneIndex, !isMapped);
+                        result.set(loopBi, !isMapped);
                     }
                     break;
 
@@ -654,7 +653,7 @@ public class SelectedSkeleton implements JmeCloneable {
             }
         }
 
-        return storeResult;
+        return result;
     }
 
     /**
