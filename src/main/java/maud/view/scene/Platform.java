@@ -29,7 +29,6 @@ package maud.view.scene;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
-import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.debug.BulletDebugAppState;
 import com.jme3.collision.CollisionResult;
@@ -43,8 +42,6 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.jme3.texture.Texture;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.logging.Logger;
 import jme3utilities.MyAsset;
 import jme3utilities.ui.Locators;
@@ -143,30 +140,6 @@ public class Platform implements BulletDebugAppState.DebugAppStateFilter {
         }
 
         return result;
-    }
-
-    /**
-     * Add all physics ids related to the platform to the specified set.
-     *
-     * @param addResult (added to if not null)
-     * @return an expanded set (either addResult or a new instance)
-     */
-    Set<Long> listIds(Set<Long> addResult) {
-        if (addResult == null) {
-            addResult = new TreeSet<>();
-        }
-
-        if (spatial != null) {
-            RigidBodyControl rbc = spatial.getControl(RigidBodyControl.class);
-            long id = rbc.getObjectId();
-            addResult.add(id);
-
-            CollisionShape pShape = rbc.getCollisionShape();
-            id = pShape.getObjectId();
-            addResult.add(id);
-        }
-
-        return addResult;
     }
 
     /**

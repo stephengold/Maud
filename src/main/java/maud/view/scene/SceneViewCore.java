@@ -63,7 +63,6 @@ import com.jme3.util.clone.JmeCloneable;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Logger;
 import jme3utilities.MyCamera;
 import jme3utilities.MyMesh;
@@ -1066,19 +1065,6 @@ public class SceneViewCore
     protected Spatial getCgmRoot() {
         assert cgmRoot != null;
         return cgmRoot;
-    }
-
-    /**
-     * Add all physics ids used by this view to the specified set.
-     *
-     * @param addResult (added to if not null)
-     * @return an expanded list (either addResult or a new instance)
-     */
-    protected Set<Long> listIds(Set<Long> addResult) {
-        addResult = projectile.listIds(addResult);
-        platform.listIds(addResult);
-
-        return addResult;
     }
     // *************************************************************************
     // private methods
