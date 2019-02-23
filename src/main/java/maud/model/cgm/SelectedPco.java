@@ -28,6 +28,7 @@ package maud.model.cgm;
 
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.objects.PhysicsCharacter;
 import com.jme3.bullet.objects.PhysicsGhostObject;
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.math.Quaternion;
@@ -87,9 +88,11 @@ public class SelectedPco implements JmeCloneable {
      */
     public boolean canPosition() {
         boolean result = false;
-        if (selectedPco instanceof PhysicsRigidBody) {
+        if (selectedPco instanceof PhysicsCharacter) {
             result = true;
         } else if (selectedPco instanceof PhysicsGhostObject) {
+            result = true;
+        } else if (selectedPco instanceof PhysicsRigidBody) {
             result = true;
         }
 

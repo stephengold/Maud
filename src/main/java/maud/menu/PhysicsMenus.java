@@ -516,11 +516,13 @@ public class PhysicsMenus {
     private static void addControl() {
         MenuBuilder builder = new MenuBuilder();
 
-        SelectedSpatial ss = Maud.getModel().getTarget().getSpatial();
-        if (ss.hasSkeletonControls()) {
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        builder.addEdit("BetterCharacter");
+        if (spatial.hasSkeletonControls()) {
             builder.addEdit("DynamicAnim");
         }
         builder.addEdit("Ghost");
+        builder.addEdit("MinieCharacter");
         builder.addEdit("RigidBody");
 
         builder.show("select menuItem Physics -> Add control -> ");
@@ -534,13 +536,22 @@ public class PhysicsMenus {
      */
     private static boolean menuPhysicsAddControl(String remainder) {
         boolean handled = true;
+        SelectedSpatial ss = Maud.getModel().getTarget().getSpatial();
         switch (remainder) {
+            case "BetterCharacter":
+                ss.addBetterCharacterControl();
+                break;
+
             case "DynamicAnim":
-                Maud.getModel().getTarget().getSpatial().addRagdollControl();
+                ss.addRagdollControl();
                 break;
 
             case "Ghost":
                 showShapeTypeMenu(ActionPrefix.newGhostControl);
+                break;
+
+            case "MinieCharacter":
+                showShapeTypeMenu(ActionPrefix.newMcc);
                 break;
 
             case "RigidBody":

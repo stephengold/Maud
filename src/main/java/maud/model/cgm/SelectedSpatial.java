@@ -39,6 +39,7 @@ import com.jme3.bullet.animation.DynamicAnimControl;
 import com.jme3.bullet.animation.LinkConfig;
 import com.jme3.bullet.animation.RagUtils;
 import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.light.AmbientLight;
@@ -80,6 +81,7 @@ import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyQuaternion;
 import jme3utilities.math.MyVector3f;
+import jme3utilities.minie.MinieCharacterControl;
 import jme3utilities.ui.Locators;
 import maud.Maud;
 import maud.MaudUtil;
@@ -152,7 +154,21 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Add a GhostControl to the spatial and select the new control.
+     * Add a BetterCharacterControl to the Spatial and select the new Control.
+     */
+    public void addBetterCharacterControl() {
+        float radius = 1f; // TODO base dimensions on the model
+        float height = 3f;
+        float mass = 1f;
+        BetterCharacterControl bcc
+                = new BetterCharacterControl(radius, height, mass);
+
+        editableCgm.addSgc(bcc, "add a BetterCharacterControl");
+        editableCgm.getSgc().select(bcc);
+    }
+
+    /**
+     * Add a GhostControl to the Spatial and select the new Control.
      *
      * @param shapeType desired type of shape (not null)
      */
@@ -169,7 +185,7 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Add a light to the spatial and select the new light.
+     * Add a Light to the Spatial and select the new Light.
      *
      * @param type (not null)
      * @param name a name for the new light (not null, not empty)
@@ -212,7 +228,23 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Add a DynamicAnimControl to the spatial and select the new control.
+     * Add a MinieCharacterControl to the Spatial and select the new Control.
+     *
+     * @param shapeType desired type of shape (not null)
+     */
+    public void addMinieCharacterControl(ShapeType shapeType) {
+        Validate.nonNull(shapeType, "shape type");
+
+        CollisionShape shape = makeShape(shapeType);
+        MinieCharacterControl mcc = new MinieCharacterControl(shape, 1f);
+
+        editableCgm.addSgc(mcc, "add a MinieCharacterControl");
+        Spatial modelSpatial = find();
+        editableCgm.getSgc().select(mcc, modelSpatial);
+    }
+
+    /**
+     * Add a DynamicAnimControl to the Spatial and select the new Control.
      */
     public void addRagdollControl() {
         /*

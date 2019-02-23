@@ -80,6 +80,7 @@ class NewAction {
         boolean handled = true;
 
         EditorModel model = Maud.getModel();
+        Cgm target = model.getTarget();
         switch (actionString) {
             case Action.newAnimation:
                 AnimationMenus.addNewAnimation();
@@ -103,11 +104,11 @@ class NewAction {
                 break;
 
             case Action.newAttachmentLink:
-                model.getTarget().getLink().createAttachmentLink();
+                target.getLink().createAttachmentLink();
                 break;
 
             case Action.newBoneLink:
-                model.getTarget().getLink().createBoneLink();
+                target.getLink().createBoneLink();
                 break;
 
             case Action.newCheckpoint:
@@ -138,7 +139,6 @@ class NewAction {
                 break;
 
             case Action.newSingleKeyframe: // insert OR replace
-                Cgm target = model.getTarget();
                 if (target.getTrack().isSelected()) {
                     if (target.getFrame().isSelected()) {
                         target.getFrame().replace();
@@ -149,7 +149,7 @@ class NewAction {
                 break;
 
             case Action.newTexture:
-                model.getTarget().getTexture().create();
+                target.getTexture().create();
                 break;
 
             case Action.newUserKey:
@@ -273,6 +273,12 @@ class NewAction {
             String namePrefix = MyString.remainder(actionString,
                     ActionPrefix.newMatParam);
             ShowMenus.addNewMatParam(namePrefix);
+
+        } else if (actionString.startsWith(ActionPrefix.newMcc)) {
+            String shapeName
+                    = MyString.remainder(actionString, ActionPrefix.newMcc);
+            ShapeType shapeType = ShapeType.valueOf(shapeName);
+            target.getSpatial().addMinieCharacterControl(shapeType);
 
         } else if (actionString.startsWith(ActionPrefix.newOverride)) {
             String args = MyString.remainder(actionString,

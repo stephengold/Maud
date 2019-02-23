@@ -35,6 +35,7 @@ import com.jme3.bullet.collision.shapes.infos.ChildCollisionShape;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.joints.PhysicsJoint;
+import com.jme3.bullet.objects.PhysicsCharacter;
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
@@ -50,8 +51,10 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
+import jme3utilities.minie.MinieCharacterControl;
 import jme3utilities.minie.MyObject;
 import jme3utilities.minie.MyShape;
+import maud.MaudUtil;
 import maud.PhysicsUtil;
 import maud.view.scene.SceneView;
 
@@ -99,7 +102,9 @@ public class CgmPhysics implements JmeCloneable {
         if (modelSgc instanceof BetterCharacterControl) {
             BetterCharacterControl modelBcc = (BetterCharacterControl) modelSgc;
             PhysicsRigidBody modelBody = modelBcc.getRigidBody();
-            disassociate(modelBody);
+            BetterCharacterControl viewBcc = (BetterCharacterControl) viewSgc;
+            PhysicsRigidBody viewBody = viewBcc.getRigidBody();
+            associate(viewBody, modelBody);
 
         } else if (modelSgc instanceof DynamicAnimControl) {
             DynamicAnimControl modelDac = (DynamicAnimControl) modelSgc;
@@ -125,7 +130,14 @@ public class CgmPhysics implements JmeCloneable {
                 }
             }
 
-        } else { // TODO other abstract physics controls
+        } else if (modelSgc instanceof MinieCharacterControl) {
+            MinieCharacterControl modelMcc = (MinieCharacterControl) modelSgc;
+            PhysicsCharacter modelCharacter = modelMcc.getCharacter();
+            MinieCharacterControl viewMcc = (MinieCharacterControl) viewSgc;
+            PhysicsCharacter viewCharacter = viewMcc.getCharacter();
+            associate(viewCharacter, modelCharacter);
+
+        } else {
             PhysicsCollisionObject modelPco = (PhysicsCollisionObject) modelSgc;
             PhysicsCollisionObject viewPco = (PhysicsCollisionObject) viewSgc;
             associate(viewPco, modelPco);
@@ -465,7 +477,12 @@ public class CgmPhysics implements JmeCloneable {
                 disassociate(modelBody);
             }
 
-        } else { // TODO other abstract physics controls
+        } else if (modelSgc instanceof MinieCharacterControl) {
+            MinieCharacterControl modelMcc = (MinieCharacterControl) modelSgc;
+            PhysicsCharacter modelCharacter = modelMcc.getCharacter();
+            disassociate(modelCharacter);
+
+        } else {
             PhysicsCollisionObject modelPco = (PhysicsCollisionObject) modelSgc;
             disassociate(modelPco);
         }

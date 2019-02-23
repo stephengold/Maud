@@ -165,6 +165,10 @@ public class ActionPrefix {
      */
     final public static String newMatParam = "new matParam ";
     /**
+     * argument is the name of a ShapeType
+     */
+    final public static String newMcc = "new mcc ";
+    /**
      * arguments are the name of the VarType and an optional parameter name
      */
     final public static String newOverride = "new override ";
