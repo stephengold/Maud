@@ -56,6 +56,7 @@ import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import jme3utilities.math.MyVector3f;
 import jme3utilities.minie.MyShape;
+import maud.MaudUtil;
 import maud.PhysicsUtil;
 import maud.model.History;
 import maud.model.option.ShapeParameter;
@@ -483,10 +484,7 @@ public class SelectedShape implements JmeCloneable {
             Set<Long> userSet = userSet();
             int numUsers = userSet.size();
             if (numUsers == 1) {
-                Long[] userIds = new Long[1];
-                userSet.toArray(userIds);
-                long userId = userIds[0];
-
+                long userId = MaudUtil.first(userSet);
                 PhysicsCollisionObject objectUser
                         = cgm.getPhysics().findPco(userId);
                 if (objectUser != null) {
@@ -537,8 +535,8 @@ public class SelectedShape implements JmeCloneable {
     }
 
     /**
-     * Enumerate all collision objects and compound shapes that reference the
-     * selected shape.
+     * Enumerate all collision objects and compound shapes that use the selected
+     * shape.
      *
      * @return a new set of IDs of collision objects and compound shapes
      */

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -402,6 +402,25 @@ public class MaudUtil {
         }
 
         return null;
+    }
+
+    /**
+     * Access the 1st member of a collection. TODO move to heart library
+     *
+     * @param <T> the type of the member
+     * @param collection the collection to access (not null)
+     * @return the pre-existing member, or null if none
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends Object> T first(Collection<T> collection) {
+        T result = null;
+        if (!collection.isEmpty()) {
+            int size = collection.size();
+            Object[] members = collection.toArray(new Object[size]);
+            result = (T) members[0];
+        }
+
+        return result;
     }
 
     /**
