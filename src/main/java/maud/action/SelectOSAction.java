@@ -325,6 +325,11 @@ class SelectOSAction {
             ShapeParameter parameter = ShapeParameter.valueOf(arg);
             model.getMisc().selectShapeParameter(parameter);
 
+        } else if (actionString.startsWith(ActionPrefix.selectShapeUser)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectShapeUser);
+            PhysicsMenus.selectShapeUser(arg);
+
         } else if (actionString.startsWith(ActionPrefix.selectSkeletonColor)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.selectSkeletonColor);

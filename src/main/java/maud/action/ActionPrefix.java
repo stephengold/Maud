@@ -425,6 +425,11 @@ public class ActionPrefix {
      */
     final public static String selectShapeParm = "select shapeParm ";
     /**
+     * argument is the name of a physics shape or collision object or a prefix
+     * thereof
+     */
+    final public static String selectShapeUser = "select shapeUser ";
+    /**
      * argument is the name of a SkeletonColors
      */
     final public static String selectSkeletonColor = "select skeletonColor ";

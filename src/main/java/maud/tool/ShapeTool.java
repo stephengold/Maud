@@ -34,9 +34,9 @@ import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.Tool;
 import maud.DescribeUtil;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
-import maud.model.cgm.CgmPhysics;
 import maud.model.cgm.SelectedShape;
 import maud.model.option.ShapeParameter;
 
@@ -231,14 +231,12 @@ class ShapeTool extends Tool {
             if (numUsers == 0) {
                 usersText = "unused";
             } else if (numUsers == 1) {
-                Long[] ids = new Long[1];
-                userSet.toArray(ids);
-                long userId = ids[0];
-                CgmPhysics physics = target.getPhysics();
-                usersText = physics.name(userId);
+                long userId = MaudUtil.first(userSet);
+                usersText = target.getPhysics().name(userId);
                 suButton = "Select user";
             } else {
                 usersText = String.format("%d users", numUsers);
+                suButton = "Select user";
             }
         }
 

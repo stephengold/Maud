@@ -35,7 +35,9 @@ import java.util.TreeSet;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
+import jme3utilities.minie.MyObject;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.ShapeType;
 import maud.action.ActionPrefix;
 import maud.dialog.EditorDialogs;
@@ -472,14 +474,12 @@ public class PhysicsMenus {
      */
     public static void selectShapeUser() {
         Cgm target = Maud.getModel().getTarget();
+        CgmPhysics physics = target.getPhysics();
         SelectedShape shape = target.getShape();
         Set<Long> userSet = shape.userSet();
         int numUsers = userSet.size();
         if (numUsers == 1) {
-            Long[] ids = new Long[1];
-            userSet.toArray(ids);
-            long userId = ids[0];
-            CgmPhysics physics = target.getPhysics();
+            long userId = MaudUtil.first(userSet);
             if (physics.hasPco(userId)) {
                 SelectedPco object = target.getPco();
                 object.select(userId);
@@ -488,7 +488,65 @@ public class PhysicsMenus {
                 shape.select(userId);
                 Maud.gui.tools.select("shape");
             }
+        } else if (numUsers > 1) {
+            MenuBuilder builder = new MenuBuilder();
+            for (long userId : userSet) {
+                String name = physics.name(userId);
+                builder.add(name);
+            }
+            builder.show(ActionPrefix.selectShapeUser);
         }
+    }
+
+    /**
+     * Display a "select shapeUser" menu to select a shape user.
+     *
+     * @param namePrefix prefix for filtering (not null)
+     */
+    public static void selectShapeUser(String namePrefix) {
+        Validate.nonNull(namePrefix, "name prefix");
+
+        Cgm target = Maud.getModel().getTarget();
+        CgmPhysics physics = target.getPhysics();
+        SelectedShape shape = target.getShape();
+        if (namePrefix.contains(":")) {
+            if (physics.hasShape(namePrefix)) {
+                shape.select(namePrefix);
+                Maud.gui.tools.select("shape");
+                return;
+            }
+        }
+        if (namePrefix.length() > 5) {
+            long pcoId = MyObject.parseId(namePrefix);
+            if (physics.hasPco(pcoId)) {
+                target.getPco().select(pcoId);
+                Maud.gui.tools.select("pco");
+                return;
+            }
+        }
+
+        Set<Long> userSet = shape.userSet();
+        Set<String> matchingNames = new TreeSet<>();
+        for (long userId : userSet) {
+            String name = physics.name(userId);
+            if (name.startsWith(namePrefix)) {
+                matchingNames.add(name);
+            }
+        }
+
+        List<String> reducedList = new ArrayList<>(matchingNames);
+        MyString.reduce(reducedList, ShowMenus.maxItems);
+        Collections.sort(reducedList);
+
+        MenuBuilder builder = new MenuBuilder();
+        for (String name : reducedList) {
+            if (matchingNames.contains(name)) {
+                builder.add(name);
+            } else {
+                builder.addEllipsis(name);
+            }
+        }
+        builder.show(ActionPrefix.selectShapeUser);
     }
 
     /**

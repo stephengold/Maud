@@ -259,6 +259,23 @@ public class CgmPhysics implements JmeCloneable {
     }
 
     /**
+     * Test whether the specified String is the name of a CollisionShape in the
+     * C-G model.
+     *
+     * @param name the String to test
+     * @return true if it's the name of a CollisionShape
+     */
+    public boolean hasShape(String name) {
+        long id = MyShape.parseId(name);
+        CollisionShape shape = findShape(id);
+        if (shape == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
      * Generate a map of all physics joints used in the C-G model.
      *
      * @return a new map from IDs to pre-existing joints (not null)
@@ -301,7 +318,7 @@ public class CgmPhysics implements JmeCloneable {
     /**
      * Enumerate all physics joints in the C-G model in ascending ID order.
      *
-     * @return a new array of joint IDs
+     * @return a new array of joint IDs (may be empty)
      */
     PhysicsJoint[] listJoints() {
         int numJoints = jointModelToView.size();
@@ -383,11 +400,7 @@ public class CgmPhysics implements JmeCloneable {
      */
     CollisionShape modelToView(CollisionShape modelShape) {
         Set<Long> userSet = userSet(modelShape);
-        int numUsers = userSet.size();
-        assert numUsers > 0 : numUsers;
-        Long[] userIds = new Long[numUsers];
-        userSet.toArray(userIds);
-        long userId = userIds[0];
+        long userId = MaudUtil.first(userSet);
 
         CollisionShape viewShape;
         if (hasPco(userId)) {
@@ -608,6 +621,7 @@ public class CgmPhysics implements JmeCloneable {
                 result.add(pcoId);
             }
             if (shape instanceof CompoundCollisionShape
+                    && shape != usedShape
                     && PhysicsUtil.usesShape(shape, usedId)) {
                 long parentId = shape.getObjectId();
                 result.add(parentId);
