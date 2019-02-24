@@ -36,8 +36,6 @@ import com.jme3.bounding.BoundingBox;
 import com.jme3.bounding.BoundingSphere;
 import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.animation.DynamicAnimControl;
-import com.jme3.bullet.animation.LinkConfig;
-import com.jme3.bullet.animation.RagUtils;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.bullet.control.GhostControl;
@@ -84,7 +82,6 @@ import jme3utilities.math.MyVector3f;
 import jme3utilities.minie.MinieCharacterControl;
 import jme3utilities.ui.Locators;
 import maud.Maud;
-import maud.MaudUtil;
 import maud.PhysicsUtil;
 import maud.ShapeType;
 import maud.view.scene.SceneView;
@@ -99,6 +96,10 @@ public class SelectedSpatial implements JmeCloneable {
     // constants and loggers
 
     /**
+     * local copy of {@link com.jme3.math.ColorRGBA#White}
+     */
+    final private static ColorRGBA white = new ColorRGBA(1f, 1f, 1f, 1f);
+    /**
      * dummy buffer index, used to indicate that no buffer is selected
      */
     final public static int noBufferIndex = -1;
@@ -108,17 +109,9 @@ public class SelectedSpatial implements JmeCloneable {
     final private static Logger logger
             = Logger.getLogger(SelectedSpatial.class.getName());
     /**
-     * local copy of {@link com.jme3.math.ColorRGBA#White}
-     */
-    final private static ColorRGBA white = new ColorRGBA(1f, 1f, 1f, 1f);
-    /**
      * dummy buffer description, used to indicate that no buffer is selected
      */
     final public static String noBuffer = "( no buffer )";
-    /**
-     * local copy of {@link com.jme3.math.Vector3f#ZERO}
-     */
-    final private static Vector3f translateIdentity = new Vector3f(0f, 0f, 0f);
     // *************************************************************************
     // fields
 
@@ -175,7 +168,8 @@ public class SelectedSpatial implements JmeCloneable {
     public void addGhostControl(ShapeType shapeType) {
         Validate.nonNull(shapeType, "shape type");
 
-        CollisionShape shape = makeShape(shapeType);
+        Spatial subtree = find();
+        CollisionShape shape = PhysicsUtil.makeShape(shapeType, subtree);
         GhostControl ghostControl = new GhostControl(shape);
         ghostControl.setApplyScale(true);
 
@@ -235,7 +229,8 @@ public class SelectedSpatial implements JmeCloneable {
     public void addMinieCharacterControl(ShapeType shapeType) {
         Validate.nonNull(shapeType, "shape type");
 
-        CollisionShape shape = makeShape(shapeType);
+        Spatial subtree = find();
+        CollisionShape shape = PhysicsUtil.makeShape(shapeType, subtree);
         MinieCharacterControl mcc = new MinieCharacterControl(shape, 1f);
 
         editableCgm.addSgc(mcc, "add a MinieCharacterControl");
@@ -270,7 +265,8 @@ public class SelectedSpatial implements JmeCloneable {
     public void addRigidBodyControl(ShapeType shapeType) {
         Validate.nonNull(shapeType, "shape type");
 
-        CollisionShape shape = makeShape(shapeType);
+        Spatial subtree = find();
+        CollisionShape shape = PhysicsUtil.makeShape(shapeType, subtree);
         float mass = 1f;
         RigidBodyControl rbc = new RigidBodyControl(shape, mass);
         rbc.setApplyScale(true);
@@ -1582,33 +1578,6 @@ public class SelectedSpatial implements JmeCloneable {
         }
 
         return result;
-    }
-
-    /**
-     * Create a shape of the specified type for the selected spatial.
-     *
-     * @param shapeType (not null)
-     * @return a new shape (not null)
-     */
-    private CollisionShape makeShape(ShapeType shapeType) {
-        SceneView sceneView = cgm.getSceneView();
-        Spatial viewSpatial = sceneView.selectedSpatial();
-        CollisionShape shape;
-        if (shapeType == ShapeType.Hull) {
-            Transform localToWorld = viewSpatial.getWorldTransform();
-            Transform worldToLocal = localToWorld.invert();
-            Collection<Vector3f> vertexLocations
-                    = RagUtils.vertexLocations(viewSpatial, null);
-            LinkConfig config = new LinkConfig();
-            shape = config.createShape(worldToLocal, translateIdentity,
-                    vertexLocations);
-        } else {
-            Vector3f halfExtents = MaudUtil.halfExtents(viewSpatial);
-            float margin = 0.04f;
-            shape = PhysicsUtil.makeShape(shapeType, halfExtents, margin);
-        }
-
-        return shape;
     }
 
     /**

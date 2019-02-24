@@ -27,6 +27,8 @@
 package maud;
 
 import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.animation.LinkConfig;
+import com.jme3.bullet.animation.RagUtils;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
@@ -34,6 +36,7 @@ import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.bullet.collision.shapes.ConeCollisionShape;
 import com.jme3.bullet.collision.shapes.CylinderCollisionShape;
+import com.jme3.bullet.collision.shapes.HullCollisionShape;
 import com.jme3.bullet.collision.shapes.MultiSphere;
 import com.jme3.bullet.collision.shapes.SimplexCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
@@ -47,9 +50,11 @@ import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
+import java.util.Collection;
 import java.util.logging.Logger;
+import jme3utilities.MySpatial;
 import jme3utilities.Validate;
-import jme3utilities.math.MyMath;
+import jme3utilities.math.MyVector3f;
 import jme3utilities.math.RectangularSolid;
 
 /**
@@ -66,6 +71,14 @@ public class PhysicsUtil {
      */
     final private static Logger logger
             = Logger.getLogger(PhysicsUtil.class.getName());
+    /**
+     * local copy of {@link com.jme3.math.Transform#IDENTITY}
+     */
+    final private static Transform transformIdentity = new Transform();
+    /**
+     * local copy of {@link com.jme3.math.Vector3f#ZERO}
+     */
+    final private static Vector3f translateIdentity = new Vector3f(0f, 0f, 0f);
     // *************************************************************************
     // constructors
 
@@ -78,134 +91,56 @@ public class PhysicsUtil {
     // new methods exposed
 
     /**
-     * Create a symmetrical collision shape of the specified type with the
-     * specified half extents and margin.
+     * Create a shape of the specified type for the selected spatial.
      *
-     * @param shapeType type of shape (not null, not Hull)
-     * @param halfExtents desired half extents relative to the center, not
-     * including margin (not null, all non-negative, unaffected)
-     * @param margin desired margin (&ge;0, ignored for sphere and capsule)
-     * @return a new instance
+     * @param subtree (not null)
+     * @param shapeType (not null)
+     * @return a new shape (not null)
      */
     public static CollisionShape makeShape(ShapeType shapeType,
-            Vector3f halfExtents, float margin) {
-        Validate.nonNull(shapeType, "shape type");
-        Validate.nonNegative(halfExtents, "half extents");
-        Validate.nonNegative(margin, "margin");
-
-        CollisionShape result;
-        float axisHalfExtent, height, radius;
-        int axis;
-        if (halfExtents.x >= halfExtents.y && halfExtents.x >= halfExtents.z) {
-            radius = Math.max(halfExtents.y, halfExtents.z);
-            axisHalfExtent = halfExtents.x;
-            axis = PhysicsSpace.AXIS_X;
-        } else if (halfExtents.y >= halfExtents.z) {
-            radius = Math.max(halfExtents.x, halfExtents.z);
-            axisHalfExtent = halfExtents.y;
-            axis = PhysicsSpace.AXIS_Y;
-        } else {
-            radius = Math.max(halfExtents.x, halfExtents.y);
-            axisHalfExtent = halfExtents.z;
-            axis = PhysicsSpace.AXIS_Z;
-        }
-        height = 2f * (axisHalfExtent - radius);
-        assert height >= 0f : height;
-
+            Spatial subtree) {
+        CollisionShape shape;
         switch (shapeType) {
-            case Box:
-                result = new BoxCollisionShape(halfExtents);
-                result.setMargin(margin);
-                break;
-
-            case Capsule:
-                result = new CapsuleCollisionShape(radius, height, axis);
-                // no margin
-                break;
-
-            case ConeX:
-                radius = Math.max(halfExtents.y, halfExtents.z);
-                height = 2f * halfExtents.x;
-                result = new ConeCollisionShape(radius, height,
-                        PhysicsSpace.AXIS_X);
-                result.setMargin(margin);
-                break;
-
-            case ConeY:
-                radius = Math.max(halfExtents.x, halfExtents.z);
-                height = 2f * halfExtents.y;
-                result = new ConeCollisionShape(radius, height,
-                        PhysicsSpace.AXIS_Y);
-                result.setMargin(margin);
-                break;
-
-            case ConeZ:
-                radius = Math.max(halfExtents.x, halfExtents.y);
-                height = 2f * halfExtents.z;
-                result = new ConeCollisionShape(radius, height,
-                        PhysicsSpace.AXIS_Z);
-                result.setMargin(margin);
-                break;
-
-            case CylinderX:
-                result = new CylinderCollisionShape(halfExtents,
-                        PhysicsSpace.AXIS_X);
-                result.setMargin(margin);
-                break;
-
-            case CylinderY:
-                result = new CylinderCollisionShape(halfExtents,
-                        PhysicsSpace.AXIS_Y);
-                result.setMargin(margin);
-                break;
-
-            case CylinderZ:
-                result = new CylinderCollisionShape(halfExtents,
-                        PhysicsSpace.AXIS_Z);
-                result.setMargin(margin);
-                break;
-
-            case MsBox:
-                RectangularSolid solid = new RectangularSolid(halfExtents);
-                result = new MultiSphere(solid);
-                result.setMargin(margin);
-                break;
-
-            case MsCapsule:
-                result = new MultiSphere(radius, height, axis);
-                result.setMargin(margin);
+            case Hull:
+                shape = PhysicsUtil.makeShapeHull(subtree);
                 break;
 
             case MsSphere:
-                radius = MyMath.max(halfExtents.x, halfExtents.y,
-                        halfExtents.z); // TODO average?
-                assert radius >= 0f : radius;
-                result = new MultiSphere(radius);
-                result.setMargin(margin);
-                break;
-
-            case Simplex:
-                Vector3f v1 = halfExtents.clone().multLocal(-1f, -1f, -1f);
-                Vector3f v2 = halfExtents.clone().multLocal(+1f, -1f, +1f);
-                Vector3f v3 = halfExtents.clone().multLocal(-1f, +1f, +1f);
-                Vector3f v4 = halfExtents.clone().multLocal(+1f, +1f, -1f);
-                result = new SimplexCollisionShape(v1, v2, v3, v4);
-                result.setMargin(margin);
-                break;
-
             case Sphere:
-                radius = MyMath.max(halfExtents.x, halfExtents.y,
-                        halfExtents.z); // TODO average?
-                assert radius >= 0f : radius;
-                result = new SphereCollisionShape(radius);
-                // no margin
+                shape = PhysicsUtil.makeShapeSphere(shapeType, subtree);
+                break;
+
+            case Box:
+            case Capsule:
+            case ConeX:
+            case ConeY:
+            case ConeZ:
+            case CylinderX:
+            case CylinderY:
+            case CylinderZ:
+            case MsBox:
+            case MsCapsule:
+            case Simplex:
+                Vector3f halfExtents = MaudUtil.halfExtents(subtree);
+                shape = PhysicsUtil.makeShape(shapeType, halfExtents);
+                break;
+
+            case TransBox:
+            case TransCapsule:
+            case TransConeX:
+            case TransConeY:
+            case TransConeZ:
+            case TransCylinderX:
+            case TransCylinderY:
+            case TransCylinderZ:
+            case TransSimplex:
+                shape = PhysicsUtil.makeShapeTranslated(shapeType, subtree);
                 break;
 
             default:
                 throw new IllegalArgumentException(shapeType.toString());
         }
-
-        return result;
+        return shape;
     }
 
     /**
@@ -383,5 +318,222 @@ public class PhysicsUtil {
         }
 
         return result;
+    }
+    // *************************************************************************
+    // private methods
+
+    /**
+     * Create a symmetrical collision shape of the specified type with the
+     * specified half extents and margin.
+     *
+     * @param shapeType type of shape (not null)
+     * @param halfExtents desired half extents relative to the center, not
+     * including margin (not null, all non-negative, unaffected)
+     * @return a new instance
+     */
+    private static CollisionShape makeShape(ShapeType shapeType,
+            Vector3f halfExtents) {
+        CollisionShape result;
+        float axisHalfExtent, height, radius;
+        int axis;
+        if (halfExtents.x >= halfExtents.y && halfExtents.x >= halfExtents.z) {
+            radius = Math.max(halfExtents.y, halfExtents.z);
+            axisHalfExtent = halfExtents.x;
+            axis = PhysicsSpace.AXIS_X;
+        } else if (halfExtents.y >= halfExtents.z) {
+            radius = Math.max(halfExtents.x, halfExtents.z);
+            axisHalfExtent = halfExtents.y;
+            axis = PhysicsSpace.AXIS_Y;
+        } else {
+            radius = Math.max(halfExtents.x, halfExtents.y);
+            axisHalfExtent = halfExtents.z;
+            axis = PhysicsSpace.AXIS_Z;
+        }
+        height = 2f * (axisHalfExtent - radius);
+        assert height >= 0f : height;
+
+        switch (shapeType) {
+            case Box:
+                result = new BoxCollisionShape(halfExtents);
+                break;
+
+            case Capsule:
+                result = new CapsuleCollisionShape(radius, height, axis);
+                // no margin
+                break;
+
+            case ConeX:
+                radius = Math.max(halfExtents.y, halfExtents.z);
+                height = 2f * halfExtents.x;
+                result = new ConeCollisionShape(radius, height,
+                        PhysicsSpace.AXIS_X);
+                break;
+
+            case ConeY:
+                radius = Math.max(halfExtents.x, halfExtents.z);
+                height = 2f * halfExtents.y;
+                result = new ConeCollisionShape(radius, height,
+                        PhysicsSpace.AXIS_Y);
+                break;
+
+            case ConeZ:
+                radius = Math.max(halfExtents.x, halfExtents.y);
+                height = 2f * halfExtents.z;
+                result = new ConeCollisionShape(radius, height,
+                        PhysicsSpace.AXIS_Z);
+                break;
+
+            case CylinderX:
+                result = new CylinderCollisionShape(halfExtents,
+                        PhysicsSpace.AXIS_X);
+                break;
+
+            case CylinderY:
+                result = new CylinderCollisionShape(halfExtents,
+                        PhysicsSpace.AXIS_Y);
+                break;
+
+            case CylinderZ:
+                result = new CylinderCollisionShape(halfExtents,
+                        PhysicsSpace.AXIS_Z);
+                break;
+
+            case MsBox:
+                RectangularSolid solid = new RectangularSolid(halfExtents);
+                result = new MultiSphere(solid);
+                break;
+
+            case MsCapsule:
+                result = new MultiSphere(radius, height, axis);
+                break;
+
+            case Simplex:
+                Vector3f v1 = halfExtents.clone().multLocal(-1f, -1f, -1f);
+                Vector3f v2 = halfExtents.clone().multLocal(+1f, -1f, +1f);
+                Vector3f v3 = halfExtents.clone().multLocal(-1f, +1f, +1f);
+                Vector3f v4 = halfExtents.clone().multLocal(+1f, +1f, -1f);
+                result = new SimplexCollisionShape(v1, v2, v3, v4);
+                break;
+
+            default:
+                throw new IllegalArgumentException(shapeType.toString());
+        }
+
+        return result;
+    }
+
+    /**
+     * Create a hull shape for the specified subtree.
+     *
+     * @param subtree (not null)
+     * @return a new HullCollisionShape (not null)
+     */
+    private static CollisionShape makeShapeHull(Spatial subtree) {
+        Transform localToWorld = subtree.getWorldTransform();
+        Transform worldToLocal = localToWorld.invert();
+        Collection<Vector3f> vertexLocations
+                = RagUtils.vertexLocations(subtree, null);
+        LinkConfig config = new LinkConfig();
+        CollisionShape shape = config.createShape(worldToLocal,
+                translateIdentity, vertexLocations);
+
+        assert shape instanceof HullCollisionShape :
+                shape.getClass().getSimpleName();
+        return shape;
+    }
+
+    /**
+     * Create a centered sphere shape for the specified subtree.
+     *
+     * @param shapeType (not null)
+     * @param subtree (not null)
+     * @return a new CollisionShape (not null)
+     */
+    private static CollisionShape makeShapeSphere(ShapeType shapeType,
+            Spatial subtree) {
+        Transform localToWorld = subtree.getWorldTransform();
+        Transform worldToLocal = localToWorld.invert();
+        Collection<Vector3f> vertexLocations
+                = RagUtils.vertexLocations(subtree, null);
+
+        double radiusSquared = 0f;
+        for (Vector3f location : vertexLocations) {
+            worldToLocal.transformVector(location, location);
+            double r2 = MyVector3f.lengthSquared(location);
+            if (r2 > radiusSquared) {
+                radiusSquared = r2;
+            }
+        }
+        float radius = (float) Math.sqrt(radiusSquared);
+
+        CollisionShape shape;
+        switch (shapeType) {
+            case MsSphere:
+                shape = new MultiSphere(radius);
+                break;
+
+            case Sphere:
+                shape = new SphereCollisionShape(radius);
+                break;
+
+            default:
+                throw new IllegalArgumentException(shapeType.toString());
+        }
+
+        return shape;
+    }
+
+    /**
+     * Create a translated shape of the specified type for the selected spatial.
+     *
+     * @param shapeType (not null)
+     * @param subtree (not null)
+     * @return a new shape (not null)
+     */
+    private static CollisionShape makeShapeTranslated(ShapeType shapeType,
+            Spatial subtree) {
+        Spatial clone = subtree.clone(false);
+        clone.setLocalTransform(transformIdentity);
+        Vector3f[] minMax = MySpatial.findMinMaxCoords(clone);
+        Vector3f translation = MyVector3f.midpoint(minMax[0], minMax[1]);
+        Vector3f halfExtents = minMax[1].subtract(translation);
+
+        CollisionShape child;
+        switch (shapeType) {
+            case TransBox:
+                child = PhysicsUtil.makeShape(ShapeType.Box, halfExtents);
+                break;
+            case TransCapsule:
+                child = PhysicsUtil.makeShape(ShapeType.Capsule, halfExtents);
+                break;
+            case TransConeX:
+                child = PhysicsUtil.makeShape(ShapeType.ConeX, halfExtents);
+                break;
+            case TransConeY:
+                child = PhysicsUtil.makeShape(ShapeType.ConeY, halfExtents);
+                break;
+            case TransConeZ:
+                child = PhysicsUtil.makeShape(ShapeType.ConeZ, halfExtents);
+                break;
+            case TransCylinderX:
+                child = PhysicsUtil.makeShape(ShapeType.CylinderX, halfExtents);
+                break;
+            case TransCylinderY:
+                child = PhysicsUtil.makeShape(ShapeType.CylinderY, halfExtents);
+                break;
+            case TransCylinderZ:
+                child = PhysicsUtil.makeShape(ShapeType.CylinderZ, halfExtents);
+                break;
+            case TransSimplex:
+                child = PhysicsUtil.makeShape(ShapeType.Simplex, halfExtents);
+                break;
+            default:
+                throw new IllegalArgumentException(shapeType.toString());
+        }
+
+        CompoundCollisionShape compound = new CompoundCollisionShape();
+        compound.addChildShape(child, translation);
+
+        return compound;
     }
 }

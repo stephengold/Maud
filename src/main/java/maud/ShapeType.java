@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018, Stephen Gold
+ Copyright (c) 2018-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -27,7 +27,8 @@
 package maud;
 
 /**
- * Enumerate the types of collision shapes that makeShape() knows how to make.
+ * Enumerate the types of collision shapes that SelectedSpatial.makeShape()
+ * knows how to make.
  */
 public enum ShapeType {
     /**
@@ -85,5 +86,41 @@ public enum ShapeType {
     /**
      * SphereCollisionShape
      */
-    Sphere;
+    Sphere,
+    /**
+     * translated BoxCollisionShape
+     */
+    TransBox,
+    /**
+     * translated CapsuleCollisionShape, height on longest axis
+     */
+    TransCapsule,
+    /**
+     * translated ConeCollisionShape, height on X axis
+     */
+    TransConeX,
+    /**
+     * translated ConeCollisionShape, height on Y axis
+     */
+    TransConeY,
+    /**
+     * translated ConeCollisionShape, height on Z axis
+     */
+    TransConeZ,
+    /**
+     * translated CylinderCollisionShape, height on X axis
+     */
+    TransCylinderX,
+    /**
+     * translated CylinderCollisionShape, height on Y axis
+     */
+    TransCylinderY,
+    /**
+     * translated CylinderCollisionShape, height on Z axis
+     */
+    TransCylinderZ,
+    /**
+     * translated SimplexCollisionShape
+     */
+    TransSimplex;
 }
