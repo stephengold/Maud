@@ -527,7 +527,7 @@ public class SelectedSkeleton implements JmeCloneable {
         int numBones = countBones();
         BitSet result
                 = (storeResult == null) ? new BitSet(numBones) : storeResult;
-        assert result.size() == numBones : result.size();
+        assert result.size() >= numBones : result.size();
 
         if (numBones > 0) {
             Skeleton skeleton = find();
