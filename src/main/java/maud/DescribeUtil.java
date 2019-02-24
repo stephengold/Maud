@@ -28,7 +28,6 @@ package maud;
 
 import com.jme3.animation.Bone;
 import com.jme3.asset.TextureKey;
-import com.jme3.bullet.PhysicsSpace;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Matrix4f;
 import com.jme3.math.Vector3f;
@@ -54,10 +53,6 @@ public class DescribeUtil {
      */
     final private static Logger logger
             = Logger.getLogger(DescribeUtil.class.getName());
-    /**
-     * names of the coordinate axes
-     */
-    final private static String[] axisNames = {"X", "Y", "Z"};
     // *************************************************************************
     // constructors
 
