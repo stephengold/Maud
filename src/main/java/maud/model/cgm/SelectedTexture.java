@@ -124,7 +124,7 @@ public class SelectedTexture implements JmeCloneable {
         assert selectedTexture != null;
 
         MatParamRef firstRef = selectedRefs.get(0);
-        Texture clone = (Texture) Cloner.deepClone(selectedTexture);
+        Texture clone = Cloner.deepClone(selectedTexture);
         editableCgm.selectAndReplaceTexture(firstRef, clone, "clone texture");
     }
 
@@ -693,7 +693,7 @@ public class SelectedTexture implements JmeCloneable {
 
         Texture.MagFilter oldFilter = magFilter();
         if (oldFilter != newFilter) {
-            Texture clone = (Texture) Cloner.deepClone(selectedTexture);
+            Texture clone = Cloner.deepClone(selectedTexture);
             clone.setMagFilter(newFilter);
             String eventDescription = String.format(
                     "change texture's magFilter from %s to %s", oldFilter,
@@ -713,7 +713,7 @@ public class SelectedTexture implements JmeCloneable {
 
         Texture.MinFilter oldFilter = minFilter();
         if (oldFilter != newFilter) {
-            Texture clone = (Texture) Cloner.deepClone(selectedTexture);
+            Texture clone = Cloner.deepClone(selectedTexture);
             clone.setMinFilter(newFilter);
             String eventDescription = String.format(
                     "change texture's minFilter from %s to %s", oldFilter,
@@ -758,7 +758,7 @@ public class SelectedTexture implements JmeCloneable {
 
         Texture.WrapMode oldMode = wrapMode(axis);
         if (oldMode != newMode) {
-            Texture clone = (Texture) Cloner.deepClone(selectedTexture);
+            Texture clone = Cloner.deepClone(selectedTexture);
             clone.setWrap(axis, newMode);
             String eventDescription = String.format(
                     "change texture's %s-axis wrapMode from %s to %s", axis,
