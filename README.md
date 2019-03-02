@@ -47,7 +47,7 @@ Maud was designed for a desktop environment with:
  + a wheel mouse and
  + a display at least 640 pixels wide and 480 pixels tall.
 
-Status as of February 2019: seeking more alpha testers.
+Status as of March 2019: seeking more alpha testers.
 
 ## Contents of this document
 
@@ -866,6 +866,10 @@ I therefore acknowledge the following artists and software developers:
     + Moff Kalast
     + Adam (aka "safari")
     + Ryan (aka "yaRnMcDonuts")
+    + "raistm"
+    + Remy Van Doosselaer (aka "remy_vd")
+    + "Ali_RS"
+    + "Toboi"
 + plus the creators of (and contributors to) the following software:
     + [Adobe Photoshop Elements][elements]
     + the [Blender][] 3-D animation suite
