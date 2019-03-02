@@ -61,7 +61,7 @@ class NextAction {
      * Process an ongoing action that starts with the word "next".
      *
      * @param actionString textual description of the action (not null)
-     * @return true if the action is handled, otherwise false
+     * @return true if the action has been handled, otherwise false
      */
     static boolean process(String actionString) {
         boolean handled = true;
