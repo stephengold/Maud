@@ -40,6 +40,18 @@ public enum ShapeType {
      */
     Capsule,
     /**
+     * compounded BoxCollisionShape
+     */
+    CompoundOfBoxes,
+    /**
+     * compounded HullCollisionShape
+     */
+    CompoundOfHulls,
+    /**
+     * compounded MeshCollisionShape
+     */
+    CompoundOfMeshes,
+    /**
      * ConeCollisionShape, height on X axis
      */
     ConeX,

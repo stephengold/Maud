@@ -45,6 +45,7 @@ import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.objects.PhysicsCharacter;
 import com.jme3.bullet.objects.PhysicsGhostObject;
 import com.jme3.bullet.objects.PhysicsRigidBody;
+import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
@@ -103,6 +104,18 @@ public class PhysicsUtil {
         switch (shapeType) {
             case Hull:
                 shape = PhysicsUtil.makeShapeHull(subtree);
+                break;
+
+            case CompoundOfBoxes:
+                shape = CollisionShapeFactory.createBoxShape(subtree);
+                break;
+
+            case CompoundOfHulls:
+                shape = CollisionShapeFactory.createDynamicMeshShape(subtree);
+                break;
+
+            case CompoundOfMeshes:
+                shape = CollisionShapeFactory.createMeshShape(subtree);
                 break;
 
             case MsSphere:
