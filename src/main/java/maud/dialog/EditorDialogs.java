@@ -84,6 +84,7 @@ import maud.model.cgm.SelectedTrack;
 import maud.model.cgm.TrackItem;
 import maud.model.option.RigidBodyParameter;
 import maud.model.option.ShapeParameter;
+import org.lwjgl.Sys;
 
 /**
  * Dialog boxes created by Maud's "editor" screen.
@@ -121,8 +122,9 @@ public class EditorDialogs {
                 + "ing animated models.\n\nThe version you are using "
                 //+ "is designated v1.0.0-alpha.8 .\n\nIt "
                 + "includes the following libraries:";
-        text += String.format("%n   jme3-core version=%s (BSD license)",
-                MyString.quote(JmeVersion.FULL_NAME));
+        text += String.format("%n   jme3-core version=%s hash=%s (BSD license)",
+                MyString.quote(JmeVersion.FULL_NAME),
+                JmeVersion.GIT_SHORT_HASH);
         text += String.format("%n   nifty version=%s (BSD license)",
                 MyString.quote(niftyVersion));
         text += String.format(
@@ -151,6 +153,8 @@ public class EditorDialogs {
         text += String.format("%n   jme3-terrain (BSD license)");
 
         text += String.format("%n   nifty-default-controls (BSD license)");
+        text += String.format("%n   lwjgl version=%s (BSD license)",
+                MyString.quote(Sys.getVersion()));
 
         text += String.format("%n   jme-ttf (%s)",
                 "part FPL license, part BSD license");
