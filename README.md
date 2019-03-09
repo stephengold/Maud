@@ -124,7 +124,7 @@ https://jmonkeyengine.github.io/wiki/jme3/requirements.html
      If this plugin isn't shown in the IDE's "Plugins" tool,
      you can download it from
      [GitHub](https://github.com/kelemen/netbeans-gradle-project/releases).
-    + Click on the "Install" button to open the the "Plugin Installer" wizard.
+    + Click on the "Install" button to open the "Plugin Installer" wizard.
     + Click on the "Next >" button.
     + Check the box next to
      "I accept the terms in all the license agreements."
