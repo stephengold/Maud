@@ -76,11 +76,6 @@ public class Maud extends GuiApplication {
      */
     final private static Logger logger = Logger.getLogger(Maud.class.getName());
     /**
-     * path to the properties asset used to configure hotkey bindings
-     */
-    final private static String hotkeyBindingsAssetPath
-            = "Interface/bindings/editor.properties";
-    /**
      * path to the script asset evaluated at startup
      */
     final public static String startupScriptAssetPath = "Scripts/startup.js";
@@ -112,27 +107,18 @@ public class Maud extends GuiApplication {
      */
     final public static EditorScreen gui = new EditorScreen();
     /**
-     * application instance, set by {@link #main(java.lang.String[])}
+     * application instance
      */
     private static Maud application;
     /**
      * dumper for scene dumps
      */
     final private static PhysicsDumper dumper = new PhysicsDumper();
-    /**
-     * application name for the window's title bar
-     */
-    final private static String applicationName = "Maud";// v1.0.0-alpha.8";
-    /**
-     * path to logo image for the settings dialog
-     */
-    final private static String logoAssetPath
-            = "Textures/icons/Maud-settings.png";
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Access the application.
+     * Access the application instance.
      *
      * @return the pre-existing instance (not null)
      */
@@ -176,7 +162,7 @@ public class Maud extends GuiApplication {
     }
 
     /**
-     * Main entry point for Maud.
+     * Main entry point for the Maud application.
      *
      * @param arguments array of command-line arguments (not null)
      */
@@ -516,11 +502,14 @@ public class Maud extends GuiApplication {
             final String renderer) {
         logger.log(Level.INFO, "forceDialog={0} renderer={1}",
                 new Object[]{forceDialog, MyString.quote(renderer)});
-
+        /*
+         * Instantiate the application.
+         */
         application = new Maud();
         /*
          * Instantiate the display-settings screen.
          */
+        String applicationName = "Maud";// v1.0.0-alpha.8";
         DisplaySizeLimits dsl = new DisplaySizeLimits(
                 640, 480, // min width, height
                 2_048, 1_080 // max width, height
@@ -533,7 +522,9 @@ public class Maud extends GuiApplication {
 
                 setForceDialog(forceDialog);
                 settings.setRenderer(renderer);
+                String logoAssetPath = "Textures/icons/Maud-settings.png";
                 settings.setSettingsDialogImage(logoAssetPath);
+                settings.setVSync(true);
             }
         };
         displaySettingsScreen = new DsScreen(displaySettings);
@@ -547,7 +538,7 @@ public class Maud extends GuiApplication {
              */
             //application.setPauseOnLostFocus(false);
             /*
-             * If the settings dialog should be shown, it was already shown
+             * If the settings dialog should be shown, it has already been shown
              * by DisplaySettings.initialize().
              */
             application.setShowSettings(false);
@@ -585,8 +576,9 @@ public class Maud extends GuiApplication {
          */
         stateManager.attachAll(gui, bindScreen, displaySettingsScreen);
         /*
-         * Configure and attach input mode for the editor screen.
+         * Configure and attach the input mode for the editor screen.
          */
+        String hotkeyBindingsAssetPath = "Interface/bindings/editor.properties";
         gui.inputMode.setConfigPath(hotkeyBindingsAssetPath);
         stateManager.attach(gui.inputMode);
         /*
