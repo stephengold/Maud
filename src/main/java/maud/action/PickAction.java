@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018, Stephen Gold
+ Copyright (c) 2018-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,6 @@ import java.util.logging.Logger;
 import maud.Maud;
 import maud.menu.ViewMenus;
 import maud.view.Drag;
-import maud.view.ViewType;
 import maud.view.scene.SceneDrag;
 
 /**
@@ -89,12 +88,7 @@ class PickAction {
                 break;
 
             case Action.pickViewMenu:
-                ViewType type = Maud.gui.mouseViewType();
-                if (type == ViewType.Scene) {
-                    ViewMenus.sceneViewOptions();
-                } else if (type == ViewType.Score) {
-                    ViewMenus.scoreViewOptions();
-                }
+                ViewMenus.pick();
                 break;
 
             default:

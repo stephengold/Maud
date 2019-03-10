@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -299,10 +299,14 @@ public class Selection {
 
     /**
      * Select the best selection found (so far).
+     *
+     * @return true if successful, false if bestType==None
      */
-    public void select() {
+    public boolean select() {
+        boolean success = true;
         switch (bestType) {
             case None:
+                success = false;
                 break;
 
             case Bone:
@@ -341,6 +345,8 @@ public class Selection {
             default:
                 throw new IllegalStateException();
         }
+
+        return success;
     }
     // *************************************************************************
     // private methods

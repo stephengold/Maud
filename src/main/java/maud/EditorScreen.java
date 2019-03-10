@@ -59,6 +59,7 @@ import jme3utilities.nifty.Tool;
 import jme3utilities.ui.InputMode;
 import maud.action.EditorInputMode;
 import maud.menu.BuildMenus;
+import maud.menu.ViewMenus;
 import maud.mesh.Lozenge;
 import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
@@ -349,7 +350,10 @@ public class EditorScreen extends GuiScreenController {
             mouseView.considerGnomons(selection);
             mouseView.considerKeyframes(selection);
             mouseView.considerTracks(selection);
-            selection.select();
+            boolean success = selection.select();
+            if (!success) {
+                ViewMenus.pick();
+            }
         }
     }
 

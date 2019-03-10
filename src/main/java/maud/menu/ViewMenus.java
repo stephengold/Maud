@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import maud.Maud;
 import maud.model.option.ViewMode;
+import maud.view.ViewType;
 
 /**
  * View menus in Maud's editor screen.
@@ -117,6 +118,18 @@ public class ViewMenus {
         }
 
         return handled;
+    }
+
+    /**
+     * Display an options menu for the view where the mouse is located.
+     */
+    public static void pick() {
+        ViewType type = Maud.gui.mouseViewType();
+        if (type == ViewType.Scene) {
+            sceneViewOptions();
+        } else if (type == ViewType.Score) {
+            scoreViewOptions();
+        }
     }
 
     /**
