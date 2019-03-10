@@ -696,7 +696,7 @@ public class BuildMenus {
     private void buildMapMenu() {
         builder.reset();
         builder.addTool("Tool");
-        builder.addDialog("Load");
+        builder.addSubmenu("Load");
         LoadedMap map = Maud.getModel().getMap();
         if (!map.isEmpty()) {
             if (map.hasInvalidMappings()) {
