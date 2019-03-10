@@ -719,8 +719,8 @@ public class BuildMenus {
         if (Maud.getModel().getLocations().hasRemovable()) {
             builder.addSubmenu("Remove asset location");
         }
-        builder.add("Display settings");
-        builder.add("Hotkeys");
+        builder.addScreen("Display settings");
+        builder.addScreen("Hotkeys");
         //builder.add("Locale"); TODO
         builder.addSubmenu("Scene-view options");
         builder.addSubmenu("Score-view options");

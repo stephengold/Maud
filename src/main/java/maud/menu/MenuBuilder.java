@@ -263,6 +263,18 @@ class MenuBuilder extends PopupMenuBuilder {
     }
 
     /**
+     * Add an item with the screen icon to the menu.
+     *
+     * @param item (not null, not empty)
+     */
+    void addScreen(String item) {
+        assert item != null;
+        assert !item.isEmpty();
+
+        add(item, "Textures/icons/dialog.png");
+    }
+
+    /**
      * Add an item with the submenu icon to the menu.
      *
      * @param item (not null, not empty)
