@@ -43,7 +43,6 @@ import java.util.logging.Logger;
 import jme3utilities.Misc;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
-import jme3utilities.debug.DebugVersion;
 import jme3utilities.minie.MinieVersion;
 import jme3utilities.nifty.LibraryVersion;
 import jme3utilities.nifty.dialog.BooleanDialog;
@@ -136,9 +135,6 @@ public class EditorDialogs {
                 MyString.quote(Constants.versionShort()));
         text += String.format("%n   Wes version=%s (BSD license)",
                 MyString.quote(WesVersion.versionShort()));
-        text += String.format(
-                "%n   jme3-utilities-debug version=%s (BSD license)",
-                MyString.quote(DebugVersion.versionShort()));
         text += String.format("%n   jme3-utilities-ui version=%s (BSD license)",
                 MyString.quote(UiVersion.versionShort()));
         text += String.format(
