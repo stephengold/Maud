@@ -1015,7 +1015,7 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Alter the range of motion of one axis of the the selected PhysicsLink.
+     * Alter the range of motion of one axis of the selected PhysicsLink.
      *
      * @param axisIndex which axis to alter (0&rarr;X, 1&rarr;Y, 2&rarr;Z)
      * @param maxAngle the desired maximum rotation angle (in radians)
