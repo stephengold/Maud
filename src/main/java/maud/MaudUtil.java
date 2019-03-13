@@ -31,6 +31,7 @@ import com.jme3.animation.SpatialTrack;
 import com.jme3.animation.Track;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
+import com.jme3.material.Material;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Matrix4f;
 import com.jme3.math.Quaternion;
@@ -39,6 +40,7 @@ import com.jme3.math.Transform;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.math.Vector4f;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
@@ -292,6 +294,41 @@ public class MaudUtil {
     }
 
     /**
+     * Find a named Material in the specified subtree of the scene graph. Note:
+     * recursive!
+     *
+     * @param subtree where to search (not null, unaffected)
+     * @param name (not null)
+     * @return a pre-existing instance, or null if none
+     */
+    public static Material findMaterialNamed(Spatial subtree, String name) {
+        Validate.nonNull(name, "name");
+
+        Material result = null;
+
+        if (subtree instanceof Geometry) {
+            Geometry geometry = (Geometry) subtree;
+            Material material = geometry.getMaterial();
+            String matName = material.getName();
+            if (name.equals(matName)) {
+                result = material;
+            }
+
+        } else if (subtree instanceof Node) {
+            Node node = (Node) subtree;
+            List<Spatial> children = node.getChildren();
+            for (Spatial child : children) {
+                result = findMaterialNamed(child, name);
+                if (result != null) {
+                    break;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Find the specified spatial in the specified subtree and optionally store
      * its tree position.
      *
@@ -340,6 +377,10 @@ public class MaudUtil {
     /**
      * Find a spatial with the specified name in the specified subtree. Note:
      * recursive!
+     * <p>
+     * If the tree position is not needed, use
+     * {@link jme3utilities.MySpatial#findNamed(com.jme3.scene.Spatial, java.lang.String)}
+     * instead.
      *
      * @param name what name to search for (not null, not empty)
      * @param subtree which subtree to search (may be null, unaffected)
