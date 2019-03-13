@@ -1118,7 +1118,7 @@ public class SceneViewCore
             MyVector3f.accumulateMinima(minMax[0], subtreeMinMax[0]);
             MyVector3f.accumulateMaxima(minMax[1], subtreeMinMax[1]);
         }
-        Vector3f center = MyVector3f.midpoint(minMax[0], minMax[1]);
+        Vector3f center = MyVector3f.midpoint(minMax[0], minMax[1], null);
         boolean zUp = Maud.getModel().getMisc().isLoadZup();
         float baseElevation = zUp ? minMax[0].z : minMax[0].y;
         cgmTransform.loadCgm(center, baseElevation, zUp);

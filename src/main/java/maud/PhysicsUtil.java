@@ -508,7 +508,7 @@ public class PhysicsUtil {
         Spatial clone = subtree.clone(false);
         clone.setLocalTransform(transformIdentity);
         Vector3f[] minMax = MySpatial.findMinMaxCoords(clone);
-        Vector3f translation = MyVector3f.midpoint(minMax[0], minMax[1]);
+        Vector3f translation = MyVector3f.midpoint(minMax[0], minMax[1], null);
         Vector3f halfExtents = minMax[1].subtract(translation);
 
         CollisionShape child;
