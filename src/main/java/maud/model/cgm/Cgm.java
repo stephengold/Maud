@@ -784,7 +784,7 @@ public class Cgm implements Cloneable {
      * @return true if found, otherwise false
      */
     public boolean hasGeometry(String name) {
-        Spatial sp = MaudUtil.findSpatialNamed(name, rootSpatial, null);
+        Spatial sp = MySpatial.findNamed(rootSpatial, name);
         boolean result = sp instanceof Geometry;
 
         return result;
@@ -812,7 +812,7 @@ public class Cgm implements Cloneable {
      * @return true if found, otherwise false
      */
     public boolean hasNode(String name) {
-        Spatial sp = MaudUtil.findSpatialNamed(name, rootSpatial, null);
+        Spatial sp = MySpatial.findNamed(rootSpatial, name);
         boolean result = sp instanceof Node;
 
         return result;
@@ -825,7 +825,7 @@ public class Cgm implements Cloneable {
      * @return true if found, otherwise false
      */
     public boolean hasSpatial(String name) {
-        Spatial sp = MaudUtil.findSpatialNamed(name, rootSpatial, null);
+        Spatial sp = MySpatial.findNamed(rootSpatial, name);
         if (sp == null) {
             return false;
         } else {
