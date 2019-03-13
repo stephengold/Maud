@@ -79,6 +79,7 @@ import maud.model.cgm.SelectedOverride;
 import maud.model.cgm.SelectedPco;
 import maud.model.cgm.SelectedShape;
 import maud.model.cgm.SelectedSpatial;
+import maud.model.cgm.SelectedTexture;
 import maud.model.cgm.SelectedTrack;
 import maud.model.cgm.TrackItem;
 import maud.model.option.RigidBodyParameter;
@@ -745,8 +746,13 @@ public class EditorDialogs {
      * selected texture.
      */
     public static void setAnisotropy() {
-        int oldValue = Maud.getModel().getTarget().getTexture().anisotropy();
-        String defaultText = Integer.toString(oldValue);
+        String defaultText = "0";
+        SelectedTexture texture = Maud.getModel().getTarget().getTexture();
+        if (texture.hasKey()) {
+            int oldValue = texture.anisotropy();
+            defaultText = Integer.toString(oldValue);
+        }
+
         DialogController controller = new IntegerDialog("Select", 0,
                 Integer.MAX_VALUE, false);
         Maud.gui.closeAllPopups();
