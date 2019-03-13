@@ -997,8 +997,14 @@ public class SelectedTexture implements JmeCloneable {
         key.setGenerateMips(generateMips);
         key.setTextureTypeHint(typeHint);
 
+        Locators.save();
+        Locators.registerDefault();
+        List<String> specList = Maud.getModel().getLocations().listAll();
+        Locators.register(specList);
         AssetManager assetManager = Locators.getAssetManager();
         Texture loaded = assetManager.loadTexture(key);
+        Locators.restore();
+
         assert loaded != null;
         editableCgm.replaceSelectedTexture(loaded, eventDescription);
     }
