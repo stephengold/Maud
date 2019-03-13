@@ -33,6 +33,7 @@ import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.Track;
 import com.jme3.light.Light;
+import com.jme3.material.Material;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
@@ -290,13 +291,13 @@ public class CheckLoaded {
     public static boolean cgm(Spatial cgmRoot) {
         Validate.nonNull(cgmRoot, "model root");
 
-        List<String> spatialNames = new ArrayList<>(16);
+        List<String> spatialNames = new ArrayList<>(128);
         List<Spatial> spatials
                 = MySpatial.listSpatials(cgmRoot, Spatial.class, null);
         for (Spatial spatial : spatials) {
             String name = spatial.getName();
             if (name == null || name.isEmpty()) {
-                logger.log(Level.WARNING, "model contains a nameless spatial");
+                logger.log(Level.WARNING, "model contains a nameless Spatial");
                 return false;
             }
             if (spatialNames.contains(name)) {
@@ -308,7 +309,24 @@ public class CheckLoaded {
             spatialNames.add(name);
         }
 
-        List<String> lightNames = new ArrayList<>(2);
+        List<String> materialNames = new ArrayList<>(16);
+        List<Material> materials = MySpatial.listMaterials(cgmRoot, null);
+        for (Material material : materials) {
+            String name = material.getName();
+            if (name == null || name.isEmpty()) {
+                logger.log(Level.WARNING, "model contains a nameless Material");
+                return false;
+            }
+            if (materialNames.contains(name)) {
+                logger.log(Level.WARNING,
+                        "model contains multiple materials named {0}",
+                        MyString.quote(name));
+                return false;
+            }
+            materialNames.add(name);
+        }
+
+        List<String> lightNames = new ArrayList<>(8);
         List<Light> lights = MyLight.listLights(cgmRoot, Light.class, null);
         for (Light light : lights) {
             String name = light.getName();
