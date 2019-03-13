@@ -720,14 +720,15 @@ public class BuildMenus {
             builder.addSubmenu("Remove asset location");
         }
         builder.addScreen("Display settings");
+        builder.addTool("Dump tool");
         builder.addScreen("Hotkeys");
         //builder.add("Locale"); TODO
         builder.addSubmenu("Scene-view options");
         builder.addSubmenu("Score-view options");
         builder.addTool("Tweening tool");
-        builder.add("Update startup script");
+        builder.addEdit("Update startup script");
         if (Maud.isStartupScriptCustomized()) {
-            builder.add("Revert startup script to default");
+            builder.addEdit("Revert startup script to default");
         }
     }
 }

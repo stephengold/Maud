@@ -571,6 +571,14 @@ public class ActionPrefix {
      */
     final public static String setCloudiness = "set cloudiness ";
     /**
+     * argument is a decimal number of spaces
+     */
+    final public static String setDumpIndentSpaces = "set dumpIndentSpaces ";
+    /**
+     * argument is a decimal number of children
+     */
+    final public static String setDumpMaxChildren = "set dumpMaxChildren ";
+    /**
      * argument is a decimal duration in seconds
      */
     final public static String setDurationProportional
@@ -693,6 +701,42 @@ public class ActionPrefix {
      * argument is a boolean value
      */
     final public static String sfLoadZUp = "setFlag loadZUp ";
+    /**
+     * argument is a boolean value
+     */
+    final public static String sfDumpBuckets = "setFlag dumpBuckets ";
+    /**
+     * argument is a boolean value
+     */
+    final public static String sfDumpCullHints = "setFlag dumpCullHints ";
+    /**
+     * argument is a boolean value
+     */
+    final public static String sfDumpJib = "setFlag dumpJib ";
+    /**
+     * argument is a boolean value
+     */
+    final public static String sfDumpJis = "setFlag dumpJis ";
+    /**
+     * argument is a boolean value
+     */
+    final public static String sfDumpMatParams = "setFlag dumpMatParams ";
+    /**
+     * argument is a boolean value
+     */
+    final public static String sfDumpMpo = "setFlag dumpMpo ";
+    /**
+     * argument is a boolean value
+     */
+    final public static String sfDumpShadows = "setFlag dumpShadows ";
+    /**
+     * argument is a boolean value
+     */
+    final public static String sfDumpTforms = "setFlag dumpTforms ";
+    /**
+     * argument is a boolean value
+     */
+    final public static String sfDumpUserData = "setFlag dumpUserData ";
     /**
      * argument is a boolean value
      */

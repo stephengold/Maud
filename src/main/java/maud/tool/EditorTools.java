@@ -38,6 +38,7 @@ import maud.tool.option.BackgroundTool;
 import maud.tool.option.BoundsTool;
 import maud.tool.option.CameraTool;
 import maud.tool.option.CursorTool;
+import maud.tool.option.DumpTool;
 import maud.tool.option.PhysicsTool;
 import maud.tool.option.PlatformTool;
 import maud.tool.option.RenderTool;
@@ -77,6 +78,7 @@ public class EditorTools {
     final private CgmTool cgm;
 
     final private CursorTool cursor;
+    final private DumpTool dump;
     final private ExtractTool extract;
     final private ExtremeVertexTool extremeVertex;
     final private HistoryTool history;
@@ -85,8 +87,8 @@ public class EditorTools {
     final private LightColorTool lightColor;
     final private LightDirectionTool lightDirection;
     final private LightPositionTool lightPosition;
-    final private LightsTool lights;
 
+    final private LightsTool lights;
     final private LinkTool link;
     final private MappingTool mapping;
     final private MaterialTool material;
@@ -96,8 +98,8 @@ public class EditorTools {
     final private PhysicsTool physics;
     final private PlatformTool platform;
     final private RenderTool render;
-    final private RetargetTool retarget;
 
+    final private RetargetTool retarget;
     final private SceneLightingTool sceneLighting;
     final private ScoreTool score;
     final private SettingsTool settings;
@@ -107,8 +109,8 @@ public class EditorTools {
     final private SkyTool sky;
     final private SourceAnimationTool sourceAnimation;
     final private SpatialDetailsTool spatialDetails;
-    final private SpatialRotationTool spatialRotation;
 
+    final private SpatialRotationTool spatialRotation;
     final private SpatialScaleTool spatialScale;
     final private SpatialTool spatial;
     final private SpatialTranslationTool spatialTranslation;
@@ -141,6 +143,7 @@ public class EditorTools {
         cgm = new CgmTool(screenController);
 
         cursor = new CursorTool(screenController);
+        dump = new DumpTool(screenController);
         extract = new ExtractTool(screenController);
         extremeVertex = new ExtremeVertexTool(screenController);
         history = new HistoryTool(screenController);
@@ -149,8 +152,8 @@ public class EditorTools {
         lightColor = new LightColorTool(screenController);
         lightDirection = new LightDirectionTool(screenController);
         lightPosition = new LightPositionTool(screenController);
-        lights = new LightsTool(screenController);
 
+        lights = new LightsTool(screenController);
         link = new LinkTool(screenController);
         mapping = new MappingTool(screenController);
         material = new MaterialTool(screenController);
@@ -160,8 +163,8 @@ public class EditorTools {
         physics = new PhysicsTool(screenController);
         platform = new PlatformTool(screenController);
         render = new RenderTool(screenController);
-        retarget = new RetargetTool(screenController);
 
+        retarget = new RetargetTool(screenController);
         sceneLighting = new SceneLightingTool(screenController);
         score = new ScoreTool(screenController);
         settings = new SettingsTool(screenController);
@@ -171,8 +174,8 @@ public class EditorTools {
         sky = new SkyTool(screenController);
         sourceAnimation = new SourceAnimationTool(screenController);
         spatialDetails = new SpatialDetailsTool(screenController);
-        spatialRotation = new SpatialRotationTool(screenController);
 
+        spatialRotation = new SpatialRotationTool(screenController);
         spatialScale = new SpatialScaleTool(screenController);
         spatial = new SpatialTool(screenController);
         spatialTranslation = new SpatialTranslationTool(screenController);
@@ -193,7 +196,7 @@ public class EditorTools {
      */
     public void attachAll(AppStateManager stateManager) {
         stateManager.attachAll(animation, axes, background, bone, boneRotation,
-                boneScale, boneTranslation, bounds, camera, cgm, cursor,
+                boneScale, boneTranslation, bounds, camera, cgm, cursor, dump,
                 extract, extremeVertex, history, keyframe,
                 joint, lightColor, lightDirection, lightPosition, lights, link,
                 mapping, material, mesh, overrides, pco, physics, platform,

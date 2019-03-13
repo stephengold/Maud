@@ -37,6 +37,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
+import jme3utilities.minie.PhysicsDumper;
 import jme3utilities.nifty.WindowController;
 import jme3utilities.ui.ActionApplication;
 import jme3utilities.wes.TweenRotations;
@@ -95,6 +96,10 @@ public class EditorModel {
      */
     final private MiscOptions miscOptions;
     /**
+     * dumper
+     */
+    final private PhysicsDumper dumper;
+    /**
      * options for "scene" views
      */
     final private SceneOptions sceneOptions;
@@ -118,6 +123,7 @@ public class EditorModel {
         mapLoadSlot = new EditableMap();
         sourceCgmLoadSlot = new LoadedCgm();
         miscOptions = new MiscOptions();
+        dumper = new PhysicsDumper();
         sceneOptions = new SceneOptions();
         scoreOptions = new ScoreOptions();
         techniques = new TweenTransforms();
@@ -136,6 +142,7 @@ public class EditorModel {
             mapLoadSlot = other.getMap().clone();
             sourceCgmLoadSlot = other.getSource().clone();
             miscOptions = other.getMisc().clone();
+            dumper = other.getDumper().clone();
             sceneOptions = other.getScene().clone();
             scoreOptions = other.getScore().clone();
             techniques = other.getTweenTransforms().clone();
@@ -170,6 +177,16 @@ public class EditorModel {
         }
 
         return result;
+    }
+
+    /**
+     * Access the dumper.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public PhysicsDumper getDumper() {
+        assert dumper != null;
+        return dumper;
     }
 
     /**
@@ -434,6 +451,55 @@ public class EditorModel {
 
         assetLocations.writeToScript(writer);
         miscOptions.writeToScript(writer);
+        /*
+         * write dumper options
+         */
+        String action;
+        String indentIncrement = dumper.indentIncrement();
+        int numSpaces = indentIncrement.length();
+        action = ActionPrefix.setDumpIndentSpaces + Integer.toString(numSpaces);
+        MaudUtil.writePerformAction(writer, action);
+
+        boolean dumpBuckets = dumper.isDumpBucket();
+        action = ActionPrefix.sfDumpBuckets + Boolean.toString(dumpBuckets);
+        MaudUtil.writePerformAction(writer, action);
+
+        boolean dumpCullHints = dumper.isDumpCull();
+        action = ActionPrefix.sfDumpCullHints + Boolean.toString(dumpCullHints);
+        MaudUtil.writePerformAction(writer, action);
+
+        boolean dumpJib = dumper.isDumpJointsInBody();
+        action = ActionPrefix.sfDumpJib + Boolean.toString(dumpJib);
+        MaudUtil.writePerformAction(writer, action);
+
+        boolean dumpJis = dumper.isDumpJointsInSpace();
+        action = ActionPrefix.sfDumpJis + Boolean.toString(dumpJis);
+        MaudUtil.writePerformAction(writer, action);
+
+        boolean dumpMatParams = dumper.isDumpMatParam();
+        action = ActionPrefix.sfDumpMatParams + Boolean.toString(dumpMatParams);
+        MaudUtil.writePerformAction(writer, action);
+
+        boolean dumpMpo = dumper.isDumpOverride();
+        action = ActionPrefix.sfDumpMpo + Boolean.toString(dumpMpo);
+        MaudUtil.writePerformAction(writer, action);
+
+        boolean dumpShadows = dumper.isDumpShadow();
+        action = ActionPrefix.sfDumpShadows + Boolean.toString(dumpShadows);
+        MaudUtil.writePerformAction(writer, action);
+
+        boolean dumpTransforms = dumper.isDumpTransform();
+        action = ActionPrefix.sfDumpTforms + Boolean.toString(dumpTransforms);
+        MaudUtil.writePerformAction(writer, action);
+
+        boolean dumpUserData = dumper.isDumpUser();
+        action = ActionPrefix.sfDumpUserData + Boolean.toString(dumpUserData);
+        MaudUtil.writePerformAction(writer, action);
+
+        int maxChildren = dumper.maxChildren();
+        action = ActionPrefix.setDumpMaxChildren + Integer.toString(maxChildren);
+        MaudUtil.writePerformAction(writer, action);
+
         sceneOptions.writeToScript(writer);
         scoreOptions.writeToScript(writer);
         /*
@@ -469,7 +535,7 @@ public class EditorModel {
                 Element element = tool.getElement();
                 int x = element.getX();
                 int y = element.getY();
-                String action = String.format("%s%s %d %d",
+                action = String.format("%s%s %d %d",
                         ActionPrefix.selectToolAt, name, x, y);
                 MaudUtil.writePerformAction(writer, action);
             }

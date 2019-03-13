@@ -34,6 +34,7 @@ import jme3utilities.MyString;
 import jme3utilities.math.MyColor;
 import jme3utilities.math.MyVector3f;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.dialog.EditorDialogs;
 import maud.menu.MeshMenus;
 import maud.model.EditorModel;
@@ -93,6 +94,14 @@ class SetANAction {
 
             case Action.setBufferStride:
                 EditorDialogs.setBufferStride();
+                break;
+
+            case Action.setDumpIndentSpaces:
+                EditorDialogs.setDumpIndentSpaces();
+                break;
+
+            case Action.setDumpMaxChildren:
+                EditorDialogs.setDumpMaxChildren();
                 break;
 
             case Action.setLightDirCardinal:
@@ -234,6 +243,19 @@ class SetANAction {
             arg = MyString.remainder(actionString, ActionPrefix.setCloudiness);
             float fraction = Float.parseFloat(arg);
             model.getScene().getRender().setCloudiness(fraction);
+
+        } else if (actionString.startsWith(ActionPrefix.setDumpIndentSpaces)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setDumpIndentSpaces);
+            int numSpaces = Integer.parseInt(arg);
+            String indent = MaudUtil.repeat(" ", numSpaces);
+            model.getDumper().setIndentIncrement(indent);
+
+        } else if (actionString.startsWith(ActionPrefix.setDumpMaxChildren)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setDumpMaxChildren);
+            int maxCount = Integer.parseInt(arg);
+            model.getDumper().setMaxChildren(maxCount);
 
         } else if (actionString.startsWith(
                 ActionPrefix.setDurationProportional)) {

@@ -31,7 +31,6 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.ScreenshotAppState;
 import com.jme3.asset.AssetConfig;
 import com.jme3.audio.openal.ALAudioRenderer;
-import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.debug.DebugTools;
 import com.jme3.scene.plugins.bvh.BVHLoader;
 import com.jme3.system.AppSettings;
@@ -57,9 +56,7 @@ import jme3utilities.ui.InputMode;
 import maud.dialog.QuitDialog;
 import maud.model.EditState;
 import maud.model.EditorModel;
-import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
-import maud.view.scene.SceneView;
 
 /**
  * GUI application to edit jMonkeyEngine animated C-G models. The application's
@@ -368,15 +365,6 @@ public class Maud extends GuiApplication {
 
             handled = true;
             switch (actionString) {
-                case "dump physicsSpace":
-                    dumpPhysicsSpace();
-                    break;
-                case "dump renderer":
-                    dumpRenderer();
-                    break;
-                case "dump scene":
-                    dumpScene();
-                    break;
                 case "edit bindings":
                     InputMode activeInputMode = InputMode.getActiveMode();
                     bindScreen.activate(activeInputMode);
@@ -413,44 +401,6 @@ public class Maud extends GuiApplication {
     }
     // *************************************************************************
     // private methods
-
-    /**
-     * Process a "dump physicsSpace" action.
-     */
-    private void dumpPhysicsSpace() {
-        Cgm cgm = gui.mouseCgm();
-        SceneView sceneView = cgm.getSceneView();
-        PhysicsSpace space = sceneView.getPhysicsSpace();
-        dumper.dump(space);
-    }
-
-    /**
-     * Process a "dump renderer" action.
-     */
-    private void dumpRenderer() {
-        //dumper.setDumpBucket(true);
-        //dumper.setDumpCull(true);
-        //dumper.setDumpMatParam(true);
-        //dumper.setDumpOverride(true);
-        dumper.setDumpShadow(true);
-        dumper.setDumpTransform(true);
-        //dumper.setDumpUser(true);
-        dumper.dump(renderManager);
-    }
-
-    /**
-     * Process a "dump scene" action.
-     */
-    private void dumpScene() {
-        //dumper.setDumpBucket(true);
-        //dumper.setDumpCull(true);
-        //dumper.setDumpMatParam(true);
-        //dumper.setDumpOverride(true);
-        dumper.setDumpShadow(true);
-        dumper.setDumpTransform(true);
-        //dumper.setDumpUser(true);
-        dumper.dump(rootNode);
-    }
 
     /**
      * If confirmed, terminate the application.

@@ -29,10 +29,13 @@ package maud.action;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
+import com.jme3.bullet.PhysicsSpace;
 import com.jme3.cursors.plugins.JmeCursor;
+import com.jme3.renderer.RenderManager;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
+import jme3utilities.minie.PhysicsDumper;
 import jme3utilities.ui.InputMode;
 import maud.Maud;
 import maud.dialog.EditorDialogs;
@@ -153,6 +156,10 @@ public class EditorInputMode extends InputMode {
                     handled = DeleteAction.process(actionString);
                     break;
 
+                case "dump":
+                    handled = dumpAction(actionString);
+                    break;
+
                 case "launch":
                     handled = launchAction(actionString);
                     break;
@@ -258,6 +265,56 @@ public class EditorInputMode extends InputMode {
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Process an ongoing action that starts with the word "dump".
+     *
+     * @param actionString textual description of the action (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean dumpAction(String actionString) {
+        EditorModel model = Maud.getModel();
+        PhysicsDumper dumper = model.getDumper();
+        Cgm source = model.getSource();
+        Cgm target = model.getTarget();
+        Cgm mouseCgm = Maud.gui.mouseCgm();
+
+        boolean handled = true;
+        switch (actionString) {
+            case Action.dumpAppStates:
+                dumper.dump(stateManager);
+                break;
+            case Action.dumpMouseCgm:
+                mouseCgm.dump(dumper);
+                break;
+            case Action.dumpPhysicsSpace:
+                PhysicsSpace space = mouseCgm.getSceneView().getPhysicsSpace();
+                dumper.dump(space);
+                break;
+            case Action.dumpRenderer:
+                RenderManager rm = Maud.getApplication().getRenderManager();
+                dumper.dump(rm);
+                break;
+            case Action.dumpSourceCgm:
+                source.dump(dumper);
+                break;
+            case Action.dumpSourcePhysics:
+                space = source.getSceneView().getPhysicsSpace();
+                dumper.dump(space);
+                break;
+            case Action.dumpTargetCgm:
+                target.dump(dumper);
+                break;
+            case Action.dumpTargetPhysics:
+                space = target.getSceneView().getPhysicsSpace();
+                dumper.dump(space);
+                break;
+            default:
+                handled = false;
+        }
+
+        return handled;
+    }
 
     /**
      * Process an ongoing action that starts with the word "launch".

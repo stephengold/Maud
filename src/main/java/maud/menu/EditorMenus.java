@@ -366,17 +366,21 @@ public class EditorMenus {
                 bm.addAssetLocation();
                 break;
 
-            case "Remove asset location":
-                ShowMenus.removeAssetLocation();
-                break;
-
             case "Display settings":
                 Maud.gui.closeAllPopups();
                 Maud.getDisplaySettingsScreen().activate();
                 break;
 
+            case "Dump tool":
+                Maud.gui.tools.select("dump");
+                break;
+
             case "Hotkeys":
                 Maud.gui.goBindScreen();
+                break;
+
+            case "Remove asset location":
+                ShowMenus.removeAssetLocation();
                 break;
 
             case "Revert startup script to default":

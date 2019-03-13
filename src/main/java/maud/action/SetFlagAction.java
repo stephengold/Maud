@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018, Stephen Gold
+ Copyright (c) 2018-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -27,6 +27,7 @@
 package maud.action;
 
 import java.util.logging.Logger;
+import jme3utilities.minie.PhysicsDumper;
 import maud.Maud;
 import maud.model.EditorModel;
 import maud.model.option.scene.SceneOptions;
@@ -64,6 +65,7 @@ class SetFlagAction {
      */
     static boolean process(String actionString) {
         EditorModel model = Maud.getModel();
+        PhysicsDumper dumper = model.getDumper();
         SceneOptions scene = model.getScene();
 
         String[] words = actionString.split(" ");
@@ -89,6 +91,42 @@ class SetFlagAction {
 
             case ActionPrefix.sfDiagnose:
                 model.getMisc().setDiagnoseLoads(newValue);
+                break;
+
+            case ActionPrefix.sfDumpBuckets:
+                dumper.setDumpBucket(newValue);
+                break;
+
+            case ActionPrefix.sfDumpCullHints:
+                dumper.setDumpCull(newValue);
+                break;
+
+            case ActionPrefix.sfDumpJib:
+                dumper.setDumpJointsInBody(newValue);
+                break;
+
+            case ActionPrefix.sfDumpJis:
+                dumper.setDumpJointsInSpace(newValue);
+                break;
+
+            case ActionPrefix.sfDumpMatParams:
+                dumper.setDumpMatParam(newValue);
+                break;
+
+            case ActionPrefix.sfDumpMpo:
+                dumper.setDumpOverride(newValue);
+                break;
+
+            case ActionPrefix.sfDumpShadows:
+                dumper.setDumpShadow(newValue);
+                break;
+
+            case ActionPrefix.sfDumpTforms:
+                dumper.setDumpTransform(newValue);
+                break;
+
+            case ActionPrefix.sfDumpUserData:
+                dumper.setDumpUser(newValue);
                 break;
 
             case ActionPrefix.sfLoadZUp:

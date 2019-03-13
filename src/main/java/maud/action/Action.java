@@ -66,6 +66,15 @@ public class Action {
     final static String deleteTrackTranslations = "delete trackTranslations";
     final static String deleteUserKey = "delete userKey";
 
+    final static String dumpAppStates = "dump appStates";
+    final static String dumpMouseCgm = "dump mouseCgm";
+    final static String dumpPhysicsSpace = "dump physicsSpace";
+    final static String dumpRenderer = "dump renderer";
+    final static String dumpSourceCgm = "dump sourceCgm";
+    final static String dumpSourcePhysics = "dump sourcePhysics";
+    final static String dumpTargetCgm = "dump targetCgm";
+    final static String dumpTargetPhysics = "dump targetPhysics";
+
     final static String launchProjectile = "launch projectile";
 
     final static String loadAnimation = "load animation";
@@ -250,6 +259,8 @@ public class Action {
     final static String setBufferInstanceSpan = "set bufferInstanceSpan";
     final static String setBufferLimit = "set bufferLimit";
     final static String setBufferStride = "set bufferStride";
+    final static String setDumpIndentSpaces = "set dumpIndentSpaces";
+    final static String setDumpMaxChildren = "set dumpMaxChildren";
     final static String setLightDirCardinal = "set lightDir cardinal";
     final static String setLightDirReverse = "set lightDir reverse";
     final static String setLinkMass = "set linkMass";

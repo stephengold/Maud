@@ -829,6 +829,69 @@ Approximate minimum screen size: 640x480
                 </panel>
             </control>
 
+            <control name="window" id="dumpTool" title="Dump Tool"
+                     hideOnClose="true"
+                     height="304px" width="175px" x="95" y="175">
+                <panel childLayout="vertical">
+                    <panel height="5px"/>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="checkbox" id="dumpBucketsCheckBox"
+                                 width="20px"/>
+                        <control name="label" text="  render-queue buckets"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="checkbox" id="dumpCullHintsCheckBox"
+                                 width="20px"/>
+                        <control name="label" text="  cull hints    "/>
+                        <control name="checkbox" id="dumpUserDataCheckBox"
+                                 width="20px"/>
+                        <control name="label" text="  user data"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="checkbox" id="dumpJibCheckBox"
+                                 width="20px"/>
+                        <control name="label" text="  physics joints (in bodies)"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="checkbox" id="dumpJisCheckBox"
+                                 width="20px"/>
+                        <control name="label" text="  physics joints (in spaces)"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="checkbox" id="dumpMatParamsCheckBox"
+                                 width="20px"/>
+                        <control name="label" text="  material parameters"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="checkbox" id="dumpMposCheckBox"
+                                 width="20px"/>
+                        <control name="label" text="  M-P overrides"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="checkbox" id="dumpShadowsCheckBox"
+                                 width="20px"/>
+                        <control name="label" text="  shadow modes"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="checkbox" id="dumpTransformsCheckBox"
+                                 width="20px"/>
+                        <control name="label" text="  coordinate transforms"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Indent:  "/>
+                        <control name="button" id="dumpIndentButton" width="40px">
+                            <interact onRelease="perform(set dumpIndentSpaces)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Max children:  "/>
+                        <control name="button" id="dumpMaxChildrenButton" width="*">
+                            <interact onRelease="perform(set dumpMaxChildren)"/>
+                        </control>
+                    </panel>
+                </panel>
+            </control>
+
             <control name="window" id="extractTool" title="Extract Tool"
                      hideOnClose="true"
                      height="200px" width="280px" x="110" y="160">

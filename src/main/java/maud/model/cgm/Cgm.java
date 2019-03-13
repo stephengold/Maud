@@ -55,6 +55,7 @@ import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
+import jme3utilities.debug.Dumper;
 import jme3utilities.wes.TweenTransforms;
 import maud.Maud;
 import maud.MaudUtil;
@@ -332,6 +333,15 @@ public class Cgm implements Cloneable {
 
         assert count >= 0 : count;
         return count;
+    }
+
+    /**
+     * Dump the C-G model using the specified Dumper.
+     *
+     * @param dumper the Dumper to use (not null)
+     */
+    public void dump(Dumper dumper) {
+        dumper.dump(rootSpatial);
     }
 
     /**

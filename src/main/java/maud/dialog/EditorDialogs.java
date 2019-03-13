@@ -819,6 +819,35 @@ public class EditorDialogs {
     }
 
     /**
+     * Display a "set dumpIndentSpaces" dialog.
+     */
+    public static void setDumpIndentSpaces() {
+        String indentIncrement = Maud.getModel().getDumper().indentIncrement();
+        String defaultText = Integer.toString(indentIncrement.length());
+
+        DialogController controller = new IntegerDialog("Set", 0, 40, false);
+
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter indent in spaces:",
+                defaultText, ActionPrefix.setDumpIndentSpaces, controller);
+    }
+
+    /**
+     * Display a "set dumpMaxChildren" dialog.
+     */
+    public static void setDumpMaxChildren() {
+        int maxChildren = Maud.getModel().getDumper().maxChildren();
+        String defaultText = Integer.toString(maxChildren);
+
+        DialogController controller
+                = new IntegerDialog("Set", 0, Integer.MAX_VALUE, false);
+
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter number of children:",
+                defaultText, ActionPrefix.setDumpMaxChildren, controller);
+    }
+
+    /**
      * Display a "set duration proportional" dialog.
      */
     public static void setDurationProportional() {
