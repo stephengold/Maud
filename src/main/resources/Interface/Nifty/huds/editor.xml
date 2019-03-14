@@ -3006,7 +3006,7 @@ Approximate minimum screen size: 640x480
 
             <control name="window" id="textureTool" title="Texture Tool"
                      hideOnClose="true"
-                     height="222px" width="420px" x="150" y="120">
+                     height="222px" width="490px" x="150" y="120">
                 <panel childLayout="vertical">
                     <panel height="3px"/>
                     <panel childLayout="horizontal" height="28px">
@@ -3031,6 +3031,11 @@ Approximate minimum screen size: 640x480
                         <control name="button" id="textureNullButton"
                                  width="45px">
                             <interact onRelease="perform(set texture null)"/>
+                        </control>
+                        <panel/>
+                        <control name="button" id="textureSelectButton"
+                                 width="100px">
+                            <interact onRelease="perform(select texture)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">

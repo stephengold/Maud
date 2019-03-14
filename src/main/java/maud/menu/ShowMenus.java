@@ -42,6 +42,7 @@ import maud.model.cgm.SelectedLight;
 import maud.model.cgm.SelectedOverride;
 import maud.model.cgm.SelectedSgc;
 import maud.model.cgm.SelectedSpatial;
+import maud.model.cgm.SelectedTexture;
 import maud.model.cgm.WhichParams;
 
 /**
@@ -263,6 +264,46 @@ public class ShowMenus {
         builder.add(SelectedSgc.noControl);
 
         builder.show(ActionPrefix.selectSgc);
+    }
+
+    /**
+     * Display a menu for selecting a texture reference using the "select
+     * texture " action prefix.
+     */
+    public static void selectTexture() {
+        SelectedTexture selection = Maud.getModel().getTarget().getTexture();
+        boolean isSelected = selection.isSelected();
+        List<String> descList = selection.listSelectables("");
+        int numSelectables = descList.size();
+        if (numSelectables == 1) {
+            if (isSelected) {
+                selection.deselectAll();
+            } else {
+                String name = descList.get(0);
+                selection.select(name);
+            }
+            return;
+        }
+
+        String selectedDesc;
+        if (!isSelected) {
+            selectedDesc = "";
+        } else if (selection.isNull()) {
+            selectedDesc = selection.describeFirstRef();
+            assert descList.contains(selectedDesc);
+        } else {
+            selectedDesc = selection.describe();
+            assert descList.contains(selectedDesc);
+        }
+
+        MenuBuilder builder = new MenuBuilder();
+        for (String desc : descList) {
+            if (!desc.equals(selectedDesc)) {
+                builder.addTexture(desc);
+            }
+        }
+
+        builder.show(ActionPrefix.selectTexture);
     }
 
     /**

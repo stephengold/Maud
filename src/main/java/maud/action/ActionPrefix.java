@@ -452,6 +452,11 @@ public class ActionPrefix {
      */
     final public static String selectSpatialChild = "select spatialChild ";
     /**
+     * argument is the description of either a non-null texture or a null-texture
+     * reference
+     */
+    final public static String selectTexture = "select texture ";
+    /**
      * argument is the name of a mag-filter mode
      */
     final public static String selectTextureMag = "select textureMag ";

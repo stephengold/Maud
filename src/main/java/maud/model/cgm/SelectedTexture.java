@@ -137,9 +137,9 @@ public class SelectedTexture implements JmeCloneable {
     public int countSelectables() {
         List<Texture> nonNulls = listNonNullTextures();
         List<MatParamRef> nullRefs = listTextureRefs(null);
-        int numSelections = nonNulls.size() + nullRefs.size();
+        int count = nonNulls.size() + nullRefs.size();
 
-        return numSelections;
+        return count;
     }
 
     /**
@@ -389,6 +389,34 @@ public class SelectedTexture implements JmeCloneable {
     }
 
     /**
+     * Enumerate all selectables with the specified description prefix.
+     *
+     * @param prefix (not null)
+     * @return a new list of texture- and MatParamRef descriptions
+     */
+    public List<String> listSelectables(String prefix) {
+        List<Texture> nonNulls = listNonNullTextures();
+        List<MatParamRef> nullRefs = listTextureRefs(null);
+        int numSelectibles = nonNulls.size() + nullRefs.size();
+        List<String> result = new ArrayList<>(numSelectibles);
+
+        for (Texture texture : nonNulls) {
+            String desc = DescribeUtil.texture(texture);
+            if (desc.startsWith(prefix)) {
+                result.add(desc);
+            }
+        }
+        for (MatParamRef ref : nullRefs) {
+            String desc = ref.toString();
+            if (desc.startsWith(prefix)) {
+                result.add(desc);
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Read the magnification-filter mode of the selected non-null texture.
      *
      * @return the mode enum value (not null)
@@ -480,7 +508,7 @@ public class SelectedTexture implements JmeCloneable {
     }
 
     /**
-     * Select the specified texture reference, deselecting all others
+     * Select the specified texture reference, deselecting all others.
      *
      * @param reference the reference to select (not null)
      */
@@ -499,6 +527,28 @@ public class SelectedTexture implements JmeCloneable {
                 lastAssetPath = key.getName();
             }
         }
+    }
+
+    /**
+     * Select the described texture or null-texture reference.
+     *
+     * @param desc the description (not null, not empty)
+     */
+    public void select(String desc) {
+        Validate.nonEmpty(desc, "description");
+
+        List<Texture> textures = listNonNullTextures();
+        for (Texture texture : textures) {
+            if (DescribeUtil.texture(texture).equals(desc)) {
+                selectAllRefs(texture);
+                return;
+            }
+        }
+
+        Spatial cgmRoot = cgm.getRootSpatial();
+        MatParamRef ref = new MatParamRef(desc, cgmRoot);
+        assert ref != null;
+        select(ref);
     }
 
     /**

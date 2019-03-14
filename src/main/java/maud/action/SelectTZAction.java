@@ -88,6 +88,10 @@ class SelectTZAction {
         Cgm target = Maud.getModel().getTarget();
 
         switch (actionString) {
+            case Action.selectTexture:
+                ShowMenus.selectTexture();
+                break;
+
             case Action.selectTextureMag:
                 EnumMenus.selectTextureMag();
                 break;
@@ -159,7 +163,11 @@ class SelectTZAction {
         Cgm target = model.getTarget();
         String arg;
 
-        if (actionString.startsWith(ActionPrefix.selectTextureMag)) {
+        if (actionString.startsWith(ActionPrefix.selectTexture)) {
+            arg = MyString.remainder(actionString, ActionPrefix.selectTexture);
+            target.getTexture().select(arg);
+
+        } else if (actionString.startsWith(ActionPrefix.selectTextureMag)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.selectTextureMag);
             Texture.MagFilter filter = Texture.MagFilter.valueOf(arg);

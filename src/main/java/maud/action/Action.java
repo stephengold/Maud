@@ -242,6 +242,7 @@ public class Action {
     final static String selectSourceBone = "select sourceBone";
     final static String selectSpatialChild = "select spatialChild";
     final static String selectSpatialParent = "select spatialParent";
+    final static String selectTexture = "select texture";
     final static String selectTextureMag = "select textureMag";
     final static String selectTextureMin = "select textureMin";
     final static String selectTextureType = "select textureType";

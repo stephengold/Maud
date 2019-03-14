@@ -34,7 +34,6 @@ import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.Tool;
 import maud.DescribeUtil;
 import maud.Maud;
-import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedTexture;
 
 /**
@@ -231,14 +230,14 @@ class TextureTool extends Tool {
     }
 
     /**
-     * Update the users status and select buttons.
+     * Update the "users" status and select buttons.
      */
     private void updateUsers() {
         String userStatus = "(no user)";
+        String stButton = "";
         String suButton = "";
 
-        Cgm target = Maud.getModel().getTarget();
-        SelectedTexture texture = target.getTexture();
+        SelectedTexture texture = Maud.getModel().getTarget().getTexture();
         if (texture.isSelected()) {
             int numUsers = texture.countSelectedRefs();
             if (numUsers == 1) {
@@ -248,8 +247,15 @@ class TextureTool extends Tool {
                 userStatus = String.format("%d users", numUsers);
             }
         }
+        int numSelectables = texture.countSelectables();
+        if (texture.isSelected() && numSelectables == 1) {
+            stButton = "Deselect texture";
+        } else if (numSelectables > 0) {
+            stButton = "Select texture";
+        }
 
         setStatusText("textureUsers", userStatus);
+        setButtonText("textureSelect", stButton);
         setButtonText("textureSelectUser", suButton);
     }
 }

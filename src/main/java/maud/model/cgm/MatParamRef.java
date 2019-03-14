@@ -40,6 +40,7 @@ import java.util.logging.Logger;
 import jme3utilities.Misc;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
+import maud.MaudUtil;
 import maud.view.scene.SceneView;
 
 /**
@@ -112,6 +113,43 @@ public class MatParamRef implements JmeCloneable {
         matParamMaterial = null;
         overrideSpatial = spatial;
         parameterName = name;
+    }
+
+    /**
+     * Instantiate a reference from its description.
+     *
+     * @param description the description (not null, starts and ends with a
+     * double quote ("))
+     * @param subtree the scene-graph subtree containing the override Spatial or
+     * mat-param Material (not null, unaffected)
+     */
+    MatParamRef(String description, Spatial subtree) {
+        assert description != null;
+        assert description.startsWith("\"");
+        assert description.endsWith("\"");
+        assert subtree != null;
+
+        int len = description.length();
+        int index = description.indexOf("\"mpo\"", 1);
+        if (index >= 1) {
+            matParamMaterial = null;
+            String escapedName = description.substring(1, index);
+            parameterName = MyString.unEscape(escapedName);
+            escapedName = description.substring(index + 5, len - 1);
+            String spatialName = MyString.unEscape(escapedName);
+            overrideSpatial = MySpatial.findNamed(subtree, spatialName);
+            assert overrideSpatial != null;
+        } else {
+            overrideSpatial = null;
+            index = description.indexOf("\"param\"", 1);
+            assert index >= 1;
+            String escapedName = description.substring(1, index);
+            parameterName = MyString.unEscape(escapedName);
+            escapedName = description.substring(index + 7, len - 1);
+            String matName = MyString.unEscape(escapedName);
+            matParamMaterial = MaudUtil.findMaterialNamed(subtree, matName);
+            assert matParamMaterial != null;
+        }
     }
     // *************************************************************************
     // new methods exposed
@@ -347,7 +385,7 @@ public class MatParamRef implements JmeCloneable {
 
         if (overrideSpatial != null) {
             String name = overrideSpatial.getName();
-            result = MyString.quote(parameterName) + "override"
+            result = MyString.quote(parameterName) + "mpo"
                     + MyString.quote(name);
         } else {
             String name = matParamMaterial.getName();
