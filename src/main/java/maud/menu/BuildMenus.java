@@ -405,7 +405,7 @@ public class BuildMenus {
     boolean menuBar(String menuName) {
         assert menuName != null;
         /**
-         * Dynamically generate the menu's item list.
+         * Dynamically generate the menu's list of items.
          */
         builder.reset();
         switch (menuName) {
@@ -435,6 +435,10 @@ public class BuildMenus {
 
             case "Map":
                 buildMapMenu();
+                break;
+
+            case "Material":
+                buildMaterialMenu();
                 break;
 
             case "Mesh":
@@ -691,10 +695,9 @@ public class BuildMenus {
     }
 
     /**
-     * Display a Map menu.
+     * Build a Map menu.
      */
     private void buildMapMenu() {
-        builder.reset();
         builder.addTool("Tool");
         builder.addSubmenu("Load");
         LoadedMap map = Maud.getModel().getMap();
@@ -708,6 +711,34 @@ public class BuildMenus {
         builder.addDialog("Save");
         builder.addDialog("Export to XML");
         builder.addTool("Twist tool");
+    }
+
+    /**
+     * Build a Material menu.
+     */
+    private void buildMaterialMenu() {
+        builder.addTool("Tool");
+        
+        Cgm target = Maud.getModel().getTarget();
+        List<String> materialList
+                = target.listSpatialNames("", WhichSpatials.Geometries);
+        if (!materialList.isEmpty()) {
+            builder.addSubmenu("Select");
+        }
+
+        builder.addTool("Texture tool");
+
+        SelectedTexture selectedTexture = target.getTexture();
+        int numSelectables = selectedTexture.countSelectables();
+        if (numSelectables == 1) {
+            if (selectedTexture.isSelected()) {
+                builder.addTexture("Deselect texture");
+            } else {
+                builder.addTexture("Select texture");
+            }
+        } else if (numSelectables > 1) {
+            builder.addSubmenu("Select texture");
+        }
     }
 
     /**

@@ -67,36 +67,41 @@ Approximate minimum screen size: 640x480
                         <interact onRelease="perform(select menuItem Mesh)"/>
                     </control>
                     <panel width="2px"/>
-                    <control name="button" id="ControlButton" label="6] Control"
+                    <control name="button" id="MaterialButton" label="6] Material"
+                             width="75px">
+                        <interact onRelease="perform(select menuItem Material)"/>
+                    </control>
+                    <panel width="2px"/>
+                    <control name="button" id="ControlButton" label="7] Control"
                              width="70px">
                         <interact onRelease="perform(select menuItem SGC)"/>
                     </control>
                     <panel width="2px"/>
-                    <control name="button" id="AnimationButton" label="7] Animations"
+                    <control name="button" id="AnimationButton" label="8] Animations"
                              width="88px">
                         <interact onRelease="perform(select menuItem Animation)"/>
                     </control>
                     <panel width="2px"/>
-                    <control name="button" id="BoneButton" label="8] Bone"
+                    <control name="button" id="BoneButton" label="9] Bone"
                              width="55px">
                         <interact onRelease="perform(select menuItem Bone)"/>
-                    </control>
-                    <panel width="2px"/>
-                    <control name="button" id="TrackButton" label="9] Track"
-                             width="60px">
-                        <interact onRelease="perform(select menuItem Track)"/>
                     </control>
                 </panel>
                 <panel id="menu bar bottom row" childLayout="horizontal"
                        height="25px">
                     <panel width="2px"/>
-                    <control name="button" id="KeyframeButton" label="0] Keyframe"
+                    <control name="button" id="TrackButton" label="0] Track"
+                             width="60px">
+                        <interact onRelease="perform(select menuItem Track)"/>
+                    </control>
+                    <panel width="2px"/>
+                    <control name="button" id="KeyframeButton" label="-] Keyframe"
                              width="78px">
                         <interact onRelease="perform(select menuItem Keyframe)"/>
                     </control>
                     <panel width="2px"/>
-                    <control name="button" id="PhysicsButton" label="-] Physics"
-                             width="70px">
+                    <control name="button" id="PhysicsButton" label="Physics"
+                             width="60px">
                         <interact onRelease="perform(select menuItem Physics)"/>
                     </control>
                     <panel width="2px"/>

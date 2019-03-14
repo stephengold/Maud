@@ -199,8 +199,7 @@ public class EditorMenus {
     // private methods
 
     /**
-     * Handle a "select menuItem" action for a submenu. TODO add a "Material"
-     * menu
+     * Handle a "select menuItem" action for a submenu.
      *
      * @param menuName name of the top-level menu (not null)
      * @param remainder not-yet-parsed portion of the menu path (not null)
@@ -215,45 +214,63 @@ public class EditorMenus {
             case "Animation":
                 handled = AnimationMenus.menuAnimation(remainder);
                 break;
+
             case "Bone":
                 handled = BoneMenus.menuBone(remainder);
                 break;
+
             case "CGM":
                 handled = CgmMenus.menuCgm(remainder);
                 break;
+
             case "Help":
                 handled = menuHelp(remainder);
                 break;
+
             case "History":
                 handled = menuHistory(remainder);
                 break;
+
             case "Keyframe":
                 handled = KeyframeMenus.menuKeyframe(remainder);
                 break;
+
             case "Map":
                 handled = menuMap(remainder);
                 break;
+
+            case "Material":
+                handled = menuMaterial(remainder);
+                break;
+
             case "Mesh":
                 handled = MeshMenus.menuMesh(remainder);
                 break;
+
             case "Physics":
                 handled = PhysicsMenus.menuPhysics(remainder);
                 break;
+
             case "Settings":
                 handled = menuSettings(remainder);
                 break;
+
             case "SGC":
                 handled = SgcMenus.menuSgc(remainder);
                 break;
+
             case "Spatial":
                 handled = SpatialMenus.menuSpatial(remainder);
                 break;
+
             case "Track":
                 handled = AnimationMenus.menuTrack(remainder);
                 break;
+
             case "View":
                 handled = ViewMenus.menuView(remainder);
                 break;
+
             default:
                 handled = false;
         }
@@ -350,6 +367,42 @@ public class EditorMenus {
             case "Unload":
                 map.unload();
                 break;
+            default:
+                handled = false;
+        }
+
+        return handled;
+    }
+
+    /**
+     * Handle a "select menuItem" action from the Material menu.
+     *
+     * @param remainder not-yet-parsed portion of the menu path (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private static boolean menuMaterial(String remainder) {
+        boolean handled = true;
+        switch (remainder) {
+            case "Select":
+                SpatialMenus.selectSpatial("", WhichSpatials.Geometries);
+                break;
+
+            case "Select texture":
+                ShowMenus.selectTexture();
+                break;
+
+            case "Deselect texture":
+                Maud.getModel().getTarget().getTexture().deselectAll();
+                break;
+
+            case "Texture tool":
+                Maud.gui.tools.select("texture");
+                break;
+
+            case "Tool":
+                Maud.gui.tools.select("material");
+                break;
+
             default:
                 handled = false;
         }
