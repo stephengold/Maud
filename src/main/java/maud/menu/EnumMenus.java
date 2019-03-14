@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018, Stephen Gold
+ Copyright (c) 2018-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -492,6 +492,10 @@ public class EnumMenus {
         MenuBuilder builder = new MenuBuilder();
 
         SelectedTexture texture = Maud.getModel().getTarget().getTexture();
+        if (!texture.hasKey()) {
+            return;
+        }
+
         Texture.Type selected = texture.typeHint();
         for (Texture.Type type : Texture.Type.values()) {
             if (type != selected) {

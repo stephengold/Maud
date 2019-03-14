@@ -38,6 +38,7 @@ import maud.dialog.EditorDialogs;
 import maud.model.EditableMap;
 import maud.model.History;
 import maud.model.cgm.OutputFormats;
+import maud.model.cgm.SelectedTexture;
 
 /**
  * Menus in Maud's editor screen.
@@ -145,8 +146,11 @@ public class EditorMenus {
      * Handle a "load texture" action without arguments.
      */
     public static void loadTexture() {
-        MenuBuilder builder = newLocationMenu();
-        builder.show(ActionPrefix.loadTextureLocator);
+        SelectedTexture texture = Maud.getModel().getTarget().getTexture();
+        if (texture.hasKey()) {
+            MenuBuilder builder = newLocationMenu();
+            builder.show(ActionPrefix.loadTextureLocator);
+        }
     }
 
     /**
@@ -195,7 +199,8 @@ public class EditorMenus {
     // private methods
 
     /**
-     * Handle a "select menuItem" action for a submenu.
+     * Handle a "select menuItem" action for a submenu. TODO add a "Material"
+     * menu
      *
      * @param menuName name of the top-level menu (not null)
      * @param remainder not-yet-parsed portion of the menu path (not null)

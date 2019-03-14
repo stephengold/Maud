@@ -746,12 +746,13 @@ public class EditorDialogs {
      * selected texture.
      */
     public static void setAnisotropy() {
-        String defaultText = "0";
         SelectedTexture texture = Maud.getModel().getTarget().getTexture();
-        if (texture.hasKey()) {
-            int oldValue = texture.anisotropy();
-            defaultText = Integer.toString(oldValue);
+        if (!texture.hasKey()) {
+            return;
         }
+
+        int oldValue = texture.anisotropy();
+        String defaultText = Integer.toString(oldValue);
 
         DialogController controller = new IntegerDialog("Select", 0,
                 Integer.MAX_VALUE, false);
