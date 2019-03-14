@@ -806,6 +806,21 @@ public class Cgm implements Cloneable {
     }
 
     /**
+     * Test whether the C-G model contains the named material.
+     *
+     * @param name (not null)
+     * @return true if found, otherwise false
+     */
+    public boolean hasMaterial(String name) {
+        Material mat = MaudUtil.findMaterialNamed(rootSpatial, name);
+        if (mat == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
      * Test whether the C-G model contains the named node.
      *
      * @param name (not null)

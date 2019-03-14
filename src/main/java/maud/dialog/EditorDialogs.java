@@ -557,7 +557,7 @@ public class EditorDialogs {
             if (oldName == null) {
                 oldName = "";
             }
-            DialogController controller = new TextEntryDialog("Rename");
+            DialogController controller = new MaterialNameDialog("Rename");
 
             Maud.gui.closeAllPopups();
             Maud.gui.showTextEntryDialog("Enter a new name for the material:",
