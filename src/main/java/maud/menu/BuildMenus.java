@@ -557,15 +557,20 @@ public class BuildMenus {
     }
 
     /**
-     * Build a "Map -> Load -> defaultLocation" menu.
+     * Build a "Map -> Load -> from classpath" menu.
      */
     private void buildClasspathMapMenu() {
         builder.reset();
 
+        builder.addJme("BallerinaToMhGame"); // 20 mappings
+        builder.addJme("FlipToMhGame"); // 22 mappings
+        builder.addJme("FlipToSinbad"); // 51 mappings
+        builder.addJme("FooterToMhGame"); // 19 mappings
         builder.addJme("PuppetToMhGame"); // 51 mappings
         builder.addJme("PuppetToSinbad"); // 50 mappings
         builder.addJme("SinbadToJaime"); // 52 mappings
         builder.addJme("SinbadToMhGame"); // 49 mappings
+        builder.addJme("SinbadToOto"); // 15 mappings
 
         builder.addDialog(otherName);
     }
@@ -718,7 +723,7 @@ public class BuildMenus {
      */
     private void buildMaterialMenu() {
         builder.addTool("Tool");
-        
+
         Cgm target = Maud.getModel().getTarget();
         List<String> materialList
                 = target.listSpatialNames("", WhichSpatials.Geometries);
