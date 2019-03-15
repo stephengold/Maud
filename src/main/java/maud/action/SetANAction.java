@@ -26,6 +26,7 @@
  */
 package maud.action;
 
+import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.shader.VarType;
@@ -243,6 +244,12 @@ class SetANAction {
             arg = MyString.remainder(actionString, ActionPrefix.setCloudiness);
             float fraction = Float.parseFloat(arg);
             model.getScene().getRender().setCloudiness(fraction);
+
+        } else if (actionString.startsWith(ActionPrefix.setDefaultMargin)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setDefaultMargin);
+            float newMargin = Float.parseFloat(arg);
+            CollisionShape.setDefaultMargin(newMargin);
 
         } else if (actionString.startsWith(ActionPrefix.setDumpIndentSpaces)) {
             arg = MyString.remainder(actionString,

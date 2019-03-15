@@ -452,8 +452,8 @@ public class ActionPrefix {
      */
     final public static String selectSpatialChild = "select spatialChild ";
     /**
-     * argument is the description of either a non-null texture or a null-texture
-     * reference
+     * argument is the description of either a non-null texture or a
+     * null-texture reference
      */
     final public static String selectTexture = "select texture ";
     /**
@@ -575,6 +575,10 @@ public class ActionPrefix {
      * argument is a decimal fraction
      */
     final public static String setCloudiness = "set cloudiness ";
+    /**
+     * argument is a decimal distance in physics-space units
+     */
+    final public static String setDefaultMargin = "set defaultMargin ";
     /**
      * argument is a decimal number of spaces
      */

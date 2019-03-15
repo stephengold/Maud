@@ -28,6 +28,7 @@ package maud.dialog;
 
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
+import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
@@ -892,6 +893,20 @@ public class EditorDialogs {
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter new duration in seconds:",
                 defaultText, ActionPrefix.setDurationSame, controller);
+    }
+
+    /**
+     * Display a "set defaultMargin" dialog.
+     */
+    public static void setDefaultMargin() {
+        float oldValue = CollisionShape.getDefaultMargin();
+        String defaultValue = Float.toString(oldValue);
+
+        FloatDialog controller = new FloatDialog("Set", Float.MIN_VALUE,
+                Float.MAX_VALUE, false);
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter margin for new physics shapes:",
+                defaultValue, ActionPrefix.setDefaultMargin, controller);
     }
 
     /**

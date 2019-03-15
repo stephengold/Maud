@@ -102,6 +102,7 @@ public class PhysicsMenus {
         if (isSelected && !isCompound) {
             builder.addEdit("Compound shape");
         }
+        builder.add("Margin for new shapes");
 
         builder.addTool("Collision-object tool");
 
@@ -148,6 +149,7 @@ public class PhysicsMenus {
      */
     static boolean menuPhysics(String remainder) {
         boolean handled = true;
+
         String addControlPrefix = "Add control" + EditorMenus.menuPathSeparator;
         String selectLinkPrefix = "Select link" + EditorMenus.menuPathSeparator;
         if (remainder.startsWith(addControlPrefix)) {
@@ -170,6 +172,10 @@ public class PhysicsMenus {
 
                 case "Compound shape":
                     target.getShape().addParent();
+                    break;
+
+                case "Margin for new shapes":
+                    EditorDialogs.setDefaultMargin();
                     break;
 
                 case "Joint tool":
