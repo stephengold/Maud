@@ -97,7 +97,7 @@ class SpatialTool extends Tool {
         if (spatial.isNode()) {
             int numChildren = spatial.countChildren();
             if (numChildren == 0) {
-                childrenText = "none (a leaf node is selected)";
+                childrenText = "no children (a leaf node is selected)";
             } else if (numChildren == 1) {
                 String childName = spatial.getChildName(0);
                 childrenText = MyString.quote(childName);
@@ -105,7 +105,7 @@ class SpatialTool extends Tool {
                 childrenText = String.format("%d children", numChildren);
             }
         } else {
-            childrenText = "none (a geometry is selected)";
+            childrenText = "no children (a geometry is selected)";
         }
 
         setButtonText("spatialChildren", childrenText);
@@ -126,9 +126,9 @@ class SpatialTool extends Tool {
                 materialText = MyString.quote(materialName);
             }
         } else if (spatial.isNode()) {
-            materialText = "none (a node is selected)";
+            materialText = "no material (a node is selected)";
         } else {
-            materialText = "none";
+            materialText = "no material";
         }
 
         setButtonText("spatialMaterial", materialText);
@@ -152,9 +152,9 @@ class SpatialTool extends Tool {
             int numVertices = spatial.countVertices();
             meshText += String.format(", %d vertices", numVertices);
         } else if (spatial.isNode()) {
-            meshText = "none (a node is selected)";
+            meshText = "no mesh (a node is selected)";
         } else {
-            meshText = "none";
+            meshText = "no mesh";
         }
 
         setButtonText("spatialMesh", meshText);
@@ -184,7 +184,7 @@ class SpatialTool extends Tool {
 
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         if (spatial.isCgmRoot()) {
-            parentText = "none (the model root is selected)";
+            parentText = "no parent (the model root is selected)";
         } else {
             String name = spatial.getParentName();
             if (name == null) {
@@ -224,7 +224,7 @@ class SpatialTool extends Tool {
     }
 
     /**
-     * Update the display of the spatial's transform.
+     * Update the display of the spatial's Transform.
      */
     private void updateTransform() {
         String transformText;
