@@ -2673,43 +2673,31 @@ Approximate minimum screen size: 640x480
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Parent:  "/>
-                        <control name="label" id="spatialParent"
-                                 backgroundColor="#ffff"
-                                 width="*"/>
-                        <control name="button" id="spatialSelectParentButton"
-                                 width="50px">
+                        <control name="button" id="spatialParentButton"
+                                 width="*">
                             <interact onRelease="perform(select spatialParent)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Children:  "/>
-                        <control name="label" id="spatialChildren"
-                                 backgroundColor="#ffff"
-                                 width="*"/>
-                        <control name="button" id="spatialSelectChildButton"
-                                 width="50px">
+                        <control name="button" id="spatialChildrenButton"
+                                 width="*">
                             <interact onRelease="perform(select spatialChild)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Material:  "/>
-                        <control name="label" id="spatialMaterial"
-                                 backgroundColor="#ffff"
-                                 width="*"/>
                         <control name="button" label="Tool"
-                                 id="id23ToAvoidNiftyWarning"
-                                 width="36px">
+                                 id="spatialMaterialButton"
+                                 width="*">
                             <interact onRelease="perform(select tool material)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Mesh:  "/>
-                        <control name="label" id="spatialMesh"
-                                 backgroundColor="#ffff"
-                                 width="*"/>
                         <control name="button" label="Tool"
-                                 id="id24ToAvoidNiftyWarning"
-                                 width="36px">
+                                 id="spatialMeshButton"
+                                 width="*">
                             <interact onRelease="perform(select tool mesh)"/>
                         </control>
                     </panel>

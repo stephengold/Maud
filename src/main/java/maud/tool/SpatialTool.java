@@ -91,33 +91,24 @@ class SpatialTool extends Tool {
      * Update the display of the spatial's children.
      */
     private void updateChildren() {
-        String childrenText, scButton;
+        String childrenText;
 
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         if (spatial.isNode()) {
             int numChildren = spatial.countChildren();
             if (numChildren == 0) {
                 childrenText = "none (a leaf node is selected)";
-                scButton = "";
             } else if (numChildren == 1) {
                 String childName = spatial.getChildName(0);
-                if (childName == null) {
-                    childrenText = "null";
-                } else {
-                    childrenText = MyString.quote(childName);
-                }
-                scButton = "Select";
+                childrenText = MyString.quote(childName);
             } else {
                 childrenText = String.format("%d children", numChildren);
-                scButton = "Select";
             }
         } else {
             childrenText = "none (a geometry is selected)";
-            scButton = "";
         }
 
-        setStatusText("spatialChildren", " " + childrenText);
-        setButtonText("spatialSelectChild", scButton);
+        setButtonText("spatialChildren", childrenText);
     }
 
     /**
@@ -140,7 +131,7 @@ class SpatialTool extends Tool {
             materialText = "none";
         }
 
-        setStatusText("spatialMaterial", " " + materialText);
+        setButtonText("spatialMaterial", materialText);
     }
 
     /**
@@ -166,7 +157,7 @@ class SpatialTool extends Tool {
             meshText = "none";
         }
 
-        setStatusText("spatialMesh", " " + meshText);
+        setButtonText("spatialMesh", meshText);
     }
 
     /**
@@ -189,24 +180,21 @@ class SpatialTool extends Tool {
      * Update the display of the spatial's parent.
      */
     private void updateParent() {
-        String parentStatus, selectParentButton;
+        String parentText;
 
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         if (spatial.isCgmRoot()) {
-            parentStatus = "none (the model root is selected)";
-            selectParentButton = "";
+            parentText = "none (the model root is selected)";
         } else {
             String name = spatial.getParentName();
             if (name == null) {
-                parentStatus = "null";
+                parentText = "null";
             } else {
-                parentStatus = MyString.quote(name);
+                parentText = MyString.quote(name);
             }
-            selectParentButton = "Select";
         }
 
-        setStatusText("spatialParent", " " + parentStatus);
-        setButtonText("spatialSelectParent", selectParentButton);
+        setButtonText("spatialParent", " " + parentText);
     }
 
     /**
