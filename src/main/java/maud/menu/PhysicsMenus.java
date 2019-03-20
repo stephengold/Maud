@@ -33,11 +33,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Logger;
+import jme3utilities.Misc;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.minie.MyObject;
 import maud.Maud;
-import maud.MaudUtil;
 import maud.ShapeType;
 import maud.action.ActionPrefix;
 import maud.dialog.EditorDialogs;
@@ -485,7 +485,7 @@ public class PhysicsMenus {
         Set<Long> userSet = shape.userSet();
         int numUsers = userSet.size();
         if (numUsers == 1) {
-            long userId = MaudUtil.first(userSet);
+            long userId = Misc.first(userSet);
             if (physics.hasPco(userId)) {
                 SelectedPco object = target.getPco();
                 object.select(userId);

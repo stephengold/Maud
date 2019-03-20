@@ -32,7 +32,6 @@ import com.jme3.scene.Mesh;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import maud.Maud;
-import maud.ParseUtil;
 import maud.menu.EditorMenus;
 import maud.menu.EnumMenus;
 import maud.menu.PhysicsMenus;
@@ -243,7 +242,7 @@ class SelectFNAction {
         } else if (actionString.startsWith(ActionPrefix.selectLinkToolAxis)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.selectLinkToolAxis);
-            int axisIndex = ParseUtil.axisIndex(arg);
+            int axisIndex = MyString.axisIndex(arg);
             model.getMisc().selectLinkToolAxis(axisIndex);
 
         } else if (actionString.startsWith(

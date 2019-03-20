@@ -446,25 +446,6 @@ public class MaudUtil {
     }
 
     /**
-     * Access the 1st member of a collection. TODO move to heart library
-     *
-     * @param <T> the type of the member
-     * @param collection the collection to access (not null)
-     * @return the pre-existing member, or null if none
-     */
-    @SuppressWarnings("unchecked")
-    public static <T extends Object> T first(Collection<T> collection) {
-        T result = null;
-        if (!collection.isEmpty()) {
-            int size = collection.size();
-            Object[] members = collection.toArray(new Object[size]);
-            result = (T) members[0];
-        }
-
-        return result;
-    }
-
-    /**
      * Calculate half extents for a symmetrical bounding box aligned with the
      * local axes of the specified scene-graph subtree.
      *
@@ -584,7 +565,7 @@ public class MaudUtil {
      *
      * @param sequence the sequence to use (not null)
      * @param numTimes the number of times (&ge;0)
-     * @return
+     * @return a repetitious String
      */
     public static String repeat(CharSequence sequence, int numTimes) {
         Validate.nonNull(sequence, "sequence");

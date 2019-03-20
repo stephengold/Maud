@@ -29,12 +29,12 @@ package maud.tool;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
+import jme3utilities.Misc;
 import jme3utilities.MyString;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.Tool;
 import maud.DescribeUtil;
 import maud.Maud;
-import maud.MaudUtil;
 import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedShape;
@@ -231,7 +231,7 @@ class ShapeTool extends Tool {
             if (numUsers == 0) {
                 usersText = "unused";
             } else if (numUsers == 1) {
-                long userId = MaudUtil.first(userSet);
+                long userId = Misc.first(userSet);
                 usersText = target.getPhysics().name(userId);
                 suButton = "Select user";
             } else {

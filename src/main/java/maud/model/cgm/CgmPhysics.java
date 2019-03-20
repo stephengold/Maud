@@ -50,11 +50,11 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.logging.Logger;
+import jme3utilities.Misc;
 import jme3utilities.Validate;
 import jme3utilities.minie.MinieCharacterControl;
 import jme3utilities.minie.MyObject;
 import jme3utilities.minie.MyShape;
-import maud.MaudUtil;
 import maud.PhysicsUtil;
 import maud.view.scene.SceneView;
 
@@ -400,7 +400,7 @@ public class CgmPhysics implements JmeCloneable {
      */
     CollisionShape modelToView(CollisionShape modelShape) {
         Set<Long> userSet = userSet(modelShape);
-        long userId = MaudUtil.first(userSet);
+        long userId = Misc.first(userSet);
 
         CollisionShape viewShape;
         if (hasPco(userId)) {

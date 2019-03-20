@@ -28,7 +28,6 @@ package maud;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.TextureKey;
-import com.jme3.bullet.PhysicsSpace;
 import com.jme3.material.MatParam;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
@@ -76,27 +75,6 @@ public class ParseUtil {
     }
     // *************************************************************************
     // new methods exposed
-
-    /**
-     * Determine the index of the named coordinate axis.
-     *
-     * @param axisName the name of the axis (not null, not empty)
-     * @return the index of the axis: 0&rarr;X, 1&rarr;Y, 2&rarr;Z
-     * @see maud.DescribeUtil#axisName(int)
-     */
-    public static int axisIndex(String axisName) {
-        switch (axisName) {
-            case "X":
-                return PhysicsSpace.AXIS_X;
-            case "Y":
-                return PhysicsSpace.AXIS_Y;
-            case "Z":
-                return PhysicsSpace.AXIS_Z;
-            default:
-                String quoted = MyString.quote(axisName);
-                throw new IllegalArgumentException(quoted);
-        }
-    }
 
     /**
      * Parse a material parameter from the specified text string.
