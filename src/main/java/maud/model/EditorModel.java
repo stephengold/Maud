@@ -37,6 +37,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
+import jme3utilities.minie.DumpFlags;
 import jme3utilities.minie.PhysicsDumper;
 import jme3utilities.nifty.WindowController;
 import jme3utilities.ui.ActionApplication;
@@ -468,11 +469,11 @@ public class EditorModel {
         action = ActionPrefix.sfDumpCullHints + Boolean.toString(dumpCullHints);
         MaudUtil.writePerformAction(writer, action);
 
-        boolean dumpJib = dumper.isDumpJointsInBody();
+        boolean dumpJib = dumper.isEnabled(DumpFlags.JointsInBodies);
         action = ActionPrefix.sfDumpJib + Boolean.toString(dumpJib);
         MaudUtil.writePerformAction(writer, action);
 
-        boolean dumpJis = dumper.isDumpJointsInSpace();
+        boolean dumpJis = dumper.isEnabled(DumpFlags.JointsInSpaces);
         action = ActionPrefix.sfDumpJis + Boolean.toString(dumpJis);
         MaudUtil.writePerformAction(writer, action);
 

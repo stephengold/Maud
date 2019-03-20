@@ -27,6 +27,7 @@
 package maud.action;
 
 import java.util.logging.Logger;
+import jme3utilities.minie.DumpFlags;
 import jme3utilities.minie.PhysicsDumper;
 import maud.Maud;
 import maud.model.EditorModel;
@@ -102,11 +103,11 @@ class SetFlagAction {
                 break;
 
             case ActionPrefix.sfDumpJib:
-                dumper.setDumpJointsInBody(newValue);
+                dumper.setEnabled(DumpFlags.JointsInBodies, newValue);
                 break;
 
             case ActionPrefix.sfDumpJis:
-                dumper.setDumpJointsInSpace(newValue);
+                dumper.setEnabled(DumpFlags.JointsInSpaces, newValue);
                 break;
 
             case ActionPrefix.sfDumpMatParams:

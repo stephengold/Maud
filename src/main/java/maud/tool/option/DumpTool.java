@@ -28,6 +28,7 @@ package maud.tool.option;
 
 import java.util.List;
 import java.util.logging.Logger;
+import jme3utilities.minie.DumpFlags;
 import jme3utilities.minie.PhysicsDumper;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.Tool;
@@ -102,10 +103,10 @@ public class DumpTool extends Tool {
                 dumper.setDumpCull(isChecked);
                 break;
             case "dumpJib":
-                dumper.setDumpJointsInBody(isChecked);
+                dumper.setEnabled(DumpFlags.JointsInBodies, isChecked);
                 break;
             case "dumpJis":
-                dumper.setDumpJointsInSpace(isChecked);
+                dumper.setEnabled(DumpFlags.JointsInSpaces, isChecked);
                 break;
             case "dumpMatParams":
                 dumper.setDumpMatParam(isChecked);
@@ -142,10 +143,10 @@ public class DumpTool extends Tool {
         boolean dumpCullHints = dumper.isDumpCull();
         setChecked("dumpCullHints", dumpCullHints);
 
-        boolean dumpJib = dumper.isDumpJointsInBody();
+        boolean dumpJib = dumper.isEnabled(DumpFlags.JointsInBodies);
         setChecked("dumpJib", dumpJib);
 
-        boolean dumpJis = dumper.isDumpJointsInSpace();
+        boolean dumpJis = dumper.isEnabled(DumpFlags.JointsInSpaces);
         setChecked("dumpJis", dumpJis);
 
         boolean dumpMatParams = dumper.isDumpMatParam();
