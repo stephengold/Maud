@@ -39,9 +39,6 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import de.lessvoid.nifty.Nifty;
-import de.lessvoid.nifty.NiftyEventSubscriber;
-import de.lessvoid.nifty.controls.CheckBoxStateChangedEvent;
-import de.lessvoid.nifty.controls.SliderChangedEvent;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.screen.Screen;
 import java.util.List;
@@ -50,12 +47,9 @@ import java.util.logging.Logger;
 import jme3utilities.MyAsset;
 import jme3utilities.MyCamera;
 import jme3utilities.MySpatial;
-import jme3utilities.MyString;
-import jme3utilities.Validate;
 import jme3utilities.debug.PerformanceAppState;
 import jme3utilities.math.MyMath;
 import jme3utilities.nifty.GuiScreenController;
-import jme3utilities.nifty.Tool;
 import jme3utilities.ui.InputMode;
 import maud.action.EditorInputMode;
 import maud.menu.BuildMenus;
@@ -286,52 +280,6 @@ public class EditorScreen extends GuiScreenController {
         }
 
         return result;
-    }
-
-    /**
-     * Callback handler that Nifty invokes after a check box changes.
-     *
-     * @param checkBoxId Nifty element ID of the check box (not null)
-     * @param event details of the event (not null)
-     */
-    @NiftyEventSubscriber(pattern = ".*CheckBox")
-    public void onCheckBoxChanged(final String checkBoxId,
-            final CheckBoxStateChangedEvent event) {
-        Validate.nonNull(checkBoxId, "check box ID");
-        Validate.nonNull(event, "event");
-        assert checkBoxId.endsWith("CheckBox");
-
-        if (!isIgnoreGuiChanges() && hasStarted()) {
-            String checkBoxName = MyString.removeSuffix(checkBoxId, "CheckBox");
-            Tool manager = findCheckBoxTool(checkBoxName);
-            boolean isChecked = event.isChecked();
-            manager.onCheckBoxChanged(checkBoxName, isChecked);
-        }
-    }
-
-    /**
-     * Callback handler that Nifty invokes after a slider changes.
-     *
-     * @param sliderId Nifty element ID of the slider (not null)
-     * @param event details of the event (not null, ignored)
-     */
-    @NiftyEventSubscriber(pattern = ".*Slider")
-    public void onSliderChanged(final String sliderId,
-            final SliderChangedEvent event) {
-        Validate.nonNull(sliderId, "slider ID");
-        assert sliderId.endsWith("Slider") : sliderId;
-        Validate.nonNull(event, "event");
-
-        if (!isIgnoreGuiChanges() && hasStarted()) {
-            String sliderName = MyString.removeSuffix(sliderId, "Slider");
-            Tool manager = findSliderTool(sliderName);
-            if (manager == null) {
-                logger.log(Level.WARNING, "Unknown slider, ID={0}",
-                        MyString.quote(sliderId));
-            } else {
-                manager.onSliderChanged(sliderName);
-            }
-        }
     }
 
     /**
