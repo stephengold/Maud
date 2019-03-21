@@ -28,7 +28,6 @@ gradle.projectsEvaluated {
     }
 }
 
-// select one version of the Engine
 ext.jmonkeyengineVersion = '3.2.3-stable' // from jcenter
 
 if (!hasProperty('mainClass')) {
@@ -54,12 +53,13 @@ dependencies {
     //runtime 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
 
     // from jcenter (or mavenLocal) repositories:
-    compile "org.jmonkeyengine:jme3-blender:$jmonkeyengineVersion"
-    compile "org.jmonkeyengine:jme3-lwjgl:$jmonkeyengineVersion"
-    compile "org.jmonkeyengine:jme3-plugins:$jmonkeyengineVersion"
     compile 'ch.qos.logback:logback-classic:1.2.3'
     compile 'com.atr:jme-ttf:2.1.2'
     runtime 'com.github.nifty-gui:nifty-style-black:1.4.2'
+    compile "org.jmonkeyengine:jme3-blender:$jmonkeyengineVersion"
+    compile "org.jmonkeyengine:jme3-desktop:$jmonkeyengineVersion"
+    compile "org.jmonkeyengine:jme3-lwjgl:$jmonkeyengineVersion"
+    compile "org.jmonkeyengine:jme3-plugins:$jmonkeyengineVersion"
 
     // from jitpack repositories:
     compile 'com.github.xbuf.jme3_xbuf:jme3_xbuf_loader:0.9.1'
