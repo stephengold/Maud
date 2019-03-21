@@ -140,7 +140,7 @@ class LinkTool extends Tool {
         SelectedRagdoll selectedRagdoll = target.getRagdoll();
 
         if (selectedRagdoll.isSelected() && selectedBone.isSelected()
-                && !selectedBone.isLinked()) {
+                && !selectedBone.isLinked() && !selectedBone.isRootBone()) {
             addButton = "Link bone";
         }
 

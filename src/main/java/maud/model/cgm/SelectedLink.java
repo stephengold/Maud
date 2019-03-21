@@ -161,14 +161,17 @@ public class SelectedLink implements JmeCloneable {
      * link.
      */
     public void createBoneLink() {
-        String boneName = editableCgm.getBone().name();
-        boolean success = editableCgm.linkBone(boneName);
-        if (success) {
-            select("Bone:" + boneName);
-        } else {
-            String message = String.format("Failed to link bone %s.",
-                    MyString.quote(boneName));
-            Maud.getModel().getMisc().setStatusMessage(message);
+        SelectedBone selectedBone = editableCgm.getBone();
+        if (!selectedBone.isRootBone()) {
+            String boneName = selectedBone.name();
+            boolean success = editableCgm.linkBone(boneName);
+            if (success) {
+                select("Bone:" + boneName);
+            } else {
+                String message = String.format("Failed to link bone %s.",
+                        MyString.quote(boneName));
+                Maud.getModel().getMisc().setStatusMessage(message);
+            }
         }
     }
 
