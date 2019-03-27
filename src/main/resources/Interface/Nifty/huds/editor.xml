@@ -1404,7 +1404,7 @@ Approximate minimum screen size: 640x480
 
             <control name="window" id="linkTool" title="Link Tool"
                      hideOnClose="true"
-                     height="280px" width="320px" x="205" y="65">
+                     height="308px" width="320px" x="205" y="65">
                 <panel childLayout="vertical">
                     <panel height="3px"/>
                     <panel childLayout="horizontal" height="28px">
@@ -1473,6 +1473,13 @@ Approximate minimum screen size: 640x480
                                  width="75px">
                             <interact onRelease="perform(set linkMass)"/>
                         </control>
+                        <control name="label" text="    Shape:  "/>
+                        <control name="button" id="linkShapeButton"
+                                 width="90px">
+                            <interact onRelease="perform(select linkShape)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
                         <panel/>
                         <control name="button" id="rotationMode4Button"
                                  width="70px">

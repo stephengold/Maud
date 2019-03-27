@@ -26,6 +26,7 @@
  */
 package maud.action;
 
+import com.jme3.bullet.animation.ShapeHeuristic;
 import com.jme3.bullet.joints.JointEnd;
 import com.jme3.material.RenderState;
 import com.jme3.scene.Mesh;
@@ -147,6 +148,10 @@ class SelectFNAction {
                 target.getLink().select(name2);
                 break;
 
+            case Action.selectLinkShape:
+                EnumMenus.selectLinkShape();
+                break;
+
             case Action.selectLinkToolAxis:
                 PhysicsMenus.selectLinkToolAxis();
                 break;
@@ -238,6 +243,12 @@ class SelectFNAction {
             arg = MyString.remainder(actionString,
                     ActionPrefix.selectLinkChild);
             PhysicsMenus.selectLinkChild(arg);
+
+        } else if (actionString.startsWith(ActionPrefix.selectLinkShape)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectLinkShape);
+            ShapeHeuristic heuristic = ShapeHeuristic.valueOf(arg);
+            target.getLink().setShapeHeuristic(heuristic);
 
         } else if (actionString.startsWith(ActionPrefix.selectLinkToolAxis)) {
             arg = MyString.remainder(actionString,

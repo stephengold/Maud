@@ -26,13 +26,20 @@
  */
 package maud.model.cgm;
 
+import com.jme3.bullet.animation.AttachmentLink;
 import com.jme3.bullet.animation.BoneLink;
+import com.jme3.bullet.animation.CenterHeuristic;
+import com.jme3.bullet.animation.DacConfiguration;
 import com.jme3.bullet.animation.DynamicAnimControl;
+import com.jme3.bullet.animation.LinkConfig;
+import com.jme3.bullet.animation.MassHeuristic;
 import com.jme3.bullet.animation.PhysicsLink;
 import com.jme3.bullet.animation.RangeOfMotion;
+import com.jme3.bullet.animation.ShapeHeuristic;
 import com.jme3.bullet.animation.TorsoLink;
 import com.jme3.bullet.joints.PhysicsJoint;
 import com.jme3.bullet.objects.PhysicsRigidBody;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
@@ -45,6 +52,7 @@ import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import jme3utilities.minie.MyObject;
 import maud.Maud;
+import maud.model.History;
 
 /**
  * The MVC model of the selected PhysicsLink in a selected DynamicAnimControl.
@@ -128,6 +136,25 @@ public class SelectedLink implements JmeCloneable {
         }
 
         return list;
+    }
+
+    /**
+     * Read the configuration of the selected link.
+     *
+     * @return the configuration, or null if none
+     */
+    public LinkConfig config() {
+        LinkConfig result = null;
+        DynamicAnimControl dac = cgm.getRagdoll().find();
+        if (link instanceof BoneLink) {
+            String boneName = link.boneName();
+            result = dac.config(boneName);
+        } else if (link instanceof TorsoLink) {
+            String boneName = DacConfiguration.torsoName;
+            result = dac.config(boneName);
+        }
+
+        return result;
     }
 
     /**
@@ -401,6 +428,54 @@ public class SelectedLink implements JmeCloneable {
         } else {
             editableCgm = null;
         }
+    }
+
+    /**
+     * Re-generate the selected link using the specified shape heuristic.
+     *
+     * @param shapeHeuristic (not null)
+     */
+    public void setShapeHeuristic(ShapeHeuristic shapeHeuristic) {
+        SelectedRagdoll ragdoll = cgm.getRagdoll();
+        DynamicAnimControl dac = ragdoll.find();
+
+        String boneName;
+        LinkConfig oldConfig;
+        if (link instanceof AttachmentLink) {
+            boneName = link.boneName();
+            oldConfig = dac.attachmentConfig(boneName);
+        } else if (link instanceof BoneLink) {
+            boneName = link.boneName();
+            oldConfig = dac.config(boneName);
+        } else if (link instanceof TorsoLink) {
+            boneName = DacConfiguration.torsoName;
+            oldConfig = dac.config(boneName);
+        } else {
+            throw new IllegalStateException(link.getClass().getSimpleName());
+        }
+
+        float massParam = oldConfig.massParameter();
+        MassHeuristic massHeuristic = oldConfig.massHeuristic();
+        Vector3f shapeScale = oldConfig.shapeScale(null);
+        CenterHeuristic centerHeuristic = oldConfig.centerHeuristic();
+        LinkConfig newConfig = new LinkConfig(massParam, massHeuristic,
+                shapeHeuristic, shapeScale, centerHeuristic);
+
+        History.autoAdd();
+        Spatial saveSpatial = ragdoll.setSpatial(null);
+        if (link instanceof AttachmentLink) {
+            dac.setAttachmentConfig(boneName, newConfig);
+        } else {
+            dac.setConfig(boneName, newConfig);
+        }
+        try {
+            ragdoll.setSpatial(saveSpatial);
+        } catch (IllegalArgumentException exception) {
+            throw new RuntimeException(exception);
+        }
+        String description = shapeHeuristic.toString() + " shape for "
+                + MyString.quote(boneName);
+        editableCgm.getEditState().setEdited(description);
     }
 
     /**

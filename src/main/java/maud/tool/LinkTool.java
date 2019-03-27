@@ -26,7 +26,9 @@
  */
 package maud.tool;
 
+import com.jme3.bullet.animation.LinkConfig;
 import com.jme3.bullet.animation.RangeOfMotion;
+import com.jme3.bullet.animation.ShapeHeuristic;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
@@ -133,6 +135,7 @@ class LinkTool extends Tool {
         String massButton = "";
         String pcoButton = "";
         String selectButton = "";
+        String shapeButton = "";
 
         Cgm target = Maud.getModel().getTarget();
         SelectedBone selectedBone = target.getBone();
@@ -159,6 +162,14 @@ class LinkTool extends Tool {
             float mass = selectedLink.mass();
             massButton = Float.toString(mass);
             pcoButton = selectedLink.bodyName();
+
+            LinkConfig config = selectedLink.config();
+            if (config != null) {
+                ShapeHeuristic shape = config.shapeHeuristic();
+                if (shape != null) {
+                    shapeButton = shape.toString();
+                }
+            }
         }
 
         setButtonText("linkAddBoneLink", addButton);
@@ -166,6 +177,7 @@ class LinkTool extends Tool {
         setButtonText("linkSelectBone", selectButton);
         setButtonText("linkSelectJoint", jointButton);
         setButtonText("linkSelectPco", pcoButton);
+        setButtonText("linkShape", shapeButton);
     }
     // *************************************************************************
     // private methods

@@ -333,6 +333,10 @@ public class ActionPrefix {
      */
     final public static String selectLinkChild = "select linkChild ";
     /**
+     * argument is the name of a ShapeHeuristic
+     */
+    final public static String selectLinkShape = "select linkShape ";
+    /**
      * argument is the name of a coordinate axis
      */
     final public static String selectLinkToolAxis = "select linkToolAxis ";

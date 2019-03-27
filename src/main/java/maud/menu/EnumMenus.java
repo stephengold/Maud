@@ -26,6 +26,7 @@
  */
 package maud.menu;
 
+import com.jme3.bullet.animation.ShapeHeuristic;
 import com.jme3.light.Light;
 import com.jme3.material.RenderState;
 import com.jme3.renderer.queue.RenderQueue;
@@ -48,6 +49,7 @@ import maud.Maud;
 import maud.action.ActionPrefix;
 import maud.dialog.LicenseType;
 import maud.model.cgm.SelectedBuffer;
+import maud.model.cgm.SelectedLink;
 import maud.model.cgm.SelectedSpatial;
 import maud.model.cgm.SelectedTexture;
 import maud.model.cgm.UserDataType;
@@ -274,6 +276,25 @@ public class EnumMenus {
         }
 
         builder.show(ActionPrefix.selectFaceCull);
+    }
+
+    /**
+     * Display a menu to set the selected link's shape heuristic using the
+     * "select linkShape " action prefix.
+     */
+    public static void selectLinkShape() {
+        MenuBuilder builder = new MenuBuilder();
+
+        SelectedLink link = Maud.getModel().getTarget().getLink();
+        ShapeHeuristic selected = link.config().shapeHeuristic();
+        for (ShapeHeuristic heuristic : ShapeHeuristic.values()) {
+            if (heuristic != selected) {
+                String name = heuristic.toString();
+                builder.add(name);
+            }
+        }
+
+        builder.show(ActionPrefix.selectLinkShape);
     }
 
     /**
