@@ -1056,7 +1056,7 @@ Approximate minimum screen size: 640x480
 
             <control name="window" id="jointTool" title="Joint Tool"
                      hideOnClose="true"
-                     height="165px" width="200px" x="155" y="115">
+                     height="165px" width="213px" x="155" y="115">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal" height="28px">
                         <control name="button" id="jointPreviousButton"
