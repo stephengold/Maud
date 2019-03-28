@@ -405,7 +405,7 @@ public class SelectedRagdoll implements JmeCloneable {
      * @param newSpatial (may be null)
      * @return the former spatial (may be null)
      */
-    public Spatial setSpatial(Spatial newSpatial) {
+    Spatial setSpatial(Spatial newSpatial) {
         CgmPhysics physics = cgm.getPhysics();
         DynamicAnimControl dac = find();
         Spatial oldSpatial = dac.getSpatial();
