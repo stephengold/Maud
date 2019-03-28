@@ -473,6 +473,11 @@ public class SelectedLink implements JmeCloneable {
         } catch (IllegalArgumentException exception) {
             throw new RuntimeException(exception);
         }
+        if (link instanceof AttachmentLink) {
+            link = dac.findAttachmentLink(boneName);
+        } else {
+            link = dac.findBoneLink(boneName);
+        }
         String description = shapeHeuristic.toString() + " shape for "
                 + MyString.quote(boneName);
         editableCgm.getEditState().setEdited(description);
