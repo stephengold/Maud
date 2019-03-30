@@ -27,8 +27,6 @@
 package maud;
 
 import com.jme3.bullet.PhysicsSpace;
-import com.jme3.bullet.animation.LinkConfig;
-import com.jme3.bullet.animation.RagUtils;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
@@ -51,12 +49,14 @@ import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
-import java.util.Collection;
+import java.nio.FloatBuffer;
 import java.util.logging.Logger;
+import jme3utilities.MyMesh;
 import jme3utilities.MySpatial;
 import jme3utilities.Validate;
 import jme3utilities.math.MyVector3f;
 import jme3utilities.math.RectangularSolid;
+import jme3utilities.math.VectorSet;
 
 /**
  * Physics utility methods. All methods should be static.
@@ -442,13 +442,33 @@ public class PhysicsUtil {
      * @return a new HullCollisionShape (not null)
      */
     private static CollisionShape makeShapeHull(Spatial subtree) {
+        VectorSet vertexLocations
+                = MyMesh.listVertexLocations(subtree, null);
+        int numVectors = vertexLocations.numVectors();
+        assert numVectors > 0 : numVectors;
+
         Transform localToWorld = subtree.getWorldTransform();
         Transform worldToLocal = localToWorld.invert();
-        Collection<Vector3f> vertexLocations
-                = RagUtils.vertexLocations(subtree, null);
-        LinkConfig config = new LinkConfig();
-        CollisionShape shape = config.createShape(worldToLocal,
-                translateIdentity, vertexLocations);
+        Vector3f tempLocation = new Vector3f();
+        FloatBuffer buffer = vertexLocations.toBuffer();
+        buffer.rewind();
+        while (buffer.hasRemaining()) {
+            buffer.mark();
+            tempLocation.x = buffer.get();
+            tempLocation.y = buffer.get();
+            tempLocation.z = buffer.get();
+            /*
+             * Transform vertex coordinates to de-scaled shape coordinates.
+             */
+            worldToLocal.transformVector(tempLocation, tempLocation);
+
+            buffer.reset();
+            buffer.put(tempLocation.x);
+            buffer.put(tempLocation.y);
+            buffer.put(tempLocation.z);
+        }
+
+        CollisionShape shape = new HullCollisionShape(buffer);
 
         assert shape instanceof HullCollisionShape :
                 shape.getClass().getSimpleName();
@@ -464,15 +484,24 @@ public class PhysicsUtil {
      */
     private static CollisionShape makeShapeSphere(ShapeType shapeType,
             Spatial subtree) {
+        VectorSet vertexLocations
+                = MyMesh.listVertexLocations(subtree, null);
+        int numVectors = vertexLocations.numVectors();
+        assert numVectors > 0 : numVectors;
+
         Transform localToWorld = subtree.getWorldTransform();
         Transform worldToLocal = localToWorld.invert();
-        Collection<Vector3f> vertexLocations
-                = RagUtils.vertexLocations(subtree, null);
-
+        Vector3f tempLocation = new Vector3f();
         double radiusSquared = 0f;
-        for (Vector3f location : vertexLocations) {
-            worldToLocal.transformVector(location, location);
-            double r2 = MyVector3f.lengthSquared(location);
+        FloatBuffer buffer = vertexLocations.toBuffer();
+        buffer.rewind();
+        while (buffer.hasRemaining()) {
+            tempLocation.x = buffer.get();
+            tempLocation.y = buffer.get();
+            tempLocation.z = buffer.get();
+
+            worldToLocal.transformVector(tempLocation, tempLocation);
+            double r2 = MyVector3f.lengthSquared(tempLocation);
             if (r2 > radiusSquared) {
                 radiusSquared = r2;
             }
