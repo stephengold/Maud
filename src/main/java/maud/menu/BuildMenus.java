@@ -535,6 +535,8 @@ public class BuildMenus {
         }
         builder.addXbuf("Puppet");
         builder.addOgre("Sinbad");
+
+        // TODO models in the Blender/ folder of testdata
         /*
          * non-animated models:
          */

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -302,7 +302,8 @@ public class LoadedCgm extends Cgm {
         getSpatial().postLoad();
         getTexture().deselectAll();
         /*
-         * If there is only one animation, load it; otherwise load bind pose.
+         * If there is only one real animation, load it;
+         * otherwise load bind pose.
          */
         SelectedAnimControl sac = getAnimControl();
         if (sac.countAnimations() == 1) {
