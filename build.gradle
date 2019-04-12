@@ -46,6 +46,7 @@ repositories {
 dependencies {
     // from stephengold's bintray repositories:
     compile 'jme3utilities:jme3-utilities-heart:2.24.0'
+    compile 'jme3utilities:jme3-utilities-ui:0.7.2'
     compile 'jme3utilities:jme3-utilities-nifty:0.9.3'
     compile 'jme3utilities:Minie:0.7.7'
     compile 'jme3utilities:SkyControl:0.9.17'
@@ -66,9 +67,12 @@ dependencies {
 }
 
 // cleanup tasks
-clean { dependsOn 'cleanDLLs', 'cleanSOs', 'cleanWrittenAssets' }
+clean { dependsOn 'cleanDLLs', 'cleanLogs', 'cleanSOs', 'cleanWrittenAssets' }
 task cleanDLLs(type: Delete) {
     delete fileTree(dir: '.', include: '*.dll')
+}
+task cleanLogs(type: Delete) {
+    delete fileTree(dir: '.', include: 'hs_err_pid*.log')
 }
 task cleanSOs(type: Delete) {
     delete fileTree(dir: '.', include: '*.so')
