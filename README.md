@@ -47,7 +47,7 @@ Maud was designed for a desktop environment with:
  + a wheel mouse and
  + a display at least 640 pixels wide and 480 pixels tall.
 
-Status as of March 2019: seeking more alpha testers.
+Status as of April 2019: seeking more testers.
 
 ## Contents of this document
 
@@ -84,7 +84,7 @@ Status as of March 2019: seeking more alpha testers.
 
 ## How to build Maud from source
 
-Maud currently targets Version 3.2.2 of jME.  You are welcome to
+Maud currently targets Version 3.2.3 of jME.  You are welcome to
 use jME without installing its Integrated Development Environment (IDE),
 but I use the IDE, so I tend to assume you will too.
 
