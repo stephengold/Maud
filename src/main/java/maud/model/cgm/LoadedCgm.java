@@ -35,6 +35,7 @@ import java.io.File;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.Misc;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
@@ -99,8 +100,7 @@ public class LoadedCgm extends Cgm {
             assetPath = "Models/Untitled/Untitled";
         }
         File file = new File(folder, assetPath);
-        String result = file.getAbsolutePath();
-        result = result.replaceAll("\\\\", "/");
+        String result = Misc.fixedPath(file);
 
         return result;
     }

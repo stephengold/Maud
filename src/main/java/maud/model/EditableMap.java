@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.Misc;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyQuaternion;
@@ -80,8 +81,7 @@ public class EditableMap extends LoadedMap {
             assetPath = "SkeletonMaps/Untitled";
         }
         File file = new File(folder, assetPath);
-        String result = file.getAbsolutePath();
-        result = result.replaceAll("\\\\", "/");
+        String result = Misc.fixedPath(file);
 
         return result;
     }
@@ -322,8 +322,7 @@ public class EditableMap extends LoadedMap {
             parent.mkdirs();
         }
 
-        filePath = file.getAbsolutePath();
-        filePath = filePath.replaceAll("\\\\", "/");
+        filePath = Misc.fixedPath(file);
         JmeExporter exporter = format.getExporter();
         boolean success = true;
         try {

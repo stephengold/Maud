@@ -35,6 +35,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.Misc;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.minie.DumpFlags;
@@ -418,8 +419,7 @@ public class EditorModel {
             if (parentDirectory != null && !parentDirectory.exists()) {
                 boolean success = parentDirectory.mkdirs();
                 if (!success) {
-                    String parentPath = parentDirectory.getAbsolutePath();
-                    parentPath = parentPath.replaceAll("\\\\", "/");
+                    String parentPath = Misc.fixedPath(parentDirectory);
                     String msg = String.format(
                             "Unable to create folder %s for startup script",
                             MyString.quote(parentPath));

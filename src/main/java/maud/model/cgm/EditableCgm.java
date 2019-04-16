@@ -1362,8 +1362,7 @@ public class EditableCgm extends LoadedCgm {
             parent.mkdirs();
         }
 
-        filePath = file.getAbsolutePath();
-        filePath = filePath.replaceAll("\\\\", "/");
+        filePath = Misc.fixedPath(file);
         JmeExporter exporter = format.getExporter();
         boolean success = true;
         try {

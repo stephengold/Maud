@@ -89,8 +89,7 @@ public class BuildMenus {
         String workPath = System.getProperty("user.dir");
         File work = new File(workPath);
         if (work.isDirectory()) {
-            String absoluteDirPath = work.getAbsolutePath();
-            absoluteDirPath = absoluteDirPath.replaceAll("\\\\", "/");
+            String absoluteDirPath = Misc.fixedPath(work);
             File oldFile = fileMap.put(absoluteDirPath, work);
             assert oldFile == null : oldFile;
         }
@@ -100,8 +99,7 @@ public class BuildMenus {
         String homePath = System.getProperty("user.home");
         File home = new File(homePath);
         if (home.isDirectory()) {
-            String absoluteDirPath = home.getAbsolutePath();
-            absoluteDirPath = absoluteDirPath.replaceAll("\\\\", "/");
+            String absoluteDirPath = Misc.fixedPath(home);
             File oldFile = fileMap.put(absoluteDirPath, home);
             assert oldFile == null : oldFile;
         }
@@ -156,7 +154,7 @@ public class BuildMenus {
         } else { // not a JAR or ZIP
             File file = new File(rootPath, assetPath);
             if (file.isDirectory()) {
-                String folderPath = file.getAbsolutePath();
+                String folderPath = Misc.fixedPath(file);
                 buildFolderMenu(folderPath, "");
                 menuPrefix += args;
                 if (!menuPrefix.endsWith("/")) {
@@ -172,8 +170,7 @@ public class BuildMenus {
                  * Treat the pathname as a prefix.
                  */
                 File parent = file.getParentFile();
-                String parentPath = parent.getAbsolutePath();
-                parentPath = parentPath.replaceAll("\\\\", "/");
+                String parentPath = Misc.fixedPath(parent);
                 if (!parentPath.endsWith("/")) {
                     parentPath += "/";
                 }
@@ -239,7 +236,7 @@ public class BuildMenus {
         File file = new File(rootPath, assetPath);
         String menuPrefix = ActionPrefix.loadMapAsset;
         if (file.isDirectory()) {
-            String folderPath = file.getAbsolutePath();
+            String folderPath = Misc.fixedPath(file);
             buildFolderMenu(folderPath, "");
             menuPrefix += args;
             if (!menuPrefix.endsWith("/")) {
@@ -255,8 +252,7 @@ public class BuildMenus {
              * Treat the pathname as a prefix.
              */
             File parent = file.getParentFile();
-            String parentPath = parent.getAbsolutePath();
-            parentPath = parentPath.replaceAll("\\\\", "/");
+            String parentPath = Misc.fixedPath(parent);
             String prefix = file.getName();
             buildFolderMenu(parentPath, prefix);
             parentPath = MyString.remainder(parentPath, rootPath);
@@ -342,7 +338,7 @@ public class BuildMenus {
         } else { // not a JAR or ZIP
             File file = new File(rootPath, assetPath);
             if (file.isDirectory()) {
-                String folderPath = file.getAbsolutePath();
+                String folderPath = Misc.fixedPath(file);
                 buildFolderMenu(folderPath, "");
                 String menuPrefix = ActionPrefix.loadTextureAsset + args;
                 if (!menuPrefix.endsWith("/")) {
@@ -358,8 +354,7 @@ public class BuildMenus {
                  * Treat the pathname as a prefix.
                  */
                 File parent = file.getParentFile();
-                String parentPath = parent.getAbsolutePath();
-                parentPath = parentPath.replaceAll("\\\\", "/");
+                String parentPath = Misc.fixedPath(parent);
                 if (!parentPath.endsWith("/")) {
                     parentPath += "/";
                 }
@@ -505,7 +500,7 @@ public class BuildMenus {
             if (!file.isDirectory()) {
                 file = file.getParentFile();
             }
-            String folderPath = file.getAbsolutePath();
+            String folderPath = Misc.fixedPath(file);
             String prefix = ActionPrefix.newAssetLocation + folderPath + "/";
             builder.show(prefix);
         }
