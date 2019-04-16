@@ -560,27 +560,6 @@ public class MaudUtil {
     }
 
     /**
-     * Generate a String consisting of a specified character sequence repeated a
-     * specified number of times. TODO move to the MyString class
-     *
-     * @param sequence the sequence to use (not null)
-     * @param numTimes the number of times (&ge;0)
-     * @return a repetitious String
-     */
-    public static String repeat(CharSequence sequence, int numTimes) {
-        Validate.nonNull(sequence, "sequence");
-        Validate.nonNegative(numTimes, "number of times");
-
-        int length = numTimes * sequence.length();
-        StringBuilder builder = new StringBuilder(length);
-        for (int index = 0; index < numTimes; ++index) {
-            builder.append(sequence);
-        }
-
-        return builder.toString();
-    }
-
-    /**
      * Calculate the rotation specified by a bank of sliders when the rotation
      * display mode is QuatCoeff.
      *

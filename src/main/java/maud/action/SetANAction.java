@@ -35,7 +35,6 @@ import jme3utilities.MyString;
 import jme3utilities.math.MyColor;
 import jme3utilities.math.MyVector3f;
 import maud.Maud;
-import maud.MaudUtil;
 import maud.dialog.EditorDialogs;
 import maud.menu.MeshMenus;
 import maud.model.EditorModel;
@@ -255,7 +254,7 @@ class SetANAction {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setDumpIndentSpaces);
             int numSpaces = Integer.parseInt(arg);
-            String indent = MaudUtil.repeat(" ", numSpaces);
+            String indent = MyString.repeat(" ", numSpaces);
             model.getDumper().setIndentIncrement(indent);
 
         } else if (actionString.startsWith(ActionPrefix.setDumpMaxChildren)) {
