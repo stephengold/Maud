@@ -78,7 +78,7 @@ import jme3utilities.MyString;
 import jme3utilities.NameGenerator;
 import jme3utilities.Validate;
 import jme3utilities.minie.MyControlP;
-import jme3utilities.wes.TrackEdit;
+import jme3utilities.wes.AnimationEdit;
 import maud.Maud;
 import maud.MaudUtil;
 import maud.ParseUtil;
@@ -1558,8 +1558,8 @@ public class EditableCgm extends LoadedCgm {
             Collection<String> names = animControl.getAnimationNames();
             for (String animationName : names) {
                 Animation anim = animControl.getAnim(animationName);
-                numTracksZfed += TrackEdit.zeroFirst(anim);
-                numTracksRred += TrackEdit.removeRepeats(anim);
+                numTracksZfed += AnimationEdit.zeroFirst(anim);
+                numTracksRred += AnimationEdit.removeRepeats(anim);
             }
         }
 

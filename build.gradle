@@ -50,7 +50,7 @@ dependencies {
     compile 'jme3utilities:jme3-utilities-nifty:0.9.3'
     compile 'jme3utilities:Minie:0.8.0'
     compile 'jme3utilities:SkyControl:0.9.17'
-    compile 'jme3utilities:Wes:0.3.12'
+    compile 'jme3utilities:Wes:0.4.0'
     //runtime 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
 
     // from jcenter (or mavenLocal) repositories:

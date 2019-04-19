@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -46,6 +46,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
+import jme3utilities.wes.AnimationEdit;
 import jme3utilities.wes.Pose;
 import jme3utilities.wes.TrackEdit;
 import jme3utilities.wes.TweenTransforms;
@@ -198,8 +199,8 @@ public class SelectedAnimControl implements JmeCloneable {
         float duration = animation.getLength();
         endTime = Math.min(endTime, duration);
         TweenTransforms techniques = Maud.getModel().getTweenTransforms();
-        Animation extracted = TrackEdit.extractAnimation(animation, startTime,
-                endTime, techniques, newAnimationName);
+        Animation extracted = AnimationEdit.extractAnimation(animation,
+                startTime, endTime, techniques, newAnimationName);
         editableCgm.addAnimation(extracted);
     }
 
@@ -292,7 +293,7 @@ public class SelectedAnimControl implements JmeCloneable {
         Skeleton targetSkeleton = editableCgm.getSkeleton().find();
         SkeletonMapping effectiveMap = Maud.getModel().getMap().effectiveMap();
         TweenTransforms techniques = Maud.getModel().getTweenTransforms();
-        Animation retargeted = TrackEdit.retargetAnimation(sourceAnimation,
+        Animation retargeted = AnimationEdit.retargetAnimation(sourceAnimation,
                 sourceSkeleton, targetSkeleton, effectiveMap, techniques,
                 newAnimationName);
 
