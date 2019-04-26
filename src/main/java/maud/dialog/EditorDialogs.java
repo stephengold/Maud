@@ -851,7 +851,7 @@ public class EditorDialogs {
                 = new IntegerDialog("Set", 0, Integer.MAX_VALUE, false);
 
         Maud.gui.closeAllPopups();
-        Maud.gui.showTextEntryDialog("Enter number of children:",
+        Maud.gui.showTextEntryDialog("Enter max number of children:",
                 defaultText, ActionPrefix.setDumpMaxChildren, controller);
     }
 
