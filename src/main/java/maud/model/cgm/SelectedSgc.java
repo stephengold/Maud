@@ -39,7 +39,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyControl;
 import jme3utilities.Validate;
 import jme3utilities.minie.MyControlP;
-import jme3utilities.minie.MyObject;
+import jme3utilities.minie.MyPco;
 
 /**
  * The MVC model of the selected scene-graph (S-G) control in a C-G model.
@@ -248,7 +248,7 @@ public class SelectedSgc implements JmeCloneable {
         String result = "";
         if (selected instanceof PhysicsCollisionObject) {
             PhysicsCollisionObject pco = (PhysicsCollisionObject) selected;
-            result = MyObject.objectName(pco);
+            result = MyPco.objectName(pco);
         }
 
         return result;

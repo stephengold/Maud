@@ -21,7 +21,7 @@ gradle.projectsEvaluated {
         //debug true
         //doFirst { println commandLine }
         enableAssertions true
-        //jvmArgs '-verbosegc'
+        //jvmArgs '-verbose:gc'
         //jvmArgs '-Xms512m', '-Xmx512m'
         jvmArgs '-XX:+UseConcMarkSweepGC'
         //jvmArgs '-XX:+UseG1GC', '-XX:MaxGCPauseMillis=10'
@@ -45,10 +45,10 @@ repositories {
 
 dependencies {
     // from stephengold's bintray repositories:
-    compile 'jme3utilities:jme3-utilities-heart:2.25.0'
+    compile 'jme3utilities:jme3-utilities-heart:2.26.0'
     compile 'jme3utilities:jme3-utilities-ui:0.7.2'
     compile 'jme3utilities:jme3-utilities-nifty:0.9.3'
-    compile 'jme3utilities:Minie:0.8.0'
+    compile 'jme3utilities:Minie:0.8.1'
     compile 'jme3utilities:SkyControl:0.9.17'
     compile 'jme3utilities:Wes:0.4.0'
     //runtime 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'

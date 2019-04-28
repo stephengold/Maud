@@ -36,7 +36,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
-import jme3utilities.minie.MyObject;
+import jme3utilities.minie.MyPco;
 
 /**
  * The selected physics joint in the Maud application.
@@ -90,7 +90,7 @@ public class SelectedJoint implements JmeCloneable {
                 default:
                     throw new IllegalArgumentException(end.toString());
             }
-            result = MyObject.objectName(rigidBody);
+            result = MyPco.objectName(rigidBody);
         }
 
         return result;

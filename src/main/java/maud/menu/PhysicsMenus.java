@@ -36,7 +36,7 @@ import java.util.logging.Logger;
 import jme3utilities.Misc;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
-import jme3utilities.minie.MyObject;
+import jme3utilities.minie.MyPco;
 import maud.Maud;
 import maud.ShapeType;
 import maud.action.ActionPrefix;
@@ -523,7 +523,7 @@ public class PhysicsMenus {
             }
         }
         if (namePrefix.length() > 5) {
-            long pcoId = MyObject.parseId(namePrefix);
+            long pcoId = MyPco.parseId(namePrefix);
             if (physics.hasPco(pcoId)) {
                 target.getPco().select(pcoId);
                 Maud.gui.tools.select("pco");

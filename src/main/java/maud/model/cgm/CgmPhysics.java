@@ -53,7 +53,7 @@ import java.util.logging.Logger;
 import jme3utilities.Misc;
 import jme3utilities.Validate;
 import jme3utilities.minie.MinieCharacterControl;
-import jme3utilities.minie.MyObject;
+import jme3utilities.minie.MyPco;
 import jme3utilities.minie.MyShape;
 import maud.PhysicsUtil;
 import maud.view.scene.SceneView;
@@ -343,7 +343,7 @@ public class CgmPhysics implements JmeCloneable {
         List<String> result = new ArrayList<>(numObjects);
 
         for (PhysicsCollisionObject object : pcoModelToView.keySet()) {
-            String name = MyObject.objectName(object);
+            String name = MyPco.objectName(object);
             if (name.startsWith(namePrefix)) {
                 result.add(name);
             }
@@ -456,7 +456,7 @@ public class CgmPhysics implements JmeCloneable {
             CollisionShape shape = findShape(id);
             result = MyShape.name(shape);
         } else {
-            result = MyObject.objectName(pco);
+            result = MyPco.objectName(pco);
         }
 
         return result;

@@ -50,7 +50,7 @@ import jme3utilities.Misc;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
-import jme3utilities.minie.MyObject;
+import jme3utilities.minie.MyPco;
 import maud.Maud;
 import maud.model.History;
 
@@ -96,7 +96,7 @@ public class SelectedLink implements JmeCloneable {
         String result = null;
         if (link != null) {
             PhysicsRigidBody rigidBody = link.getRigidBody();
-            result = MyObject.objectName(rigidBody);
+            result = MyPco.objectName(rigidBody);
         }
 
         return result;

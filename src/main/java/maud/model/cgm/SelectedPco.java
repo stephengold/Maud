@@ -41,7 +41,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
-import jme3utilities.minie.MyObject;
+import jme3utilities.minie.MyPco;
 import jme3utilities.minie.MyShape;
 import maud.PhysicsUtil;
 import maud.model.History;
@@ -215,7 +215,7 @@ public class SelectedPco implements JmeCloneable {
      */
     public String name() {
         assert isSelected();
-        String name = MyObject.objectName(selectedPco);
+        String name = MyPco.objectName(selectedPco);
         return name;
     }
 
@@ -248,7 +248,7 @@ public class SelectedPco implements JmeCloneable {
     public void select(String name) {
         Validate.nonEmpty(name, "name");
 
-        long id = MyObject.parseId(name);
+        long id = MyPco.parseId(name);
         select(id);
     }
 
