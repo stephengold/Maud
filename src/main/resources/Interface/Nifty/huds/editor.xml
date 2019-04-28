@@ -1017,7 +1017,6 @@ Approximate minimum screen size: 640x480
                      height="240px" width="370px" x="160" y="110">
                 <panel childLayout="vertical">
                     <control name="scrollPanel" id="historyScrollPanel"
-                             style="bats-scroll-panel"
                              height="150px"
                              horizontal="false">
                         <panel id="historyDynamicContent" childLayout="vertical"
