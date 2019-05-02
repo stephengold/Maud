@@ -225,7 +225,7 @@ public class ScoreResources {
         poseMaterial.setBoolean("UseVertexColor", true);
         poseMaterial.setFloat("PointSize", 2f * pointSize); // twice as big
         Texture poseShape = MyAsset.loadTexture(assetManager,
-                "Textures/shapes/saltire.png");
+                "Textures/shapes/saltire.png", false);
         poseMaterial.setTexture("PointShape", poseShape);
         RenderState rs = poseMaterial.getAdditionalRenderState();
         rs.setBlendMode(RenderState.BlendMode.Alpha);

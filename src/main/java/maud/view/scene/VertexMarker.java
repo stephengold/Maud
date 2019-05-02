@@ -168,7 +168,8 @@ public class VertexMarker {
         AssetManager assetManager = Locators.getAssetManager();
         Material material = new Material(assetManager,
                 "MatDefs/wireframe/multicolor2.j3md");
-        Texture poseShape = MyAsset.loadTexture(assetManager, markerAssetPath);
+        Texture poseShape
+                = MyAsset.loadTexture(assetManager, markerAssetPath, false);
         material.setTexture("PointShape", poseShape);
         RenderState rs = material.getAdditionalRenderState();
         rs.setBlendMode(RenderState.BlendMode.Alpha);

@@ -209,7 +209,7 @@ public class Platform implements BulletDebugAppState.DebugAppStateFilter {
 
         AssetManager assetManager = Locators.getAssetManager();
         Texture texture
-                = MyAsset.loadTexture(assetManager, textureAssetPath);
+                = MyAsset.loadTexture(assetManager, textureAssetPath, true);
         Material material
                 = MyAsset.createShadedMaterial(assetManager, texture);
         square.setMaterial(material);
