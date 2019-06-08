@@ -1,4 +1,6 @@
-apply plugin: 'java'
+plugins {
+    id 'java'
+}
 
 // select one source-code (JDK) option
 //sourceCompatibility = '1.7'
@@ -47,25 +49,25 @@ repositories {
 
 dependencies {
     // from stephengold's bintray repositories:
-    compile 'jme3utilities:jme3-utilities-heart:2.28.1'
-    compile 'jme3utilities:jme3-utilities-ui:0.7.3'
-    compile 'jme3utilities:jme3-utilities-nifty:0.9.5'
-    compile 'jme3utilities:Minie:0.9.2'
-    compile 'jme3utilities:SkyControl:0.9.18'
-    compile 'jme3utilities:Wes:0.4.1'
-    //runtime 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
+    implementation 'jme3utilities:jme3-utilities-heart:2.28.1'
+    implementation 'jme3utilities:jme3-utilities-ui:0.7.3'
+    implementation 'jme3utilities:jme3-utilities-nifty:0.9.5'
+    implementation 'jme3utilities:Minie:0.9.2'
+    implementation 'jme3utilities:SkyControl:0.9.18'
+    implementation 'jme3utilities:Wes:0.4.1'
+    //runtimeOnly 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
 
     // from jcenter (or mavenLocal) repositories:
-    compile 'ch.qos.logback:logback-classic:1.2.3'
-    compile 'com.atr:jme-ttf:2.1.2'
-    runtime 'com.github.nifty-gui:nifty-style-black:1.4.3'
-    compile "org.jmonkeyengine:jme3-blender:$jmonkeyengineVersion"
-    compile "org.jmonkeyengine:jme3-desktop:$jmonkeyengineVersion"
-    compile "org.jmonkeyengine:jme3-lwjgl:$jmonkeyengineVersion"
-    compile "org.jmonkeyengine:jme3-plugins:$jmonkeyengineVersion"
+    implementation 'ch.qos.logback:logback-classic:1.2.3'
+    implementation 'com.atr:jme-ttf:2.1.2'
+    runtimeOnly 'com.github.nifty-gui:nifty-style-black:1.4.3'
+    implementation "org.jmonkeyengine:jme3-blender:$jmonkeyengineVersion"
+    implementation "org.jmonkeyengine:jme3-desktop:$jmonkeyengineVersion"
+    implementation "org.jmonkeyengine:jme3-lwjgl:$jmonkeyengineVersion"
+    implementation "org.jmonkeyengine:jme3-plugins:$jmonkeyengineVersion"
 
     // from jitpack repositories:
-    compile 'com.github.xbuf.jme3_xbuf:jme3_xbuf_loader:0.9.1'
+    implementation 'com.github.xbuf.jme3_xbuf:jme3_xbuf_loader:0.9.1'
 }
 
 // cleanup tasks
