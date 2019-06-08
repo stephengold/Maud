@@ -224,7 +224,7 @@ public class HistoryTool extends Tool {
                 width("330px");
             }
         };
-        Element newLabel = builder.build(nifty, screen, content);
+        Element newLabel = builder.build(content);
         /*
          * Mark label for removal before the next update.
          */
