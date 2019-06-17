@@ -100,7 +100,7 @@ public class MiscOptions implements Cloneable {
     /**
      * starting point for displayed indices (0 or 1)
      */
-    private int indexBase = 1;
+    private int indexBase = 0;
     /**
      * bone axis to view/edit in LinkTool: 0&rarr;X, 1&rarr;Y, 2&rarr;Z
      */
