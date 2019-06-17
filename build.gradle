@@ -41,7 +41,7 @@ if (!hasProperty('mainClass')) {
 repositories {
     //mavenLocal()
     maven { url 'https://dl.bintray.com/stephengold/jme3utilities' }
-    //maven { url 'https://dl.bintray.com/stephengold/org.jmonkeyengine' }
+    //maven { url 'https://dl.bintray.com/stephengold/org.jmonkeyengine' } // for testdata
     //maven { url 'https://dl.bintray.com/jmonkeyengine/contrib' }
     jcenter()
     maven { url 'https://jitpack.io' }
@@ -52,7 +52,7 @@ dependencies {
     implementation 'jme3utilities:jme3-utilities-heart:2.28.1'
     implementation 'jme3utilities:jme3-utilities-ui:0.7.3'
     implementation 'jme3utilities:jme3-utilities-nifty:0.9.5'
-    implementation 'jme3utilities:Minie:0.9.2'
+    implementation 'jme3utilities:Minie:0.9.3'
     implementation 'jme3utilities:SkyControl:0.9.18'
     implementation 'jme3utilities:Wes:0.4.1'
     //runtimeOnly 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
@@ -71,7 +71,7 @@ dependencies {
 }
 
 // cleanup tasks
-clean { dependsOn 'cleanDLLs', 'cleanLogs', 'cleanSOs', 'cleanWrittenAssets' }
+clean.dependsOn('cleanDLLs', 'cleanLogs', 'cleanSOs', 'cleanWrittenAssets')
 task cleanDLLs(type: Delete) {
     delete fileTree(dir: '.', include: '*.dll')
 }
