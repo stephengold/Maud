@@ -70,6 +70,8 @@ dependencies {
     implementation 'com.github.xbuf.jme3_xbuf:jme3_xbuf_loader:0.9.1'
 }
 
+jar.manifest.attributes( 'Main-Class': 'maud.Maud' )
+
 // cleanup tasks
 clean.dependsOn('cleanDLLs', 'cleanLogs', 'cleanSOs', 'cleanWrittenAssets')
 task cleanDLLs(type: Delete) {
