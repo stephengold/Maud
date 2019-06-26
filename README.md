@@ -88,9 +88,7 @@ Maud currently targets Version 3.2.3 of jME.  You are welcome to
 use jME without installing its Integrated Development Environment (IDE),
 but I use the IDE, so I tend to assume you will too.
 
-### In the IDE
-
-#### IDE setup
+### IDE setup
 
 If you already have the IDE installed, skip to step 6.
 
@@ -134,7 +132,7 @@ https://jmonkeyengine.github.io/wiki/jme3/requirements.html
     + Click on the "Finish" button.
     + The IDE will restart.
 
-#### Source files
+### Source files
 
 Clone the Maud repository using Git:
 
@@ -155,21 +153,11 @@ Clone the Maud repository using Git:
 11. When the "Clone Completed" dialog appears, click on the "Open Project..."
     button.
 
-#### Build the project
+### Build the project
 
  1. In the "Projects" window of the IDE,
     right-click on the "Maud" project to select it.
  2. Select "Build".
-
-### In a command-line environment
-
- 1. Set your `JAVA_HOME` environment variable.
- 2. Set your working directory to a writable directory (on a local filesystem)
-    that doesn't already contain "Maud".
- 3. `git clone https://github.com/stephengold/Maud.git`
- 4. `cd Maud`
- 5. Ensure that the `gradlew` script is executable: `chmod +x gradlew`
- 6. `./gradlew build`
 
 <a name="use"/>
 
