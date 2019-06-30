@@ -102,11 +102,11 @@ https://jmonkeyengine.github.io/wiki/jme3/requirements.html
     + the IDE, which is based on [NetBeans][],
     + various IDE plugins, and
     + the [Blender 3D][blender] application.
- 3. When you execute the installer, it prompts you to
+ 3. Open the IDE.
+ 4. The first time you open the IDE, it prompts you to
     specify a folder for storing projects:
     + Fill in the "Folder name" text box.
     + Click on the "Set Project Folder" button.
- 4. Open the IDE.
  5. The first time you open the IDE, you should update
     all the pre-installed plugins:
     + Menu bar -> "Tools" -> "Plugins" to open the "Plugins" dialog.
