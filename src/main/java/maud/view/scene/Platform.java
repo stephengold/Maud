@@ -32,7 +32,6 @@ import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.debug.BulletDebugAppState;
 import com.jme3.collision.CollisionResult;
-import com.jme3.export.Savable;
 import com.jme3.material.Material;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
@@ -193,7 +192,7 @@ public class Platform implements BulletDebugAppState.DebugAppStateFilter {
      * @return return true if the object should be displayed, false if not
      */
     @Override
-    public boolean displayObject(Savable obj) {
+    public boolean displayObject(Object obj) {
         boolean result = true;
         return result;
     }

@@ -37,6 +37,7 @@ ext.jmonkeyengineVersion = '3.2.3-stable' // from jcenter
 if (!hasProperty('mainClass')) {
     ext.mainClass = 'maud.Maud'
 }
+jar.manifest.attributes( 'Main-Class': 'maud.Maud' )
 
 repositories {
     //mavenLocal()
@@ -52,7 +53,7 @@ dependencies {
     implementation 'jme3utilities:jme3-utilities-heart:2.28.1'
     implementation 'jme3utilities:jme3-utilities-ui:0.7.3'
     implementation 'jme3utilities:jme3-utilities-nifty:0.9.5'
-    implementation 'jme3utilities:Minie:0.9.3'
+    implementation 'jme3utilities:Minie:0.9.4'
     implementation 'jme3utilities:SkyControl:0.9.18'
     implementation 'jme3utilities:Wes:0.4.1'
     //runtimeOnly 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
@@ -69,8 +70,6 @@ dependencies {
     // from jitpack repositories:
     implementation 'com.github.xbuf.jme3_xbuf:jme3_xbuf_loader:0.9.1'
 }
-
-jar.manifest.attributes( 'Main-Class': 'maud.Maud' )
 
 // cleanup tasks
 clean.dependsOn('cleanDLLs', 'cleanLogs', 'cleanSOs', 'cleanWrittenAssets')

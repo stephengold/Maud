@@ -28,7 +28,7 @@ package maud.model.cgm;
 
 import com.jme3.bullet.joints.JointEnd;
 import com.jme3.bullet.joints.PhysicsJoint;
-import com.jme3.bullet.objects.PhysicsRigidBody;
+import com.jme3.bullet.objects.PhysicsBody;
 import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
 import java.util.Arrays;
@@ -79,18 +79,8 @@ public class SelectedJoint implements JmeCloneable {
         String result = null;
         PhysicsJoint joint = get();
         if (joint != null) {
-            PhysicsRigidBody rigidBody;
-            switch (end) {
-                case A:
-                    rigidBody = joint.getBodyA();
-                    break;
-                case B:
-                    rigidBody = joint.getBodyB();
-                    break;
-                default:
-                    throw new IllegalArgumentException(end.toString());
-            }
-            result = MyPco.objectName(rigidBody);
+            PhysicsBody body = joint.getBody(end);
+            result = MyPco.objectName(body);
         }
 
         return result;
