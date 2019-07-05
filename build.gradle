@@ -51,7 +51,7 @@ repositories {
 dependencies {
     // from stephengold's bintray repositories:
     implementation 'jme3utilities:jme3-utilities-heart:2.29.0for32'
-    implementation 'jme3utilities:jme3-utilities-ui:0.7.3'
+    implementation 'jme3utilities:jme3-utilities-ui:0.7.4for32'
     implementation 'jme3utilities:jme3-utilities-nifty:0.9.5'
     implementation 'jme3utilities:Minie:0.9.4'
     implementation 'jme3utilities:SkyControl:0.9.18'
