@@ -6,6 +6,9 @@ plugins {
 //sourceCompatibility = '1.7'
 sourceCompatibility = '1.8'
 
+//targetCompatibility = '1.7'
+targetCompatibility = '1.8'
+
 gradle.projectsEvaluated {
     tasks.withType(JavaCompile) { // compile-time options:
         options.compilerArgs << '-Xdiags:verbose'
@@ -32,7 +35,7 @@ gradle.projectsEvaluated {
     }
 }
 
-ext.jmonkeyengineVersion = '3.2.3-stable' // from jcenter
+ext.jmonkeyengineVersion = '3.2.4-stable' // from jcenter
 
 if (!hasProperty('mainClass')) {
     ext.mainClass = 'maud.Maud'
@@ -50,7 +53,7 @@ repositories {
 
 dependencies {
     // from stephengold's bintray repositories:
-    implementation 'jme3utilities:jme3-utilities-heart:2.29.0for32'
+    implementation 'jme3utilities:jme3-utilities-heart:2.29.1for32'
     implementation 'jme3utilities:jme3-utilities-ui:0.7.4for32'
     implementation 'jme3utilities:jme3-utilities-nifty:0.9.6for32'
     implementation 'jme3utilities:Minie:0.9.5for32'
