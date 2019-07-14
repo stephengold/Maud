@@ -56,7 +56,7 @@ dependencies {
     implementation 'jme3utilities:jme3-utilities-heart:2.29.1for32'
     implementation 'jme3utilities:jme3-utilities-ui:0.7.4for32'
     implementation 'jme3utilities:jme3-utilities-nifty:0.9.6for32'
-    implementation 'jme3utilities:Minie:0.9.5for32'
+    implementation 'jme3utilities:Minie:0.9.6for32'
     implementation 'jme3utilities:SkyControl:0.9.18'
     implementation 'jme3utilities:Wes:0.4.1'
     //runtimeOnly 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
