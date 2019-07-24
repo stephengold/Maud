@@ -399,9 +399,7 @@ class MenuBuilder extends PopupMenuBuilder {
     void show(String actionPrefix) {
         int numItems = items.size();
         if (numItems > 0) {
-            String[] itemArray = copyItems();
-            String[] iconArray = copyIconAssetPaths();
-            Maud.gui.showPopupMenu(actionPrefix, itemArray, iconArray);
+            Maud.gui.showPopupMenu(actionPrefix, this);
         }
     }
 }
