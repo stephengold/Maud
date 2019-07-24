@@ -329,7 +329,7 @@ public class MaudUtil {
     }
 
     /**
-     * Find the specified spatial in the specified subtree and optionally store
+     * Find the specified Spatial in the specified subtree and optionally store
      * its tree position.
      *
      * @param spatial spatial to find (not null, unaffected)
