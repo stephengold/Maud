@@ -41,8 +41,10 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.math.Vector4f;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.control.Control;
 import com.jme3.shader.VarType;
 import com.jme3.texture.Image;
@@ -55,12 +57,14 @@ import com.jme3.util.BufferUtils;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.MyMesh;
 import jme3utilities.MySpatial;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
@@ -560,10 +564,41 @@ public class MaudUtil {
     }
 
     /**
+     * Apply the specified rotation to all data in the specified VertexBuffer.
+     *
+     * @param mesh the subject mesh (not null)
+     * @param bufferType which buffer to read (not null)
+     * @param rotation the rotation to apply (not null, unaffected)
+     */
+    public static void rotateBuffer(Mesh mesh, VertexBuffer.Type bufferType,
+            Quaternion rotation) {
+        Validate.nonNull(bufferType, "buffer type");
+        Validate.nonNull(rotation, "rotation");
+
+        VertexBuffer vertexBuffer = mesh.getBuffer(bufferType);
+        if (vertexBuffer != null) {
+            int count = mesh.getVertexCount();
+            FloatBuffer floatBuffer = (FloatBuffer) vertexBuffer.getData();
+            Vector3f tmpVector = new Vector3f();
+            for (int vertexIndex = 0; vertexIndex < count; ++vertexIndex) {
+                MyMesh.vertexVector3f(mesh, bufferType, vertexIndex, tmpVector);
+                rotation.mult(tmpVector, tmpVector);
+
+                int floatIndex = MyVector3f.numAxes * vertexIndex;
+                floatBuffer.put(floatIndex, tmpVector.x);
+                floatBuffer.put(floatIndex + 1, tmpVector.y);
+                floatBuffer.put(floatIndex + 2, tmpVector.z);
+            }
+
+            vertexBuffer.setUpdateNeeded();
+        }
+    }
+
+    /**
      * Calculate the rotation specified by a bank of sliders when the rotation
      * display mode is QuatCoeff.
      *
-     * @param sliderPositions (not null, length = 3)
+     * @param sliderPositions (not null, length=3)
      * @param storeResult (modified if not null)
      * @return rotation (either storeResult or a new quaternion)
      */
@@ -591,6 +626,39 @@ public class MaudUtil {
         }
 
         return result;
+    }
+
+    /**
+     * Apply the specified coordinate transform to all data in the specified
+     * VertexBuffer.
+     *
+     * @param mesh the subject mesh (not null)
+     * @param bufferType which buffer to read (not null)
+     * @param transform the Transform to apply (not null, unaffected)
+     */
+    public static void transformBuffer(Mesh mesh, VertexBuffer.Type bufferType,
+            Transform transform) {
+        Validate.nonNull(bufferType, "buffer type");
+        Validate.nonNull(transform, "transform");
+
+        VertexBuffer vertexBuffer = mesh.getBuffer(bufferType);
+        if (vertexBuffer != null) {
+            int count = mesh.getVertexCount();
+            FloatBuffer floatBuffer = (FloatBuffer) vertexBuffer.getData();
+
+            Vector3f tmpVector = new Vector3f();
+            for (int vertexIndex = 0; vertexIndex < count; ++vertexIndex) {
+                MyMesh.vertexVector3f(mesh, bufferType, vertexIndex, tmpVector);
+                transform.transformVector(tmpVector, tmpVector);
+
+                int floatIndex = MyVector3f.numAxes * vertexIndex;
+                floatBuffer.put(floatIndex, tmpVector.x);
+                floatBuffer.put(floatIndex + 1, tmpVector.y);
+                floatBuffer.put(floatIndex + 2, tmpVector.z);
+            }
+
+            vertexBuffer.setUpdateNeeded();
+        }
     }
 
     /**

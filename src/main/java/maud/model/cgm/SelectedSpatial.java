@@ -53,6 +53,7 @@ import com.jme3.material.MaterialDef;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
+import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
@@ -81,8 +82,10 @@ import jme3utilities.math.MyVector3f;
 import jme3utilities.minie.MinieCharacterControl;
 import jme3utilities.ui.Locators;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.PhysicsUtil;
 import maud.ShapeType;
+import maud.model.History;
 import maud.view.scene.SceneView;
 
 /**
@@ -111,6 +114,10 @@ public class SelectedSpatial implements JmeCloneable {
      * dummy buffer description, used to indicate that no buffer is selected
      */
     final public static String noBuffer = "( no buffer )";
+    /**
+     * local copy of {@link com.jme3.math.Transform#IDENTITY}
+     */
+    final private static Transform transformIdentity = new Transform();
     // *************************************************************************
     // fields
 
@@ -299,7 +306,53 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Apply normal-debugging material to the selected geometry.
+     * Apply the local Transform of the selected Spatial (and those of its
+     * descendents) to each of its meshes.
+     */
+    public void applyTransform() {
+        Spatial subtree = find();
+        Node parent = subtree.getParent();
+        Transform parentInWorld;
+        if (parent == null) {
+            parentInWorld = new Transform();
+        } else {
+            parentInWorld = parent.getWorldTransform().clone();
+        }
+        Transform wip = parentInWorld.invert();
+        List<Geometry> geometries
+                = MySpatial.listSpatials(subtree, Geometry.class, null);
+
+        History.autoAdd();
+
+        for (Geometry geometry : geometries) {
+            Mesh mesh = geometry.getMesh();
+            Transform gInWorld = geometry.getWorldTransform().clone();
+            Transform gInParent = wip.clone().combineWithParent(gInWorld);
+
+            MaudUtil.transformBuffer(mesh, VertexBuffer.Type.BindPosePosition,
+                    gInParent);
+            MaudUtil.transformBuffer(mesh, VertexBuffer.Type.Position,
+                    gInParent);
+
+            Quaternion gInPRot = gInParent.getRotation();
+            MaudUtil.rotateBuffer(mesh, VertexBuffer.Type.BindPoseNormal,
+                    gInPRot);
+            MaudUtil.rotateBuffer(mesh, VertexBuffer.Type.Normal, gInPRot);
+            // TODO binormal, tangent?
+        }
+
+        List<Spatial> spatials
+                = MySpatial.listSpatials(subtree, Spatial.class, null);
+        for (Spatial spatial : spatials) {
+            spatial.setLocalTransform(transformIdentity);
+        }
+        cgm.getSceneView().applyTransform();
+        editableCgm.getEditState().setEdited(
+                "apply spatial transform to meshes");
+    }
+
+    /**
+     * Apply normal-debugging material to the selected Geometry.
      */
     public void applyDebugMaterial() {
         AssetManager am = Locators.getAssetManager();

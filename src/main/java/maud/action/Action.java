@@ -46,6 +46,8 @@ public class Action {
      */
     final private static Logger logger
             = Logger.getLogger(Action.class.getName());
+
+    final static String applySpatialTransform = "apply spatialTransform";
     /**
      * delete the selected animation
      */

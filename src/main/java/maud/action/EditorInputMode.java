@@ -152,6 +152,10 @@ public class EditorInputMode extends InputMode {
         String firstWord = words[0];
         if (ongoing) {
             switch (firstWord) {
+                case "apply":
+                    handled = applyAction(actionString);
+                    break;
+
                 case "delete":
                     handled = DeleteAction.process(actionString);
                     break;
@@ -265,6 +269,27 @@ public class EditorInputMode extends InputMode {
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Process an ongoing action that starts with the word "apply".
+     *
+     * @param actionString textual description of the action (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private boolean applyAction(String actionString) {
+        Cgm target = Maud.getModel().getTarget();
+
+        boolean handled = true;
+        switch (actionString) {
+            case Action.applySpatialTransform:
+                target.getSpatial().applyTransform();
+                break;
+            default:
+                handled = false;
+        }
+
+        return handled;
+    }
 
     /**
      * Process an ongoing action that starts with the word "dump".

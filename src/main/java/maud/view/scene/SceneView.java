@@ -39,6 +39,7 @@ import com.jme3.material.MatParamOverride;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.Line;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
@@ -63,7 +64,9 @@ import jme3utilities.debug.AxesVisualizer;
 import jme3utilities.math.MyVector3f;
 import jme3utilities.minie.MyControlP;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.PhysicsUtil;
+import maud.model.History;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedRagdoll;
 
@@ -81,6 +84,10 @@ public class SceneView extends SceneViewCore {
      */
     final private static Logger logger
             = Logger.getLogger(SceneView.class.getName());
+    /**
+     * local copy of {@link com.jme3.math.Transform#IDENTITY}
+     */
+    final private static Transform transformIdentity = new Transform();
     // *************************************************************************
     // constructors
 
@@ -159,6 +166,20 @@ public class SceneView extends SceneViewCore {
         space.add(copy);
 
         return copy;
+    }
+
+    /**
+     * Apply the local Transform of the selected Spatial (and those of its
+     * descendents) to each of its meshes.
+     */
+    public void applyTransform() {
+        Spatial subtree = selectedSpatial();
+        List<Spatial> spatials
+                = MySpatial.listSpatials(subtree, Spatial.class, null);
+        for (Spatial spatial : spatials) {
+            spatial.setLocalTransform(transformIdentity);
+        }
+        // TODO transform skinning data?
     }
 
     /**
@@ -778,7 +799,7 @@ public class SceneView extends SceneViewCore {
      * @return the world transform (either storeResult or a new instance)
      */
     public Transform worldTransform(Transform storeResult) {
-        Transform result 
+        Transform result
                 = (storeResult == null) ? new Transform() : storeResult;
 
         Spatial transformSpatial = findTransformSpatial();
