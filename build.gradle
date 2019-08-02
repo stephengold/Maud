@@ -45,7 +45,8 @@ jar.manifest.attributes( 'Main-Class': 'maud.Maud' )
 repositories {
     //mavenLocal()
     maven { url 'https://dl.bintray.com/stephengold/jme3utilities' }
-    //maven { url 'https://dl.bintray.com/stephengold/org.jmonkeyengine' } // for testdata
+    //maven { url 'https://dl.bintray.com/stephengold/org.jmonkeyengine' } // for jme3-testdata
+    maven { url 'https://dl.bintray.com/riccardo/v-hacd' } // for v-hacd-java-bindings
     //maven { url 'https://dl.bintray.com/jmonkeyengine/contrib' }
     jcenter()
     maven { url 'https://jitpack.io' }
@@ -56,7 +57,7 @@ dependencies {
     implementation 'jme3utilities:jme3-utilities-heart:2.30.0for32'
     implementation 'jme3utilities:jme3-utilities-ui:0.7.5for32'
     implementation 'jme3utilities:jme3-utilities-nifty:0.9.7for32'
-    implementation 'jme3utilities:Minie:0.9.9for32'
+    implementation 'jme3utilities:Minie:0.9.11for32'
     implementation 'jme3utilities:SkyControl:0.9.19for32'
     implementation 'jme3utilities:Wes:0.4.2'
     //runtimeOnly 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
