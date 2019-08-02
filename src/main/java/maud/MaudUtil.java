@@ -460,9 +460,11 @@ public class MaudUtil {
         Spatial clone = subtree.clone(false);
         clone.setLocalTransform(transformIdentity);
         Vector3f[] minMax = MySpatial.findMinMaxCoords(clone);
-        float heX = Math.max(-minMax[0].x, minMax[1].x);
-        float heY = Math.max(-minMax[0].y, minMax[1].y);
-        float heZ = Math.max(-minMax[0].z, minMax[1].z);
+        Vector3f max = minMax[1];
+        Vector3f min = minMax[0];
+        float heX = Math.max(Math.abs(max.x), Math.abs(min.x));
+        float heY = Math.max(Math.abs(max.y), Math.abs(min.y));
+        float heZ = Math.max(Math.abs(max.z), Math.abs(min.z));
         Vector3f result = new Vector3f(heX, heY, heZ);
 
         assert MyVector3f.isAllNonNegative(result);
