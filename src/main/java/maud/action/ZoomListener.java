@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -73,16 +73,16 @@ class ZoomListener implements AnalogListener {
          * Turning the mouse wheel up triggers positive Pov.moveBackward().
          */
         boolean wheelUp = true;
-        MouseAxisTrigger backwardTrigger;
-        backwardTrigger = new MouseAxisTrigger(MouseInput.AXIS_WHEEL, wheelUp);
+        MouseAxisTrigger backwardTrigger
+                = new MouseAxisTrigger(MouseInput.AXIS_WHEEL, wheelUp);
         inputMgr.addMapping(povBackward, backwardTrigger);
         inputMgr.addListener(this, povBackward);
         /*
          * Turning the mouse wheel down triggers negative Pov.moveBackward().
          */
         boolean wheelDown = false;
-        MouseAxisTrigger forwardTrigger;
-        forwardTrigger = new MouseAxisTrigger(MouseInput.AXIS_WHEEL, wheelDown);
+        MouseAxisTrigger forwardTrigger
+                = new MouseAxisTrigger(MouseInput.AXIS_WHEEL, wheelDown);
         inputMgr.addMapping(povForward, forwardTrigger);
         inputMgr.addListener(this, povForward);
     }
