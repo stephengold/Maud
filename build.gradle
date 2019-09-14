@@ -64,7 +64,7 @@ dependencies {
 
     // from jcenter (or mavenLocal) repositories:
     implementation 'ch.qos.logback:logback-classic:1.2.3'
-    implementation 'com.atr:jme-ttf:2.1.2'
+    implementation 'com.atr:jme-ttf:2.2.1'
     runtimeOnly 'com.github.nifty-gui:nifty-style-black:1.4.3'
     implementation "org.jmonkeyengine:jme3-blender:$jmonkeyengineVersion"
     implementation "org.jmonkeyengine:jme3-desktop:$jmonkeyengineVersion"
