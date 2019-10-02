@@ -1112,7 +1112,7 @@ public class SceneViewCore
     private float configureTransform() {
         parent.setLocalTransform(transformIdentity);
         Vector3f[] minMax = MySpatial.findMinMaxCoords(cgmRoot);
-        Node subtree = skeletonVisualizer.getSubtree();
+        Spatial subtree = skeletonVisualizer.getSubtree();
         if (subtree != null) {
             Vector3f[] subtreeMinMax = MySpatial.findMinMaxCoords(subtree);
             MyVector3f.accumulateMinima(minMax[0], subtreeMinMax[0]);
