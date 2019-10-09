@@ -40,7 +40,6 @@ import com.jme3.bullet.collision.shapes.MultiSphere;
 import com.jme3.bullet.collision.shapes.SimplexCollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.collision.shapes.infos.ChildCollisionShape;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.util.clone.Cloner;
@@ -498,9 +497,7 @@ public class SelectedShape implements JmeCloneable {
                     for (ChildCollisionShape child : children) {
                         long id = child.getShape().getObjectId();
                         if (id == userId) {
-                            parent.setTranslation(child.getLocation(null));
-                            Quaternion rot = parent.getRotation();
-                            rot.fromRotationMatrix(child.getRotation(null));
+                            child.copyTransform(parent);
                         }
                     }
                     result.combineWithParent(parent);

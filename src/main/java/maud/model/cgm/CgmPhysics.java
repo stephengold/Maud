@@ -37,8 +37,7 @@ import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.joints.PhysicsJoint;
 import com.jme3.bullet.objects.PhysicsCharacter;
 import com.jme3.bullet.objects.PhysicsRigidBody;
-import com.jme3.math.Matrix3f;
-import com.jme3.math.Vector3f;
+import com.jme3.math.Transform;
 import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
 import java.util.ArrayList;
@@ -788,10 +787,9 @@ public class CgmPhysics implements JmeCloneable {
         for (ChildCollisionShape child : array) {
             CollisionShape childShape = child.getShape();
             if (childShape == oldChild) {
-                Vector3f location = child.getLocation(null);
-                Matrix3f rotation = child.getRotation(null);
+                Transform transform = child.copyTransform(null);
                 compound.removeChildShape(childShape);
-                compound.addChildShape(newChild, location, rotation);
+                compound.addChildShape(newChild, transform);
             }
         }
     }
