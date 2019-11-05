@@ -21,11 +21,10 @@ gradle.projectsEvaluated {
         //args '--verbose'
         classpath sourceSets.main.runtimeClasspath
         //debug true
-        //doFirst { println commandLine }
         enableAssertions true
         //jvmArgs '-verbose:gc'
         //jvmArgs '-Xbatch'
-        //jvmArgs '-Xms5g', '-Xmx5g'
+        jvmArgs '-Xms5g', '-Xmx5g'
         //jvmArgs '-XX:+PrintCompilation'
         jvmArgs '-XX:+UseConcMarkSweepGC'
         //jvmArgs '-XX:+UseG1GC', '-XX:MaxGCPauseMillis=10'
