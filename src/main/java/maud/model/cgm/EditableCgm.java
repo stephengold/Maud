@@ -1551,6 +1551,7 @@ public class EditableCgm extends LoadedCgm {
     private void repairTracks(Spatial cgmRoot) {
         int numTracksZfed = 0;
         int numTracksRred = 0;
+        int numTracksNqed = 0;
 
         List<AnimControl> animControls
                 = MySpatial.listControls(cgmRoot, AnimControl.class, null);
@@ -1560,6 +1561,7 @@ public class EditableCgm extends LoadedCgm {
                 Animation anim = animControl.getAnim(animationName);
                 numTracksZfed += AnimationEdit.zeroFirst(anim);
                 numTracksRred += AnimationEdit.removeRepeats(anim);
+                numTracksNqed += AnimationEdit.normalizeQuaternions(anim);
             }
         }
 
@@ -1579,6 +1581,16 @@ public class EditableCgm extends LoadedCgm {
                 description += "one track";
             } else {
                 description += String.format("%d tracks", numTracksRred);
+            }
+            editState.setEdited(description);
+        }
+
+        if (numTracksNqed > 0) {
+            String description = "normalized quaternion(s) in ";
+            if (numTracksNqed == 1) {
+                description += "one track";
+            } else {
+                description += String.format("%d tracks", numTracksNqed);
             }
             editState.setEdited(description);
         }
