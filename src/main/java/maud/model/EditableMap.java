@@ -239,11 +239,11 @@ public class EditableMap extends LoadedMap {
     /**
      * Callback after a bone in the target C-G model is renamed.
      *
-     * @param oldName former name of bone (not null, not empty)
+     * @param oldName former name of bone (not null)
      * @param newName new name of bone (not null, not empty)
      */
     public void renameBone(String oldName, String newName) {
-        Validate.nonEmpty(oldName, "old name");
+        Validate.nonNull(oldName, "old name");
         Validate.nonEmpty(newName, "new name");
 
         if (isInvertingMap()) {
