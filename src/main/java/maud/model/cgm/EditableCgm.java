@@ -1544,7 +1544,7 @@ public class EditableCgm extends LoadedCgm {
 
     /**
      * Repair problems with animation tracks in a newly-loaded model, including
-     * 1st keyframe not at t=0 and repetitious keyframes.
+     * first keyframe not at t=0 and repetitious keyframes.
      *
      * @param cgmRoot the C-G model to repair (not null)
      */

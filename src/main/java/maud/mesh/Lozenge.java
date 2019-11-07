@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018, Stephen Gold
+ Copyright (c) 2018-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -60,7 +60,7 @@ public class Lozenge extends Mesh {
     /**
      * Instantiate an axis-aligned lozenge with the specified parameters.
      *
-     * @param x local X coordinate of the 1st vertex
+     * @param x local X coordinate of the first vertex
      * @param y local X coordinate of the 2nd vertex
      * @param zNorm the Z component of the normal vector (must be +1 or -1)
      */

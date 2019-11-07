@@ -56,8 +56,8 @@ import maud.view.scene.SceneView;
  * The MVC model of a selected skeleton in the Maud application.
  *
  * If the selected S-G control is a SkeletonControl or AnimControl, use that
- * control's skeleton, otherwise use the skeleton of the 1st SkeletonControl or
- * AnimControl in the C-G model's root spatial.
+ * control's skeleton, otherwise use the skeleton of the first SkeletonControl
+ * or AnimControl in the C-G model's root spatial.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -167,7 +167,7 @@ public class SelectedSkeleton implements JmeCloneable {
     /**
      * Find the selected skeleton.
      *
-     * @param storeSelectedSgcFlag if not null, set the 1st element to true if
+     * @param storeSelectedSgcFlag if not null, set the first element to true if
      * the skeleton came from the selected S-G control, false if it came from
      * the C-G model root
      * @return the pre-existing instance, or null if none

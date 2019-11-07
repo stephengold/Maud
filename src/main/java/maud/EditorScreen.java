@@ -364,7 +364,7 @@ public class EditorScreen extends GuiScreenController {
     // GuiScreenController methods
 
     /**
-     * A callback that Nifty invokes the 1st time the screen is displayed.
+     * A callback that Nifty invokes the first time the screen is displayed.
      *
      * @param nifty (not null)
      * @param screen (not null)
@@ -378,7 +378,7 @@ public class EditorScreen extends GuiScreenController {
     }
 
     /**
-     * Initialize this controller prior to its 1st update.
+     * Initialize this controller prior to its first update.
      *
      * @param stateManager (not null)
      * @param application application that owns this screen (not null)

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -306,7 +306,7 @@ public class ScoreView implements EditorView {
         } else {
             /*
              * Series consists entirely of a single value:
-             * draw the 1st keyframe only.
+             * draw the first keyframe only.
              */
             tempX[0] = pxx[0];
             tempY[0] = pyy[0];

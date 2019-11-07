@@ -358,7 +358,7 @@ public class EditorDialogs {
      * Display a "new animation fromChain" dialog to enter the new animation
      * name.
      *
-     * @param which1 which C-G model loaded the animation to go 1st (not null)
+     * @param which1 which C-G model loaded the animation to go first (not null)
      * @param which2 which C-G model loaded the animation to go 2nd (not null)
      */
     public static void newAnimationFromChain(WhichCgm which1, WhichCgm which2) {

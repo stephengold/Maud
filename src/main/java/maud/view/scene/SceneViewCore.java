@@ -1301,7 +1301,7 @@ public class SceneViewCore
          */
         parent.attachChild(cgmRoot);
         /*
-         * Use the skeleton from the 1st AnimControl or
+         * Use the skeleton from the first AnimControl or
          * SkeletonControl in the C-G model's root spatial.
          */
         Skeleton selectedSkeleton = MySkeleton.findSkeleton(cgmRoot);

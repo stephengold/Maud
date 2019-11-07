@@ -69,7 +69,7 @@ class StartScreen extends BasicScreenController {
     // AppState methods
 
     /**
-     * Initialize this controller prior to its 1st update.
+     * Initialize this controller prior to its first update.
      *
      * @param stateManager (not null)
      * @param application application that owns the screen (not null)

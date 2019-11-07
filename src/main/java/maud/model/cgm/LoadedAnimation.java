@@ -1177,7 +1177,7 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Alter each track's 1st keyframe and end-time keyframe so that they
+     * Alter each track's first keyframe and end-time keyframe so that they
      * precisely match. If a track doesn't end with a keyframe, append one.
      *
      * @param endWeight how much weight to give to pre-existing end-time

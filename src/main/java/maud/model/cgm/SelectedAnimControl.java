@@ -92,7 +92,7 @@ public class SelectedAnimControl implements JmeCloneable {
      * Chain the loaded animations into a new animation and add it the anim
      * control.
      *
-     * @param which1 which C-G model loaded the animation to go 1st (not null)
+     * @param which1 which C-G model loaded the animation to go first (not null)
      * @param which2 which C-G model loaded the animation to go 2nd (not null)
      * @param animationName a name for the new animation (not null, not
      * reserved, not in use)

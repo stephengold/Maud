@@ -263,7 +263,7 @@ public class SelectedTrack implements JmeCloneable {
     }
 
     /**
-     * Delete the selected keyframe, which mustn't be the 1st keyframe in the
+     * Delete the selected keyframe, which mustn't be the first keyframe in the
      * track.
      */
     public void deleteSelectedKeyframe() {
@@ -398,7 +398,7 @@ public class SelectedTrack implements JmeCloneable {
     }
 
     /**
-     * Find the index of the 1st keyframe at or after the specified time.
+     * Find the index of the first keyframe at or after the specified time.
      *
      * @param time the animation time (in seconds, &ge;0)
      * @return the keyframe's index (&ge;0) or -1 if no such keyframe
@@ -976,7 +976,7 @@ public class SelectedTrack implements JmeCloneable {
             tempPose.skin(skinningMatrices);
 
             if (previousVertexIndex == -1) {
-                world.zero(); // no offset for 1st keyframe
+                world.zero(); // no offset for first keyframe
             } else {
                 MyMesh.vertexWorldLocation(previousGeometryRef[0],
                         previousVertexIndex, skinningMatrices, w);
@@ -1038,7 +1038,7 @@ public class SelectedTrack implements JmeCloneable {
     }
 
     /**
-     * Alter the track's 1st keyframe and end-time keyframe so that they
+     * Alter the track's first keyframe and end-time keyframe so that they
      * precisely match. If the track doesn't end with a keyframe, append one.
      *
      * @param endWeight how much weight to give to the pre-existing end-time
@@ -1119,7 +1119,7 @@ public class SelectedTrack implements JmeCloneable {
     /**
      * Delete a range of keyframes in the selected track.
      *
-     * @param startIndex index of 1st keyframe to delete (&gt;0)
+     * @param startIndex index of the first keyframe to delete (&gt;0)
      * @param number number of keyframes to delete (&gt;0)
      */
     private void deleteRange(int startIndex, int number) {

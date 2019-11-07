@@ -117,7 +117,7 @@ public class SelectedTexture implements JmeCloneable {
     }
 
     /**
-     * Select the 1st selected reference and replace it with a clone.
+     * Select the first selected reference and replace it with a clone.
      */
     public void cloneFirstRef() {
         assert isSelected();
@@ -206,7 +206,7 @@ public class SelectedTexture implements JmeCloneable {
     }
 
     /**
-     * Describe the 1st texture reference.
+     * Describe the first texture reference.
      *
      * @return a textual description (not null, not empty)
      */
@@ -324,7 +324,7 @@ public class SelectedTexture implements JmeCloneable {
     }
 
     /**
-     * Test whether the 1st selected reference can be set to null.
+     * Test whether the first selected reference can be set to null.
      *
      * @return true if nullable, otherwise false
      */
@@ -441,7 +441,7 @@ public class SelectedTexture implements JmeCloneable {
     }
 
     /**
-     * Select the 1st selected reference and set it to null.
+     * Select the first selected reference and set it to null.
      */
     public void nullifyFirst() {
         assert isSelected();
@@ -569,7 +569,7 @@ public class SelectedTexture implements JmeCloneable {
     }
 
     /**
-     * Select the material parameter or M-P override of the 1st selected
+     * Select the material parameter or M-P override of the first selected
      * reference.
      */
     public void selectFirstUser() {

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -158,7 +158,7 @@ public class EditorViewPorts {
     }
 
     /**
-     * Initialization performed during the 1st invocation of
+     * Initialization performed during the first invocation of
      * {@link #simpleUpdate(float)}.
      */
     static void startup1() {

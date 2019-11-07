@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -257,7 +257,7 @@ public class Finial extends Mesh {
         putXY(2 * otw, 2 * hpf + shh);
         putXY(width, hpf + shh);
         /*
-         * crowsfoot for 1st sparkline
+         * crowsfoot for first sparkline
          */
         putLine(0, 9);
         putLine(1, 12);
@@ -306,7 +306,7 @@ public class Finial extends Mesh {
         putXY(2 * otw, 2 * hpf);
         putXY(width, 2 * hpf);
         /*
-         * crowsfoot for 1st sparkline
+         * crowsfoot for first sparkline
          */
         putLine(0, 12);
         putLine(1, 16);
@@ -345,7 +345,7 @@ public class Finial extends Mesh {
     /**
      * Add a line to the index buffer.
      *
-     * @param index1 index of 1st endpoint relative to baseI (&ge;0)
+     * @param index1 index of first endpoint relative to baseI (&ge;0)
      * @param index2 index of 2nd endpoint relative to baseI (&ge;0)
      */
     private void putLine(int index1, int index2) {

@@ -249,7 +249,7 @@ public class Maud extends GuiApplication {
     }
 
     /**
-     * Initialization performed the 1st time the editor screen is displayed.
+     * Initialization performed the first time the editor screen is displayed.
      */
     void startup2() {
         logger.info("");
@@ -500,7 +500,7 @@ public class Maud extends GuiApplication {
     }
 
     /**
-     * Initialization performed during the 1st invocation of
+     * Initialization performed during the first invocation of
      * {@link #simpleUpdate(float)}.
      */
     private void startup1() {

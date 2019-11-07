@@ -358,7 +358,7 @@ public class SelectedShape implements JmeCloneable {
     }
 
     /**
-     * Select the 1st child shape of the selected compound shape.
+     * Select the first child shape of the selected compound shape.
      */
     public void selectFirstChild() {
         if (selectedShape instanceof CompoundCollisionShape) {

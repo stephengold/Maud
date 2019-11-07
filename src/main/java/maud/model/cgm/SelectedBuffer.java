@@ -288,7 +288,7 @@ public class SelectedBuffer implements Cloneable {
     }
 
     /**
-     * Read the limit of the buffer: the index of the 1st element that should
+     * Read the limit of the buffer: the index of the first element that should
      * not be read or written.
      *
      * @return limit (&ge;0)
