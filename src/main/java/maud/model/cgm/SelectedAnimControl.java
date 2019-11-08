@@ -99,7 +99,7 @@ public class SelectedAnimControl implements JmeCloneable {
      */
     public void addChain(WhichCgm which1, WhichCgm which2,
             String animationName) {
-        Validate.nonNull(which1, "1st animation's model");
+        Validate.nonNull(which1, "first animation's model");
         Validate.nonNull(which2, "2nd animation's model");
         Validate.nonEmpty(animationName, "animation name");
         assert !MaudUtil.isReservedAnimationName(animationName) : animationName;

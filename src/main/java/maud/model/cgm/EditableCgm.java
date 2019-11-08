@@ -1567,7 +1567,7 @@ public class EditableCgm extends LoadedCgm {
         }
 
         if (numTracksZfed > 0) {
-            String description = "zeroed the time of the 1st keyframe in ";
+            String description = "zeroed the time of the first keyframe in ";
             if (numTracksZfed == 1) {
                 description += "one track";
             } else {

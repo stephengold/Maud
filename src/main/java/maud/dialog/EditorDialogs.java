@@ -362,7 +362,7 @@ public class EditorDialogs {
      * @param which2 which C-G model loaded the animation to go 2nd (not null)
      */
     public static void newAnimationFromChain(WhichCgm which1, WhichCgm which2) {
-        Validate.nonNull(which1, "1st animation's model");
+        Validate.nonNull(which1, "first animation's model");
         Validate.nonNull(which2, "2nd animation's model");
 
         EditorModel model = Maud.getModel();
