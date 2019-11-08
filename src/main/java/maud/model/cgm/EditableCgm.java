@@ -1561,7 +1561,8 @@ public class EditableCgm extends LoadedCgm {
                 Animation anim = animControl.getAnim(animationName);
                 numTracksZfed += AnimationEdit.zeroFirst(anim);
                 numTracksRred += AnimationEdit.removeRepeats(anim);
-                numTracksNqed += AnimationEdit.normalizeQuaternions(anim);
+                numTracksNqed
+                        += AnimationEdit.normalizeQuaternions(anim, 0.00005f);
             }
         }
 
