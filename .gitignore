@@ -1,7 +1,6 @@
 /.gradle/
 /.nb-gradle/
 /build/
-/nbproject/
 /private/
 /Written Assets/
 /*.dll
