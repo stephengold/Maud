@@ -47,7 +47,7 @@ Maud was designed for a desktop environment with:
  + a wheel mouse and
  + a display at least 640 pixels wide and 480 pixels tall.
 
-Status as of April 2019: seeking more testers.
+<a name="toc"/>
 
 ## Contents of this document
 
@@ -80,12 +80,15 @@ Status as of April 2019: seeking more testers.
 4. Open/run the Maud executable/application in the extracted folder/directory.
    (In Windows, open "Maud.exe" in the "Maud" folder.)
 
+[Jump to table of contents](#toc)
+
 <a name="build"/>
 
 ## How to build Maud from source
 
-Maud currently targets Version 3.2.3 of jME.  You are welcome to
-use jME without installing its Integrated Development Environment (IDE),
+Maud currently targets
+Version 3.2.4 of jMonkeyEngine.  You are welcome to use the Engine
+without installing its Integrated Development Environment (IDE),
 but I use the IDE, so I tend to assume you will too.
 
 ### IDE setup
@@ -95,11 +98,11 @@ If you already have the IDE installed, skip to step 6.
 The hardware and software requirements of the IDE are documented at
 https://jmonkeyengine.github.io/wiki/jme3/requirements.html
 
- 1. Download a jMonkeyEngine v3.2.1-stable-sdk3 installer
-    from https://github.com/jMonkeyEngine/sdk/releases
- 2. Install the Software Development Kit (SDK), which includes:
-    + the engine,
-    + the IDE, which is based on [NetBeans][],
+ 1. Download a jMonkeyEngine 3.2 Software Development Kit (SDK) from
+    [GitHub](https://github.com/jMonkeyEngine/sdk/releases).
+ 2. Install the SDK, which includes:
+    + the engine itself,
+    + an IDE based on [NetBeans][],
     + various IDE plugins, and
     + the [Blender 3D][blender] application.
  3. Open the IDE.
@@ -114,8 +117,8 @@ https://jmonkeyengine.github.io/wiki/jme3/requirements.html
     + Click on the "Next >" button.
     + After the plugins have downloaded, click "Finish".
     + The IDE will restart.
- 6. In order to open the Maud project in the IDE (or in NetBeans),
-    you will need to install the "Gradle Support" plugin:
+ 6. In order to open the Maud Project in the IDE (or NetBeans),
+    you will need to install the `Gradle Support` plugin:
     + Menu bar -> "Tools" -> "Plugins" to open the "Plugins" dialog.
     + Click on the "Available Plugins" tab.
     + Check the box next to "Gradle Support" in the "Gradle" category.
@@ -158,6 +161,8 @@ Clone the Maud repository using Git:
  1. In the "Projects" window of the IDE,
     right-click on the "Maud" project to select it.
  2. Select "Build".
+
+[Jump to table of contents](#toc)
 
 <a name="use"/>
 
@@ -371,6 +376,8 @@ Standard keyboard shortcuts affecting the scene-view cameras:
 Score views don't have anything analogous to the 3-D cursor, but you can
 move the score-view camera up/down by clicking LMB where you want it to look.
 
+[Jump to table of contents](#toc)
+
 <a name="cgms"/>
 
 ## 3-D models
@@ -426,6 +433,8 @@ Note that materials and textures are not saved.
 By default, models loaded from the classpath or from an archive will be written to a
 "Written Assets" folder under Maud's working folder.
 When loading assets, Maud treats this folder as if it overrides the classpath.
+
+[Jump to table of contents](#toc)
 
 <a name="bones"/>
 
@@ -490,6 +499,8 @@ However, since bones can appear close together in scene views,
 and since the RMB is also used to select objects other than bones,
 use this technique with caution.
 
+[Jump to table of contents](#toc)
+
 <a name="animations"/>
 
 ## Animations
@@ -543,6 +554,8 @@ Using the animation tools, you can also "pin" a loaded animation.
 Pinning an animation forces all its root bones to the model origin
 for display (scene-view) purposes.
 
+[Jump to table of contents](#toc)
+
 <a name="pose"/>
 
 ## The displayed pose
@@ -592,6 +605,8 @@ Then go to the animation time when you want to paste and select
 "Keyframe -> Insert from pose" (to paste to the selected bone track)
 or "Animations -> Edit -> Insert keyframes" (to paste to all bone tracks in the loaded animation).
 Remember to unfreeze the pose afterward!
+
+[Jump to table of contents](#toc)
 
 <a name="map"/>
 
@@ -645,6 +660,8 @@ To save the loaded skeleton map, select "Map -> Save".
 When you're ready to retarget animations between models,
 use the "Retarget Tool" ("Animations -> Add new -> Retarget source animation").
 
+[Jump to table of contents](#toc)
+
 <a name="history"/>
 
 ## The edit history
@@ -670,6 +687,8 @@ Maud provides a "History Tool" (selected using "History -> Tool").
 
 The edit history occupies heap memory.
 To release this memory, you can delete the history using "History -> Clear".
+
+[Jump to table of contents](#toc)
 
 <a name="scripting"/>
 
@@ -700,6 +719,8 @@ Maud has other mechanisms to make them persist.
 To remove a custom startup script,
 select "Settings -> Revert startup script to default".
 
+[Jump to table of contents](#toc)
+
 <a name="args"/>
 
 ## Command-line arguments
@@ -724,6 +745,8 @@ build script) to configure Maud prior to executing its startup script:
  + `--verbose` (or `-v`)
   to generate verbose log output.
   This output may assist in diagnosing certain issues.
+
+[Jump to table of contents](#toc)
 
 <a name="links"/>
 
@@ -789,6 +812,8 @@ BVH resources:
 [winmerge]: http://winmerge.org "WinMerge Project"
 [xbuf]: https://github.com/xbuf/xbuf "Xbuf Project"
 
+[Jump to table of contents](#toc)
+
 <a name="wishlist"/>
 
 ## Wish list
@@ -808,6 +833,8 @@ The following features are on my "to do" list, in no particular order:
  + mirror an animation/pose
  + joint-angle limits for models
 
+[Jump to table of contents](#toc)
+
 <a name="conventions"/>
 
 ## Conventions
@@ -819,6 +846,8 @@ Prior to loading a model that uses the Z-up convention, select the "+Z up"
 load orientation in the Settings Tool ("Settings" -> "Tool").
 
 The first keyframe in each track must be at time=0.
+
+[Jump to table of contents](#toc)
 
 <a name="history"/>
 
@@ -833,12 +862,15 @@ https://github.com/stephengold/jme3-utilities
 
 Maud incorporates code from [jMonkeyEngine][jme] and the [BVH Retarget Project][bvhretarget].
 
+[Jump to table of contents](#toc)
+
 <a name="acks"/>
 
 ## Acknowledgments
 
-Like most projects, Maud builds on the work of those who went before.
-I therefore acknowledge the following artists and software developers:
+Like most projects, Maud builds on the work of many who
+have gone before.  I therefore acknowledge the following
+ artists and software developers:
 
 + Rémy Bouquet (aka "nehon") for creating the Jaime model and the [BVH Retarget
   Project][retarget] and also for many helpful insights
@@ -869,9 +901,9 @@ I therefore acknowledge the following artists and software developers:
     + the Java compiler, standard doclet, and runtime environment
     + [jMonkeyEngine][jme] and the jME3 Software Development Kit
     + LWJGL, the Lightweight Java Game Library
-    + the [MakeHuman][] Community
+    + the [MakeHuman][] 3-D character creation tool
     + the [Markdown][] document conversion tool
-    + Microsoft Windows
+    + Microsoft Windows 7 Professional
     + the [NetBeans][] integrated development environment
     + the [Nifty][] graphical user interface library
     + [Open Broadcaster Software Studio][obs]
@@ -886,3 +918,5 @@ I'm also grateful to my dear Holly, for keeping me sane.
 
 If I've misattributed anything or left anyone out, please let me know so I can
 correct the situation: sgold@sonic.net
+
+[Jump to table of contents](#toc)
