@@ -59,7 +59,7 @@ Maud was designed for a desktop environment with:
  + [Animations](#animations)
  + [The displayed pose](#pose)
  + [The skeleton map](#map)
- + [The edit history](#history)
+ + [The edit history](#edithistory)
  + [Scripting](#scripting)
  + [Command-line arguments](#args)
  + [External links](#links)
@@ -662,7 +662,7 @@ use the "Retarget Tool" ("Animations -> Add new -> Retarget source animation").
 
 [Jump to table of contents](#toc)
 
-<a name="history"/>
+<a name="edithistory"/>
 
 ## The edit history
 
