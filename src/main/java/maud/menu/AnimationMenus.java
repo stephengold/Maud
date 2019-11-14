@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2019, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -579,8 +579,7 @@ public class AnimationMenus {
         assert cgm != null;
 
         String loadedAnimation = cgm.getAnimation().name();
-        boolean success = nameList.remove(loadedAnimation);
-        assert success;
+        nameList.remove(loadedAnimation);
 
         MyString.reduce(nameList, ShowMenus.maxItems);
         Collections.sort(nameList);
