@@ -307,7 +307,7 @@ public class PhysicsUtil {
 
     /**
      * Test whether the specified shape uses (or identifies as) the identified
-     * shape. TODO redesign to use CompoundCollisionShape.findIndex()
+     * shape.
      *
      * @param user (not null, unaffected)
      * @param shapeId the ID of the shape to find
