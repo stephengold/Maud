@@ -57,6 +57,7 @@ import maud.dialog.QuitDialog;
 import maud.model.EditState;
 import maud.model.EditorModel;
 import maud.model.cgm.EditableCgm;
+import net.bithaven.jme.IQELoader;
 
 /**
  * GUI application to edit jMonkeyEngine animated C-G models. The application's
@@ -506,9 +507,11 @@ public class Maud extends GuiApplication {
     private void startup1() {
         logger.info("");
         /*
-         * Register loaders for BVH, JavaScript, txt, font, and Xbuf assets.
+         * Register loaders for BVH, IQE, JavaScript, txt, font,
+         * and Xbuf assets.
          */
         assetManager.registerLoader(BVHLoader.class, "bvh", "BVH");
+        assetManager.registerLoader(IQELoader.class, "iqe");
         assetManager.registerLoader(ScriptLoader.class, "js");
         assetManager.registerLoader(StringLoader.class, "txt");
         assetManager.registerLoader(TrueTypeLoader.class, "ttf");

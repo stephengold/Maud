@@ -37,6 +37,10 @@ public enum LicenseType {
     // values
 
     /**
+     * Alweth's custom license (for IQELoader.java)
+     */
+    Alweth,
+    /**
      * Apache 2.0 (for the sfntly library)
      */
     Apache,

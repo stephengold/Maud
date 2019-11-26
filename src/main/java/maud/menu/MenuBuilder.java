@@ -141,6 +141,8 @@ class MenuBuilder extends PopupMenuBuilder {
             addGeometry(name); // TODO use a glTF icon here
         } else if (name.endsWith(".gltf")) {
             addGeometry(name); // TODO use a glTF icon here
+        } else if (name.endsWith(".iqe")) {
+            addGeometry(name); // TODO use a Quake icon here
         } else if (name.endsWith(".j3o")) {
             addJme(name);
         } else if (name.endsWith(".jar")) {

@@ -14,7 +14,7 @@ Summary of features:
 
  + load models from local filesystems, JAR/ZIP archives, or HTTP servers
  + merge models
- + import models from [Blender][]/[glTF][]/[Ogre][]/[Wavefront][obj]/[Xbuf][] and save to native J3O format
+ + import models from [Blender][]/[glTF][]/[IQE][]/[Ogre][]/[Wavefront][obj]/[Xbuf][] and save to native J3O format
  + import animations from [Biovision Hierarchy (BVH)](#bvh) files
  + visualize animations, axes, bones, bounding boxes, lights,
    mesh vertices, physics objects, and skeletons
@@ -413,6 +413,7 @@ Maud can also import models in other formats:
 
  + [Blender 3D][blender] (filename must end in ".blend")
  + [glTF][] (filename must end in ".glb" or ".gltf")
+ + [Inter-Quake Export][iqe] (filename must end in ".iqe")
  + [Ogre][] DotScene (filename must end in ".scene")
  + [Ogre][] XML (filename must end in ".mesh.xml")
  + [Wavefront OBJ][obj] (filename must end in ".obj")
@@ -792,6 +793,7 @@ BVH resources:
 [github]: https://github.com "GitHub"
 [gltf]: https://www.khronos.org/gltf "glTF Project"
 [gradle]: https://gradle.org "Gradle Project"
+[iqe]: http://sauerbraten.org/iqm "Inter-Quake Model Formats"
 [jfrog]: https://www.jfrog.com "JFrog"
 [jme]: http://jmonkeyengine.org  "jMonkeyEngine Project"
 [jme-ttf]: http://1337atr.weebly.com/jttf.html "jME-TTF Rendering System"
@@ -881,6 +883,8 @@ have gone before.  I therefore acknowledge the following
 + [Nathan Vegdahl][vegdahl], for creating the Puppet model
 + [Can Bican][bican], for creating the Jprefctl preferences editor
 + Zi Ye, for creating the Sinbad model
++ Alweth on hub.jmonkeyengine.org forums
+  for providing `IQELoader` for use, free of charge
 + the brave souls who volunteered to be alpha testers for Maud, including:
     + "Jesterrrrrr"
     + Moff Kalast

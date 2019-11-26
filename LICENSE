@@ -3,8 +3,8 @@ The maud software packages are Copyright (c) 2017-2019 Stephen Gold
 
 All rights reserved.
 
-Note: the following license does not apply to certain assets/resources
-("ProFontWindows.ttf",
+Note: the following license does not apply to certain assets/resources/classes
+("IQELoader.java", "ProFontWindows.ttf",
  3 files in src/main/resources/Models/MhGame,
 10 files in src/main/resources/Models/MhGame/textures,
  2 files in src/main/resources/Models/Puppet,

@@ -303,6 +303,7 @@ public class EditorDialogs {
 
         List<String> extList = new ArrayList<>(6);
         extList.add(".blend");
+        extList.add(".iqe");
         extList.add(".j3o");
         extList.add(".mesh.xml");
         extList.add(".obj");
