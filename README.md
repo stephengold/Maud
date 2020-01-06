@@ -47,6 +47,9 @@ Maud was designed for a desktop environment with:
  + a wheel mouse and
  + a display at least 640 pixels wide and 480 pixels tall.
 
+Java source code is provided under
+[a FreeBSD license](https://github.com/stephengold/Maud/blob/master/LICENSE).
+
 <a name="toc"/>
 
 ## Contents of this document
@@ -96,7 +99,7 @@ but I use the IDE, so I tend to assume you will too.
 If you already have the IDE installed, skip to step 6.
 
 The hardware and software requirements of the IDE are documented at
-https://jmonkeyengine.github.io/wiki/jme3/requirements.html
+[the JME wiki](https://jmonkeyengine.github.io/wiki/jme3/requirements.html).
 
  1. Download a jMonkeyEngine 3.2 Software Development Kit (SDK) from
     [GitHub](https://github.com/jMonkeyEngine/sdk/releases).
@@ -800,6 +803,7 @@ BVH resources:
 [makehuman]: http://www.makehumancommunity.org/ "MakeHuman Community"
 [markdown]: https://daringfireball.net/projects/markdown "Markdown Project"
 [minie]: https://github.com/stephengold/Minie "Minie Project"
+[mint]: https://linuxmint.com "Linux Mint Project"
 [nashorn]: https://docs.oracle.com/javase/8/docs/technotes/guides/scripting/nashorn "Nashorn User Guide"
 [netbeans]: https://netbeans.org "NetBeans Project"
 [nifty]: http://nifty-gui.github.io/nifty-gui "Nifty GUI Project"
@@ -809,7 +813,7 @@ BVH resources:
 [profont]: http://tobiasjung.name/profont "ProFont Project"
 [retarget]: https://github.com/Nehon/bvhretarget "BVH Retarget Project"
 [rwce]: http://www.rw-designer.com/cursor-maker "RealWorld Cursor Editor"
-[utilities]: https://github.com/stephengold/jme3-utilities "jME3 Utilities Project"
+[utilities]: https://github.com/stephengold/jme3-utilities "Jme3-utilities Project"
 [vegdahl]: http://www.cessen.com "Nathan Vegdahl"
 [winmerge]: http://winmerge.org "WinMerge Project"
 [xbuf]: https://github.com/xbuf/xbuf "Xbuf Project"
@@ -872,7 +876,7 @@ Maud incorporates code from [jMonkeyEngine][jme] and the [BVH Retarget Project][
 
 Like most projects, Maud builds on the work of many who
 have gone before.  I therefore acknowledge the following
- artists and software developers:
+artists and software developers:
 
 + Rémy Bouquet (aka "nehon") for creating the Jaime model and the [BVH Retarget
   Project][retarget] and also for many helpful insights
@@ -904,6 +908,7 @@ have gone before.  I therefore acknowledge the following
     + the [Gradle][] build tool
     + the Java compiler, standard doclet, and runtime environment
     + [jMonkeyEngine][jme] and the jME3 Software Development Kit
+    + the [Linux Mint][mint] operating system
     + LWJGL, the Lightweight Java Game Library
     + the [MakeHuman][] 3-D character creation tool
     + the [Markdown][] document conversion tool
@@ -915,7 +920,7 @@ have gone before.  I therefore acknowledge the following
     + the [RealWorld Cursor Editor][rwce]
     + the [WinMerge][] differencing and merging tool
 
-I am grateful to [JFrog][] and [Github][], for providing free hosting for the
+I am grateful to [JFrog][] and [Github][] for providing free hosting for the
 Maud Project and many other open-source projects.
 
 I'm also grateful to my dear Holly, for keeping me sane.
