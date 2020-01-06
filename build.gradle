@@ -51,12 +51,12 @@ repositories {
 
 dependencies {
     // from stephengold's bintray repositories:
-    implementation 'jme3utilities:jme3-utilities-heart:4.1.0for32'
-    implementation 'jme3utilities:jme3-utilities-ui:0.7.8for32'
-    implementation 'jme3utilities:jme3-utilities-nifty:0.9.10for32'
-    implementation 'jme3utilities:Minie:1.2.0for32'
-    implementation 'jme3utilities:SkyControl:0.9.22for32'
-    implementation 'jme3utilities:Wes:0.4.5for32'
+    implementation 'jme3utilities:jme3-utilities-heart:4.3.0for32'
+    implementation 'jme3utilities:jme3-utilities-ui:0.7.10for32'
+    implementation 'jme3utilities:jme3-utilities-nifty:0.9.12for32'
+    implementation 'jme3utilities:Minie:1.3.0for32'
+    implementation 'jme3utilities:SkyControl:0.9.24for32'
+    implementation 'jme3utilities:Wes:0.4.7for32'
     //runtimeOnly 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
 
     // from jcenter (or mavenLocal) repositories:
