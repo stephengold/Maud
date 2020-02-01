@@ -25,7 +25,7 @@ gradle.projectsEvaluated {
         enableAssertions true
         //jvmArgs '-verbose:gc'
         //jvmArgs '-Xbatch'
-        jvmArgs '-Xms5g', '-Xmx5g'
+        jvmArgs '-Xms4g', '-Xmx4g'
         //jvmArgs '-XX:+PrintCompilation'
         jvmArgs '-XX:+UseConcMarkSweepGC'
         //jvmArgs '-XX:+UseG1GC', '-XX:MaxGCPauseMillis=10'
@@ -52,7 +52,7 @@ repositories {
 
 dependencies {
     // from stephengold's bintray repositories:
-    implementation 'jme3utilities:jme3-utilities-heart:4.3.0for32'
+    implementation 'jme3utilities:jme3-utilities-heart:4.4.0for32'
     implementation 'jme3utilities:jme3-utilities-ui:0.7.10for32'
     implementation 'jme3utilities:jme3-utilities-nifty:0.9.12for32'
     implementation 'jme3utilities:Minie:1.3.0for32'
