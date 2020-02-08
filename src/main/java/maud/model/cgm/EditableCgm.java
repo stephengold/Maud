@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -70,7 +70,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jme3utilities.Misc;
+import jme3utilities.Heart;
 import jme3utilities.MyControl;
 import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
@@ -206,7 +206,7 @@ public class EditableCgm extends LoadedCgm {
         if (defaultValue == null) {
             value = MaudUtil.defaultValue(varType, parameterName);
         } else {
-            value = Misc.deepCopy(defaultValue);
+            value = Heart.deepCopy(defaultValue);
         }
 
         History.autoAdd();
@@ -1362,7 +1362,7 @@ public class EditableCgm extends LoadedCgm {
             parent.mkdirs();
         }
 
-        filePath = Misc.fixedPath(file);
+        filePath = Heart.fixedPath(file);
         JmeExporter exporter = format.getExporter();
         boolean success = true;
         try {

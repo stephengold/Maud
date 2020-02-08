@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,6 @@ import com.jme3.material.MatParamOverride;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState;
 import com.jme3.math.Line;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
@@ -55,7 +54,7 @@ import java.nio.Buffer;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jme3utilities.Misc;
+import jme3utilities.Heart;
 import jme3utilities.MyCamera;
 import jme3utilities.MyLight;
 import jme3utilities.MySpatial;
@@ -64,9 +63,7 @@ import jme3utilities.debug.AxesVisualizer;
 import jme3utilities.math.MyVector3f;
 import jme3utilities.minie.MyControlP;
 import maud.Maud;
-import maud.MaudUtil;
 import maud.PhysicsUtil;
-import maud.model.History;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedRagdoll;
 
@@ -150,7 +147,7 @@ public class SceneView extends SceneViewCore {
         logger.log(Level.INFO, "");
         Validate.nonNull(physicsControl, "physics control");
 
-        PhysicsControl copy = (PhysicsControl) Misc.deepCopy(physicsControl);
+        PhysicsControl copy = (PhysicsControl) Heart.deepCopy(physicsControl);
         if (copy instanceof RigidBodyControl) {
             /*
              * Force kinematic mode for visualization purposes.

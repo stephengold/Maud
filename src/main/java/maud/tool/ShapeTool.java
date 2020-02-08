@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -29,7 +29,7 @@ package maud.tool;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
-import jme3utilities.Misc;
+import jme3utilities.Heart;
 import jme3utilities.MyString;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.Tool;
@@ -231,7 +231,7 @@ class ShapeTool extends Tool {
             if (numUsers == 0) {
                 usersText = "unused";
             } else if (numUsers == 1) {
-                long userId = Misc.first(userSet);
+                long userId = Heart.first(userSet);
                 usersText = target.getPhysics().name(userId);
                 suButton = "Select user";
             } else {

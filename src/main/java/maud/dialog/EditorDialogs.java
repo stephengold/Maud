@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -41,7 +41,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-import jme3utilities.Misc;
+import jme3utilities.Heart;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.minie.MinieVersion;
@@ -130,7 +130,7 @@ public class EditorDialogs {
                 MyString.quote(niftyVersion));
         text += String.format(
                 "%n   jme3-utilities-heart version=%s (BSD license)",
-                MyString.quote(Misc.versionShort()));
+                MyString.quote(Heart.versionShort()));
         text += String.format("%n   Minie version=%s (BSD license)",
                 MyString.quote(MinieVersion.versionShort()));
         text += String.format("%n   SkyControl version=%s (BSD license)",

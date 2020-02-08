@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-import jme3utilities.Misc;
+import jme3utilities.Heart;
 import jme3utilities.Validate;
 import maud.MaudUtil;
 import maud.action.ActionPrefix;
@@ -72,7 +72,7 @@ public class AssetLocations implements Cloneable {
         Validate.nonEmpty(path, "path");
 
         File file = new File(path);
-        String absolutePath = Misc.fixedPath(file);
+        String absolutePath = Heart.fixedPath(file);
 
         String spec = "file:///" + absolutePath;
         if (file.isDirectory()) {

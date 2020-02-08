@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018, Stephen Gold
+ Copyright (c) 2018-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@ import com.jme3.util.clone.JmeCloneable;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
-import jme3utilities.Misc;
+import jme3utilities.Heart;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import maud.MaudUtil;
@@ -259,7 +259,7 @@ public class MatParamRef implements JmeCloneable {
         MatParam target = getTarget();
         target.setValue(desiredValue);
 
-        Object viewValue = Misc.deepCopy(desiredValue);
+        Object viewValue = Heart.deepCopy(desiredValue);
         SceneView sceneView = cgm.getSceneView();
         Spatial cgmRoot = cgm.getRootSpatial();
         VarType varType = target.getVarType();

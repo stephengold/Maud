@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -49,7 +49,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
-import jme3utilities.Misc;
+import jme3utilities.Heart;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
@@ -270,7 +270,7 @@ public class SelectedShape implements JmeCloneable {
             result = new ArrayList<>(count);
             for (int childIndex = 0; childIndex < count; childIndex++) {
                 ChildCollisionShape child = children[childIndex];
-                String description = MyShape.name(child.getShape());
+                String description = child.getShape().toString();
                 if (description.startsWith(prefix)) {
                     result.add(description);
                 }
@@ -303,7 +303,7 @@ public class SelectedShape implements JmeCloneable {
      */
     public String name() {
         assert isSelected();
-        String name = MyShape.name(selectedShape);
+        String name = selectedShape.toString();
         return name;
     }
 
@@ -353,7 +353,7 @@ public class SelectedShape implements JmeCloneable {
      */
     public void select(String name) {
         Validate.nonEmpty(name, "name");
-        long id = MyShape.parseId(name);
+        long id = MyShape.parseNativeId(name);
         select(id);
     }
 
@@ -481,7 +481,7 @@ public class SelectedShape implements JmeCloneable {
             Set<Long> userSet = userSet();
             int numUsers = userSet.size();
             if (numUsers == 1) {
-                long userId = Misc.first(userSet);
+                long userId = Heart.first(userSet);
                 PhysicsCollisionObject objectUser
                         = cgm.getPhysics().findPco(userId);
                 if (objectUser != null) {
@@ -624,7 +624,7 @@ public class SelectedShape implements JmeCloneable {
         assert newShape != null;
         assert !(newShape instanceof CompoundCollisionShape);
 
-        CollisionShape cloneShape = (CollisionShape) Misc.deepCopy(newShape);
+        CollisionShape cloneShape = (CollisionShape) Heart.deepCopy(newShape);
         CgmPhysics physics = cgm.getPhysics();
 
         History.autoAdd();
@@ -649,7 +649,7 @@ public class SelectedShape implements JmeCloneable {
         assert eventDescription != null;
         assert !eventDescription.isEmpty();
 
-        CollisionShape cloneShape = (CollisionShape) Misc.deepCopy(newShape);
+        CollisionShape cloneShape = (CollisionShape) Heart.deepCopy(newShape);
         CgmPhysics physics = cgm.getPhysics();
 
         History.autoAdd();

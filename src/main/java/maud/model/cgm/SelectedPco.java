@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -42,7 +42,6 @@ import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import jme3utilities.minie.MyPco;
-import jme3utilities.minie.MyShape;
 import maud.PhysicsUtil;
 import maud.model.History;
 import maud.model.option.RigidBodyParameter;
@@ -376,7 +375,7 @@ public class SelectedPco implements JmeCloneable {
         assert isSelected();
 
         CollisionShape shape = getShape();
-        String result = MyShape.name(shape);
+        String result = shape.toString();
 
         return result;
     }

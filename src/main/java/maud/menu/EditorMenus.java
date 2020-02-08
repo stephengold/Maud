@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Logger;
-import jme3utilities.Misc;
+import jme3utilities.Heart;
 import maud.Maud;
 import maud.action.ActionPrefix;
 import maud.dialog.EditorDialogs;
@@ -291,13 +291,13 @@ public class EditorMenus {
                 EditorDialogs.aboutMaud();
                 break;
             case "JME3 homepage":
-                Misc.browseWeb("http://jmonkeyengine.org/");
+                Heart.browseWeb("http://jmonkeyengine.org/");
                 break;
             case "License":
                 EnumMenus.viewLicense();
                 break;
             case "Source":
-                Misc.browseWeb("https://github.com/stephengold/Maud");
+                Heart.browseWeb("https://github.com/stephengold/Maud");
                 break;
             default:
                 handled = false;

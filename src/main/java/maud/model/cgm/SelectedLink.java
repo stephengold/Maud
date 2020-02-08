@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018-2019, Stephen Gold
+ Copyright (c) 2018-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -46,7 +46,7 @@ import com.jme3.util.clone.JmeCloneable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-import jme3utilities.Misc;
+import jme3utilities.Heart;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
@@ -178,7 +178,7 @@ public class SelectedLink implements JmeCloneable {
     public void createAttachmentLink() {
         String boneName = editableCgm.getBone().name();
         Spatial cgmRoot = Maud.getModel().getSource().getRootSpatial();
-        Spatial cloneCgm = (Spatial) Misc.deepCopy(cgmRoot);
+        Spatial cloneCgm = (Spatial) Heart.deepCopy(cgmRoot);
         editableCgm.attachBone(boneName, cloneCgm);
         select("Attachment:" + boneName);
     }

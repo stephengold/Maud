@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jme3utilities.Misc;
+import jme3utilities.Heart;
 import jme3utilities.MyString;
 import maud.Maud;
 import maud.action.ActionPrefix;
@@ -82,14 +82,14 @@ public class BuildMenus {
      * Display a "Settings -> Add asset location" menu.
      */
     void addAssetLocation() {
-        Map<String, File> fileMap = Misc.driveMap();
+        Map<String, File> fileMap = Heart.driveMap();
         /*
          * Add working directory.
          */
         String workPath = System.getProperty("user.dir");
         File work = new File(workPath);
         if (work.isDirectory()) {
-            String absoluteDirPath = Misc.fixedPath(work);
+            String absoluteDirPath = Heart.fixedPath(work);
             File oldFile = fileMap.put(absoluteDirPath, work);
             assert oldFile == null : oldFile;
         }
@@ -99,7 +99,7 @@ public class BuildMenus {
         String homePath = System.getProperty("user.home");
         File home = new File(homePath);
         if (home.isDirectory()) {
-            String absoluteDirPath = Misc.fixedPath(home);
+            String absoluteDirPath = Heart.fixedPath(home);
             File oldFile = fileMap.put(absoluteDirPath, home);
             assert oldFile == null : oldFile;
         }
@@ -136,7 +136,7 @@ public class BuildMenus {
         String rootPath = MyString.remainder(spec, "file:///");
 
         if (rootPath.endsWith(".jar") || rootPath.endsWith(".zip")) {
-            List<String> entryNames = Misc.listZipEntries(rootPath, assetPath);
+            List<String> entryNames = Heart.listZipEntries(rootPath, assetPath);
             int numEntries = entryNames.size();
             List<String> cgmEntries = new ArrayList<>(numEntries);
             for (String entryName : entryNames) {
@@ -154,7 +154,7 @@ public class BuildMenus {
         } else { // not a JAR or ZIP
             File file = new File(rootPath, assetPath);
             if (file.isDirectory()) {
-                String folderPath = Misc.fixedPath(file);
+                String folderPath = Heart.fixedPath(file);
                 buildFolderMenu(folderPath, "");
                 menuPrefix += args;
                 if (!menuPrefix.endsWith("/")) {
@@ -170,7 +170,7 @@ public class BuildMenus {
                  * Treat the pathname as a prefix.
                  */
                 File parent = file.getParentFile();
-                String parentPath = Misc.fixedPath(parent);
+                String parentPath = Heart.fixedPath(parent);
                 if (!parentPath.endsWith("/")) {
                     parentPath += "/";
                 }
@@ -236,7 +236,7 @@ public class BuildMenus {
         File file = new File(rootPath, assetPath);
         String menuPrefix = ActionPrefix.loadMapAsset;
         if (file.isDirectory()) {
-            String folderPath = Misc.fixedPath(file);
+            String folderPath = Heart.fixedPath(file);
             buildFolderMenu(folderPath, "");
             menuPrefix += args;
             if (!menuPrefix.endsWith("/")) {
@@ -252,7 +252,7 @@ public class BuildMenus {
              * Treat the pathname as a prefix.
              */
             File parent = file.getParentFile();
-            String parentPath = Misc.fixedPath(parent);
+            String parentPath = Heart.fixedPath(parent);
             String prefix = file.getName();
             buildFolderMenu(parentPath, prefix);
             parentPath = MyString.remainder(parentPath, rootPath);
@@ -320,7 +320,7 @@ public class BuildMenus {
         String rootPath = MyString.remainder(spec, "file:///");
 
         if (rootPath.endsWith(".jar") || rootPath.endsWith(".zip")) {
-            List<String> entryNames = Misc.listZipEntries(rootPath, assetPath);
+            List<String> entryNames = Heart.listZipEntries(rootPath, assetPath);
             int numEntries = entryNames.size();
             List<String> cgmEntries = new ArrayList<>(numEntries);
             for (String entryName : entryNames) {
@@ -338,7 +338,7 @@ public class BuildMenus {
         } else { // not a JAR or ZIP
             File file = new File(rootPath, assetPath);
             if (file.isDirectory()) {
-                String folderPath = Misc.fixedPath(file);
+                String folderPath = Heart.fixedPath(file);
                 buildFolderMenu(folderPath, "");
                 String menuPrefix = ActionPrefix.loadTextureAsset + args;
                 if (!menuPrefix.endsWith("/")) {
@@ -354,7 +354,7 @@ public class BuildMenus {
                  * Treat the pathname as a prefix.
                  */
                 File parent = file.getParentFile();
-                String parentPath = Misc.fixedPath(parent);
+                String parentPath = Heart.fixedPath(parent);
                 if (!parentPath.endsWith("/")) {
                     parentPath += "/";
                 }
@@ -500,7 +500,7 @@ public class BuildMenus {
             if (!file.isDirectory()) {
                 file = file.getParentFile();
             }
-            String folderPath = Misc.fixedPath(file);
+            String folderPath = Heart.fixedPath(file);
             String prefix = ActionPrefix.newAssetLocation + folderPath + "/";
             builder.show(prefix);
         }

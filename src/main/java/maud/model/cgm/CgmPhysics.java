@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018-2019, Stephen Gold
+ Copyright (c) 2018-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -49,7 +49,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.logging.Logger;
-import jme3utilities.Misc;
+import jme3utilities.Heart;
 import jme3utilities.Validate;
 import jme3utilities.minie.MinieCharacterControl;
 import jme3utilities.minie.MyPco;
@@ -265,7 +265,7 @@ public class CgmPhysics implements JmeCloneable {
      * @return true if it's the name of a CollisionShape
      */
     public boolean hasShape(String name) {
-        long id = MyShape.parseId(name);
+        long id = MyShape.parseNativeId(name);
         CollisionShape shape = findShape(id);
         if (shape == null) {
             return false;
@@ -367,7 +367,7 @@ public class CgmPhysics implements JmeCloneable {
         List<String> result = new ArrayList<>(numShapes);
 
         for (CollisionShape shape : map.values()) {
-            String name = MyShape.name(shape);
+            String name = shape.toString();
             if (name.startsWith(namePrefix)) {
                 result.add(name);
             }
@@ -399,7 +399,7 @@ public class CgmPhysics implements JmeCloneable {
      */
     CollisionShape modelToView(CollisionShape modelShape) {
         Set<Long> userSet = userSet(modelShape);
-        long userId = Misc.first(userSet);
+        long userId = Heart.first(userSet);
 
         CollisionShape viewShape;
         if (hasPco(userId)) {
@@ -453,7 +453,7 @@ public class CgmPhysics implements JmeCloneable {
         PhysicsCollisionObject pco = findPco(id);
         if (pco == null) {
             CollisionShape shape = findShape(id);
-            result = MyShape.name(shape);
+            result = shape.toString();
         } else {
             result = MyPco.objectName(pco);
         }

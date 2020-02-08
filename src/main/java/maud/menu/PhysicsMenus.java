@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Logger;
-import jme3utilities.Misc;
+import jme3utilities.Heart;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.minie.MyPco;
@@ -485,7 +485,7 @@ public class PhysicsMenus {
         Set<Long> userSet = shape.userSet();
         int numUsers = userSet.size();
         if (numUsers == 1) {
-            long userId = Misc.first(userSet);
+            long userId = Heart.first(userSet);
             if (physics.hasPco(userId)) {
                 SelectedPco object = target.getPco();
                 object.select(userId);

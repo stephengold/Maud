@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,14 +31,14 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.ScreenshotAppState;
 import com.jme3.asset.AssetConfig;
 import com.jme3.audio.openal.ALAudioRenderer;
-import com.jme3.bullet.debug.DebugTools;
+import com.jme3.bullet.util.NativeLibrary;
 import com.jme3.scene.plugins.bvh.BVHLoader;
 import com.jme3.system.AppSettings;
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3_ext_xbuf.XbufLoader;
-import jme3utilities.Misc;
+import jme3utilities.Heart;
 import jme3utilities.MyString;
 import jme3utilities.StringLoader;
 import jme3utilities.UncachedKey;
@@ -168,7 +168,7 @@ public class Maud extends GuiApplication {
         /*
          * Mute the chatty loggers found in certain packages.
          */
-        Misc.setLoggingLevels(Level.WARNING);
+        Heart.setLoggingLevels(Level.WARNING);
         Logger.getLogger(ALAudioRenderer.class.getName())
                 .setLevel(Level.SEVERE);
         Logger.getLogger(AssetConfig.class.getName())
@@ -202,7 +202,7 @@ public class Maud extends GuiApplication {
 
                 case "-v":
                 case "--verbose":
-                    Misc.setLoggingLevels(Level.INFO);
+                    Heart.setLoggingLevels(Level.INFO);
                     break;
 
                 default:
@@ -331,7 +331,7 @@ public class Maud extends GuiApplication {
     public void guiInitializeApplication() {
         logger.info("");
 
-        if (!Misc.areAssertionsEnabled()) {
+        if (!Heart.areAssertionsEnabled()) {
             String message = "Assertions are disabled.";
             logger.warning(message);
             editorModel.getMisc().setStatusMessage(message);
@@ -521,7 +521,7 @@ public class Maud extends GuiApplication {
             /*
              * Mute the Libbulletjme startup message.
              */
-            DebugTools.setStartupMessageEnabled(false);
+            NativeLibrary.setStartupMessageEnabled(false);
         }
         EditorViewPorts.startup1();
         /*
