@@ -42,7 +42,6 @@ jar.manifest.attributes('Main-Class': mainClassName)
 
 repositories {
     //mavenLocal()
-    //maven { url 'https://dl.bintray.com/stephengold/com.github.stephengold' }
     //maven { url 'https://dl.bintray.com/stephengold/org.jmonkeyengine' } // for jme3-testdata
     //maven { url 'https://dl.bintray.com/jmonkeyengine/contrib' }
     jcenter()
@@ -51,18 +50,18 @@ repositories {
 
 dependencies {
     // from stephengold's bintray repositories:
-    implementation 'com.github.stephengold:Heart:5.0.0for32'
-    implementation 'com.github.stephengold:jme3-utilities-ui:0.8.1for32'
-    implementation 'com.github.stephengold:jme3-utilities-nifty:0.9.13for32'
-    implementation 'com.github.stephengold:Minie:1.4.0for32'
-    implementation 'com.github.stephengold:SkyControl:0.9.25for32'
-    implementation 'com.github.stephengold:Wes:0.4.8for32'
     //runtimeOnly 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
 
     // from jcenter (or mavenLocal) repositories:
     implementation 'ch.qos.logback:logback-classic:1.2.3'
     implementation 'com.atr:jme-ttf:2.2.2'
-    runtimeOnly 'com.github.nifty-gui:nifty-style-black:1.4.3'
+    runtimeOnly    'com.github.nifty-gui:nifty-style-black:1.4.3'
+    implementation 'com.github.stephengold:Heart:5.0.0for32'
+    implementation 'com.github.stephengold:jme3-utilities-ui:0.8.1for32'
+    implementation 'com.github.stephengold:jme3-utilities-nifty:0.9.13for32'
+    implementation 'com.github.stephengold:Minie:1.4.1for32'
+    implementation 'com.github.stephengold:SkyControl:0.9.25for32'
+    implementation 'com.github.stephengold:Wes:0.4.8for32'
     implementation "org.jmonkeyengine:jme3-blender:$jmonkeyengineVersion"
     implementation "org.jmonkeyengine:jme3-desktop:$jmonkeyengineVersion"
     implementation "org.jmonkeyengine:jme3-lwjgl:$jmonkeyengineVersion"
