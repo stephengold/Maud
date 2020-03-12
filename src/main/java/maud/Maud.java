@@ -262,17 +262,11 @@ public class Maud extends GuiApplication {
          * Disable flyCam.
          */
         flyCam.setEnabled(false);
-        /*
-         * Capture a screenshot each time the SYSRQ hotkey is pressed.
-         */
-        ScreenshotAppState screenShotState = new ScreenshotAppState();
-        boolean success = stateManager.attach(screenShotState);
-        assert success;
         /**
          * Manage latency statistics.
          */
         PerformanceAppState pas = new PerformanceAppState();
-        success = stateManager.attach(pas);
+        boolean success = stateManager.attach(pas);
         assert success;
         /**
          * Manage view-port updating.
