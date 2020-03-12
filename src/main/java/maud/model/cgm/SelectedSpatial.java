@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -38,6 +38,7 @@ import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.animation.DynamicAnimControl;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.BetterCharacterControl;
+import com.jme3.bullet.control.CharacterControl;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.light.AmbientLight;
@@ -79,7 +80,6 @@ import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyQuaternion;
 import jme3utilities.math.MyVector3f;
-import jme3utilities.minie.MinieCharacterControl;
 import jme3utilities.ui.Locators;
 import maud.Maud;
 import maud.MaudUtil;
@@ -228,18 +228,18 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Add a MinieCharacterControl to the Spatial and select the new Control.
+     * Add a CharacterControl to the Spatial and select the new Control.
      *
      * @param shapeType desired type of shape (not null)
      */
-    public void addMinieCharacterControl(ShapeType shapeType) {
+    public void addCharacterControl(ShapeType shapeType) {
         Validate.nonNull(shapeType, "shape type");
 
         Spatial subtree = find();
         CollisionShape shape = PhysicsUtil.makeShape(shapeType, subtree);
-        MinieCharacterControl mcc = new MinieCharacterControl(shape, 1f);
+        CharacterControl mcc = new CharacterControl(shape, 1f);
 
-        editableCgm.addSgc(mcc, "add a MinieCharacterControl");
+        editableCgm.addSgc(mcc, "add a CharacterControl");
         Spatial modelSpatial = find();
         editableCgm.getSgc().select(mcc, modelSpatial);
     }

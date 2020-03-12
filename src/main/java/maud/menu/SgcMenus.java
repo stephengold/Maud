@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -144,7 +144,7 @@ class SgcMenus {
                 PhysicsMenus.showShapeTypeMenu(ActionPrefix.newGhostControl);
                 break;
 
-            case "MinieCharacter":
+            case "Character":
                 PhysicsMenus.showShapeTypeMenu(ActionPrefix.newMcc);
                 break;
 

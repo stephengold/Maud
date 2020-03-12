@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -123,7 +123,7 @@ public class ShowMenus {
             builder.addEdit("DynamicAnim");
         }
         builder.addEdit("Ghost");
-        builder.addEdit("MinieCharacter");
+        builder.addEdit("Character");
         builder.addEdit("RigidBody");
         builder.addEdit("Skeleton");
 

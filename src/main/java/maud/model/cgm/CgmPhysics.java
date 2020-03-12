@@ -33,6 +33,7 @@ import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.CompoundCollisionShape;
 import com.jme3.bullet.collision.shapes.infos.ChildCollisionShape;
 import com.jme3.bullet.control.BetterCharacterControl;
+import com.jme3.bullet.control.CharacterControl;
 import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.joints.PhysicsJoint;
 import com.jme3.bullet.objects.PhysicsCharacter;
@@ -51,7 +52,6 @@ import java.util.TreeSet;
 import java.util.logging.Logger;
 import jme3utilities.Heart;
 import jme3utilities.Validate;
-import jme3utilities.minie.MinieCharacterControl;
 import jme3utilities.minie.MyPco;
 import jme3utilities.minie.MyShape;
 import maud.PhysicsUtil;
@@ -129,10 +129,10 @@ public class CgmPhysics implements JmeCloneable {
                 }
             }
 
-        } else if (modelSgc instanceof MinieCharacterControl) {
-            MinieCharacterControl modelMcc = (MinieCharacterControl) modelSgc;
+        } else if (modelSgc instanceof CharacterControl) {
+            CharacterControl modelMcc = (CharacterControl) modelSgc;
             PhysicsCharacter modelCharacter = modelMcc.getCharacter();
-            MinieCharacterControl viewMcc = (MinieCharacterControl) viewSgc;
+            CharacterControl viewMcc = (CharacterControl) viewSgc;
             PhysicsCharacter viewCharacter = viewMcc.getCharacter();
             associate(viewCharacter, modelCharacter);
 
@@ -489,8 +489,8 @@ public class CgmPhysics implements JmeCloneable {
                 disassociate(modelBody);
             }
 
-        } else if (modelSgc instanceof MinieCharacterControl) {
-            MinieCharacterControl modelMcc = (MinieCharacterControl) modelSgc;
+        } else if (modelSgc instanceof CharacterControl) {
+            CharacterControl modelMcc = (CharacterControl) modelSgc;
             PhysicsCharacter modelCharacter = modelMcc.getCharacter();
             disassociate(modelCharacter);
 

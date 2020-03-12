@@ -586,7 +586,7 @@ public class PhysicsMenus {
             builder.addEdit("DynamicAnim");
         }
         builder.addEdit("Ghost");
-        builder.addEdit("MinieCharacter");
+        builder.addEdit("Character");
         builder.addEdit("RigidBody");
 
         builder.show("select menuItem Physics -> Add control -> ");
@@ -614,7 +614,7 @@ public class PhysicsMenus {
                 showShapeTypeMenu(ActionPrefix.newGhostControl);
                 break;
 
-            case "MinieCharacter":
+            case "Character":
                 showShapeTypeMenu(ActionPrefix.newMcc);
                 break;
 

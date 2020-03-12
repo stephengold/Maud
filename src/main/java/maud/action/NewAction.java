@@ -278,7 +278,7 @@ class NewAction {
             String shapeName
                     = MyString.remainder(actionString, ActionPrefix.newMcc);
             ShapeType shapeType = ShapeType.valueOf(shapeName);
-            target.getSpatial().addMinieCharacterControl(shapeType);
+            target.getSpatial().addCharacterControl(shapeType);
 
         } else if (actionString.startsWith(ActionPrefix.newOverride)) {
             String args = MyString.remainder(actionString,
