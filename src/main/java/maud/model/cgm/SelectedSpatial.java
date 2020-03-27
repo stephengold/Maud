@@ -167,6 +167,23 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
+     * Add a CharacterControl to the Spatial and select the new Control.
+     *
+     * @param shapeType desired type of shape (not null)
+     */
+    public void addCharacterControl(ShapeType shapeType) {
+        Validate.nonNull(shapeType, "shape type");
+
+        Spatial subtree = find();
+        CollisionShape shape = PhysicsUtil.makeShape(shapeType, subtree);
+        CharacterControl mcc = new CharacterControl(shape, 1f);
+
+        editableCgm.addSgc(mcc, "add a CharacterControl");
+        Spatial modelSpatial = find();
+        editableCgm.getSgc().select(mcc, modelSpatial);
+    }
+
+    /**
      * Add a GhostControl to the Spatial and select the new Control.
      *
      * @param shapeType desired type of shape (not null)
@@ -225,23 +242,6 @@ public class SelectedSpatial implements JmeCloneable {
 
         Spatial spatial = find();
         editableCgm.getLight().select(newLight, spatial);
-    }
-
-    /**
-     * Add a CharacterControl to the Spatial and select the new Control.
-     *
-     * @param shapeType desired type of shape (not null)
-     */
-    public void addCharacterControl(ShapeType shapeType) {
-        Validate.nonNull(shapeType, "shape type");
-
-        Spatial subtree = find();
-        CollisionShape shape = PhysicsUtil.makeShape(shapeType, subtree);
-        CharacterControl mcc = new CharacterControl(shape, 1f);
-
-        editableCgm.addSgc(mcc, "add a CharacterControl");
-        Spatial modelSpatial = find();
-        editableCgm.getSgc().select(mcc, modelSpatial);
     }
 
     /**
@@ -306,6 +306,25 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
+     * Apply normal-debugging material to the selected Geometry.
+     */
+    public void applyDebugMaterial() {
+        AssetManager am = Locators.getAssetManager();
+        Material newMaterial
+                = new Material(am, "Common/MatDefs/Misc/ShowNormals.j3md");
+        editableCgm.setMaterial(newMaterial, "apply debug material");
+    }
+
+    /**
+     * Apply a lit material to the selected geometry.
+     */
+    public void applyLitMaterial() {
+        AssetManager am = Locators.getAssetManager();
+        Material newMaterial = MyAsset.createShinyMaterial(am, white);
+        editableCgm.setMaterial(newMaterial, "apply lit material");
+    }
+
+    /**
      * Apply the local Transform of the selected Spatial (and those of its
      * descendents) to each of its meshes.
      */
@@ -349,25 +368,6 @@ public class SelectedSpatial implements JmeCloneable {
         cgm.getSceneView().applyTransform();
         editableCgm.getEditState().setEdited(
                 "apply spatial transform to meshes");
-    }
-
-    /**
-     * Apply normal-debugging material to the selected Geometry.
-     */
-    public void applyDebugMaterial() {
-        AssetManager am = Locators.getAssetManager();
-        Material newMaterial
-                = new Material(am, "Common/MatDefs/Misc/ShowNormals.j3md");
-        editableCgm.setMaterial(newMaterial, "apply debug material");
-    }
-
-    /**
-     * Apply a lit material to the selected geometry.
-     */
-    public void applyLitMaterial() {
-        AssetManager am = Locators.getAssetManager();
-        Material newMaterial = MyAsset.createShinyMaterial(am, white);
-        editableCgm.setMaterial(newMaterial, "apply lit material");
     }
 
     /**
