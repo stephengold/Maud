@@ -585,8 +585,8 @@ public class PhysicsMenus {
         if (spatial.hasSkeletonControls()) {
             builder.addEdit("DynamicAnim");
         }
-        builder.addEdit("Ghost");
         builder.addEdit("Character");
+        builder.addEdit("Ghost");
         builder.addEdit("RigidBody");
 
         builder.show("select menuItem Physics -> Add control -> ");
@@ -606,16 +606,16 @@ public class PhysicsMenus {
                 ss.addBetterCharacterControl();
                 break;
 
+            case "Character":
+                showShapeTypeMenu(ActionPrefix.newMcc);
+                break;
+
             case "DynamicAnim":
                 ss.addRagdollControl();
                 break;
 
             case "Ghost":
                 showShapeTypeMenu(ActionPrefix.newGhostControl);
-                break;
-
-            case "Character":
-                showShapeTypeMenu(ActionPrefix.newMcc);
                 break;
 
             case "RigidBody":
