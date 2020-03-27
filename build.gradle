@@ -56,7 +56,7 @@ dependencies {
     implementation 'ch.qos.logback:logback-classic:1.2.3'
     implementation 'com.atr:jme-ttf:2.2.2'
     runtimeOnly    'com.github.nifty-gui:nifty-style-black:1.4.3'
-    implementation 'com.github.stephengold:Heart:5.1.0for32'
+    implementation 'com.github.stephengold:Heart:5.2.0for32'
     implementation 'com.github.stephengold:jme3-utilities-ui:0.8.1for32'
     implementation 'com.github.stephengold:jme3-utilities-nifty:0.9.13for32'
     implementation 'com.github.stephengold:Minie:1.5.0for32'
