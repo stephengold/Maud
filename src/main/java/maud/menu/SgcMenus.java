@@ -136,20 +136,21 @@ class SgcMenus {
                 spatial.addBetterCharacterControl();
                 break;
 
+            case "Character":
+                PhysicsMenus.showShapeTypeMenu(ActionPrefix.newMcc, false);
+                break;
+
             case "DynamicAnim":
                 spatial.addRagdollControl();
                 break;
 
             case "Ghost":
-                PhysicsMenus.showShapeTypeMenu(ActionPrefix.newGhostControl);
-                break;
-
-            case "Character":
-                PhysicsMenus.showShapeTypeMenu(ActionPrefix.newMcc);
+                PhysicsMenus.showShapeTypeMenu(ActionPrefix.newGhostControl,
+                        true);
                 break;
 
             case "RigidBody":
-                PhysicsMenus.showShapeTypeMenu(ActionPrefix.newRbc);
+                PhysicsMenus.showShapeTypeMenu(ActionPrefix.newRbc, true);
                 break;
 
             case "Skeleton":

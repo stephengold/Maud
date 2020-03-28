@@ -559,15 +559,19 @@ public class PhysicsMenus {
      * Display a menu of types of shapes that can be created.
      *
      * @param actionPrefix action prefix for the menu (not null, not empty)
+     * @param includeNonConvex false&rarr;convex shapes only
      */
-    static void showShapeTypeMenu(String actionPrefix) {
+    static void showShapeTypeMenu(String actionPrefix,
+            boolean includeNonConvex) {
         assert actionPrefix != null;
         assert !actionPrefix.isEmpty();
 
         MenuBuilder builder = new MenuBuilder();
         for (ShapeType shapeType : ShapeType.values()) {
             String string = shapeType.toString();
-            builder.add(string);
+            if (includeNonConvex || shapeType.isConvex()) {
+                builder.add(string);
+            }
         }
         builder.show(actionPrefix);
     }
@@ -582,10 +586,10 @@ public class PhysicsMenus {
 
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         builder.addEdit("BetterCharacter");
+        builder.addEdit("Character");
         if (spatial.hasSkeletonControls()) {
             builder.addEdit("DynamicAnim");
         }
-        builder.addEdit("Character");
         builder.addEdit("Ghost");
         builder.addEdit("RigidBody");
 
@@ -607,7 +611,7 @@ public class PhysicsMenus {
                 break;
 
             case "Character":
-                showShapeTypeMenu(ActionPrefix.newMcc);
+                showShapeTypeMenu(ActionPrefix.newMcc, false);
                 break;
 
             case "DynamicAnim":
@@ -615,11 +619,11 @@ public class PhysicsMenus {
                 break;
 
             case "Ghost":
-                showShapeTypeMenu(ActionPrefix.newGhostControl);
+                showShapeTypeMenu(ActionPrefix.newGhostControl, true);
                 break;
 
             case "RigidBody":
-                showShapeTypeMenu(ActionPrefix.newRbc);
+                showShapeTypeMenu(ActionPrefix.newRbc, true);
                 break;
 
             default:
