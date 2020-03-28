@@ -176,11 +176,11 @@ public class SelectedSpatial implements JmeCloneable {
 
         Spatial subtree = find();
         CollisionShape shape = PhysicsUtil.makeShape(shapeType, subtree);
-        CharacterControl mcc = new CharacterControl(shape, 1f);
+        CharacterControl cc = new CharacterControl(shape, 1f);
 
-        editableCgm.addSgc(mcc, "add a CharacterControl");
+        editableCgm.addSgc(cc, "add a CharacterControl");
         Spatial modelSpatial = find();
-        editableCgm.getSgc().select(mcc, modelSpatial);
+        editableCgm.getSgc().select(cc, modelSpatial);
     }
 
     /**

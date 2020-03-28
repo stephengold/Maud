@@ -105,6 +105,13 @@ public class CgmPhysics implements JmeCloneable {
             PhysicsRigidBody viewBody = viewBcc.getRigidBody();
             associate(viewBody, modelBody);
 
+        } else if (modelSgc instanceof CharacterControl) {
+            CharacterControl modelCc = (CharacterControl) modelSgc;
+            PhysicsCharacter modelCharacter = modelCc.getCharacter();
+            CharacterControl viewCc = (CharacterControl) viewSgc;
+            PhysicsCharacter viewCharacter = viewCc.getCharacter();
+            associate(viewCharacter, modelCharacter);
+
         } else if (modelSgc instanceof DynamicAnimControl) {
             DynamicAnimControl modelDac = (DynamicAnimControl) modelSgc;
             List<PhysicsLink> mLinks = modelDac.listLinks(PhysicsLink.class);
@@ -128,13 +135,6 @@ public class CgmPhysics implements JmeCloneable {
                     associate(vJoint, mJoint);
                 }
             }
-
-        } else if (modelSgc instanceof CharacterControl) {
-            CharacterControl modelMcc = (CharacterControl) modelSgc;
-            PhysicsCharacter modelCharacter = modelMcc.getCharacter();
-            CharacterControl viewMcc = (CharacterControl) viewSgc;
-            PhysicsCharacter viewCharacter = viewMcc.getCharacter();
-            associate(viewCharacter, modelCharacter);
 
         } else {
             PhysicsCollisionObject modelPco = (PhysicsCollisionObject) modelSgc;
@@ -474,6 +474,11 @@ public class CgmPhysics implements JmeCloneable {
             PhysicsRigidBody modelBody = modelBcc.getRigidBody();
             disassociate(modelBody);
 
+        } else if (modelSgc instanceof CharacterControl) {
+            CharacterControl modelCc = (CharacterControl) modelSgc;
+            PhysicsCharacter modelCharacter = modelCc.getCharacter();
+            disassociate(modelCharacter);
+
         } else if (modelSgc instanceof DynamicAnimControl) {
             DynamicAnimControl modelDac = (DynamicAnimControl) modelSgc;
             List<PhysicsLink> links = modelDac.listLinks(PhysicsLink.class);
@@ -488,11 +493,6 @@ public class CgmPhysics implements JmeCloneable {
                 PhysicsRigidBody modelBody = modelLink.getRigidBody();
                 disassociate(modelBody);
             }
-
-        } else if (modelSgc instanceof CharacterControl) {
-            CharacterControl modelMcc = (CharacterControl) modelSgc;
-            PhysicsCharacter modelCharacter = modelMcc.getCharacter();
-            disassociate(modelCharacter);
 
         } else {
             PhysicsCollisionObject modelPco = (PhysicsCollisionObject) modelSgc;
