@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018-2019, Stephen Gold
+ Copyright (c) 2018-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -34,105 +34,135 @@ public enum ShapeType {
     /**
      * BoxCollisionShape
      */
-    Box,
+    Box(true),
     /**
      * CapsuleCollisionShape, height on longest axis
      */
-    Capsule,
+    Capsule(true),
     /**
      * compounded BoxCollisionShape
      */
-    CompoundOfBoxes,
+    CompoundOfBoxes(false),
     /**
      * compounded HullCollisionShape
      */
-    CompoundOfHulls,
+    CompoundOfHulls(false),
     /**
      * compounded MeshCollisionShape
      */
-    CompoundOfMeshes,
+    CompoundOfMeshes(false),
     /**
      * ConeCollisionShape, height on X axis
      */
-    ConeX,
+    ConeX(true),
     /**
      * ConeCollisionShape, height on Y axis
      */
-    ConeY,
+    ConeY(true),
     /**
      * ConeCollisionShape, height on Z axis
      */
-    ConeZ,
+    ConeZ(true),
     /**
      * CylinderCollisionShape, height on X axis
      */
-    CylinderX,
+    CylinderX(true),
     /**
      * CylinderCollisionShape, height on Y axis
      */
-    CylinderY,
+    CylinderY(true),
     /**
      * CylinderCollisionShape, height on Z axis
      */
-    CylinderZ,
+    CylinderZ(true),
     /**
      * HullCollisionShape
      */
-    Hull,
+    Hull(true),
     /**
      * MultiSphere axis-aligned rounded box
      */
-    MsBox,
+    MsBox(true),
     /**
      * MultiSphere capsule, height on longest axis
      */
-    MsCapsule,
+    MsCapsule(true),
     /**
      * MultiSphere sphere
      */
-    MsSphere,
+    MsSphere(true),
     /**
      * SimplexCollisionShape
      */
-    Simplex,
+    Simplex(true),
     /**
      * SphereCollisionShape
      */
-    Sphere,
+    Sphere(true),
     /**
      * translated BoxCollisionShape
      */
-    TransBox,
+    TransBox(false),
     /**
      * translated CapsuleCollisionShape, height on longest axis
      */
-    TransCapsule,
+    TransCapsule(false),
     /**
      * translated ConeCollisionShape, height on X axis
      */
-    TransConeX,
+    TransConeX(false),
     /**
      * translated ConeCollisionShape, height on Y axis
      */
-    TransConeY,
+    TransConeY(false),
     /**
      * translated ConeCollisionShape, height on Z axis
      */
-    TransConeZ,
+    TransConeZ(false),
     /**
      * translated CylinderCollisionShape, height on X axis
      */
-    TransCylinderX,
+    TransCylinderX(false),
     /**
      * translated CylinderCollisionShape, height on Y axis
      */
-    TransCylinderY,
+    TransCylinderY(false),
     /**
      * translated CylinderCollisionShape, height on Z axis
      */
-    TransCylinderZ,
+    TransCylinderZ(false),
     /**
      * translated SimplexCollisionShape
      */
-    TransSimplex;
+    TransSimplex(false);
+    // *************************************************************************
+    // fields
+
+    /**
+     * true&rarr;shape guaranteed convex, false&rarr;not guaranteed
+     */
+    final private boolean isConvex;
+    // *************************************************************************
+    // constructors
+
+    /**
+     * Instantiate a ShapeType value.
+     *
+     * @param isConvex true&rarr;shape guaranteed convex, false&rarr;not
+     * guaranteed
+     */
+    ShapeType(boolean isConvex) {
+        this.isConvex = isConvex;
+    }
+    // *************************************************************************
+    // new methods exposed
+
+    /**
+     * Test whether this shape is guaranteed convex or not.
+     *
+     * @return true&rarr; guaranteed convex, false&rarr;not guaranteed
+     */
+    public boolean isConvex() {
+        return isConvex;
+    }
 }
