@@ -7,29 +7,28 @@ description = 'an editor for the animated 3-D models'
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
-gradle.projectsEvaluated {
-    tasks.withType(JavaCompile) { // compile-time options:
-        options.compilerArgs << '-Xdiags:verbose'
-        options.compilerArgs << '-Xlint:unchecked'
-        options.deprecation = true
-        options.encoding = 'UTF-8'
-    }
-    tasks.withType(JavaExec) { // runtime options:
-        //args '--forceDialog'
-        //args '--openGL3'
-        //args '--openGL33'
-        //args '--skipStartup'
-        //args '--verbose'
-        classpath sourceSets.main.runtimeClasspath
-        //debug true
-        enableAssertions true
-        //jvmArgs '-verbose:gc'
-        //jvmArgs '-Xbatch'
-        jvmArgs '-Xms4g', '-Xmx4g'
-        //jvmArgs '-XX:+PrintCompilation'
-        jvmArgs '-XX:+UseConcMarkSweepGC'
-        //jvmArgs '-XX:+UseG1GC', '-XX:MaxGCPauseMillis=10'
-    }
+tasks.withType(JavaCompile) { // compile-time options:
+    options.compilerArgs << '-Xdiags:verbose'
+    options.compilerArgs << '-Xlint:unchecked'
+    options.deprecation = true
+    options.encoding = 'UTF-8'
+}
+
+tasks.withType(JavaExec) { // runtime options:
+    //args '--forceDialog'
+    //args '--openGL3'
+    //args '--openGL33'
+    //args '--skipStartup'
+    //args '--verbose'
+    classpath sourceSets.main.runtimeClasspath
+    //debug true
+    enableAssertions true
+    //jvmArgs '-verbose:gc'
+    //jvmArgs '-Xbatch'
+    jvmArgs '-Xms4g', '-Xmx4g'
+    //jvmArgs '-XX:+PrintCompilation'
+    jvmArgs '-XX:+UseConcMarkSweepGC'
+    //jvmArgs '-XX:+UseG1GC', '-XX:MaxGCPauseMillis=10'
 }
 
 ext.jmonkeyengineVersion = '3.2.4-stable' // from jcenter
