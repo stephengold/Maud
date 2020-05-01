@@ -27,8 +27,8 @@ tasks.withType(JavaExec) { // runtime options:
     //jvmArgs '-Xbatch'
     jvmArgs '-Xms4g', '-Xmx4g'
     //jvmArgs '-XX:+PrintCompilation'
-    jvmArgs '-XX:+UseConcMarkSweepGC'
-    //jvmArgs '-XX:+UseG1GC', '-XX:MaxGCPauseMillis=10'
+    //jvmArgs '-XX:+UseConcMarkSweepGC'
+    jvmArgs '-XX:+UseG1GC', '-XX:MaxGCPauseMillis=10'
 }
 
 ext.jmonkeyengineVersion = '3.2.4-stable' // from jcenter
@@ -48,9 +48,6 @@ repositories {
 }
 
 dependencies {
-    // from stephengold's bintray repositories:
-    //runtimeOnly 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
-
     // from jcenter (or mavenLocal) repositories:
     implementation 'ch.qos.logback:logback-classic:1.2.3'
     implementation 'com.atr:jme-ttf:2.2.2'
@@ -68,6 +65,9 @@ dependencies {
 
     // from jitpack repositories:
     implementation 'com.github.xbuf.jme3_xbuf:jme3_xbuf_loader:0.9.1'
+
+    // from stephengold's bintray repositories:
+    //runtimeOnly 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
 }
 
 // cleanup tasks
