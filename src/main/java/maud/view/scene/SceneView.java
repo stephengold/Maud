@@ -171,8 +171,7 @@ public class SceneView extends SceneViewCore {
      */
     public void applyTransform() {
         Spatial subtree = selectedSpatial();
-        List<Spatial> spatials
-                = MySpatial.listSpatials(subtree, Spatial.class, null);
+        List<Spatial> spatials = MySpatial.listSpatials(subtree);
         for (Spatial spatial : spatials) {
             spatial.setLocalTransform(transformIdentity);
         }

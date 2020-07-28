@@ -1505,7 +1505,7 @@ public class EditableCgm extends LoadedCgm {
         NameGenerator generate = new NameGenerator();
         Set<String> namesUsed = new TreeSet<>();
         List<Spatial> spatials
-                = MySpatial.listSpatials(cgmRoot, Spatial.class, null);
+                = MySpatial.listSpatials(cgmRoot);
         for (Spatial spatial : spatials) {
             String spatialName = spatial.getName();
             boolean renameIt = false;

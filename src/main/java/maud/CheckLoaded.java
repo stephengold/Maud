@@ -292,8 +292,7 @@ public class CheckLoaded {
         Validate.nonNull(cgmRoot, "model root");
 
         List<String> spatialNames = new ArrayList<>(128);
-        List<Spatial> spatials
-                = MySpatial.listSpatials(cgmRoot, Spatial.class, null);
+        List<Spatial> spatials = MySpatial.listSpatials(cgmRoot);
         for (Spatial spatial : spatials) {
             String name = spatial.getName();
             if (name == null || name.isEmpty()) {

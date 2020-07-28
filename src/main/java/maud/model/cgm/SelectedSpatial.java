@@ -360,8 +360,7 @@ public class SelectedSpatial implements JmeCloneable {
             // TODO binormal, tangent?
         }
 
-        List<Spatial> spatials
-                = MySpatial.listSpatials(subtree, Spatial.class, null);
+        List<Spatial> spatials = MySpatial.listSpatials(subtree);
         for (Spatial spatial : spatials) {
             spatial.setLocalTransform(transformIdentity);
         }

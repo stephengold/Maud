@@ -922,8 +922,7 @@ public class SelectedTexture implements JmeCloneable {
     private List<Texture> listNonNullTextures() {
         Spatial cgmRoot = cgm.getRootSpatial();
         List<Material> matList = MySpatial.listMaterials(cgmRoot, null);
-        List<Spatial> spatList
-                = MySpatial.listSpatials(cgmRoot, Spatial.class, null);
+        List<Spatial> spatList = MySpatial.listSpatials(cgmRoot);
 
         List<Texture> result = new ArrayList<>(20);
         for (Material mat : matList) {
@@ -962,8 +961,7 @@ public class SelectedTexture implements JmeCloneable {
             }
         }
 
-        List<Spatial> spatList
-                = MySpatial.listSpatials(cgmRoot, Spatial.class, null);
+        List<Spatial> spatList = MySpatial.listSpatials(cgmRoot);
         for (Spatial spatial : spatList) {
             for (MatParamOverride mpo : spatial.getLocalMatParamOverrides()) {
                 if (referencesTexture(mpo, texture)) {
