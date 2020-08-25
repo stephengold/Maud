@@ -10,7 +10,7 @@ targetCompatibility = '1.8'
 tasks.withType(JavaCompile) { // compile-time options:
     options.compilerArgs << '-Xdiags:verbose'
     options.compilerArgs << '-Xlint:unchecked'
-    options.deprecation = true
+    //options.deprecation = true
     options.encoding = 'UTF-8'
 }
 
@@ -31,7 +31,7 @@ tasks.withType(JavaExec) { // runtime options:
     jvmArgs '-XX:+UseG1GC', '-XX:MaxGCPauseMillis=10'
 }
 
-ext.jmonkeyengineVersion = '3.2.4-stable' // from jcenter
+ext.jmonkeyengineVersion = '3.3.2-stable' // from jcenter
 
 mainClassName = 'maud.Maud'
 if (!hasProperty('mainClass')) {
@@ -52,12 +52,12 @@ dependencies {
     implementation 'ch.qos.logback:logback-classic:1.2.3'
     implementation 'com.atr:jme-ttf:2.2.2'
     runtimeOnly    'com.github.nifty-gui:nifty-style-black:1.4.3'
-    implementation 'com.github.stephengold:Heart:5.2.0for32'
-    implementation 'com.github.stephengold:jme3-utilities-ui:0.8.1for32'
-    implementation 'com.github.stephengold:jme3-utilities-nifty:0.9.13for32'
+    implementation 'com.github.stephengold:Heart:5.2.0for33'
+    implementation 'com.github.stephengold:jme3-utilities-ui:0.8.1for33'
+    implementation 'com.github.stephengold:jme3-utilities-nifty:0.9.13for33'
     implementation 'com.github.stephengold:Minie:1.6.0+for32'
-    implementation 'com.github.stephengold:SkyControl:0.9.25for32'
-    implementation 'com.github.stephengold:Wes:0.4.8for32'
+    implementation 'com.github.stephengold:SkyControl:0.9.25for33'
+    implementation 'com.github.stephengold:Wes:0.4.8for33'
     implementation "org.jmonkeyengine:jme3-blender:$jmonkeyengineVersion"
     implementation "org.jmonkeyengine:jme3-desktop:$jmonkeyengineVersion"
     implementation "org.jmonkeyengine:jme3-lwjgl:$jmonkeyengineVersion"
