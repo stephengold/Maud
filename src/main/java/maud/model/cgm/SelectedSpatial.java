@@ -37,6 +37,7 @@ import com.jme3.bounding.BoundingSphere;
 import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.animation.DynamicAnimControl;
 import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.collision.shapes.ConvexShape;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.bullet.control.GhostControl;
@@ -175,7 +176,8 @@ public class SelectedSpatial implements JmeCloneable {
         Validate.nonNull(shapeType, "shape type");
 
         Spatial subtree = find();
-        CollisionShape shape = PhysicsUtil.makeShape(shapeType, subtree);
+        ConvexShape shape
+                = (ConvexShape) PhysicsUtil.makeShape(shapeType, subtree);
         CharacterControl cc = new CharacterControl(shape, 1f);
 
         editableCgm.addSgc(cc, "add a CharacterControl");

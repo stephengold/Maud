@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -228,7 +228,7 @@ public class HistoryTool extends Tool {
         /*
          * Mark label for removal before the next update.
          */
-        nifty.removeElement(screen, newLabel);
+        getNifty().removeElement(screen, newLabel);
 
         return newLabel;
     }
