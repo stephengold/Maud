@@ -589,6 +589,34 @@ public class MaudUtil {
     }
 
     /**
+     * Find a TransformTrack in a specified AnimClip that targets the indexed
+     * Joint.
+     *
+     * @param clip which AnimClip (not null, unaffected)
+     * @param jointIndex which Joint (&ge;0)
+     * @return the pre-existing instance, or null if none found
+     */
+    public static TransformTrack findJointTrack(AnimClip clip, int jointIndex) {
+        Validate.nonNegative(jointIndex, "joint index");
+
+        AnimTrack[] tracks = clip.getTracks();
+        for (AnimTrack track : tracks) {
+            if (track instanceof TransformTrack) {
+                TransformTrack transformTrack = (TransformTrack) track;
+                HasLocalTransform target = transformTrack.getTarget();
+                if (target instanceof Joint) {
+                    int trackJointIndex = ((Joint) target).getId();
+                    if (jointIndex == trackJointIndex) {
+                        return transformTrack;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Find the index of the keyframe (if any) at the specified time in the
      * specified AnimTrack or Track.
      *
@@ -963,6 +991,25 @@ public class MaudUtil {
         }
 
         return result;
+    }
+
+    /**
+     * Test whether the specified AnimClip includes a TransformTrack for the
+     * indexed Joint.
+     *
+     * @param clip the AnimClip to test (not null, unaffected)
+     * @param jointIndex which Joint (&ge;0)
+     * @return true if a track exists, otherwise false
+     */
+    public static boolean hasTrackForJoint(AnimClip clip, int jointIndex) {
+        Validate.nonNegative(jointIndex, "joint index");
+
+        TransformTrack track = findJointTrack(clip, jointIndex);
+        if (track == null) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**
