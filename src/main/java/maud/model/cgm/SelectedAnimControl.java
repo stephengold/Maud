@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -26,12 +26,17 @@
  */
 package maud.model.cgm;
 
+import com.jme3.anim.AnimClip;
+import com.jme3.anim.AnimComposer;
+import com.jme3.anim.AnimTrack;
+import com.jme3.anim.Armature;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Animation;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.SpatialTrack;
 import com.jme3.animation.Track;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 import com.jme3.scene.plugins.bvh.SkeletonMapping;
 import com.jme3.util.clone.Cloner;
@@ -75,22 +80,22 @@ public class SelectedAnimControl implements JmeCloneable {
     /**
      * most recent selection
      */
-    private AnimControl last = null;
+    private AbstractControl last = null;
     /**
-     * editable C-G model, if any, containing the anim control (set by
+     * editable C-G model, if any, containing the selected control (set by
      * {@link #setCgm(Cgm)})
      */
     private EditableCgm editableCgm;
     /**
-     * C-G model containing the anim control (set by {@link #setCgm(Cgm)})
+     * C-G model containing the selected control (set by {@link #setCgm(Cgm)})
      */
     private Cgm cgm = null;
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Chain the loaded animations into a new animation and add it the anim
-     * control.
+     * Chain the loaded animations into a new animation and add it the selected
+     * animation control.
      *
      * @param which1 which C-G model loaded the animation to go first (not null)
      * @param which2 which C-G model loaded the animation to go 2nd (not null)
@@ -125,8 +130,8 @@ public class SelectedAnimControl implements JmeCloneable {
         int numTracks2 = list2.size();
         BitSet done = new BitSet(numTracks2);
         for (TrackItem item1 : list1) {
-            Track track1 = item1.getTrack();
-            Track track2 = null;
+            Object track1 = item1.getTrack();
+            Object track2 = null;
             for (int trackIndex2 = 0; trackIndex2 < numTracks2; trackIndex2++) {
                 if (!done.get(trackIndex2)) {
                     TrackItem item2 = list2.get(trackIndex2);
@@ -137,20 +142,21 @@ public class SelectedAnimControl implements JmeCloneable {
                     }
                 }
             }
+            // TODO handle all combinations of AnimTrack and Track
             Track newTrack;
             if (track2 == null) {
-                newTrack = TrackEdit.truncate(track1, newDuration);
+                newTrack = TrackEdit.truncate((Track) track1, newDuration);
             } else {
-                newTrack = TrackEdit.chain(track1, track2, duration1,
-                        newDuration);
+                newTrack = TrackEdit.chain((Track) track1, (Track) track2,
+                        duration1, newDuration);
             }
             chain.addTrack(newTrack);
         }
         for (int trackIndex2 = 0; trackIndex2 < numTracks2; trackIndex2++) {
             if (!done.get(trackIndex2)) {
-                Track track2 = list2.get(trackIndex2).getTrack();
-                Track newTrack
-                        = TrackEdit.delayAll(track2, duration1, newDuration);
+                Object track2 = list2.get(trackIndex2).getTrack();
+                Track newTrack = TrackEdit.delayAll((Track) track2, duration1,
+                        newDuration);
                 chain.addTrack(newTrack);
             }
         }
@@ -161,52 +167,75 @@ public class SelectedAnimControl implements JmeCloneable {
     /**
      * Add a copy of the loaded animation.
      *
-     * @param newAnimationName a name for the new animation (not null, not
-     * reserved, not in use)
+     * @param newAnimName a name for the new animation (not null, not reserved,
+     * not in use)
      */
-    public void addCopy(String newAnimationName) {
-        Validate.nonEmpty(newAnimationName, "new animation name");
-        assert !MaudUtil.isReservedAnimationName(newAnimationName) : newAnimationName;
-        assert !hasRealAnimation(newAnimationName) : newAnimationName;
+    public void addCopy(String newAnimName) {
+        Validate.nonEmpty(newAnimName, "new animation name");
+        assert !MaudUtil.isReservedAnimationName(newAnimName) : newAnimName;
+        assert !hasRealAnimation(newAnimName) : newAnimName;
 
         LoadedAnimation loaded = cgm.getAnimation();
-        Animation oldAnimation = loaded.getReal();
-        float duration = loaded.duration();
-        Animation copyAnim = new Animation(newAnimationName, duration);
-        if (oldAnimation != null) {
-            Track[] oldTracks = oldAnimation.getTracks();
-            for (Track track : oldTracks) {
-                Track clone = track.clone();
-                copyAnim.addTrack(clone);
+        Object oldAnim = loaded.getReal();
+        Object copy;
+        if (oldAnim instanceof AnimClip) {
+            AnimClip copyClip = new AnimClip(newAnimName);
+            AnimTrack[] oldTracks = ((AnimClip) oldAnim).getTracks();
+            int numTracks = oldTracks.length;
+            AnimTrack[] newTracks = new AnimTrack[numTracks];
+            for (int i = 0; i < numTracks; ++i) {
+                AnimTrack clone = (AnimTrack) MaudUtil.cloneTrack(oldTracks[i]);
+                newTracks[i] = clone;
             }
+            copyClip.setTracks(newTracks);
+            copy = copyClip;
+
+        } else {
+            float duration = loaded.duration();
+            Animation copyAnimation = new Animation(newAnimName, duration);
+            if (oldAnim != null) {
+                Track[] oldTracks = ((Animation) oldAnim).getTracks();
+                for (Track track : oldTracks) {
+                    Track clone = track.clone();
+                    copyAnimation.addTrack(clone);
+                }
+            }
+            copy = copyAnimation;
         }
-        editableCgm.addAnimation(copyAnim);
+        editableCgm.addAnimation(copy);
     }
 
     /**
      * Extract a range of the loaded animation into a new animation and add it
-     * to the anim control.
+     * to the selected animation control.
      *
-     * @param newAnimationName a name for the new animation (not null, not
-     * reserved, not in use)
+     * @param newAnimName a name for the new animation (not null, not reserved,
+     * not in use)
      */
-    public void addExtract(String newAnimationName) {
-        Validate.nonNull(newAnimationName, "new animation name");
+    public void addExtract(String newAnimName) {
+        Validate.nonNull(newAnimName, "new animation name");
 
-        Animation animation = cgm.getAnimation().getReal();
+        Object real = cgm.getAnimation().getReal();
         float startTime = cgm.getPlay().getLowerLimit();
         float endTime = cgm.getPlay().getUpperLimit();
-        float duration = animation.getLength();
+        float duration = cgm.getAnimation().duration();
         endTime = Math.min(endTime, duration);
         TweenTransforms techniques = Maud.getModel().getTweenTransforms();
-        Animation extracted = AnimationEdit.extractAnimation(animation,
-                startTime, endTime, techniques, newAnimationName);
+
+        Object extracted;
+        if (real instanceof Animation) {
+            extracted = AnimationEdit.extractAnimation((Animation) real,
+                    startTime, endTime, techniques, newAnimName);
+        } else {
+            extracted = AnimationEdit.extractAnimation((AnimClip) real,
+                    startTime, endTime, techniques, newAnimName);
+        }
         editableCgm.addAnimation(extracted);
     }
 
     /**
-     * Mix the specified tracks into a new animation and add it the anim
-     * control.
+     * Mix the specified tracks into a new animation and add it the selected
+     * animation control.
      *
      * @param indices comma-separated list of decimal track indices (not null,
      * not empty)
@@ -225,31 +254,31 @@ public class SelectedAnimControl implements JmeCloneable {
         /*
          * Enumerate selected tracks and calculate max duration.
          */
-        float maxDuration = 0f;
+        double maxDuration = 0.0;
         List<TrackItem> selectedTracks = new ArrayList<>(numTracks);
         for (String arg : argArray) {
             int index = Integer.parseInt(arg);
             TrackItem item = allTracks.get(index);
             selectedTracks.add(item);
 
-            Animation animation = item.getAnimation();
-            float duration = animation.getLength();
+            double duration = item.animationDuration();
             if (duration > maxDuration) {
                 maxDuration = duration;
             }
         }
         /*
          * Mix the selected tracks together into a new animation.
+         * TODO handle AnimTracks
          */
-        Animation mix = new Animation(animationName, maxDuration);
+        Animation mix = new Animation(animationName, (float) maxDuration);
         for (TrackItem item : selectedTracks) {
-            Track track = item.getTrack();
+            Track track = (Track) item.getTrack();
             Track clone = track.clone();
             if (track instanceof SpatialTrack) {
                 SpatialTrack spatialTrack = (SpatialTrack) track;
                 Spatial spatial = spatialTrack.getTrackSpatial();
                 if (spatial == null) {
-                    AnimControl animControl = item.getAnimControl();
+                    AbstractControl animControl = item.getAnimControl();
                     spatial = animControl.getSpatial();
                 }
                 SpatialTrack cloneSt = (SpatialTrack) clone;
@@ -264,86 +293,131 @@ public class SelectedAnimControl implements JmeCloneable {
     /**
      * Add a single-frame bone animation based on the current pose.
      *
-     * @param newAnimationName a name for the new animation (not null, not
-     * reserved, not in use)
+     * @param newAnimName a name for the new animation (not null, not reserved,
+     * not in use)
      */
-    public void addPose(String newAnimationName) {
-        Validate.nonNull(newAnimationName, "new animation name");
-        assert !MaudUtil.isReservedAnimationName(newAnimationName) : newAnimationName;
-        assert !hasRealAnimation(newAnimationName) : newAnimationName;
+    public void addPose(String newAnimName) {
+        Validate.nonNull(newAnimName, "new animation name");
+        assert !MaudUtil.isReservedAnimationName(newAnimName) : newAnimName;
+        assert !hasRealAnimation(newAnimName) : newAnimName;
 
         Pose pose = cgm.getPose().get();
-        Animation poseAnim = pose.capture(newAnimationName);
-        editableCgm.addAnimation(poseAnim);
+        Animation newAnimation = pose.capture(newAnimName);
+        editableCgm.addAnimation(newAnimation);
     }
 
     /**
      * Retarget the selected source animation into a new animation and add it to
-     * the anim control.
+     * the animation control.
      *
-     * @param newAnimationName a name for the new animation (not null, not
-     * reserved, not in use)
+     * @param newAnimName a name for the new animation (not null, not reserved,
+     * not in use)
      */
-    public void addRetarget(String newAnimationName) {
-        Validate.nonNull(newAnimationName, "new animation name");
+    public void addRetarget(String newAnimName) {
+        Validate.nonNull(newAnimName, "new animation name");
 
         Cgm source = Maud.getModel().getSource();
-        Animation sourceAnimation = source.getAnimation().getReal();
-        Skeleton sourceSkeleton = source.getSkeleton().find();
-        Skeleton targetSkeleton = editableCgm.getSkeleton().find();
+        Object sourceAnimation = source.getAnimation().getReal();
+        Object sourceSkeleton = source.getSkeleton().find();
+        Object targetSkeleton = editableCgm.getSkeleton().find();
         SkeletonMapping effectiveMap = Maud.getModel().getMap().effectiveMap();
         TweenTransforms techniques = Maud.getModel().getTweenTransforms();
-        Animation retargeted = AnimationEdit.retargetAnimation(sourceAnimation,
-                sourceSkeleton, targetSkeleton, effectiveMap, techniques,
-                newAnimationName);
 
-        float duration = retargeted.getLength();
-        assert duration >= 0f : duration;
+        Object newAnim = null;
+        if (sourceAnimation instanceof Animation
+                && sourceSkeleton instanceof Skeleton
+                && targetSkeleton instanceof Skeleton) {
+            Animation newAnimation = AnimationEdit.retargetAnimation(
+                    (Animation) sourceAnimation, (Skeleton) sourceSkeleton,
+                    (Skeleton) targetSkeleton, effectiveMap, techniques,
+                    newAnimName);
 
-        editableCgm.addAnimation(retargeted);
-    }
+            float duration = newAnimation.getLength();
+            assert duration >= 0f : duration;
 
-    /**
-     * Count how many real animations are in the anim control.
-     *
-     * @return count (&ge;0)
-     */
-    public int countAnimations() {
-        AnimControl animControl = find();
-        int count;
-        if (animControl == null) {
-            count = 0;
-        } else {
-            Collection<String> names = animControl.getAnimationNames();
-            count = names.size();
+            newAnim = newAnimation;
+
+        } else if (sourceAnimation instanceof AnimClip
+                && sourceSkeleton instanceof Armature
+                && targetSkeleton instanceof Skeleton) {
+
+            Animation newAnimation = AnimationEdit.retargetAnimation(
+                    (AnimClip) sourceAnimation, (Armature) sourceSkeleton,
+                    (Skeleton) targetSkeleton, effectiveMap, newAnimName);
+
+            float duration = newAnimation.getLength();
+            assert duration >= 0f : duration;
+
+            newAnim = newAnimation;
+
+        } else if (sourceAnimation instanceof AnimClip
+                && sourceSkeleton instanceof Armature
+                && targetSkeleton instanceof Armature) {
+            AnimClip newAnimation = AnimationEdit.retargetAnimation(
+                    (AnimClip) sourceAnimation, (Armature) sourceSkeleton,
+                    (Armature) targetSkeleton, effectiveMap, newAnimName);
+
+            double duration = newAnimation.getLength();
+            assert duration >= 0.0 : duration;
+
+            newAnim = newAnimation;
         }
 
-        assert count >= 0 : count;
-        return count;
+        editableCgm.addAnimation(newAnim);
     }
 
     /**
-     * Access the selected AnimControl: either the selected S-G control (if it's
-     * an AnimControl) or else the first AnimControl added to the C-G model's
-     * root spatial.
+     * Count how many real animations are in the animation control. TODO rename
+     *
+     * @return the count (&ge;0)
+     */
+    public int countAnimations() {
+        int result;
+
+        AbstractControl control = find();
+        if (control == null) {
+            result = 0;
+
+        } else if (control instanceof AnimComposer) {
+            Collection<String> names
+                    = ((AnimComposer) control).getAnimClipsNames();
+            result = names.size();
+
+        } else {
+            Collection<String> names
+                    = ((AnimControl) control).getAnimationNames();
+            result = names.size();
+        }
+
+        assert result >= 0 : result;
+        return result;
+    }
+
+    /**
+     * Access the selected animation control: either the selected S-G control
+     * (if it's an AnimComposer or AnimControl) or else the first
+     * AnimComposer/AnimControl added to the C-G model's root spatial.
      *
      * @return the pre-existing instance, or null if none
      */
-    AnimControl find() {
-        AnimControl animControl;
+    AbstractControl find() {
+        AbstractControl result;
         if (cgm.isLoaded()) {
             Control sgc = cgm.getSgc().get();
-            if (sgc instanceof AnimControl) {
-                animControl = (AnimControl) sgc;
+            if (sgc instanceof AnimComposer || sgc instanceof AnimControl) {
+                result = (AbstractControl) sgc;
             } else {
                 Spatial cgmRoot = cgm.getRootSpatial();
-                animControl = cgmRoot.getControl(AnimControl.class);
+                result = cgmRoot.getControl(AnimComposer.class);
+                if (result == null) {
+                    result = cgmRoot.getControl(AnimControl.class);
+                }
             }
         } else {
-            animControl = null;
+            result = null;
         }
 
-        return animControl;
+        return result;
     }
 
     /**
@@ -352,17 +426,17 @@ public class SelectedAnimControl implements JmeCloneable {
      * @return index, or -1 if no anim control is selected
      */
     public int findIndex() {
-        int index;
-        AnimControl animControl = find();
-        if (animControl == null) {
-            index = -1;
+        int result;
+        AbstractControl control = find();
+        if (control == null) {
+            result = -1;
         } else {
-            List<AnimControl> list = cgm.listSgcs(AnimControl.class);
-            index = list.indexOf(animControl);
-            assert index != -1;
+            List<AbstractControl> list = cgm.listAnimationControls();
+            result = list.indexOf(control);
+            assert result != -1;
         }
 
-        return index;
+        return result;
     }
 
     /**
@@ -371,15 +445,19 @@ public class SelectedAnimControl implements JmeCloneable {
      * @param name (not null)
      * @return the pre-existing instance, or null if not found
      */
-    Animation getAnimation(String name) {
+    Object getAnimation(String name) {
         assert name != null;
 
-        Animation result;
-        AnimControl animControl = find();
-        if (animControl == null) {
+        Object result;
+        AbstractControl control = find();
+        if (control == null) {
             result = null;
+
+        } else if (control instanceof AnimComposer) {
+            result = ((AnimComposer) control).getAnimClip(name);
+
         } else {
-            result = animControl.getAnim(name);
+            result = ((AnimControl) control).getAnim(name);
         }
 
         return result;
@@ -389,7 +467,7 @@ public class SelectedAnimControl implements JmeCloneable {
      * Read the duration of the named animation.
      *
      * @param animationName (not null)
-     * @return duration (in seconds, &ge;0)
+     * @return the duration (in seconds, &ge;0)
      */
     public float getDuration(String animationName) {
         Validate.nonNull(animationName, "animation name");
@@ -402,13 +480,17 @@ public class SelectedAnimControl implements JmeCloneable {
                 break;
 
             default:
-                Animation anim = getAnimation(animationName);
+                Object anim = getAnimation(animationName);
                 if (anim == null) {
                     logger.log(Level.WARNING, "no animation named {0}",
                             MyString.quote(animationName));
                     result = 0f;
+
+                } else if (anim instanceof AnimClip) {
+                    result = (float) ((AnimClip) anim).getLength();
+
                 } else {
-                    result = anim.getLength();
+                    result = ((Animation) anim).getLength();
                 }
         }
 
@@ -425,7 +507,7 @@ public class SelectedAnimControl implements JmeCloneable {
     public boolean hasRealAnimation(String name) {
         Validate.nonNull(name, "name");
 
-        Animation anim = getAnimation(name);
+        Object anim = getAnimation(name);
         if (anim == null) {
             return false;
         } else {
@@ -434,13 +516,13 @@ public class SelectedAnimControl implements JmeCloneable {
     }
 
     /**
-     * Test whether an anim control is selected.
+     * Test whether an animation control is selected.
      *
      * @return true if one is selected, otherwise false
      */
     public boolean isSelected() {
         boolean result;
-        AnimControl animControl = find();
+        AbstractControl animControl = find();
         if (animControl == null) {
             result = false;
         } else {
@@ -491,18 +573,26 @@ public class SelectedAnimControl implements JmeCloneable {
     }
 
     /**
-     * Generate a sorted name list of the real animations in the selected anim
-     * control. Bind pose and mapped pose are not included.
+     * Generate a sorted name list of the real animations in the selected
+     * animation control. Bind pose and mapped pose are not included.
      *
      * @return a new list
      */
     List<String> listRealAnimationsSorted() {
         List<String> result;
-        AnimControl animControl = find();
-        if (animControl == null) {
+        AbstractControl control = find();
+        if (control == null) {
             result = new ArrayList<>(0);
+
+        } else if (control instanceof AnimComposer) {
+            Collection<String> names
+                    = ((AnimComposer) control).getAnimClipsNames();
+            result = new ArrayList<>(names);
+            Collections.sort(result);
+
         } else {
-            Collection<String> names = animControl.getAnimationNames();
+            Collection<String> names
+                    = ((AnimControl) control).getAnimationNames();
             result = new ArrayList<>(names);
             Collections.sort(result);
         }
@@ -530,7 +620,7 @@ public class SelectedAnimControl implements JmeCloneable {
      * Update after selecting a different S-G control.
      */
     void postSelect() {
-        AnimControl found = find();
+        AbstractControl found = find();
         if (found != last) {
             cgm.getAnimation().loadBindPose();
             last = found;
@@ -548,8 +638,8 @@ public class SelectedAnimControl implements JmeCloneable {
         List<String> names = cgm.listAnimControlNames();
         int index = names.indexOf(name);
         assert index != -1;
-        List<AnimControl> animControls = cgm.listSgcs(AnimControl.class);
-        AnimControl animControl = animControls.get(index);
+        List<AbstractControl> controlList = cgm.listAnimationControls();
+        AbstractControl animControl = controlList.get(index);
         cgm.getSgc().select(animControl); // TODO set last
     }
 
@@ -558,8 +648,8 @@ public class SelectedAnimControl implements JmeCloneable {
      */
     public void selectNext() {
         if (isSelected()) {
-            List<AnimControl> list = cgm.listSgcs(AnimControl.class);
-            AnimControl animControl = find();
+            List<AbstractControl> list = cgm.listAnimationControls();
+            AbstractControl animControl = find();
             int index = list.indexOf(animControl);
             assert index != -1;
             int numAnimControls = list.size();
@@ -574,8 +664,8 @@ public class SelectedAnimControl implements JmeCloneable {
      */
     public void selectPrevious() {
         if (isSelected()) {
-            List<AnimControl> list = cgm.listSgcs(AnimControl.class);
-            AnimControl animControl = find();
+            List<AbstractControl> list = cgm.listAnimationControls();
+            AbstractControl animControl = find();
             int index = list.indexOf(animControl);
             assert index != -1;
             int numAnimControls = list.size();

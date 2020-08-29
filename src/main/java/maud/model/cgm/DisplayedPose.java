@@ -26,6 +26,7 @@
  */
 package maud.model.cgm;
 
+import com.jme3.anim.Armature;
 import com.jme3.animation.Skeleton;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
@@ -92,10 +93,20 @@ public class DisplayedPose implements JmeCloneable {
     /**
      * Change skeletons and reset the pose to bind pose.
      *
-     * @param skeleton (may be null, alias created)
+     * @param skeleton (Armature or Skeleton, alias created)
      */
-    void resetToBind(Skeleton skeleton) {
-        pose = new Pose(skeleton);
+    void resetToBind(Object skeleton) {
+        if (skeleton instanceof Armature) {
+            pose = new Pose((Armature) skeleton);
+            // TODO use pose.setToBind()
+            Transform tmpTransform = new Transform();
+            for (int jointI = 0; jointI < pose.countBones(); ++jointI) {
+                pose.bindTransform(jointI, tmpTransform);
+                pose.set(jointI, tmpTransform);
+            }
+        } else {
+            pose = new Pose((Skeleton) skeleton);
+        }
     }
 
     /**

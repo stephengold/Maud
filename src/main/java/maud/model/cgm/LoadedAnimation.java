@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -26,19 +26,32 @@
  */
 package maud.model.cgm;
 
+import com.jme3.anim.AnimClip;
+import com.jme3.anim.AnimComposer;
+import com.jme3.anim.AnimTrack;
+import com.jme3.anim.Armature;
+import com.jme3.anim.Joint;
+import com.jme3.anim.MorphTrack;
+import com.jme3.anim.TransformTrack;
+import com.jme3.anim.util.HasLocalTransform;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Animation;
 import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.SpatialTrack;
 import com.jme3.animation.Track;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
+import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.control.AbstractControl;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.InfluenceUtil;
 import jme3utilities.MyAnimation;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
@@ -46,7 +59,6 @@ import jme3utilities.math.MyMath;
 import jme3utilities.wes.Pose;
 import jme3utilities.wes.TrackEdit;
 import jme3utilities.wes.TweenTransforms;
-import maud.InfluenceUtil;
 import maud.Maud;
 import maud.MaudUtil;
 import maud.model.EditableMap;
@@ -101,12 +113,11 @@ public class LoadedAnimation implements Cloneable {
      */
     public boolean anyTrackEndsWithKeyframe() {
         boolean result = false;
-        Animation real = getReal();
-        if (real != null) {
+        Object[] tracks = getTracks();
+        if (tracks != null) {
             float duration = duration();
-            Track[] tracks = real.getTracks();
-            for (Track track : tracks) {
-                int endIndex = MyAnimation.findKeyframeIndex(track, duration);
+            for (Object track : tracks) {
+                int endIndex = MaudUtil.findKeyframeIndex(track, duration);
                 if (endIndex >= 0) {
                     result = true;
                 }
@@ -124,33 +135,62 @@ public class LoadedAnimation implements Cloneable {
         float neckTime = cgm.getPlay().getTime();
         assert neckTime > 0f : neckTime;
 
-        Animation oldAnimation = getReal();
-        float oldDuration = oldAnimation.getLength();
-        float newDuration = oldDuration - neckTime;
-        Animation newAnimation = new Animation(loadedName, newDuration);
-        Track newSelectedTrack = null;
-        TweenTransforms techniques = Maud.getModel().getTweenTransforms();
-        Track oldSelectedTrack = cgm.getTrack().get();
-        Track[] oldTracks = oldAnimation.getTracks();
-        for (Track track : oldTracks) {
-            Track newTrack;
-            if (track instanceof BoneTrack || track instanceof SpatialTrack) {
-                Transform neck = techniques.interpolate(neckTime, track,
-                        oldDuration, null, null);
-                newTrack = TrackEdit.behead(track, neckTime, neck, oldDuration);
-            } else {
-                newTrack = track.clone(); // TODO other track types
+        Object newAnim;
+        Object newSelectedTrack = null;
+
+        Object oldAnim = getReal();
+        Object oldSelectedTrack = cgm.getTrack().get();
+        Object[] oldTracks = getTracks();
+        if (oldAnim instanceof Animation) {
+            float oldDuration = duration();
+            float newDuration = oldDuration - neckTime;
+            Animation newAnimation = new Animation(loadedName, newDuration);
+            TweenTransforms techniques = Maud.getModel().getTweenTransforms();
+            for (Object trk : oldTracks) {
+                Track oldTrack = (Track) trk;
+                Track newTrack;
+                if (trk instanceof BoneTrack || trk instanceof SpatialTrack) {
+                    Transform neckTransform = techniques.interpolate(neckTime,
+                            oldTrack, oldDuration, null, null);
+                    newTrack = TrackEdit.behead(oldTrack, neckTime,
+                            neckTransform, oldDuration);
+                } else { // TODO other track types
+                    newTrack = oldTrack.clone();
+                }
+                if (trk == oldSelectedTrack) {
+                    newSelectedTrack = newTrack;
+                }
+                newAnimation.addTrack(newTrack);
             }
-            if (track == oldSelectedTrack) {
-                newSelectedTrack = newTrack;
+            newAnim = newAnimation;
+
+        } else {
+            int numTracks = oldTracks.length;
+            AnimTrack[] newTracks = new AnimTrack[numTracks];
+            AnimClip newClip = new AnimClip(loadedName);
+            for (int i = 0; i < numTracks; ++i) {
+                AnimTrack trk = (AnimTrack) oldTracks[i];
+                if (trk instanceof TransformTrack) {
+                    TransformTrack oldTrack = (TransformTrack) trk;
+                    Transform neckTransform = new Transform();
+                    oldTrack.getDataAtTime(neckTime, neckTransform);
+                    newTracks[i] = TrackEdit.behead(oldTrack, neckTime,
+                            neckTransform);
+                } else {
+                    newTracks[i] = (AnimTrack) MaudUtil.cloneTrack(trk);
+                }
+                if (trk == oldSelectedTrack) {
+                    newSelectedTrack = newTracks[i];
+                }
             }
-            newAnimation.addTrack(newTrack);
+            newClip.setTracks(newTracks);
+            newAnim = newClip;
         }
 
         String eventDescription = String.format(
-                "behead the %s animation at t=%f",
-                MyString.quote(loadedName), neckTime);
-        editableCgm.replace(oldAnimation, newAnimation, eventDescription,
+                "behead the %s animation at t=%f", MyString.quote(loadedName),
+                neckTime);
+        editableCgm.replace(oldAnim, newAnim, eventDescription,
                 newSelectedTrack);
         load(loadedName);
     }
@@ -167,16 +207,18 @@ public class LoadedAnimation implements Cloneable {
                 = (storeResult == null) ? new Transform() : storeResult;
 
         EditorModel model = Maud.getModel();
-        Animation real = getReal();
-        if (real == null) {
+        Object oldAnim = getReal();
+        if (oldAnim == null) {
             if (isRetargetedPose()) {
                 EditableMap map = model.getMap();
                 map.boneTransform(boneIndex, result);
             } else {
                 result.loadIdentity();
             }
-        } else {
-            BoneTrack track = MyAnimation.findBoneTrack(real, boneIndex);
+
+        } else if (oldAnim instanceof Animation) {
+            BoneTrack track
+                    = MyAnimation.findBoneTrack((Animation) oldAnim, boneIndex);
             if (track == null) {
                 result.loadIdentity();
             } else {
@@ -185,72 +227,124 @@ public class LoadedAnimation implements Cloneable {
                 float duration = duration();
                 techniques.transform(track, time, duration, null, result);
             }
+
+        } else {
+            TransformTrack track
+                    = MyAnimation.findJointTrack((AnimClip) oldAnim, boneIndex);
+            if (track == null) {
+                result.loadIdentity();
+            } else {
+                double time = (double) cgm.getPlay().getTime();
+                track.getDataAtTime(time, result);
+            }
         }
 
         return result;
     }
 
     /**
-     * Count the number of bone tracks in the loaded animation.
+     * Count the number of bone/joint tracks in the loaded animation.
      *
-     * @return count (&ge;0)
+     * @return the number of tracks (&ge;0)
      */
     public int countBoneTracks() {
-        Animation realAnimation = getReal();
-        int count = MyAnimation.countTracks(realAnimation, BoneTrack.class);
+        int result = 0;
+        Object realAnim = getReal();
+        if (realAnim instanceof Animation) {
+            result = MyAnimation.countTracks((Animation) realAnim,
+                    BoneTrack.class);
 
-        assert count >= 0 : count;
-        return count;
+        } else if (realAnim instanceof AnimClip) {
+            AnimTrack[] tracks = ((AnimClip) realAnim).getTracks();
+            for (AnimTrack track : tracks) {
+                if (MyAnimation.isJointTrack(track)) {
+                    ++result;
+                }
+            }
+        }
+
+        assert result >= 0 : result;
+        return result;
     }
 
     /**
      * Count the number of spatial tracks in the loaded animation.
      *
-     * @return count (&ge;0)
+     * @return the number of tracks (&ge;0)
      */
     public int countSpatialTracks() {
-        Animation realAnimation = getReal();
-        int count = MyAnimation.countTracks(realAnimation, SpatialTrack.class);
+        int result = 0;
+        Object realAnim = getReal();
+        if (realAnim instanceof Animation) {
+            result = MyAnimation.countTracks((Animation) realAnim,
+                    SpatialTrack.class);
 
-        assert count >= 0 : count;
-        return count;
+        } else if (realAnim instanceof AnimClip) {
+            AnimTrack[] tracks = ((AnimClip) realAnim).getTracks();
+            for (AnimTrack track : tracks) {
+                if (track instanceof TransformTrack) {
+                    HasLocalTransform target
+                            = ((TransformTrack) track).getTarget();
+                    if (target instanceof Spatial) {
+                        ++result;
+                    }
+                }
+            }
+        }
+
+        assert result >= 0 : result;
+        return result;
     }
 
     /**
      * Count the total number of tracks in the loaded animation.
      *
-     * @return count (&ge;0)
+     * @return the number of tracks (&ge;0)
      */
     public int countTracks() {
         int count = 0;
-        Animation realAnimation = getReal();
-        if (realAnimation != null) {
-            Track[] tracks = realAnimation.getTracks();
+        Object[] tracks = getTracks();
+        if (tracks != null) {
             count = tracks.length;
         }
 
-        assert count >= 0 : count;
         return count;
     }
 
     /**
-     * Add an identity track for the selected bone.
+     * Add an identity track for the selected Bone or Joint.
      */
     public void createBoneTrack() {
-        Animation realAnimation = getReal();
-        Track[] tracks = realAnimation.getTracks();
-        Track baseTrack = tracks[0]; // arbitrary choice
-        float[] baseTimes = baseTrack.getKeyFrameTimes();
-        int boneIndex = cgm.getBone().index();
+        Object[] tracks = getTracks();
+        Object baseTrack = tracks[0]; // arbitrary choice
+        float[] baseTimes = MaudUtil.getTrackTimes(baseTrack);
         Transform identity = new Transform();
-        Track newTrack = MyAnimation.newBoneTrack(boneIndex, baseTimes,
-                identity);
 
-        String animationName = realAnimation.getName();
+        Object newTrack;
+        Object realAnimation = getReal();
+        if (realAnimation instanceof Animation) {
+            int boneIndex = cgm.getBone().index();
+            newTrack = MyAnimation.newBoneTrack(boneIndex, baseTimes,
+                    identity);
+        } else {
+            Joint target = (Joint) cgm.getBone().get();
+            int numKeyframes = baseTimes.length;
+            Vector3f[] translations = new Vector3f[numKeyframes];
+            Quaternion[] rotations = new Quaternion[numKeyframes];
+            Vector3f[] scales = new Vector3f[numKeyframes];
+            for (int i = 0; i < numKeyframes; ++i) {
+                translations[i] = identity.getTranslation();
+                rotations[i] = identity.getRotation();
+                scales[i] = identity.getScale();
+            }
+            newTrack = new TransformTrack(target, baseTimes, translations,
+                    rotations, scales);
+        }
+
         String boneName = cgm.getBone().name();
         String eventDescription = String.format(
                 "add an identity track to %s for bone %s",
-                MyString.quote(animationName), MyString.quote(boneName));
+                MyString.quote(loadedName), MyString.quote(boneName));
         editableCgm.addTrack(newTrack, eventDescription);
     }
 
@@ -276,39 +370,48 @@ public class LoadedAnimation implements Cloneable {
         float atTime = cgm.getPlay().getTime();
         assert atTime > 0f : atTime;
 
-        float duration = duration();
-        Animation newAnimation = new Animation(loadedName, duration);
-        Track newSelectedTrack = null;
-        Track oldSelectedTrack = cgm.getTrack().get();
         int numDeletions = 0;
+        Object oldSelectedTrack = cgm.getTrack().get();
+        Object newSelectedTrack = null;
+        TmpTracks.clear();
+        Object[] oldTracks = getTracks();
+        for (Object track : oldTracks) {
+            int keyframeIndex = MaudUtil.findKeyframeIndex(track, atTime);
 
-        Animation realAnimation = getReal();
-        Track[] tracks = realAnimation.getTracks();
-        for (Track track : tracks) {
-            Track newTrack;
+            Object newTrack;
             if (track instanceof BoneTrack || track instanceof SpatialTrack) {
-                int keyframeIndex
-                        = MyAnimation.findKeyframeIndex(track, atTime);
                 if (keyframeIndex >= 1) {
-                    newTrack = TrackEdit.deleteRange(track, keyframeIndex, 1);
+                    newTrack = TrackEdit.deleteRange((Track) track,
+                            keyframeIndex, 1);
                     ++numDeletions;
                 } else {
-                    newTrack = track.clone();
+                    newTrack = MaudUtil.cloneTrack(track);
                 }
-            } else {
-                newTrack = track.clone(); // TODO other track types
+
+            } else if (track instanceof TransformTrack && keyframeIndex >= 1) {
+                newTrack = MaudUtil.deleteRange((TransformTrack) track,
+                        keyframeIndex, 1);
+                ++numDeletions;
+
+            } else { // TODO other track types
+                newTrack = MaudUtil.cloneTrack(track);
             }
+
             if (track == oldSelectedTrack) {
                 newSelectedTrack = newTrack;
             }
-            newAnimation.addTrack(newTrack);
+            TmpTracks.add(newTrack);
         }
 
         if (numDeletions > 0) {
+            Object newAnim = newAnim();
+            TmpTracks.addAllToAnim(newAnim);
+
             String eventDescription = String.format(
                     "delete %d keyframes at t=%f from the %s animation",
                     numDeletions, atTime, MyString.quote(loadedName));
-            editableCgm.replace(realAnimation, newAnimation, eventDescription,
+            Object oldAnim = getReal();
+            editableCgm.replace(oldAnim, newAnim, eventDescription,
                     newSelectedTrack);
         }
     }
@@ -317,44 +420,54 @@ public class LoadedAnimation implements Cloneable {
      * Delete the selected track from the animation.
      */
     public void deleteTrack() {
-        float duration = duration();
-        Animation newAnimation = new Animation(loadedName, duration);
+        Object selectedTrack = cgm.getTrack().get();
 
-        SelectedTrack selectedTrack = cgm.getTrack();
-        Animation oldAnimation = getReal();
-        Track[] oldTracks = oldAnimation.getTracks();
-        for (Track track : oldTracks) {
-            if (track != selectedTrack.get()) {
-                Track newTrack = track.clone();
-                newAnimation.addTrack(newTrack);
+        TmpTracks.clear();
+        Object[] oldTracks = getTracks();
+        for (Object oldTrack : oldTracks) {
+            if (oldTrack != selectedTrack) {
+                Object newTrack = MaudUtil.cloneTrack(oldTrack);
+                TmpTracks.add(newTrack);
             }
         }
 
-        String trackName = selectedTrack.describe();
+        Object newAnim = newAnim();
+        TmpTracks.addAllToAnim(newAnim);
+
+        String trackDesc = cgm.getTrack().describe();
         String eventDescription = String.format(
                 "delete the %s track from the %s animation",
-                trackName, MyString.quote(loadedName));
-        editableCgm.replace(oldAnimation, newAnimation, eventDescription, null);
+                trackDesc, MyString.quote(loadedName));
+        Object oldAnim = getReal();
+        editableCgm.replace(oldAnim, newAnim, eventDescription, null);
     }
 
     /**
-     * Describe the track for the indexed bone.
+     * Describe the track (if any) for the indexed Bone or Joint.
      *
-     * @param boneIndex which bone (&ge;0)
-     * @return a textual description if the track exists, otherwise null
+     * @param boneIndex which Bone or Joint (&ge;0)
+     * @return a textual description if a track exists, otherwise null
      */
     public String describeBoneTrack(int boneIndex) {
         Validate.nonNegative(boneIndex, "bone index");
 
         String result = null;
-        Animation realAnimation = getReal();
-        if (realAnimation != null) {
-            BoneTrack boneTrack
-                    = MyAnimation.findBoneTrack(realAnimation, boneIndex);
+        SelectedAnimControl sac = cgm.getAnimControl();
+        AbstractControl control = sac.find();
+        Object realAnim = getReal();
+        if (realAnim instanceof Animation) {
+            BoneTrack boneTrack = MyAnimation.findBoneTrack(
+                    (Animation) realAnim, boneIndex);
             if (boneTrack != null) {
-                SelectedAnimControl sac = cgm.getAnimControl();
-                AnimControl animControl = sac.find();
-                result = MyAnimation.describe(boneTrack, animControl);
+                result = MyAnimation.describe(boneTrack, (AnimControl) control);
+            }
+
+        } else if (realAnim instanceof AnimClip) {
+            TransformTrack transformTrack = MyAnimation.findJointTrack(
+                    (AnimClip) realAnim, boneIndex);
+            if (transformTrack != null) {
+                result = MaudUtil.describe(transformTrack,
+                        (AnimComposer) control);
             }
         }
 
@@ -364,15 +477,17 @@ public class LoadedAnimation implements Cloneable {
     /**
      * Read the duration of the loaded animation.
      *
-     * @return time (in seconds, &ge;0)
+     * @return the time (in seconds, &ge;0)
      */
     public float duration() {
         float result;
-        Animation realAnimation = getReal();
+        Object realAnimation = getReal();
         if (realAnimation == null) {
             result = 0f;
+        } else if (realAnimation instanceof AnimClip) {
+            result = (float) ((AnimClip) realAnimation).getLength();
         } else {
-            result = realAnimation.getLength();
+            result = ((Animation) realAnimation).getLength();
         }
 
         assert result >= 0f : result;
@@ -398,14 +513,22 @@ public class LoadedAnimation implements Cloneable {
     /**
      * Find the keyframe with the latest time in the loaded animation.
      *
-     * @return track time (in seconds, &ge;0)
+     * @return the track time of the keyframe (in seconds, &ge;0)
      */
     public float findLatestKeyframe() {
-        Animation realAnimation = getReal();
-        float latest = MyAnimation.findLastKeyframe(realAnimation);
+        float result = 0f;
+        Object[] tracks = getTracks();
+        for (Object track : tracks) {
+            float[] frameTimes = MaudUtil.getTrackTimes(track);
+            for (float time : frameTimes) { // TODO assume ordered?
+                if (time > result) {
+                    result = time;
+                }
+            }
+        }
 
-        assert latest >= 0f : latest;
-        return latest;
+        assert result >= 0f : result;
+        return result;
     }
 
     /**
@@ -418,9 +541,9 @@ public class LoadedAnimation implements Cloneable {
         assert spatialTrackIndex >= 0 : spatialTrackIndex;
 
         SpatialTrack result = null;
-        Animation realAnimation = getReal();
-        if (realAnimation != null) {
-            result = MaudUtil.findSpatialTrack(realAnimation,
+        Object realAnimation = getReal();
+        if (realAnimation instanceof Animation) {
+            result = MaudUtil.findSpatialTrack((Animation) realAnimation,
                     spatialTrackIndex);
         }
 
@@ -428,36 +551,62 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Find the track for the indexed bone.
+     * Find a track for the indexed target Bone/Joint.
      *
-     * @param boneIndex which bone (&ge;0)
-     * @return the pre-existing instance, or null if none
+     * @param boneIndex the index of the target Bone or Joint (&ge;0)
+     * @return the pre-existing BoneTrack or TransformTrack, or null if none
+     * found
      */
-    BoneTrack findTrackForBone(int boneIndex) {
+    Object findTrackForBone(int boneIndex) {
         assert boneIndex >= 0 : boneIndex;
 
-        BoneTrack result = null;
-        Animation realAnimation = getReal();
-        if (realAnimation != null) {
-            result = MyAnimation.findBoneTrack(realAnimation, boneIndex);
+        Object result = null;
+        Object realAnimation = getReal();
+        if (realAnimation instanceof Animation) {
+            result = MyAnimation.findBoneTrack((Animation) realAnimation,
+                    boneIndex);
+        } else if (realAnimation instanceof AnimClip) {
+            result = MyAnimation.findJointTrack((AnimClip) realAnimation,
+                    boneIndex);
         }
 
         return result;
     }
 
     /**
-     * Access the spatial track (if any) for the specified target.
+     * Find a track for the specified target Spatial.
      *
-     * @param target which spatial to find (unaffected)
-     * @return the pre-existing instance, or null if none found
+     * @param spat the target Spatial (unaffected)
+     * @return the pre-existing MorphTrack, SpatialTrack, or TransformTrack, or
+     * null if none found
      */
-    SpatialTrack findTrackForSpatial(Spatial target) {
-        SpatialTrack result = null;
-        AnimControl animControl = cgm.getAnimControl().find();
-        Animation realAnimation = getReal();
-        if (animControl != null && realAnimation != null) {
-            result = MyAnimation.findSpatialTrack(animControl, realAnimation,
-                    target);
+    Object findTrackForSpatial(Spatial spat) {
+        Object result = null;
+        Object control = cgm.getAnimControl().find();
+        Object realAnim = getReal();
+        if (control instanceof AnimControl && realAnim instanceof Animation) {
+            result = MyAnimation.findSpatialTrack((AnimControl) control,
+                    (Animation) realAnim, spat);
+
+        } else if (control instanceof AnimComposer
+                && realAnim instanceof AnimClip) {
+            AnimTrack[] tracks = ((AnimClip) realAnim).getTracks();
+            for (AnimTrack track : tracks) {
+                if (track instanceof MorphTrack) {
+                    Geometry target = ((MorphTrack) track).getTarget();
+                    if (target == spat) {
+                        result = track;
+                        break;
+                    }
+                } else if (track instanceof TransformTrack) {
+                    HasLocalTransform target
+                            = ((TransformTrack) track).getTarget();
+                    if (target == spat) {
+                        result = track;
+                        break;
+                    }
+                }
+            }
         }
 
         return result;
@@ -469,26 +618,48 @@ public class LoadedAnimation implements Cloneable {
      * @param track (may be null)
      * @return the track index (&ge;0) or -1 if not found
      */
-    int findTrackIndex(Track track) {
-        Animation real = getReal();
-        int index = MyAnimation.findTrackIndex(real, track);
+    int findTrackIndex(Object track) {
+        Object[] tracks = getTracks();
+        int numTracks = tracks.length;
+        for (int index = 0; index < numTracks; ++index) {
+            if (track == tracks[index]) {
+                return index;
+            }
+        }
 
-        return index;
+        return -1;
     }
 
     /**
      * Access the real animation.
      *
-     * @return the pre-existing instance, or null if none or in bind/retargeted
-     * pose
+     * @return the pre-existing Animation or AnimClip, or null if none or in
+     * bind/retargeted pose
      */
-    Animation getReal() {
-        Animation result = null;
+    Object getReal() {
+        Object result = null;
         if (isReal()) {
             result = cgm.getAnimControl().getAnimation(loadedName);
         }
 
         return result;
+    }
+
+    /**
+     * Access the track array of the real animation.
+     *
+     * @return the pre-existing array of AnimTracks or Tracks, or null if none
+     */
+    Object[] getTracks() {
+        Object[] tracks = null;
+        Object realAnimation = getReal();
+        if (realAnimation instanceof AnimClip) {
+            tracks = ((AnimClip) realAnimation).getTracks();
+        } else if (realAnimation instanceof Animation) {
+            tracks = ((Animation) realAnimation).getTracks();
+        }
+
+        return tracks;
     }
 
     /**
@@ -523,9 +694,13 @@ public class LoadedAnimation implements Cloneable {
         Validate.nonNegative(boneIndex, "bone index");
 
         boolean result = false;
-        Animation realAnimation = getReal();
-        if (realAnimation != null) {
-            result = MyAnimation.hasTrackForBone(realAnimation, boneIndex);
+        Object realAnimation = getReal();
+        if (realAnimation instanceof Animation) {
+            result = MyAnimation.hasTrackForBone((Animation) realAnimation,
+                    boneIndex);
+        } else if (realAnimation instanceof AnimClip) {
+            result = MaudUtil.hasTrackForJoint((AnimClip) realAnimation,
+                    boneIndex);
         }
 
         return result;
@@ -537,22 +712,19 @@ public class LoadedAnimation implements Cloneable {
      */
     public void insertKeyframes() {
         float atTime = cgm.getPlay().getTime();
-        float duration = duration();
-        Animation newAnimation = new Animation(loadedName, duration);
-        Track newSelectedTrack = null;
-        Track oldSelectedTrack = cgm.getTrack().get();
+        Pose pose = cgm.getPose().get();
 
-        Animation oldAnimation = getReal();
-        Track[] oldTracks = oldAnimation.getTracks();
-        for (Track track : oldTracks) { // TODO add more tracks?
-            Track newTrack;
-            if (track instanceof BoneTrack) {
-                BoneTrack boneTrack = (BoneTrack) track;
+        Object newSelectedTrack = null;
+        Object oldSelectedTrack = cgm.getTrack().get();
+        TmpTracks.clear();
+        Object[] oldTracks = getTracks();
+        for (Object oldTrack : oldTracks) { // TODO add more tracks?
+            int frameIndex = MaudUtil.findKeyframeIndex(oldTrack, atTime);
+            Object newTrack;
+            if (oldTrack instanceof BoneTrack) {
+                BoneTrack boneTrack = (BoneTrack) oldTrack;
                 int boneIndex = boneTrack.getTargetBoneIndex();
-                Pose pose = cgm.getPose().get();
                 Transform user = pose.userTransform(boneIndex, null);
-                int frameIndex
-                        = MyAnimation.findKeyframeIndex(boneTrack, atTime);
                 if (frameIndex == -1) {
                     newTrack
                             = TrackEdit.insertKeyframe(boneTrack, atTime, user);
@@ -560,19 +732,40 @@ public class LoadedAnimation implements Cloneable {
                     newTrack = TrackEdit.replaceKeyframe(boneTrack, frameIndex,
                             user);
                 }
+            } else if (oldTrack instanceof TransformTrack) {
+                TransformTrack transformTrack = (TransformTrack) oldTrack;
+                HasLocalTransform target = transformTrack.getTarget();
+                if (target instanceof Joint) {
+                    int jointIndex = ((Joint) target).getId();
+                    Transform user = pose.userTransform(jointIndex, null);
+                    if (frameIndex == -1) {
+                        newTrack = MaudUtil.insertKeyframe(transformTrack,
+                                atTime, user);
+                    } else {
+                        newTrack = MaudUtil.replaceKeyframe(transformTrack,
+                                frameIndex, user);
+                    }
+                } else {
+                    newTrack = MaudUtil.cloneTrack(oldTrack);
+                }
             } else {
-                newTrack = track.clone();
+                newTrack = MaudUtil.cloneTrack(oldTrack);
             }
-            if (track == oldSelectedTrack) {
+
+            if (oldTrack == oldSelectedTrack) {
                 newSelectedTrack = newTrack;
             }
-            newAnimation.addTrack(newTrack);
+            TmpTracks.add(newTrack);
         }
+
+        Object newAnim = newAnim();
+        TmpTracks.addAllToAnim(newAnim);
 
         String eventDescription = String.format(
                 "insert keyframes into the %s animation at t=%f",
                 MyString.quote(loadedName), atTime);
-        editableCgm.replace(oldAnimation, newAnimation, eventDescription,
+        Object oldAnim = getReal();
+        editableCgm.replace(oldAnim, newAnim, eventDescription,
                 newSelectedTrack);
     }
 
@@ -654,16 +847,17 @@ public class LoadedAnimation implements Cloneable {
     public List<String> listTrackedBones() {
         int numTracks = countTracks();
         List<String> result = new ArrayList<>(numTracks);
-        Animation realAnimation = getReal();
+        Object realAnimation = getReal();
         if (realAnimation != null) {
-            AnimControl animControl = cgm.getAnimControl().find();
-            Track[] tracks = realAnimation.getTracks();
-            for (Track track : tracks) {
+            AbstractControl control = cgm.getAnimControl().find();
+            Object[] tracks = getTracks();
+            for (Object track : tracks) {
                 if (track instanceof BoneTrack) {
-                    BoneTrack boneTrack = (BoneTrack) track;
-                    String name
-                            = MyAnimation.getTargetName(boneTrack, animControl);
+                    String name = MyAnimation.getTargetName((BoneTrack) track,
+                            (AnimControl) control);
                     result.add(name);
+                } else if (track instanceof TransformTrack) {
+
                 }
             }
         }
@@ -678,15 +872,15 @@ public class LoadedAnimation implements Cloneable {
      */
     public List<TrackItem> listTracks() {
         List<TrackItem> result;
-        Animation realAnimation = getReal();
+        Object realAnimation = getReal();
         if (realAnimation != null) {
             SelectedAnimControl sac = cgm.getAnimControl();
-            AnimControl animControl = sac.find();
+            AbstractControl animControl = sac.find();
             String controlName = sac.name();
 
-            Track[] tracks = realAnimation.getTracks();
+            Object[] tracks = getTracks();
             result = new ArrayList<>(tracks.length);
-            for (Track track : tracks) {
+            for (Object track : tracks) {
                 TrackItem item = new TrackItem(loadedName, controlName,
                         animControl, track);
                 result.add(item);
@@ -739,7 +933,7 @@ public class LoadedAnimation implements Cloneable {
         cgm.getPlay().setTime(0f);
         cgm.getTrack().select(null);
 
-        Skeleton skeleton = cgm.getSkeleton().find();
+        Object skeleton = cgm.getSkeleton().find();
         cgm.getPose().resetToBind(skeleton);
     }
 
@@ -801,8 +995,28 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Reduce all bone/spatial tracks in the loaded animation by the specified
-     * factor.
+     * Create an empty animation with the same name and type as the loaded real
+     * animation.
+     *
+     * @return a new Animation or AnimClip with no tracks
+     */
+    Object newAnim() {
+        assert isReal();
+
+        Object result;
+        Object oldAnim = getReal();
+        if (oldAnim instanceof AnimClip) {
+            result = new AnimClip(loadedName);
+        } else {
+            float duration = ((Animation) oldAnim).getLength();
+            result = new Animation(loadedName, duration);
+        }
+
+        return result;
+    }
+
+    /**
+     * Reduce all tracks in the loaded animation by the specified factor.
      *
      * @param factor reduction factor (&ge;2)
      */
@@ -810,30 +1024,35 @@ public class LoadedAnimation implements Cloneable {
         Validate.inRange(factor, "reduction factor", 2, Integer.MAX_VALUE);
         assert isReal();
 
-        float duration = duration();
-        Animation newAnimation = new Animation(loadedName, duration);
-        Track newSelectedTrack = null;
-        Track oldSelectedTrack = cgm.getTrack().get();
-
-        Animation oldAnimation = getReal();
-        Track[] oldTracks = oldAnimation.getTracks();
-        for (Track track : oldTracks) {
-            Track newTrack;
-            if (track instanceof BoneTrack || track instanceof SpatialTrack) {
-                newTrack = TrackEdit.reduce(track, factor);
-            } else {
-                newTrack = track.clone(); // TODO other track types
+        Object newSelectedTrack = null;
+        Object oldSelectedTrack = cgm.getTrack().get();
+        TmpTracks.clear();
+        Object[] oldTracks = getTracks();
+        for (Object oldTrack : oldTracks) {
+            Object newTrack;
+            if (oldTrack instanceof BoneTrack
+                    || oldTrack instanceof SpatialTrack) {
+                newTrack = TrackEdit.reduce((Track) oldTrack, factor);
+            } else if (oldTrack instanceof TransformTrack) {
+                newTrack = MaudUtil.reduce((TransformTrack) oldTrack, factor);
+            } else { // TODO other track types
+                newTrack = MaudUtil.cloneTrack(oldTrack);
             }
-            if (track == oldSelectedTrack) {
+
+            if (oldTrack == oldSelectedTrack) {
                 newSelectedTrack = newTrack;
             }
-            newAnimation.addTrack(newTrack);
+            TmpTracks.add(newTrack);
         }
+
+        Object newAnim = newAnim();
+        TmpTracks.addAllToAnim(newAnim);
 
         String eventDescription = String.format(
                 "thin the %s animation by %dx", MyString.quote(loadedName),
                 factor);
-        editableCgm.replace(oldAnimation, newAnimation, eventDescription,
+        Object oldAnim = getReal();
+        editableCgm.replace(oldAnim, newAnim, eventDescription,
                 newSelectedTrack);
     }
 
@@ -849,24 +1068,33 @@ public class LoadedAnimation implements Cloneable {
         assert !sac.hasRealAnimation(newName) : newName;
         assert isReal();
 
-        float duration = duration();
-        Animation newAnimation = new Animation(newName, duration);
-        Track newSelectedTrack = null;
-        Track oldSelectedTrack = cgm.getTrack().get();
-
-        Animation oldAnimation = getReal();
-        Track[] oldTracks = oldAnimation.getTracks();
-        for (Track track : oldTracks) {
-            Track clone = track.clone();
-            if (track == oldSelectedTrack) {
-                newSelectedTrack = clone;
-            }
-            newAnimation.addTrack(clone);
+        Object newAnim;
+        Object oldAnim = getReal();
+        if (oldAnim instanceof AnimClip) {
+            newAnim = new AnimClip(newName);
+        } else {
+            assert oldAnim instanceof Animation;
+            float duration = ((Animation) oldAnim).getLength();
+            newAnim = new Animation(newName, duration);
         }
+
+        Object oldSelectedTrack = cgm.getTrack().get();
+        Object newSelectedTrack = null;
+        TmpTracks.clear();
+        Object[] oldTracks = getTracks();
+        for (Object oldTrack : oldTracks) {
+            Object newTrack = MaudUtil.cloneTrack(oldTrack);
+
+            if (oldTrack == oldSelectedTrack) {
+                newSelectedTrack = newTrack;
+            }
+            TmpTracks.add(newTrack);
+        }
+        TmpTracks.addAllToAnim(newAnim);
 
         String eventDescription = String.format("rename the %s animation to %s",
                 MyString.quote(loadedName), MyString.quote(newName));
-        editableCgm.replace(oldAnimation, newAnimation, eventDescription,
+        editableCgm.replace(oldAnim, newAnim, eventDescription,
                 newSelectedTrack);
         loadedName = newName;
     }
@@ -875,29 +1103,34 @@ public class LoadedAnimation implements Cloneable {
      * Reverse all bone/spatial tracks.
      */
     public void reverse() {
-        float duration = duration();
-        Animation newAnimation = new Animation(loadedName, duration);
-        Track newSelectedTrack = null;
-        Track oldSelectedTrack = cgm.getTrack().get();
-
-        Animation oldAnimation = getReal();
-        Track[] oldTracks = oldAnimation.getTracks();
-        for (Track track : oldTracks) {
-            Track newTrack;
-            if (track instanceof BoneTrack || track instanceof SpatialTrack) {
-                newTrack = TrackEdit.reverse(track);
-            } else {
-                newTrack = track.clone(); // TODO other track types
+        Object newSelectedTrack = null;
+        Object oldSelectedTrack = cgm.getTrack().get();
+        TmpTracks.clear();
+        Object[] oldTracks = getTracks();
+        for (Object oldTrack : oldTracks) {
+            Object newTrack;
+            if (oldTrack instanceof BoneTrack
+                    || oldTrack instanceof SpatialTrack) {
+                newTrack = TrackEdit.reverse((Track) oldTrack);
+            } else if (oldTrack instanceof AnimTrack) {
+                newTrack = TrackEdit.reverse((AnimTrack) oldTrack);
+            } else { // TODO other track types
+                newTrack = MaudUtil.cloneTrack(oldTrack);
             }
-            if (track == oldSelectedTrack) {
+
+            if (oldTrack == oldSelectedTrack) {
                 newSelectedTrack = newTrack;
             }
-            newAnimation.addTrack(newTrack);
+            TmpTracks.add(newTrack);
         }
+
+        Object newAnim = newAnim();
+        TmpTracks.addAllToAnim(newAnim);
 
         String eventDescription = String.format("reverse the %s animation",
                 MyString.quote(loadedName));
-        editableCgm.replace(oldAnimation, newAnimation, eventDescription,
+        Object oldAnim = getReal();
+        editableCgm.replace(oldAnim, newAnim, eventDescription,
                 newSelectedTrack);
         load(loadedName);
     }
@@ -913,31 +1146,38 @@ public class LoadedAnimation implements Cloneable {
         assert isReal();
 
         float duration = duration();
-        Animation newAnimation = new Animation(loadedName, duration);
-        Track newSelectedTrack = null;
+        Object newSelectedTrack = null;
         TweenTransforms techniques = Maud.getModel().getTweenTransforms();
-        Track oldSelectedTrack = cgm.getTrack().get();
-
-        Animation oldAnimation = getReal();
-        Track[] oldTracks = oldAnimation.getTracks();
-        for (Track track : oldTracks) {
-            Track newTrack;
-            if (track instanceof BoneTrack || track instanceof SpatialTrack) {
-                newTrack = techniques.resampleAtRate(track, sampleRate,
-                        duration);
-            } else {
-                newTrack = track.clone(); // TODO other track types
+        Object oldSelectedTrack = cgm.getTrack().get();
+        TmpTracks.clear();
+        Object[] oldTracks = getTracks();
+        for (Object oldTrack : oldTracks) {
+            Object newTrack;
+            if (oldTrack instanceof BoneTrack
+                    || oldTrack instanceof SpatialTrack) {
+                newTrack = techniques.resampleAtRate((Track) oldTrack,
+                        sampleRate, duration);
+            } else if (oldTrack instanceof TransformTrack) {
+                newTrack = MaudUtil.resampleAtRate((TransformTrack) oldTrack,
+                        sampleRate, duration);
+            } else { // TODO other track types
+                newTrack = MaudUtil.cloneTrack(oldTrack);
             }
-            if (track == oldSelectedTrack) {
+
+            if (oldTrack == oldSelectedTrack) {
                 newSelectedTrack = newTrack;
             }
-            newAnimation.addTrack(newTrack);
+            TmpTracks.add(newTrack);
         }
+
+        Object newAnim = newAnim();
+        TmpTracks.addAllToAnim(newAnim);
 
         String eventDescription = String.format(
                 "resample the %s animation at %f FPS",
                 MyString.quote(loadedName), sampleRate);
-        editableCgm.replace(oldAnimation, newAnimation, eventDescription,
+        Object oldAnim = getReal();
+        editableCgm.replace(oldAnim, newAnim, eventDescription,
                 newSelectedTrack);
     }
 
@@ -953,31 +1193,39 @@ public class LoadedAnimation implements Cloneable {
 
         float duration = duration();
         assert duration > 0f : duration;
-        Animation newAnimation = new Animation(loadedName, duration);
-        Track newSelectedTrack = null;
+        Object newSelectedTrack = null;
         TweenTransforms techniques = Maud.getModel().getTweenTransforms();
-        Track oldSelectedTrack = cgm.getTrack().get();
+        Object oldSelectedTrack = cgm.getTrack().get();
 
-        Animation oldAnimation = getReal();
-        Track[] oldTracks = oldAnimation.getTracks();
-        for (Track track : oldTracks) {
-            Track newTrack;
-            if (track instanceof BoneTrack || track instanceof SpatialTrack) {
-                newTrack = techniques.resampleToNumber(track, numSamples,
-                        duration);
-            } else {
-                newTrack = track.clone(); // TODO other track types
+        TmpTracks.clear();
+        Object[] oldTracks = getTracks();
+        for (Object oldTrack : oldTracks) {
+            Object newTrack;
+            if (oldTrack instanceof BoneTrack
+                    || oldTrack instanceof SpatialTrack) {
+                newTrack = techniques.resampleToNumber((Track) oldTrack,
+                        numSamples, duration);
+            } else if (oldTrack instanceof TransformTrack) {
+                newTrack = MaudUtil.resampleToNumber((TransformTrack) oldTrack,
+                        numSamples, duration);
+            } else { // TODO other track types
+                newTrack = MaudUtil.cloneTrack(oldTrack);
             }
-            if (track == oldSelectedTrack) {
+
+            if (oldTrack == oldSelectedTrack) {
                 newSelectedTrack = newTrack;
             }
-            newAnimation.addTrack(newTrack);
+            TmpTracks.add(newTrack);
         }
+
+        Object newAnim = newAnim();
+        TmpTracks.addAllToAnim(newAnim);
 
         String eventDescription = String.format(
                 "resample the %s animation to %d keyframes",
                 MyString.quote(loadedName), numSamples);
-        editableCgm.replace(oldAnimation, newAnimation, eventDescription,
+        Object oldAnim = getReal();
+        editableCgm.replace(oldAnim, newAnim, eventDescription,
                 newSelectedTrack);
     }
 
@@ -1022,36 +1270,43 @@ public class LoadedAnimation implements Cloneable {
     public void setDurationProportional(float newDuration) {
         Validate.nonNegative(newDuration, "new duration");
 
-        Animation oldAnimation = getReal();
-        float oldDuration = oldAnimation.getLength();
-        if (oldDuration != newDuration) {
-            Animation newAnimation = new Animation(loadedName, newDuration);
-            Track newSelectedTrack = null;
-            Track oldSelectedTrack = cgm.getTrack().get();
-            Track[] oldTracks = oldAnimation.getTracks();
-            for (Track track : oldTracks) {
-                Track newTrack = TrackEdit.setDuration(track, newDuration);
-                if (track == oldSelectedTrack) {
-                    newSelectedTrack = newTrack;
-                }
-                newAnimation.addTrack(newTrack);
-            }
-
-            float factor;
-            String verb;
-            if (newDuration < oldDuration) {
-                factor = oldDuration / newDuration;
-                verb = "compress";
-            } else {
-                factor = newDuration / oldDuration;
-                verb = "expand";
-            }
-            String eventDescription = String.format("%s the %s animation %fx",
-                    verb, MyString.quote(loadedName), factor);
-            editableCgm.replace(oldAnimation, newAnimation, eventDescription,
-                    newSelectedTrack);
-            load(loadedName);
+        float oldDuration = duration();
+        if (oldDuration == newDuration) {
+            return;
         }
+
+        Object newSelectedTrack = null;
+        Object oldSelectedTrack = cgm.getTrack().get();
+        TmpTracks.clear();
+        Object[] oldTracks = getTracks();
+        for (Object track : oldTracks) {
+            Object newTrack
+                    = TrackEdit.setDuration((Track) track, newDuration);
+            if (track == oldSelectedTrack) {
+                newSelectedTrack = newTrack;
+            }
+            TmpTracks.add(newTrack);
+        }
+
+        Object newAnim = newAnim(newDuration);
+        TmpTracks.addAllToAnim(newAnim);
+
+        float factor;
+        String verb;
+        if (newDuration < oldDuration) {
+            factor = oldDuration / newDuration;
+            verb = "compress";
+        } else {
+            factor = newDuration / oldDuration;
+            verb = "expand";
+        }
+        String eventDescription = String.format("%s the %s animation %fx",
+                verb, MyString.quote(loadedName), factor);
+        Object oldAnim = getReal();
+        editableCgm.replace(oldAnim, newAnim, eventDescription,
+                newSelectedTrack);
+        load(loadedName);
+
     }
 
     /**
@@ -1063,36 +1318,47 @@ public class LoadedAnimation implements Cloneable {
     public void setDurationSame(float newDuration) {
         Validate.nonNegative(newDuration, "new duration");
 
-        Animation oldAnimation = getReal();
-        float oldDuration = oldAnimation.getLength();
-        if (oldDuration != newDuration) {
-            Animation newAnimation = new Animation(loadedName, newDuration);
-            Track newSelectedTrack = null;
-            Track oldSelectedTrack = cgm.getTrack().get();
-            Track[] oldTracks = oldAnimation.getTracks();
-            for (Track track : oldTracks) {
-                Track newTrack;
-                if (track instanceof BoneTrack
-                        || track instanceof SpatialTrack) {
-                    newTrack = TrackEdit.truncate(track, newDuration);
-                } else {
-                    newTrack = track.clone(); // TODO other track types
-                }
-                if (track == oldSelectedTrack) {
-                    newSelectedTrack = newTrack;
-                }
-                newAnimation.addTrack(newTrack);
+        float oldDuration = duration();
+        if (oldDuration == newDuration) {
+            return;
+        }
+
+        Object newSelectedTrack = null;
+        Object oldSelectedTrack = cgm.getTrack().get();
+        TmpTracks.clear();
+        Object[] oldTracks = getTracks();
+        for (Object oldTrack : oldTracks) {
+            Object newTrack;
+            if (oldTrack instanceof BoneTrack
+                    || oldTrack instanceof SpatialTrack) {
+                newTrack = TrackEdit.truncate((Track) oldTrack, newDuration);
+            } else if (oldTrack instanceof TransformTrack) {
+                TransformTrack transformTrack = (TransformTrack) oldTrack;
+                Transform endTransform = new Transform();
+                transformTrack.getDataAtTime(newDuration, endTransform);
+                newTrack = TrackEdit.truncate(transformTrack,
+                        newDuration, endTransform);
+            } else { // TODO other track types
+                newTrack = MaudUtil.cloneTrack(oldTrack);
             }
 
-            String verb = (newDuration < oldDuration) ? "truncate" : "extend";
-            String name = oldAnimation.getName();
-            String eventDescription = String.format(
-                    "%s the %s animation to t=%f", verb, MyString.quote(name),
-                    newDuration);
-            editableCgm.replace(oldAnimation, newAnimation, eventDescription,
-                    newSelectedTrack);
-            load(loadedName);
+            if (oldTrack == oldSelectedTrack) {
+                newSelectedTrack = newTrack;
+            }
+            TmpTracks.add(newTrack);
         }
+
+        Object newAnim = newAnim(newDuration);
+        TmpTracks.addAllToAnim(newAnim);
+
+        String verb = (newDuration < oldDuration) ? "truncate" : "extend";
+        String eventDescription = String.format(
+                "%s the %s animation to t=%f", verb,
+                MyString.quote(loadedName), newDuration);
+        Object oldAnim = getReal();
+        editableCgm.replace(oldAnim, newAnim, eventDescription,
+                newSelectedTrack);
+        load(loadedName);
     }
 
     /**
@@ -1103,43 +1369,51 @@ public class LoadedAnimation implements Cloneable {
         BitSet influencers = null;
         SelectedSkeleton ss = cgm.getSkeleton();
         if (ss.isSelected()) {
-            Skeleton skeleton = ss.find();
+            Object skeleton = ss.find();
             Spatial subtree = ss.findSpatial();
-            influencers
-                    = InfluenceUtil.addAllInfluencers(subtree, skeleton, null);
+            if (skeleton instanceof Armature) {
+                influencers = InfluenceUtil.addAllInfluencers(subtree,
+                        (Armature) skeleton);
+            } else {
+                influencers = InfluenceUtil.addAllInfluencers(subtree,
+                        (Skeleton) skeleton);
+            }
         }
 
-        float duration = duration();
-        Animation newAnimation = new Animation(loadedName, duration);
-        Track newSelectedTrack = null;
-        Track oldSelectedTrack = cgm.getTrack().get();
-
-        Animation oldAnimation = getReal();
-        Track[] oldTracks = oldAnimation.getTracks();
-        for (Track track : oldTracks) {
-            Track newTrack = null;
+        Object newSelectedTrack = null;
+        Object oldSelectedTrack = cgm.getTrack().get();
+        TmpTracks.clear();
+        Object[] oldTracks = getTracks();
+        for (Object track : oldTracks) {
+            Object newTrack = null;
             if (track instanceof BoneTrack) {
-                BoneTrack boneTrack = (BoneTrack) track;
-                int boneIndex = boneTrack.getTargetBoneIndex();
+                int boneIndex = ((BoneTrack) track).getTargetBoneIndex();
                 if (influencers.get(boneIndex)) {
-                    newTrack = TrackEdit.simplify(track);
+                    newTrack = TrackEdit.simplify((Track) track);
                 }
             } else if (track instanceof SpatialTrack) {
-                newTrack = TrackEdit.simplify(track);
+                newTrack = TrackEdit.simplify((Track) track);
+            } else if (track instanceof AnimTrack) {
+                // TODO
             } else {
-                newTrack = track.clone();
+                newTrack = MaudUtil.cloneTrack(track);
             }
+
             if (track == oldSelectedTrack) {
                 newSelectedTrack = newTrack;
             }
             if (newTrack != null) {
-                newAnimation.addTrack(newTrack);
+                TmpTracks.add(newTrack);
             }
         }
 
+        Object newAnim = newAnim();
+        TmpTracks.addAllToAnim(newAnim);
+
         String eventDescription = String.format("simplify the %s animation",
                 MyString.quote(loadedName));
-        editableCgm.replace(oldAnimation, newAnimation, eventDescription,
+        Object oldAnim = getReal();
+        editableCgm.replace(oldAnim, newAnim, eventDescription,
                 newSelectedTrack);
     }
 
@@ -1149,29 +1423,39 @@ public class LoadedAnimation implements Cloneable {
      */
     public void truncate() {
         float endTime = cgm.getPlay().getTime();
-        Animation newAnimation = new Animation(loadedName, endTime);
-        Track newSelectedTrack = null;
-        Track oldSelectedTrack = cgm.getTrack().get();
-
-        Animation oldAnimation = getReal();
-        Track[] oldTracks = oldAnimation.getTracks();
-        for (Track track : oldTracks) {
-            Track newTrack;
-            if (track instanceof BoneTrack || track instanceof SpatialTrack) {
-                newTrack = TrackEdit.truncate(track, endTime);
-            } else {
-                newTrack = track.clone(); // TODO other track types
+        Object newSelectedTrack = null;
+        Object oldSelectedTrack = cgm.getTrack().get();
+        TmpTracks.clear();
+        Object[] oldTracks = getTracks();
+        for (Object oldTrack : oldTracks) {
+            Object newTrack;
+            if (oldTrack instanceof BoneTrack
+                    || oldTrack instanceof SpatialTrack) {
+                newTrack = TrackEdit.truncate((Track) oldTrack, endTime);
+            } else if (oldTrack instanceof TransformTrack) {
+                TransformTrack transformTrack = (TransformTrack) oldTrack;
+                Transform endTransform = new Transform();
+                transformTrack.getDataAtTime(endTime, endTransform);
+                newTrack = TrackEdit.truncate(transformTrack, endTime,
+                        endTransform);
+            } else { // TODO other track types
+                newTrack = MaudUtil.cloneTrack(oldTrack);
             }
-            if (track == oldSelectedTrack) {
+
+            if (oldTrack == oldSelectedTrack) {
                 newSelectedTrack = newTrack;
             }
-            newAnimation.addTrack(newTrack);
+            TmpTracks.add(newTrack);
         }
+
+        Object newAnim = newAnim(endTime);
+        TmpTracks.addAllToAnim(newAnim);
 
         String eventDescription = String.format(
                 "truncate the %s animation at t=%f", MyString.quote(loadedName),
                 endTime);
-        editableCgm.replace(oldAnimation, newAnimation, eventDescription,
+        Object oldAnim = getReal();
+        editableCgm.replace(oldAnim, newAnim, eventDescription,
                 newSelectedTrack);
         load(loadedName);
     }
@@ -1184,30 +1468,38 @@ public class LoadedAnimation implements Cloneable {
      * keyframes, if any exist (&ge;0, &le;1)
      */
     public void wrapAllTracks(float endWeight) {
-        Animation oldAnimation = getReal();
-        float duration = oldAnimation.getLength();
-        Animation newAnimation = new Animation(loadedName, duration);
-        Track newSelectedTrack = null;
-        Track oldSelectedTrack = cgm.getTrack().get();
-
-        Track[] oldTracks = oldAnimation.getTracks();
-        for (Track track : oldTracks) {
-            Track newTrack;
-            if (track instanceof BoneTrack || track instanceof SpatialTrack) {
-                newTrack = TrackEdit.wrap(track, duration, endWeight);
-            } else {
-                newTrack = track.clone(); // TODO other track types
+        float duration = duration();
+        Object newSelectedTrack = null;
+        Object oldSelectedTrack = cgm.getTrack().get();
+        TmpTracks.clear();
+        Object[] oldTracks = getTracks();
+        for (Object oldTrack : oldTracks) {
+            Object newTrack;
+            if (oldTrack instanceof BoneTrack
+                    || oldTrack instanceof SpatialTrack) {
+                newTrack = TrackEdit.wrap((Track) oldTrack, duration,
+                        endWeight);
+            } else if (oldTrack instanceof TransformTrack) {
+                newTrack = MaudUtil.wrap((TransformTrack) oldTrack, duration,
+                        endWeight);
+            } else { // TODO other track types
+                newTrack = MaudUtil.cloneTrack(oldTrack);
             }
-            if (track == oldSelectedTrack) {
+
+            if (oldTrack == oldSelectedTrack) {
                 newSelectedTrack = newTrack;
             }
-            newAnimation.addTrack(newTrack);
+            TmpTracks.add(newTrack);
         }
+
+        Object newAnim = newAnim();
+        TmpTracks.addAllToAnim(newAnim);
 
         String eventDescription = String.format(
                 "wrap all tracks in the %s animation using end weight=%f",
                 MyString.quote(loadedName), endWeight);
-        editableCgm.replace(oldAnimation, newAnimation, eventDescription,
+        Object oldAnim = getReal();
+        editableCgm.replace(oldAnim, newAnim, eventDescription,
                 newSelectedTrack);
     }
     // *************************************************************************
@@ -1250,5 +1542,25 @@ public class LoadedAnimation implements Cloneable {
         if (!frozen) {
             cgm.getPose().setToAnimation();
         }
+    }
+
+    /**
+     * Create a new animation with the same name and type as the loaded real
+     * animation, but a different duration.
+     *
+     * @param duration the desired duration (in seconds, &ge;0)
+     * @return a new Animation or AnimClip with no tracks
+     */
+    private Object newAnim(float duration) {
+        Object result;
+        Object oldAnim = getReal();
+        if (oldAnim instanceof AnimClip) {
+            result = new AnimClip(loadedName);
+        } else {
+            assert oldAnim instanceof Animation;
+            result = new Animation(loadedName, duration);
+        }
+
+        return result;
     }
 }

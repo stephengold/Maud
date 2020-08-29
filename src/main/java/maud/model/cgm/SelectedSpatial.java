@@ -26,11 +26,13 @@
  */
 package maud.model.cgm;
 
+import com.jme3.anim.AnimComposer;
+import com.jme3.anim.Armature;
+import com.jme3.anim.SkinningControl;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Bone;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.SkeletonControl;
-import com.jme3.animation.SpatialTrack;
 import com.jme3.asset.AssetManager;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bounding.BoundingSphere;
@@ -63,6 +65,7 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer;
+import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 import com.jme3.util.SafeArrayList;
 import com.jme3.util.clone.Cloner;
@@ -75,7 +78,6 @@ import java.util.Map;
 import java.util.logging.Logger;
 import jme3utilities.MyAsset;
 import jme3utilities.MyMesh;
-import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
@@ -143,13 +145,20 @@ public class SelectedSpatial implements JmeCloneable {
     // new methods exposed
 
     /**
-     * Add an AnimControl to the spatial and select the new control.
+     * Add an AnimComposer or AnimControl to the spatial and select the new
+     * control.
      */
     public void addAnimControl() {
-        Skeleton skeleton = cgm.getSkeleton().find();
-        AnimControl newSgc = new AnimControl(skeleton);
+        AbstractControl newSgc;
+        Object skeleton = cgm.getSkeleton().find();
+        if (skeleton instanceof Armature) {
+            newSgc = new SkinningControl((Armature) skeleton);
+            editableCgm.addSgc(newSgc, "add a SkinningControl");
+        } else {
+            newSgc = new AnimControl((Skeleton) skeleton);
+            editableCgm.addSgc(newSgc, "add an AnimControl");
+        }
 
-        editableCgm.addSgc(newSgc, "add an AnimControl");
         editableCgm.getSgc().select(newSgc);
     }
 
@@ -290,10 +299,11 @@ public class SelectedSpatial implements JmeCloneable {
      * Add a SkeletonControl to the selected spatial and select the new control.
      */
     public void addSkeletonControl() {
-        Skeleton skeleton = cgm.getSkeleton().find();
+        Object skeleton = cgm.getSkeleton().find();
         if (skeleton == null) {
             Spatial spatial = find();
             int numBones = MySpatial.countMeshBones(spatial);
+            // TODO option for a SkinningControl
             Bone[] bones = new Bone[numBones];
             for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
                 String boneName = String.format("bone%d", boneIndex);
@@ -301,9 +311,17 @@ public class SelectedSpatial implements JmeCloneable {
             }
             skeleton = new Skeleton(bones);
         }
-        SkeletonControl newSgc = new SkeletonControl(skeleton);
 
-        editableCgm.addSgc(newSgc, "add a SkeletonControl");
+        AbstractControl newSgc;
+        if (skeleton instanceof Armature) {
+            newSgc = new SkinningControl((Armature) skeleton);
+            editableCgm.addSgc(newSgc, "add a SkinningControl");
+
+        } else {
+            newSgc = new SkeletonControl((Skeleton) skeleton);
+            editableCgm.addSgc(newSgc, "add a SkeletonControl");
+        }
+
         editableCgm.getSgc().select(newSgc);
     }
 
@@ -971,19 +989,27 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Test whether the spatial has both a SkeletonControl and an AnimControl.
+     * Test whether the spatial has both a SkeletonControl and an AnimControl or
+     * both a SkinningControl and an AnimComposer.
      *
      * @return true if it has both, otherwise false
      */
     public boolean hasSkeletonControls() {
         Spatial spatial = find();
+
         AnimControl animControl = spatial.getControl(AnimControl.class);
         SkeletonControl skelControl = spatial.getControl(SkeletonControl.class);
         if (animControl != null && skelControl != null) {
             return true;
-        } else {
-            return false;
         }
+
+        AnimComposer animComposer = spatial.getControl(AnimComposer.class);
+        SkinningControl skinControl = spatial.getControl(SkinningControl.class);
+        if (animComposer != null && skinControl != null) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -1030,9 +1056,8 @@ public class SelectedSpatial implements JmeCloneable {
      * @return true if it's a target, otherwise false
      */
     public boolean isAnimationTarget() {
-        LoadedAnimation animation = cgm.getAnimation();
         Spatial spatial = find();
-        SpatialTrack track = animation.findTrackForSpatial(spatial);
+        Object track = cgm.getAnimation().findTrackForSpatial(spatial);
         if (track == null) {
             return false;
         } else {
@@ -1364,10 +1389,13 @@ public class SelectedSpatial implements JmeCloneable {
      * Select the attachments node of the selected bone.
      */
     public void selectAttachmentsNode() {
-        SelectedBone selectedBone = cgm.getBone();
-        Bone bone = selectedBone.get();
-        Node attachmentsNode = MySkeleton.getAttachments(bone);
-        select(attachmentsNode);
+        Object bone = cgm.getBone().get();
+        if (bone != null) {
+            Node attachmentsNode = MaudUtil.getBoneAttachments(bone);
+            if (attachmentsNode != null) {
+                select(attachmentsNode);
+            }
+        }
     }
 
     /**

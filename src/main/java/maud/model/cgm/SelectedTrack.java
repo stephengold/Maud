@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -26,6 +26,13 @@
  */
 package maud.model.cgm;
 
+import com.jme3.anim.AnimClip;
+import com.jme3.anim.AnimComposer;
+import com.jme3.anim.AnimTrack;
+import com.jme3.anim.Armature;
+import com.jme3.anim.Joint;
+import com.jme3.anim.TransformTrack;
+import com.jme3.anim.util.HasLocalTransform;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Animation;
 import com.jme3.animation.BoneTrack;
@@ -40,6 +47,7 @@ import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.control.AbstractControl;
 import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
 import java.util.ArrayList;
@@ -60,6 +68,7 @@ import jme3utilities.wes.SmoothVectors;
 import jme3utilities.wes.TrackEdit;
 import jme3utilities.wes.TweenTransforms;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.SupportUtil;
 
 /**
@@ -89,25 +98,21 @@ public class SelectedTrack implements JmeCloneable {
      */
     private EditableCgm editableCgm;
     /**
-     * selected track in the loaded animation, or null if none selected
+     * selected track in the loaded Animation/AnimClip, or null if none selected
      */
-    private Track selected;
+    private Object selected;
     // *************************************************************************
     // new methods exposed
 
     /**
      * Count the number of keyframes in the track.
      *
-     * @return count (&ge;0)
+     * @return the count (&ge;0)
      */
     public int countKeyframes() {
-        int count = 0;
-        if (selected != null) {
-            float[] times = selected.getKeyFrameTimes();
-            count = times.length;
-        }
+        float[] times = MaudUtil.getTrackTimes(selected);
+        int count = times.length;
 
-        assert count >= 0 : count;
         return count;
     }
 
@@ -119,15 +124,8 @@ public class SelectedTrack implements JmeCloneable {
     public int countRotations() {
         int count = 0;
         if (selected != null) {
-            Quaternion[] rotations = MyAnimation.getRotations(selected);
-            if (rotations != null) {
-                Set<Quaternion> distinct = new HashSet<>(rotations.length);
-                for (Quaternion rot : rotations) {
-                    Quaternion standard = MyQuaternion.standardize(rot, null);
-                    distinct.add(standard);
-                }
-                count = distinct.size();
-            }
+            Quaternion[] rotations = MaudUtil.getTrackRotations(selected);
+            count = countNe(rotations);
         }
 
         return count;
@@ -139,15 +137,13 @@ public class SelectedTrack implements JmeCloneable {
      * @return count (&ge;0)
      */
     public int countScales() {
-        int count = 0;
+        int result = 0;
         if (selected != null) {
-            Vector3f[] scales = MyAnimation.getScales(selected);
-            if (scales != null) {
-                count = MyArray.countNe(scales);
-            }
+            Vector3f[] rotations = MaudUtil.getTrackScales(selected);
+            result = MyArray.countNe(rotations);
         }
 
-        return count;
+        return result;
     }
 
     /**
@@ -157,15 +153,13 @@ public class SelectedTrack implements JmeCloneable {
      * @return count (&ge;0)
      */
     public int countTranslations() {
-        int count = 0;
+        int result = 0;
         if (selected != null) {
-            Vector3f[] translations = MyAnimation.getTranslations(selected);
-            if (translations != null) {
-                count = MyArray.countNe(translations);
-            }
+            Vector3f[] rotations = MaudUtil.getTrackTranslations(selected);
+            result = MyArray.countNe(rotations);
         }
 
-        return count;
+        return result;
     }
 
     /**
@@ -197,37 +191,40 @@ public class SelectedTrack implements JmeCloneable {
     }
 
     /**
-     * Delete the rotations from the selected track, which must be a spatial
-     * track.
+     * Delete the rotations from the selected track, which must be a
+     * SpatialTrack or TransformTrack.
      */
     public void deleteRotations() {
-        assert selected instanceof SpatialTrack;
+        assert selected instanceof SpatialTrack
+                || selected instanceof TransformTrack;
 
-        Animation newAnimation = newAnimation();
-        Track newSelected = null;
-        Animation oldAnimation = cgm.getAnimation().getReal();
-        Track[] oldTracks = oldAnimation.getTracks();
-        for (Track track : oldTracks) {
-            Track clone;
-            if (track == selected) {
-                float[] times = track.getKeyFrameTimes();
-                SpatialTrack spatialTrack = (SpatialTrack) track;
-                Vector3f[] translations = spatialTrack.getTranslations();
-                Vector3f[] scales = spatialTrack.getScales();
-                clone = TrackEdit.newTrack(track, times, translations, null,
-                        scales);
-                newSelected = clone;
+        Object newSelected = null;
+
+        TmpTracks.clear();
+        Object[] oldTracks = cgm.getAnimation().getTracks();
+        for (Object oldTrack : oldTracks) {
+            Object newTrack;
+            if (oldTrack == selected) {
+                float[] times = MaudUtil.getTrackTimes(oldTrack);
+                Vector3f[] translations = MaudUtil.getTrackTranslations(selected);
+                Vector3f[] scales = MaudUtil.getTrackScales(selected);
+                newTrack = MaudUtil.newTrack(oldTrack, times, translations,
+                        null, scales);
+                newSelected = newTrack;
             } else {
-                clone = track.clone();
+                newTrack = MaudUtil.cloneTrack(oldTrack);
             }
-            newAnimation.addTrack(clone);
+            TmpTracks.add(newTrack);
         }
+
+        Object newAnim = cgm.getAnimation().newAnim();
+        TmpTracks.addAllToAnim(newAnim);
 
         String trackName = describe();
         String eventDescription
                 = String.format("delete rotations from track %s", trackName);
-        editableCgm.replace(oldAnimation, newAnimation, eventDescription,
-                newSelected);
+        Object oldAnim = cgm.getAnimation().getReal();
+        editableCgm.replace(oldAnim, newAnim, eventDescription, newSelected);
     }
 
     /**
@@ -236,30 +233,33 @@ public class SelectedTrack implements JmeCloneable {
     public void deleteScales() {
         assert selected != null;
 
-        Animation newAnimation = newAnimation();
-        Track newSelected = null;
-        Animation oldAnimation = cgm.getAnimation().getReal();
-        Track[] oldTracks = oldAnimation.getTracks();
-        for (Track track : oldTracks) {
-            Track clone;
-            if (track == selected) {
-                float[] times = track.getKeyFrameTimes();
-                Vector3f[] translations = MyAnimation.getTranslations(track);
-                Quaternion[] rotations = MyAnimation.getRotations(track);
-                clone = TrackEdit.newTrack(track, times, translations,
+        Object newSelected = null;
+
+        TmpTracks.clear();
+        Object[] oldTracks = cgm.getAnimation().getTracks();
+        for (Object oldTrack : oldTracks) {
+            Object newTrack;
+            if (oldTrack == selected) {
+                float[] times = MaudUtil.getTrackTimes(oldTrack);
+                Vector3f[] translations = MaudUtil.getTrackTranslations(selected);
+                Quaternion[] rotations = MaudUtil.getTrackRotations(selected);
+                newTrack = MaudUtil.newTrack(oldTrack, times, translations,
                         rotations, null);
-                newSelected = clone;
+                newSelected = newTrack;
             } else {
-                clone = track.clone();
+                newTrack = MaudUtil.cloneTrack(oldTrack);
             }
-            newAnimation.addTrack(clone);
+            TmpTracks.add(newTrack);
         }
+
+        Object newAnim = cgm.getAnimation().newAnim();
+        TmpTracks.addAllToAnim(newAnim);
 
         String trackName = describe();
         String eventDescription
                 = String.format("delete scales from track %s", trackName);
-        editableCgm.replace(oldAnimation, newAnimation, eventDescription,
-                newSelected);
+        Object oldAnim = cgm.getAnimation().getReal();
+        editableCgm.replace(oldAnim, newAnim, eventDescription, newSelected);
     }
 
     /**
@@ -275,37 +275,40 @@ public class SelectedTrack implements JmeCloneable {
     }
 
     /**
-     * Delete the translations from the selected track, which must be a spatial
-     * track.
+     * Delete the translations from the selected track, which must be a
+     * SpatialTrack or TransformTrack.
      */
     public void deleteTranslations() {
-        assert selected instanceof SpatialTrack;
+        assert selected instanceof SpatialTrack
+                || selected instanceof TransformTrack;
 
-        Animation newAnimation = newAnimation();
-        Track newSelected = null;
-        Animation oldAnimation = cgm.getAnimation().getReal();
-        Track[] oldTracks = oldAnimation.getTracks();
-        for (Track track : oldTracks) {
-            Track clone;
-            if (track == selected) {
-                float[] times = track.getKeyFrameTimes();
-                SpatialTrack spatialTrack = (SpatialTrack) track;
-                Quaternion[] rotations = spatialTrack.getRotations();
-                Vector3f[] scales = spatialTrack.getScales();
-                clone = TrackEdit.newTrack(track, times, null, rotations,
-                        scales);
-                newSelected = clone;
+        Object newSelected = null;
+
+        TmpTracks.clear();
+        Object[] oldTracks = cgm.getAnimation().getTracks();
+        for (Object oldTrack : oldTracks) {
+            Object newTrack;
+            if (oldTrack == selected) {
+                float[] times = MaudUtil.getTrackTimes(oldTrack);
+                Quaternion[] rotations = MaudUtil.getTrackRotations(selected);
+                Vector3f[] scales = MaudUtil.getTrackScales(selected);
+                newTrack = MaudUtil.newTrack(oldTrack, times, null,
+                        rotations, scales);
+                newSelected = newTrack;
             } else {
-                clone = track.clone();
+                newTrack = MaudUtil.cloneTrack(oldTrack);
             }
-            newAnimation.addTrack(clone);
+            TmpTracks.add(newTrack);
         }
+
+        Object newAnim = cgm.getAnimation().newAnim();
+        TmpTracks.addAllToAnim(newAnim);
 
         String trackName = describe();
         String eventDescription
                 = String.format("delete translations from track %s", trackName);
-        editableCgm.replace(oldAnimation, newAnimation, eventDescription,
-                newSelected);
+        Object oldAnim = cgm.getAnimation().getReal();
+        editableCgm.replace(oldAnim, newAnim, eventDescription, newSelected);
     }
 
     /**
@@ -316,9 +319,15 @@ public class SelectedTrack implements JmeCloneable {
     public String describe() {
         String result = "";
         if (selected != null) {
-            AnimControl animControl = cgm.getAnimControl().find();
-            assert animControl != null;
-            result = MyAnimation.describe(selected, animControl);
+            AbstractControl control = cgm.getAnimControl().find();
+            assert control != null;
+            if (control instanceof AnimComposer) {
+                AnimTrack animTrack = (AnimTrack) selected;
+                result = MaudUtil.describe(animTrack, (AnimComposer) control);
+            } else {
+                Track track = (Track) selected;
+                result = MyAnimation.describe(track, (AnimControl) control);
+            }
         }
 
         return result;
@@ -369,18 +378,13 @@ public class SelectedTrack implements JmeCloneable {
      * @return true if track ends with a keyframe, otherwise false
      */
     public boolean endsWithKeyframe() {
-        assert selected != null;
-
         float duration = cgm.getAnimation().duration();
-        int endIndex = MyAnimation.findKeyframeIndex(selected, duration);
-        boolean result;
+        int endIndex = MaudUtil.findKeyframeIndex(selected, duration);
         if (endIndex >= 0) {
-            result = true;
+            return true;
         } else {
-            result = false;
+            return false;
         }
-
-        return result;
     }
 
     /**
@@ -393,7 +397,7 @@ public class SelectedTrack implements JmeCloneable {
         Validate.nonNegative(time, "time");
         assert selected != null;
 
-        int frameIndex = MyAnimation.findKeyframeIndex(selected, time);
+        int frameIndex = MaudUtil.findKeyframeIndex(selected, time);
         return frameIndex;
     }
 
@@ -410,7 +414,7 @@ public class SelectedTrack implements JmeCloneable {
         int nextIndex = findKeyframeIndex(time);
         if (nextIndex == -1) {
             int previous
-                    = MyAnimation.findPreviousKeyframeIndex(selected, time);
+                    = MaudUtil.findPreviousKeyframeIndex(selected, time);
             int lastIndex = countKeyframes() - 1;
             if (previous == lastIndex) {
                 nextIndex = -1;
@@ -430,16 +434,16 @@ public class SelectedTrack implements JmeCloneable {
      */
     public int findPreviousKeyframeIndex(float time) {
         Validate.nonNegative(time, "time");
-        int frameIndex = MyAnimation.findPreviousKeyframeIndex(selected, time);
+        int frameIndex = MaudUtil.findPreviousKeyframeIndex(selected, time);
         return frameIndex;
     }
 
     /**
      * Access the selected track in the loaded animation.
      *
-     * @return the pre-existing instance, or null if none
+     * @return the pre-existing AnimTrack or Track, or null if none
      */
-    Track get() {
+    Object get() {
         return selected;
     }
 
@@ -464,35 +468,48 @@ public class SelectedTrack implements JmeCloneable {
      * animation time.
      */
     public void insertKeyframe() {
-        assert selected instanceof BoneTrack;
         float time = cgm.getPlay().getTime();
         assert time > 0f : time;
         float duration = cgm.getAnimation().duration();
         assert time <= duration : time;
         assert !cgm.getFrame().isSelected();
 
-        Animation newAnimation = newAnimation();
-        Track newSelected = null;
-        Animation oldAnimation = cgm.getAnimation().getReal();
-        Track[] oldTracks = oldAnimation.getTracks();
-        for (Track track : oldTracks) {
-            Track clone;
-            if (track == selected) {
-                BoneTrack boneTrack = (BoneTrack) track;
-                int boneIndex = boneTrack.getTargetBoneIndex();
-                Pose pose = cgm.getPose().get();
-                Transform user = pose.userTransform(boneIndex, null);
-                clone = TrackEdit.insertKeyframe(selected, time, user);
-                newSelected = clone;
+        Object newSelected = null;
+
+        TmpTracks.clear();
+        Object[] oldTracks = cgm.getAnimation().getTracks();
+        for (Object oldTrack : oldTracks) {
+            Object newTrack;
+            if (oldTrack == selected) {
+                if (selected instanceof BoneTrack) {
+                    BoneTrack boneTrack = (BoneTrack) selected;
+                    int boneIndex = boneTrack.getTargetBoneIndex();
+                    Pose pose = cgm.getPose().get();
+                    Transform user = pose.userTransform(boneIndex, null);
+                    newTrack = TrackEdit.insertKeyframe(boneTrack, time, user);
+                    newSelected = newTrack;
+                } else {
+                    TransformTrack transformTrack = (TransformTrack) selected;
+                    Joint joint = (Joint) transformTrack.getTarget();
+                    int jointIndex = joint.getId();
+                    Pose pose = cgm.getPose().get();
+                    Transform user = pose.userTransform(jointIndex, null);
+                    newTrack = MaudUtil.insertKeyframe(transformTrack, time,
+                            user);
+                    newSelected = newTrack;
+                }
             } else {
-                clone = track.clone();
+                newTrack = MaudUtil.cloneTrack(oldTrack);
             }
-            newAnimation.addTrack(clone);
+            TmpTracks.add(newTrack);
         } // TODO new bone tracks?
 
+        Object newAnim = cgm.getAnimation().newAnim();
+        TmpTracks.addAllToAnim(newAnim);
+
         String description = String.format("insert a keyframe at t=%f", time);
-        editableCgm.replace(oldAnimation, newAnimation, description,
-                newSelected);
+        Object oldAnim = cgm.getAnimation().getReal();
+        editableCgm.replace(oldAnim, newAnim, description, newSelected);
     }
 
     /**
@@ -527,14 +544,11 @@ public class SelectedTrack implements JmeCloneable {
      * @return a new item, or null if none selected
      */
     public TrackItem item() {
-        TrackItem item = null;
-        if (selected != null) {
-            String animationName = cgm.getAnimation().name();
-            String animControlName = cgm.getAnimControl().name();
-            AnimControl animControl = cgm.getAnimControl().find();
-            item = new TrackItem(animationName, animControlName, animControl,
-                    selected);
-        }
+        String animName = cgm.getAnimation().name();
+        String controlName = cgm.getAnimControl().name();
+        AbstractControl control = cgm.getAnimControl().find();
+        TrackItem item
+                = new TrackItem(animName, controlName, control, selected);
 
         return item;
     }
@@ -546,7 +560,7 @@ public class SelectedTrack implements JmeCloneable {
      * @return animation time (&ge;0)
      */
     public float keyframeTime(int keyframeIndex) {
-        float[] times = selected.getKeyFrameTimes();
+        float[] times = MaudUtil.getTrackTimes(selected);
         float result = times[keyframeIndex];
 
         assert result >= 0f : result;
@@ -559,7 +573,7 @@ public class SelectedTrack implements JmeCloneable {
      * @return animation time (&ge;0)
      */
     public float lastKeyframeTime() {
-        float[] times = selected.getKeyFrameTimes();
+        float[] times = MaudUtil.getTrackTimes(selected);
         int lastIndex = times.length - 1;
         float result = times[lastIndex];
 
@@ -574,7 +588,7 @@ public class SelectedTrack implements JmeCloneable {
     public List<String> listKeyframes() {
         List<String> result = null;
         if (selected != null) {
-            float[] keyframes = selected.getKeyFrameTimes();
+            float[] keyframes = MaudUtil.getTrackTimes(selected);
             result = new ArrayList<>(keyframes.length);
             for (float keyframe : keyframes) {
                 String menuItem = String.format("%.3f", keyframe);
@@ -586,21 +600,7 @@ public class SelectedTrack implements JmeCloneable {
     }
 
     /**
-     * Create an empty animation with the same name and duration as the selected
-     * animation.
-     *
-     * @return a new instance with no tracks
-     */
-    Animation newAnimation() {
-        float duration = cgm.getAnimation().duration();
-        String name = cgm.getAnimation().name();
-        Animation result = new Animation(name, duration);
-
-        return result;
-    }
-
-    /**
-     * Reduce the track's keyframes by the specified factor.
+     * Thin the track's keyframes by the specified factor.
      *
      * @param factor reduction factor (&ge;2)
      */
@@ -608,26 +608,35 @@ public class SelectedTrack implements JmeCloneable {
         Validate.inRange(factor, "reduction factor", 2, Integer.MAX_VALUE);
         assert selected != null;
 
-        Animation newAnimation = newAnimation();
-        Track newSelected = null;
-        Animation oldAnimation = cgm.getAnimation().getReal();
-        Track[] oldTracks = oldAnimation.getTracks();
-        for (Track track : oldTracks) {
-            Track clone;
-            if (track == selected) {
-                clone = TrackEdit.reduce(track, factor);
-                newSelected = clone;
+        Object newSelected = null;
+
+        TmpTracks.clear();
+        Object[] oldTracks = cgm.getAnimation().getTracks();
+        for (Object oldTrack : oldTracks) {
+            Object newTrack;
+            if (oldTrack == selected) {
+                if (selected instanceof TransformTrack) {
+                    newTrack = MaudUtil.reduce((TransformTrack) oldTrack,
+                            factor);
+                    newSelected = newTrack;
+                } else {
+                    newTrack = TrackEdit.reduce((Track) oldTrack, factor);
+                    newSelected = newTrack;
+                }
             } else {
-                clone = track.clone();
+                newTrack = MaudUtil.cloneTrack(oldTrack);
             }
-            newAnimation.addTrack(clone);
+            TmpTracks.add(newTrack);
         }
+
+        Object newAnim = cgm.getAnimation().newAnim();
+        TmpTracks.addAllToAnim(newAnim);
 
         String trackName = describe();
         String description = String.format(
                 "thin the keyframes in track %s by %dx", trackName, factor);
-        editableCgm.replace(oldAnimation, newAnimation, description,
-                newSelected);
+        Object oldAnim = cgm.getAnimation().getReal();
+        editableCgm.replace(oldAnim, newAnim, description, newSelected);
     }
 
     /**
@@ -639,31 +648,39 @@ public class SelectedTrack implements JmeCloneable {
         Validate.positive(sampleRate, "sample rate");
         assert selected != null;
 
-        Animation newAnimation = newAnimation();
-        Track newSelected = null;
-        Animation oldAnimation = cgm.getAnimation().getReal();
+        Object newSelected = null;
 
-        Track[] oldTracks = oldAnimation.getTracks();
-        for (Track track : oldTracks) {
-            Track clone;
-            if (track == selected) {
-                TweenTransforms technique
-                        = Maud.getModel().getTweenTransforms();
-                float duration = oldAnimation.getLength();
-                clone = technique.resampleAtRate(selected, sampleRate,
-                        duration);
-                newSelected = clone;
+        TmpTracks.clear();
+        Object[] oldTracks = cgm.getAnimation().getTracks();
+        for (Object oldTrack : oldTracks) {
+            Object newTrack;
+            if (oldTrack == selected) {
+                float duration = cgm.getAnimation().duration();
+                if (selected instanceof Track) {
+                    TweenTransforms technique
+                            = Maud.getModel().getTweenTransforms();
+                    newTrack = technique.resampleAtRate((Track) selected,
+                            sampleRate, duration);
+                    newSelected = newTrack;
+                } else {
+                    newTrack = MaudUtil.resampleAtRate(
+                            (TransformTrack) selected, sampleRate, duration);
+                    newSelected = newTrack;
+                }
             } else {
-                clone = track.clone();
+                newTrack = MaudUtil.cloneTrack(oldTrack);
             }
-            newAnimation.addTrack(clone);
+            TmpTracks.add(newTrack);
         }
+
+        Object newAnim = cgm.getAnimation().newAnim();
+        TmpTracks.addAllToAnim(newAnim);
 
         String trackName = describe();
         String description = String.format("resample track %s at %f fps",
                 trackName, sampleRate);
-        editableCgm.replace(oldAnimation, newAnimation, description,
-                newSelected);
+        Object oldAnim = cgm.getAnimation().getReal();
+        editableCgm.replace(oldAnim, newAnim, description, newSelected);
     }
 
     /**
@@ -675,32 +692,40 @@ public class SelectedTrack implements JmeCloneable {
         Validate.inRange(numSamples, "number of samples", 2, Integer.MAX_VALUE);
         assert selected != null;
 
-        Animation newAnimation = newAnimation();
-        Track newSelected = null;
-        Animation oldAnimation = cgm.getAnimation().getReal();
+        Object newSelected = null;
 
-        Track[] oldTracks = oldAnimation.getTracks();
-        for (Track track : oldTracks) {
-            Track clone;
-            if (track == selected) {
-                TweenTransforms technique
-                        = Maud.getModel().getTweenTransforms();
-                float duration = oldAnimation.getLength();
+        TmpTracks.clear();
+        Object[] oldTracks = cgm.getAnimation().getTracks();
+        for (Object oldTrack : oldTracks) {
+            Object newTrack;
+            if (oldTrack == selected) {
+                float duration = cgm.getAnimation().duration();
                 assert duration > 0f : duration;
-                clone = technique.resampleToNumber(selected, numSamples,
-                        duration);
-                newSelected = clone;
+                if (selected instanceof Track) {
+                    TweenTransforms technique
+                            = Maud.getModel().getTweenTransforms();
+                    newTrack = technique.resampleToNumber((Track) selected,
+                            numSamples, duration);
+                    newSelected = newTrack;
+                } else {
+                    newTrack = MaudUtil.resampleToNumber(
+                            (TransformTrack) selected, numSamples, duration);
+                    newSelected = newTrack;
+                }
             } else {
-                clone = track.clone();
+                newTrack = MaudUtil.cloneTrack(oldTrack);
             }
-            newAnimation.addTrack(clone);
+            TmpTracks.add(newTrack);
         }
+
+        Object newAnim = cgm.getAnimation().newAnim();
+        TmpTracks.addAllToAnim(newAnim);
 
         String trackName = describe();
         String description = String.format("resample track %s to %d samples",
                 trackName, numSamples);
-        editableCgm.replace(oldAnimation, newAnimation, description,
-                newSelected);
+        Object oldAnim = cgm.getAnimation().getReal();
+        editableCgm.replace(oldAnim, newAnim, description, newSelected);
     }
 
     /**
@@ -708,7 +733,7 @@ public class SelectedTrack implements JmeCloneable {
      *
      * @param track which track to select, or null to deselect
      */
-    void select(Track track) {
+    void select(Object track) {
         if (track != null) {
             assert cgm.getAnimation().findTrackIndex(track) != -1;
         }
@@ -771,7 +796,7 @@ public class SelectedTrack implements JmeCloneable {
         List<TrackItem> items = cgm.getAnimation().listTracks();
         for (TrackItem item : items) {
             if (item.describe().equals(description)) {
-                Track track = item.getTrack();
+                Object track = item.getTrack();
                 select(track);
                 return;
             }
@@ -798,66 +823,74 @@ public class SelectedTrack implements JmeCloneable {
     }
 
     /**
-     * Alter all rotations to match the displayed pose. Requires a bone track.
+     * Alter all rotations to match the displayed Pose. Requires a BoneTrack or
+     * TransformTrack.
      */
     public void setRotationAll() {
-        assert selected instanceof BoneTrack;
+        assert selected instanceof BoneTrack
+                || selected instanceof TransformTrack;
 
         Pose pose = cgm.getPose().get();
         int boneIndex = targetBoneIndex();
         Quaternion poseRotation = pose.userRotation(boneIndex, null);
 
-        float[] times = selected.getKeyFrameTimes();
-        Vector3f[] translations = MyAnimation.getTranslations(selected);
-        Vector3f[] scales = MyAnimation.getScales(selected);
+        float[] times = MaudUtil.getTrackTimes(selected);
+        Vector3f[] translations = MaudUtil.getTrackTranslations(selected);
+        Vector3f[] scales = MaudUtil.getTrackScales(selected);
 
         Quaternion[] rotations = new Quaternion[times.length];
-        for (int i = 0; i < times.length; i++) {
+        for (int i = 0; i < times.length; ++i) {
             rotations[i] = poseRotation.clone();
         }
+
         editableCgm.setKeyframes(times, translations, rotations, scales);
     }
 
     /**
-     * Alter all scales to match the displayed pose. Requires a bone track.
+     * Alter all scales to match the displayed Pose. Requires a BoneTrack or
+     * TransformTrack.
      */
     public void setScaleAll() {
-        assert selected instanceof BoneTrack;
+        assert selected instanceof BoneTrack
+                || selected instanceof TransformTrack;
 
         Pose pose = cgm.getPose().get();
         int boneIndex = targetBoneIndex();
         Vector3f poseScale = pose.userScale(boneIndex, null);
 
-        float[] times = selected.getKeyFrameTimes();
-        Vector3f[] translations = MyAnimation.getTranslations(selected);
-        Quaternion[] rotations = MyAnimation.getRotations(selected);
+        float[] times = MaudUtil.getTrackTimes(selected);
+        Vector3f[] translations = MaudUtil.getTrackTranslations(selected);
+        Quaternion[] rotations = MaudUtil.getTrackRotations(selected);
 
         Vector3f[] scales = new Vector3f[times.length];
-        for (int i = 0; i < times.length; i++) {
+        for (int i = 0; i < times.length; ++i) {
             scales[i] = poseScale.clone();
         }
+
         editableCgm.setKeyframes(times, translations, rotations, scales);
     }
 
     /**
-     * Alter all translations to match the displayed pose. Requires a bone
-     * track.
+     * Alter all translations to match the displayed Pose. Requires a BoneTrack
+     * or TransformTrack.
      */
     public void setTranslationAll() {
-        assert selected instanceof BoneTrack;
+        assert selected instanceof BoneTrack
+                || selected instanceof TransformTrack;
 
         Pose pose = cgm.getPose().get();
         int boneIndex = targetBoneIndex();
         Vector3f poseTranslation = pose.userTranslation(boneIndex, null);
 
-        float[] times = selected.getKeyFrameTimes();
-        Quaternion[] rotations = MyAnimation.getRotations(selected);
-        Vector3f[] scales = MyAnimation.getScales(selected);
+        float[] times = MaudUtil.getTrackTimes(selected);
+        Quaternion[] rotations = MaudUtil.getTrackRotations(selected);
+        Vector3f[] scales = MaudUtil.getTrackScales(selected);
 
         Vector3f[] translations = new Vector3f[times.length];
-        for (int i = 0; i < times.length; i++) {
+        for (int i = 0; i < times.length; ++i) {
             translations[i] = poseTranslation.clone();
         }
+
         editableCgm.setKeyframes(times, translations, rotations, scales);
     }
 
@@ -867,28 +900,38 @@ public class SelectedTrack implements JmeCloneable {
     public void smooth() {
         assert selected != null;
 
-        Animation newAnimation = newAnimation();
-        Track newSelected = null;
-        Animation oldAnimation = cgm.getAnimation().getReal();
-        float duration = oldAnimation.getLength();
-        Track[] oldTracks = oldAnimation.getTracks();
-        for (Track track : oldTracks) {
-            Track clone;
-            if (track == selected) {
-                clone = TrackEdit.smooth(selected, 0.2f,
-                        SmoothVectors.LoopLerp, SmoothRotations.LoopNlerp,
-                        SmoothVectors.LoopLerp, duration);
-                newSelected = clone;
+        Object newSelected = null;
+        float duration = cgm.getAnimation().duration();
+
+        TmpTracks.clear();
+        Object[] oldTracks = cgm.getAnimation().getTracks();
+        for (Object oldTrack : oldTracks) {
+            Object newTrack;
+            if (oldTrack == selected) {
+                if (selected instanceof Track) {
+                    newTrack = TrackEdit.smooth((Track) selected, 0.2f,
+                            SmoothVectors.LoopLerp, SmoothRotations.LoopNlerp,
+                            SmoothVectors.LoopLerp, duration);
+                    newSelected = newTrack;
+                } else {
+                    newTrack = MaudUtil.smooth((TransformTrack) selected, 0.2f,
+                            SmoothVectors.LoopLerp, SmoothRotations.LoopNlerp,
+                            SmoothVectors.LoopLerp, duration);
+                    newSelected = newTrack;
+                }
             } else {
-                clone = track.clone();
+                newTrack = MaudUtil.cloneTrack(oldTrack);
             }
-            newAnimation.addTrack(clone);
+            TmpTracks.add(newTrack);
         }
+
+        Object newAnim = cgm.getAnimation().newAnim();
+        TmpTracks.addAllToAnim(newAnim);
 
         String trackName = describe();
         String description = String.format("smooth track %s", trackName);
-        editableCgm.replace(oldAnimation, newAnimation, description,
-                newSelected);
+        Object oldAnim = cgm.getAnimation().getReal();
+        editableCgm.replace(oldAnim, newAnim, description, newSelected);
     }
 
     /**
@@ -898,9 +941,15 @@ public class SelectedTrack implements JmeCloneable {
      */
     public int targetBoneIndex() {
         int result = SelectedSkeleton.noBoneIndex;
+
         if (selected instanceof BoneTrack) {
-            BoneTrack boneTrack = (BoneTrack) selected;
-            result = boneTrack.getTargetBoneIndex();
+            result = ((BoneTrack) selected).getTargetBoneIndex();
+
+        } else if (selected instanceof TransformTrack) {
+            HasLocalTransform target = ((TransformTrack) selected).getTarget();
+            if (target instanceof Joint) {
+                result = ((Joint) target).getId();
+            }
         }
 
         return result;
@@ -914,11 +963,11 @@ public class SelectedTrack implements JmeCloneable {
         assert selected instanceof BoneTrack;
 
         SelectedSkeleton selectedSkeleton = cgm.getSkeleton();
-        Skeleton skeleton = selectedSkeleton.find();
+        Object skeleton = selectedSkeleton.find();
         assert skeleton != null;
         Spatial subtree = selectedSkeleton.findSpatial();
 
-        int numBones = skeleton.getBoneCount();
+        int numBones = cgm.getSkeleton().countBones();
         Matrix4f[] skinningMatrices = new Matrix4f[numBones];
         Matrix4f identity = new Matrix4f();
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
@@ -949,14 +998,19 @@ public class SelectedTrack implements JmeCloneable {
         int boneIndex = boneTrack.getTargetBoneIndex();
 
         SelectedSkeleton selectedSkeleton = cgm.getSkeleton();
-        Skeleton skeleton = selectedSkeleton.find();
-        assert skeleton != null;
+        Object skeleton = selectedSkeleton.find();
+        Pose tempPose;
+        if (skeleton instanceof Armature) {
+            tempPose = new Pose((Armature) skeleton);
+        } else {
+            tempPose = new Pose((Skeleton) skeleton);
+        }
+
         Spatial subtree = selectedSkeleton.findSpatial();
-        Pose tempPose = new Pose(skeleton);
         int numBones = tempPose.countBones();
 
         Matrix4f[] skinningMatrices = new Matrix4f[numBones];
-        Animation oldAnimation = cgm.getAnimation().getReal();
+        Object oldAnim = cgm.getAnimation().getReal();
         Geometry[] previousGeometryRef = new Geometry[1];
         Vector3f previousWorld = new Vector3f();
         Vector3f world = new Vector3f();
@@ -965,14 +1019,19 @@ public class SelectedTrack implements JmeCloneable {
         /*
          * Calculate a new bone translation for each keyframe.
          */
-        float[] times = selected.getKeyFrameTimes();
-        Vector3f[] translations = MyAnimation.getTranslations(selected);
+        float[] times = MaudUtil.getTrackTimes(selected);
+        Vector3f[] translations = MaudUtil.getTrackTranslations(selected);
         TweenTransforms technique = Maud.getModel().getTweenTransforms();
         int numKeyframes = times.length;
         int previousVertexIndex = -1;
         for (int frameIndex = 0; frameIndex < numKeyframes; frameIndex++) {
             float trackTime = times[frameIndex];
-            tempPose.setToAnimation(oldAnimation, trackTime, technique);
+            if (oldAnim instanceof Animation) {
+                tempPose.setToAnimation((Animation) oldAnim, trackTime,
+                        technique);
+            } else {
+                tempPose.setToClip((AnimClip) oldAnim, trackTime);
+            }
             tempPose.skin(skinningMatrices);
 
             if (previousVertexIndex == -1) {
@@ -1011,28 +1070,31 @@ public class SelectedTrack implements JmeCloneable {
         /*
          * Construct a new animation using the modified translations.
          */
-        Animation newAnimation = newAnimation();
-        Track newSelected = null;
-        Track[] oldTracks = oldAnimation.getTracks();
-        for (Track oldTrack : oldTracks) {
-            Track clone;
+        Object newSelected = null;
+
+        TmpTracks.clear();
+        Object[] oldTracks = cgm.getAnimation().getTracks();
+        for (Object oldTrack : oldTracks) {
+            Object newTrack;
             if (oldTrack == selected) {
-                Quaternion[] rotations = MyAnimation.getRotations(selected);
-                Vector3f[] scales = MyAnimation.getScales(selected);
-                clone = MyAnimation.newBoneTrack(boneIndex, times, translations,
-                        rotations, scales);
-                newSelected = clone;
+                Quaternion[] rotations = MaudUtil.getTrackRotations(selected);
+                Vector3f[] scales = MaudUtil.getTrackScales(selected);
+                newTrack = MyAnimation.newBoneTrack(boneIndex, times,
+                        translations, rotations, scales);
+                newSelected = newTrack;
             } else {
-                clone = oldTrack.clone();
+                newTrack = MaudUtil.cloneTrack(oldTrack);
             }
-            newAnimation.addTrack(clone);
+            TmpTracks.add(newTrack);
         }
+
+        Object newAnim = cgm.getAnimation().newAnim();
+        TmpTracks.addAllToAnim(newAnim);
 
         String trackName = describe();
         String description = String.format("translate track %s for traction",
                 trackName);
-        editableCgm.replace(oldAnimation, newAnimation, description,
-                newSelected);
+        editableCgm.replace(oldAnim, newAnim, description, newSelected);
 
         return true;
     }
@@ -1048,27 +1110,36 @@ public class SelectedTrack implements JmeCloneable {
         Validate.fraction(endWeight, "end weight");
         assert selected != null;
 
-        Animation newAnimation = newAnimation();
-        Track newSelected = null;
-        Animation oldAnimation = cgm.getAnimation().getReal();
-        Track[] oldTracks = oldAnimation.getTracks();
-        for (Track track : oldTracks) {
-            Track clone;
-            if (track == selected) {
+        Object newSelected = null;
+        TmpTracks.clear();
+        Object[] oldTracks = cgm.getAnimation().getTracks();
+        for (Object oldTrack : oldTracks) {
+            Object newTrack;
+            if (oldTrack == selected) {
                 float duration = cgm.getAnimation().duration();
-                clone = TrackEdit.wrap(selected, duration, endWeight);
-                newSelected = clone;
+                if (selected instanceof Track) {
+                    newTrack = TrackEdit.wrap((Track) selected, duration,
+                            endWeight);
+                    newSelected = newTrack;
+                } else {
+                    newTrack = MaudUtil.wrap((TransformTrack) selected,
+                            duration, endWeight);
+                    newSelected = newTrack;
+                }
             } else {
-                clone = track.clone();
+                newTrack = MaudUtil.cloneTrack(oldTrack);
             }
-            newAnimation.addTrack(clone);
+            TmpTracks.add(newTrack);
         }
+
+        Object newAnim = cgm.getAnimation().newAnim();
+        TmpTracks.addAllToAnim(newAnim);
 
         String trackName = describe();
         String description = String.format("wrap track %s using end weight=%f",
                 trackName, endWeight);
-        editableCgm.replace(oldAnimation, newAnimation, description,
-                newSelected);
+        Object oldAnim = cgm.getAnimation().getReal();
+        editableCgm.replace(oldAnim, newAnim, description, newSelected);
     }
     // *************************************************************************
     // JmeCloneable methods
@@ -1117,6 +1188,28 @@ public class SelectedTrack implements JmeCloneable {
     // private methods
 
     /**
+     * Count the number of distinct quaternions, without distinguishing 0 from
+     * -0. TODO move to the Heart Library
+     *
+     * @param quaternions (unaffected)
+     * @return the count (&ge;0)
+     */
+    private static int countNe(Quaternion[] quaternions) {
+        if (quaternions == null) {
+            return 0;
+        }
+
+        Set<Quaternion> distinct = new HashSet<>(quaternions.length);
+        for (Quaternion rot : quaternions) {
+            Quaternion standard = MyQuaternion.standardize(rot, null);
+            distinct.add(standard);
+        }
+        int result = distinct.size();
+
+        return result;
+    }
+
+    /**
      * Delete a range of keyframes in the selected track.
      *
      * @param startIndex index of the first keyframe to delete (&gt;0)
@@ -1127,25 +1220,34 @@ public class SelectedTrack implements JmeCloneable {
         assert number > 0 : number;
         assert selected != null;
 
-        Animation newAnimation = newAnimation();
-        Track newSelected = null;
-        Animation oldAnimation = cgm.getAnimation().getReal();
-        Track[] oldTracks = oldAnimation.getTracks();
-        for (Track track : oldTracks) {
-            Track clone;
-            if (track == selected) {
-                clone = TrackEdit.deleteRange(selected, startIndex, number);
-                newSelected = clone;
+        Object newSelected = null;
+
+        TmpTracks.clear();
+        Object[] oldTracks = cgm.getAnimation().getTracks();
+        for (Object oldTrack : oldTracks) {
+            Object newTrack;
+            if (oldTrack == selected) {
+                if (oldTrack instanceof TransformTrack) {
+                    newTrack = MaudUtil.deleteRange((TransformTrack) selected,
+                            startIndex, number);
+                } else {
+                    newTrack = TrackEdit.deleteRange((Track) selected,
+                            startIndex, number);
+                }
+                newSelected = newTrack;
             } else {
-                clone = track.clone();
+                newTrack = MaudUtil.cloneTrack(oldTrack);
             }
-            newAnimation.addTrack(clone);
+            TmpTracks.add(newTrack);
         }
+
+        Object newAnim = cgm.getAnimation().newAnim();
+        TmpTracks.addAllToAnim(newAnim);
 
         String trackName = describe();
         String eventDescription;
         if (number == 1) {
-            float[] times = selected.getKeyFrameTimes();
+            float[] times = MaudUtil.getTrackTimes(selected);
             float time = times[startIndex];
             eventDescription = String.format(
                     "delete keyframe at t=%f from track %s", time, trackName);
@@ -1153,8 +1255,8 @@ public class SelectedTrack implements JmeCloneable {
             eventDescription = String.format(
                     "delete %d keyframes from track %s", number, trackName);
         }
-        editableCgm.replace(oldAnimation, newAnimation, eventDescription,
-                newSelected);
+        Object oldAnim = cgm.getAnimation().getReal();
+        editableCgm.replace(oldAnim, newAnim, eventDescription, newSelected);
     }
 
     /**
@@ -1187,14 +1289,19 @@ public class SelectedTrack implements JmeCloneable {
         int boneIndex = boneTrack.getTargetBoneIndex();
 
         SelectedSkeleton selectedSkeleton = cgm.getSkeleton();
-        Skeleton skeleton = selectedSkeleton.find();
+        Object skeleton = selectedSkeleton.find();
         assert skeleton != null;
         Spatial subtree = selectedSkeleton.findSpatial();
-        Pose tempPose = new Pose(skeleton);
+        Pose tempPose;
+        if (skeleton instanceof Armature) {
+            tempPose = new Pose((Armature) skeleton);
+        } else {
+            tempPose = new Pose((Skeleton) skeleton);
+        }
         int numBones = tempPose.countBones();
 
         Matrix4f[] skinningMatrices = new Matrix4f[numBones];
-        Animation oldAnimation = cgm.getAnimation().getReal();
+        Object oldAnim = cgm.getAnimation().getReal();
         Geometry[] geometryRef = new Geometry[1];
         Vector3f world = new Vector3f();
         Matrix3f sensMat = new Matrix3f();
@@ -1207,7 +1314,12 @@ public class SelectedTrack implements JmeCloneable {
         int numKeyframes = times.length;
         for (int frameIndex = 0; frameIndex < numKeyframes; frameIndex++) {
             float trackTime = times[frameIndex];
-            tempPose.setToAnimation(oldAnimation, trackTime, techniques);
+            if (oldAnim instanceof Animation) {
+                tempPose.setToAnimation((Animation) oldAnim, trackTime,
+                        techniques);
+            } else {
+                tempPose.setToClip((AnimClip) oldAnim, trackTime);
+            }
             tempPose.skin(skinningMatrices);
             int vertexIndex = SupportUtil.findSupport(subtree, skinningMatrices,
                     world, geometryRef);
@@ -1236,28 +1348,31 @@ public class SelectedTrack implements JmeCloneable {
         /*
          * Construct a new animation using the modified translations.
          */
-        Animation newAnimation = newAnimation();
-        Track newSelected = null;
-        Track[] oldTracks = oldAnimation.getTracks();
-        for (Track oldTrack : oldTracks) {
-            Track clone;
+        Object newSelected = null;
+
+        TmpTracks.clear();
+        Object[] oldTracks = cgm.getAnimation().getTracks();
+        for (Object oldTrack : oldTracks) {
+            Object newTrack;
             if (oldTrack == boneTrack) {
                 Quaternion[] rotations = boneTrack.getRotations();
                 Vector3f[] scales = boneTrack.getScales();
-                clone = MyAnimation.newBoneTrack(boneIndex, times, translations,
-                        rotations, scales);
-                newSelected = clone;
+                newTrack = MyAnimation.newBoneTrack(boneIndex, times,
+                        translations, rotations, scales);
+                newSelected = newTrack;
             } else {
-                clone = oldTrack.clone();
+                newTrack = MaudUtil.cloneTrack(oldTrack);
             }
-            newAnimation.addTrack(clone);
+            TmpTracks.add(newTrack);
         }
+
+        Object newAnim = cgm.getAnimation().newAnim();
+        TmpTracks.addAllToAnim(newAnim);
 
         String trackName = describe();
         String description = String.format("translate track %s for support",
                 trackName);
-        editableCgm.replace(oldAnimation, newAnimation, description,
-                newSelected);
+        editableCgm.replace(oldAnim, newAnim, description, newSelected);
 
         return true;
     }

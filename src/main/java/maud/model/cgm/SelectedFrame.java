@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -26,15 +26,15 @@
  */
 package maud.model.cgm;
 
-import com.jme3.animation.Animation;
+import com.jme3.anim.TransformTrack;
 import com.jme3.animation.BoneTrack;
-import com.jme3.animation.Track;
 import com.jme3.math.Transform;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 import jme3utilities.wes.Pose;
 import jme3utilities.wes.TrackEdit;
 import maud.DescribeUtil;
+import maud.MaudUtil;
 
 /**
  * The MVC model of the selected keyframe in a selected track.
@@ -98,7 +98,7 @@ public class SelectedFrame implements Cloneable {
     }
 
     /**
-     * Replace the keyframe, setting its transform from the displayed pose.
+     * Alter the keyframe, setting its Transform from the displayed Pose.
      */
     public void replace() {
         SelectedTrack sTrack = cgm.getTrack();
@@ -106,30 +106,39 @@ public class SelectedFrame implements Cloneable {
         int frameIndex = findIndex();
         assert frameIndex >= 0 : frameIndex;
 
-        Animation newAnimation = sTrack.newAnimation();
-        Track newSelected = null;
-        Animation oldAnimation = cgm.getAnimation().getReal();
-        Track[] oldTracks = oldAnimation.getTracks();
-        for (Track track : oldTracks) {
-            Track clone;
-            if (track == sTrack.get()) {
-                BoneTrack boneTrack = (BoneTrack) track;
+        Object oldSelected = sTrack.get();
+        Object newSelected = null;
+        TmpTracks.clear();
+        Object[] oldTracks = cgm.getAnimation().getTracks();
+        for (Object oldTrack : oldTracks) {
+            Object newTrack;
+            if (oldTrack == oldSelected) {
                 Pose pose = cgm.getPose().get();
-                int boneIndex = boneTrack.getTargetBoneIndex();
+                int boneIndex = sTrack.targetBoneIndex();
                 Transform user = pose.userTransform(boneIndex, null);
-                clone = TrackEdit.replaceKeyframe(boneTrack, frameIndex, user);
-                newSelected = clone;
+                if (oldTrack instanceof BoneTrack) {
+                    newTrack = TrackEdit.replaceKeyframe((BoneTrack) oldTrack,
+                            frameIndex, user);
+                } else {
+                    newTrack = MaudUtil.replaceKeyframe(
+                            (TransformTrack) oldTrack, frameIndex, user);
+                }
+                newSelected = newTrack;
             } else {
-                clone = track.clone();
+                newTrack = MaudUtil.cloneTrack(oldTrack);
             }
-            newAnimation.addTrack(clone);
+            TmpTracks.add(newTrack);
         }
+
+        Object newAnim = cgm.getAnimation().newAnim();
+        TmpTracks.addAllToAnim(newAnim);
 
         float time = cgm.getPlay().getTime();
         String trackName = cgm.getTrack().describe();
         String description = String.format(
                 "replace keyframe at t=%f in track %s", time, trackName);
-        editableCgm.replace(oldAnimation, newAnimation, description,
+        Object oldAnim = cgm.getAnimation().getReal();
+        editableCgm.replace(oldAnim, newAnim, description,
                 newSelected);
     }
 
@@ -238,29 +247,33 @@ public class SelectedFrame implements Cloneable {
         SelectedTrack sTrack = cgm.getTrack();
         assert sTrack.isSelected();
 
-        Animation newAnimation = sTrack.newAnimation();
         int frameIndex = findIndex();
-        Track newSelected = null;
-        Animation oldAnimation = cgm.getAnimation().getReal();
-        Track[] oldTracks = oldAnimation.getTracks();
-        for (Track track : oldTracks) {
-            Track clone;
-            if (track == sTrack.get()) {
-                clone = TrackEdit.setFrameTime(track, frameIndex, newTime);
-                assert clone != null;
-                newSelected = clone;
+        Object newSelected = null;
+        Object oldSelected = sTrack.get();
+        TmpTracks.clear();
+        Object[] oldTracks = cgm.getAnimation().getTracks();
+        for (Object oldTrack : oldTracks) {
+            Object newTrack;
+            if (oldTrack == oldSelected) {
+                newTrack = MaudUtil.setFrameTime(oldTrack, frameIndex, newTime);
+                assert newTrack != null;
+                newSelected = newTrack;
             } else {
-                clone = track.clone();
+                newTrack = MaudUtil.cloneTrack(oldTrack);
             }
-            newAnimation.addTrack(clone);
+            TmpTracks.add(newTrack);
         }
         cgm.getPlay().setTime(newTime);
+
+        Object newAnim = cgm.getAnimation().newAnim();
+        TmpTracks.addAllToAnim(newAnim);
 
         String trackName = sTrack.describe();
         String eventDescription = String.format(
                 "adjust the timing of frame%s in track %s",
                 DescribeUtil.index(frameIndex), trackName);
-        editableCgm.replace(oldAnimation, newAnimation, eventDescription,
+        Object oldAnim = cgm.getAnimation().getReal();
+        editableCgm.replace(oldAnim, newAnim, eventDescription,
                 newSelected);
     }
     // *************************************************************************
@@ -288,7 +301,8 @@ public class SelectedFrame implements Cloneable {
     private float nextKeyframeTime() {
         float result = Float.POSITIVE_INFINITY;
         float time = cgm.getPlay().getTime();
-        float[] times = cgm.getTrack().get().getKeyFrameTimes();
+        Object selectedTrack = cgm.getTrack().get();
+        float[] times = MaudUtil.getTrackTimes(selectedTrack);
         for (int iFrame = 0; iFrame < times.length; iFrame++) {
             if (times[iFrame] > time) {
                 result = times[iFrame];
@@ -307,7 +321,8 @@ public class SelectedFrame implements Cloneable {
     private float previousKeyframeTime() {
         float result = Float.NEGATIVE_INFINITY;
         float time = cgm.getPlay().getTime();
-        float[] times = cgm.getTrack().get().getKeyFrameTimes();
+        Object selectedTrack = cgm.getTrack().get();
+        float[] times = MaudUtil.getTrackTimes(selectedTrack);
         for (int iFrame = times.length - 1; iFrame >= 0; iFrame--) {
             if (times[iFrame] < time) {
                 result = times[iFrame];

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -26,6 +26,10 @@
  */
 package maud.view.scene;
 
+import com.jme3.anim.AnimComposer;
+import com.jme3.anim.Armature;
+import com.jme3.anim.Joint;
+import com.jme3.anim.SkinningControl;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Bone;
 import com.jme3.animation.Skeleton;
@@ -57,6 +61,7 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer;
+import com.jme3.scene.control.AbstractControl;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
@@ -155,7 +160,7 @@ public class SceneViewCore
      * animation control with the selected skeleton - apparently needed for
      * software skinning, though it's unclear why
      */
-    private AnimControl animControl;
+    private AbstractControl animControl;
     /*
      * visualizer for axes added to the scene
      */
@@ -204,11 +209,11 @@ public class SceneViewCore
     /**
      * selected skeleton in this view's copy of the C-G model
      */
-    private Skeleton skeleton;
+    private Object skeleton;
     /**
      * skeleton control with the selected skeleton
      */
-    private SkeletonControl skeletonControl;
+    private AbstractControl skeletonControl;
     /**
      * skeleton visualizer added to the overlay scene
      */
@@ -638,12 +643,11 @@ public class SceneViewCore
     /**
      * Visualize using a different skeleton, or none.
      *
-     * @param selectedSkeleton (may be null, unaffected)
+     * @param selectedSkeleton (Armature or Skeleton or null, unaffected)
      * @param selectedSgcFlag where to add controls: false&rarr;C-G model root,
      * true&rarr;spatial controlled by the selected scene-graph control
      */
-    public void setSkeleton(Skeleton selectedSkeleton,
-            boolean selectedSgcFlag) {
+    public void setSkeleton(Object selectedSkeleton, boolean selectedSgcFlag) {
         clearSkeleton();
 
         if (selectedSkeleton != null) {
@@ -659,15 +663,28 @@ public class SceneViewCore
                 controlled = cgmRoot;
             }
 
-            skeleton = Cloner.deepClone(selectedSkeleton);
-            MySkeleton.setUserControl(skeleton, true);
+            skeleton = Cloner.deepClone(selectedSkeleton); // TODO not so deep
+            if (skeleton instanceof Armature) {
+                animControl = new AnimComposer();
+                controlled.addControl(animControl);
 
-            animControl = new AnimControl(skeleton);
-            controlled.addControl(animControl);
+                SkinningControl sc = new SkinningControl((Armature) skeleton);
+                controlled.addControl(sc);
+                sc.setHardwareSkinningPreferred(false);
+                skeletonControl = sc;
 
-            skeletonControl = new SkeletonControl(skeleton);
-            controlled.addControl(skeletonControl);
-            skeletonControl.setHardwareSkinningPreferred(false);
+            } else {
+                Skeleton sk = (Skeleton) skeleton;
+                MySkeleton.setUserControl(sk, true);
+
+                animControl = new AnimControl(sk);
+                controlled.addControl(animControl);
+
+                SkeletonControl sc = new SkeletonControl(sk);
+                controlled.addControl(sc);
+                sc.setHardwareSkinningPreferred(false);
+                skeletonControl = sc;
+            }
 
             skeletonVisualizer.setSubject(skeletonControl);
             /*
@@ -1073,19 +1090,25 @@ public class SceneViewCore
      * Visualize in bind pose, without a skeleton.
      */
     private void clearSkeleton() {
-        if (skeleton != null) {
-            int numBones = skeleton.getBoneCount();
-            for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
-                Bone bone = skeleton.getBone(boneIndex);
+        if (skeleton instanceof Armature) {
+            Armature armature = (Armature) skeleton;
+            armature.applyBindPose();
+
+        } else if (skeleton instanceof Skeleton) {
+            Skeleton sk = (Skeleton) skeleton;
+            int numBones = sk.getBoneCount();
+            for (int boneIndex = 0; boneIndex < numBones; ++boneIndex) {
+                Bone bone = sk.getBone(boneIndex);
                 MySkeleton.setLocalTransform(bone, transformIdentity);
             }
-            skeleton.updateWorldVectors();
+            sk.updateWorldVectors();
             skeletonControl.update(0f);
             RenderManager rm = Maud.getApplication().getRenderManager();
             skeletonControl.render(rm, null);
-            skeleton = null;
-            skeletonVisualizer.setSubject(null);
         }
+
+        skeleton = null;
+        skeletonVisualizer.setSubject(null);
         /*
          * Remove any skeleton-dependent S-G controls from the base scene graph.
          */
@@ -1104,8 +1127,8 @@ public class SceneViewCore
     }
 
     /**
-     * Configure the transform based on the ranges of vertex coordinates in the
-     * C-G model and the skeleton visualization subtree.
+     * Configure the CGM transform based on the ranges of vertex coordinates in
+     * the C-G model and the skeleton visualization subtree.
      *
      * @return max extent of the model along any axis (&gt;0)
      */
@@ -1114,6 +1137,7 @@ public class SceneViewCore
         Vector3f[] minMax = MySpatial.findMinMaxCoords(cgmRoot);
         Spatial subtree = skeletonVisualizer.getSubtree();
         if (subtree != null) {
+            subtree.setLocalTransform(transformIdentity);
             Vector3f[] subtreeMinMax = MySpatial.findMinMaxCoords(subtree);
             MyVector3f.accumulateMinima(minMax[0], subtreeMinMax[0]);
             MyVector3f.accumulateMaxima(minMax[1], subtreeMinMax[1]);
@@ -1301,10 +1325,17 @@ public class SceneViewCore
          */
         parent.attachChild(cgmRoot);
         /*
-         * Use the skeleton from the first AnimControl or
-         * SkeletonControl in the C-G model's root spatial.
+         * Use the skeleton from the first AnimControl, SkeletonControl, or
+         * SkinningControl in the C-G model's root spatial.
          */
-        Skeleton selectedSkeleton = MySkeleton.findSkeleton(cgmRoot);
+        Object selectedSkeleton = MySkeleton.findSkeleton(cgmRoot);
+        if (selectedSkeleton == null) {
+            SkinningControl skinningControl
+                    = cgmRoot.getControl(SkinningControl.class);
+            if (skinningControl != null) {
+                selectedSkeleton = skinningControl.getArmature();
+            }
+        }
         /*
          * Remove all scene-graph controls except those concerned with physics.
          * Enable those S-G controls and configure their physics spaces so that
@@ -1410,7 +1441,7 @@ public class SceneViewCore
     }
 
     /**
-     * Update bone transforms based on the displayed pose in the MVC model.
+     * Update bone transforms based on the displayed Pose in the MVC model.
      */
     private void updatePose() {
         SelectedSkeleton ss = cgm.getSkeleton();
@@ -1418,25 +1449,27 @@ public class SceneViewCore
         Pose pose = cgm.getPose().get();
         int numTransforms = pose.countBones();
         assert numTransforms == boneCount : numTransforms;
-        assert skeleton == null
-                || skeleton.getBoneCount() == boneCount : boneCount;
 
         Transform transform = new Transform();
         Vector3f translation = transform.getTranslation();
         Quaternion rotation = transform.getRotation();
         Vector3f scale = transform.getScale();
 
-        for (int boneIndex = 0; boneIndex < boneCount; boneIndex++) {
+        for (int boneIndex = 0; boneIndex < boneCount; ++boneIndex) {
             pose.userTransform(boneIndex, transform);
-
-            Bone bone = skeleton.getBone(boneIndex);
-            boolean haveControl = bone.hasUserControl();
-            if (!haveControl) {
-                bone.setUserControl(true);
-            }
-            bone.setUserTransforms(translation, rotation, scale);
-            if (!haveControl) {
-                bone.setUserControl(false);
+            if (skeleton instanceof Armature) {
+                Joint joint = ((Armature) skeleton).getJoint(boneIndex);
+                joint.setLocalTransform(transform);
+            } else {
+                Bone bone = ((Skeleton) skeleton).getBone(boneIndex);
+                boolean haveControl = bone.hasUserControl();
+                if (!haveControl) {
+                    bone.setUserControl(true);
+                }
+                bone.setUserTransforms(translation, rotation, scale);
+                if (!haveControl) {
+                    bone.setUserControl(false);
+                }
             }
 
             List<Integer> nodePosition = ss.attachmentsPosition(boneIndex);

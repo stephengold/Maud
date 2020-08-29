@@ -26,6 +26,11 @@
  */
 package maud.model.cgm;
 
+import com.jme3.anim.AnimClip;
+import com.jme3.anim.AnimComposer;
+import com.jme3.anim.AnimTrack;
+import com.jme3.anim.Joint;
+import com.jme3.anim.TransformTrack;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Animation;
 import com.jme3.animation.Bone;
@@ -57,6 +62,7 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.UserData;
+import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 import com.jme3.shader.VarType;
 import com.jme3.texture.Texture;
@@ -117,31 +123,46 @@ public class EditableCgm extends LoadedCgm {
     // new methods exposed
 
     /**
-     * Add a new animation to the selected anim control. TODO add
+     * Add a new animation to the selected animation control. TODO add
      * eventDescription argument
      *
-     * @param newAnimation (not null, name not in use)
+     * @param newAnim an AnimClip or Animation (not null, name not in use)
      */
-    void addAnimation(Animation newAnimation) {
-        assert newAnimation != null;
+    void addAnimation(Object newAnim) {
+        assert newAnim instanceof AnimClip || newAnim instanceof Animation;
         SelectedAnimControl sac = getAnimControl();
-        String newAnimationName = newAnimation.getName();
-        assert !sac.hasRealAnimation(newAnimationName);
+        String newAnimName;
+        if (newAnim instanceof AnimClip) {
+            newAnimName = ((AnimClip) newAnim).getName();
+        } else {
+            newAnimName = ((Animation) newAnim).getName();
+        }
+        assert !sac.hasRealAnimation(newAnimName);
 
         History.autoAdd();
-        AnimControl control = sac.find();
+        AbstractControl control = sac.find();
         if (control == null) {
             SelectedSkeleton ss = getSkeleton();
-            Skeleton skeleton = ss.find();
+            Object skeleton = ss.find();
             assert skeleton != null;
-            control = new AnimControl(skeleton);
+            if (skeleton instanceof Skeleton) {
+                control = new AnimControl((Skeleton) skeleton);
+            } else {
+                control = new AnimComposer();
+            }
 
             Spatial skeletonSpatial = ss.findSpatial();
             skeletonSpatial.addControl(control);
         }
-        control.addAnim(newAnimation);
+        if (newAnim instanceof AnimClip) {
+            AnimClip clip = (AnimClip) newAnim;
+            ((AnimComposer) control).addAnimClip(clip);
+        } else {
+            Animation animation = (Animation) newAnim;
+            ((AnimControl) control).addAnim(animation);
+        }
         String description
-                = "add animation " + MyString.quote(newAnimationName);
+                = "add animation " + MyString.quote(newAnimName);
         editState.setEdited(description);
     }
 
@@ -281,14 +302,25 @@ public class EditableCgm extends LoadedCgm {
      * @param newTrack (not null, alias created)
      * @param eventDescription description of causative event (not null)
      */
-    void addTrack(Track newTrack, String eventDescription) {
+    void addTrack(Object newTrack, String eventDescription) {
         assert newTrack != null;
         assert eventDescription != null;
 
-        Animation animation = getAnimation().getReal();
+        Object animation = getAnimation().getReal();
 
         History.autoAdd();
-        animation.addTrack(newTrack);
+        if (animation instanceof AnimClip) {
+            AnimClip clip = (AnimClip) animation;
+            AnimTrack[] oldTracks = clip.getTracks();
+            int oldNumTracks = oldTracks.length;
+            AnimTrack[] newTracks = new AnimTrack[oldNumTracks + 1];
+            System.arraycopy(oldTracks, 0, newTracks, 0, oldNumTracks);
+            newTracks[oldNumTracks] = (AnimTrack) newTrack;
+            clip.setTracks(newTracks);
+        } else {
+            Track track = (Track) newTrack;
+            ((Animation) animation).addTrack(track);
+        }
         editState.setEdited(eventDescription);
     }
 
@@ -364,11 +396,17 @@ public class EditableCgm extends LoadedCgm {
      * different animation.
      */
     void deleteAnimation() {
-        Animation anim = getAnimation().getReal();
-        AnimControl animControl = getAnimControl().find();
+        Object loadedAnim = getAnimation().getReal();
+        AbstractControl control = getAnimControl().find();
 
         History.autoAdd();
-        animControl.removeAnim(anim);
+        if (control instanceof AnimComposer) {
+            AnimClip clip = (AnimClip) loadedAnim;
+            ((AnimComposer) control).removeAnimClip(clip);
+        } else {
+            Animation animation = (Animation) loadedAnim;
+            ((AnimControl) control).removeAnim(animation);
+        }
         // scene view not updated
         editState.setEdited("delete animation");
     }
@@ -381,8 +419,13 @@ public class EditableCgm extends LoadedCgm {
         assert selectedBone.hasAttachmentsNode();
 
         History.autoAdd();
-        Bone bone = selectedBone.get();
-        Node node = MySkeleton.getAttachments(bone);
+        Node node;
+        Object bone = selectedBone.get();
+        if (bone instanceof Bone) {
+            node = MySkeleton.getAttachments((Bone) bone);
+        } else {
+            node = MySkeleton.getAttachments((Joint) bone);
+        }
 
         // check for deletion of the selected spatial
         SelectedSpatial selectedSpatial = getSpatial();
@@ -393,7 +436,11 @@ public class EditableCgm extends LoadedCgm {
 
         List<Integer> nodePosition = findSpatial(node);
 
-        MySkeleton.cancelAttachments(bone);
+        if (bone instanceof Bone) {
+            MySkeleton.cancelAttachments((Bone) bone);
+        } else {
+            MySkeleton.cancelAttachments((Joint) bone);
+        }
         boolean success = node.removeFromParent();
         assert success;
         getSceneView().deleteSubtree(nodePosition);
@@ -561,7 +608,7 @@ public class EditableCgm extends LoadedCgm {
         History.autoAdd();
         sceneView.insertParent(newNodeName);
 
-        Skeleton oldSkeleton = getSkeleton().find();
+        Object oldSkeleton = getSkeleton().find();
         if (oldParent != null) {
             int position = oldParent.detachChild(selectedSpatial);
             assert position != -1;
@@ -578,7 +625,7 @@ public class EditableCgm extends LoadedCgm {
          * Check whether the selected skeleton has changed.
          */
         boolean[] selectedSgc = {false};
-        Skeleton newSkeleton = getSkeleton().find(selectedSgc);
+        Object newSkeleton = getSkeleton().find(selectedSgc);
         if (newSkeleton != oldSkeleton) {
             getBone().deselect();
             getPose().resetToBind(newSkeleton);
@@ -621,6 +668,17 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
+     * Remove repetitious keyframes from an AnimClip.
+     *
+     * @param clip (not null, modified)
+     * @return the number of tracks edited (&ge;0)
+     */
+    public static int removeRepeats(AnimClip clip) {
+        int result = MaudUtil.removeRepeats(clip);
+        return result;
+    }
+
+    /**
      * Rename the selected bone.
      *
      * @param newName new name (not null)
@@ -649,9 +707,14 @@ public class EditableCgm extends LoadedCgm {
             success = false;
 
         } else {
-            Bone selectedBone = getBone().get();
+            Object selectedBone = getBone().get();
             History.autoAdd();
-            success = MySkeleton.setName(selectedBone, newName);
+            if (selectedBone instanceof Bone) {
+                success = MySkeleton.setName((Bone) selectedBone, newName);
+            } else {
+                ((Joint) selectedBone).setName(newName);
+                success = true;
+            }
         }
 
         if (success) {
@@ -718,26 +781,34 @@ public class EditableCgm extends LoadedCgm {
     /**
      * Replace the specified animation with a new one.
      *
-     * @param oldAnimation animation to replace (not null)
-     * @param newAnimation replacement animation (not null)
+     * @param oldAnim animation to replace (not null)
+     * @param newAnim replacement animation (not null)
      * @param eventDescription description for the edit history (not null)
      * @param newSelectedTrack replacement selected track (may be null)
      */
-    void replace(Animation oldAnimation, Animation newAnimation,
-            String eventDescription, Track newSelectedTrack) {
-        assert oldAnimation != null;
-        assert newAnimation != null;
+    void replace(Object oldAnim, Object newAnim, String eventDescription,
+            Object newSelectedTrack) {
+        assert oldAnim != null;
+        assert newAnim != null;
         assert eventDescription != null;
 
-        AnimControl animControl = getAnimControl().find();
+        AbstractControl control = getAnimControl().find();
 
         History.autoAdd();
-        animControl.removeAnim(oldAnimation);
-        animControl.addAnim(newAnimation);
+        if (control instanceof AnimComposer) {
+            AnimComposer animComposer = (AnimComposer) control;
+            animComposer.removeAnimClip((AnimClip) oldAnim);
+            animComposer.addAnimClip((AnimClip) newAnim);
+        } else {
+            AnimControl animControl = (AnimControl) control;
+            animControl.removeAnim((Animation) oldAnim);
+            animControl.addAnim((Animation) newAnim);
+        }
         float duration = getAnimation().duration();
         if (getPlay().getTime() > duration) {
             getPlay().setTime(duration); // keep animation time in range
         }
+
         editState.setEdited(eventDescription);
         getTrack().select(newSelectedTrack);
     }
@@ -1001,15 +1072,18 @@ public class EditableCgm extends LoadedCgm {
         assert times != null;
         assert times.length > 0 : times.length;
 
-        Track track = getTrack().get();
+        Object track = getTrack().get();
 
         History.autoAdd();
         if (track instanceof BoneTrack) {
             BoneTrack boneTrack = (BoneTrack) track;
             boneTrack.setKeyframes(times, translations, rotations, scales);
-        } else {
+        } else if (track instanceof SpatialTrack) {
             SpatialTrack spatialTrack = (SpatialTrack) track;
             spatialTrack.setKeyframes(times, translations, rotations, scales);
+        } else if (track instanceof TransformTrack) {
+            TransformTrack transformTrack = (TransformTrack) track;
+            transformTrack.setKeyframes(times, translations, rotations, scales);
         }
         editState.setEdited("replace keyframes");
     }
@@ -1563,6 +1637,19 @@ public class EditableCgm extends LoadedCgm {
                 numTracksRred += AnimationEdit.removeRepeats(anim);
                 numTracksNqed
                         += AnimationEdit.normalizeQuaternions(anim, 0.00005f);
+            }
+        }
+
+        List<AnimComposer> composers
+                = MySpatial.listControls(cgmRoot, AnimComposer.class, null);
+        for (AnimComposer composer : composers) {
+            Collection<String> names = composer.getAnimClipsNames();
+            for (String animationName : names) {
+                AnimClip clip = composer.getAnimClip(animationName);
+                numTracksZfed += MaudUtil.zeroFirst(clip);
+                numTracksRred += MaudUtil.removeRepeats(clip);
+                numTracksNqed
+                        += AnimationEdit.normalizeQuaternions(clip, 0.00005f);
             }
         }
 

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -26,15 +26,22 @@
  */
 package maud.model.cgm;
 
+import com.jme3.anim.AnimClip;
+import com.jme3.anim.AnimComposer;
+import com.jme3.anim.AnimTrack;
+import com.jme3.anim.TransformTrack;
+import com.jme3.anim.util.HasLocalTransform;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Animation;
 import com.jme3.animation.BoneTrack;
 import com.jme3.animation.SpatialTrack;
 import com.jme3.animation.Track;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.control.AbstractControl;
 import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
 import jme3utilities.Validate;
+import maud.MaudUtil;
 
 /**
  * Useful information about a particular animation track.
@@ -54,9 +61,13 @@ public class TrackItem {
     // fields
 
     /**
-     * anim control that contains the track
+     * animation control that contains the track
      */
-    final private AnimControl animControl;
+    final private AbstractControl animControl;
+    /**
+     * the track itself
+     */
+    final private Object track;
     /**
      * name of the animation that contains the track
      */
@@ -65,30 +76,47 @@ public class TrackItem {
      * constructed name of the anim control that contains the track
      */
     final private String animControlName;
-    /**
-     * the track itself
-     */
-    final private Track track;
     // *************************************************************************
     // constructors
 
     /**
-     * Instantiate a new instance.
+     * Instantiate a new item.
      */
     TrackItem(String animationName, String animControlName,
-            AnimControl animControl, Track track) {
+            AbstractControl control, Object track) {
         assert animControlName != null;
-        assert animControl != null;
+        assert control instanceof AnimComposer
+                || control instanceof AnimControl;
         assert animationName != null;
-        assert track != null;
+        assert track instanceof AnimTrack || track instanceof Track;
 
         this.animationName = animationName;
         this.animControlName = animControlName;
-        this.animControl = animControl;
+        this.animControl = control;
         this.track = track;
     }
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Determine the duration of the animation.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    double animationDuration() {
+        double result;
+        if (animControl instanceof AnimControl) {
+            Animation animation
+                    = ((AnimControl) animControl).getAnim(animationName);
+            result = animation.getLength();
+        } else {
+            AnimClip clip
+                    = ((AnimComposer) animControl).getAnimClip(animationName);
+            result = clip.getLength();
+        }
+
+        return result;
+    }
 
     /**
      * Describe the track within the context of its animation.
@@ -96,7 +124,19 @@ public class TrackItem {
      * @return a descriptive string of text (not null, not empty)
      */
     public String describe() {
-        String description = MyAnimation.describe(track, animControl);
+        String description;
+        if (animControl instanceof AnimControl) {
+            description = MyAnimation.describe((Track) track,
+                    (AnimControl) animControl);
+            assert description != null;
+            assert !description.isEmpty();
+        } else {
+            description = MaudUtil.describe((AnimTrack) track,
+                    (AnimComposer) animControl);
+            assert description != null;
+            assert !description.isEmpty();
+        }
+
         return description;
     }
 
@@ -105,14 +145,21 @@ public class TrackItem {
      *
      * @return the pre-existing instance (not null)
      */
-    Animation getAnimation() {
-        Animation result = animControl.getAnim(animationName);
-        assert result != null;
+    Object getAnimation() {
+        Object result;
+        if (animControl instanceof AnimControl) {
+            result = ((AnimControl) animControl).getAnim(animationName);
+            assert result != null;
+        } else {
+            result = ((AnimComposer) animControl).getAnimClip(animationName);
+            assert result != null;
+        }
+
         return result;
     }
 
     /**
-     * Access the name of the animation.
+     * Determine the name of the animation.
      *
      * @return text string (not null)
      */
@@ -126,7 +173,7 @@ public class TrackItem {
      *
      * @return the pre-existing instance (not null)
      */
-    AnimControl getAnimControl() {
+    AbstractControl getAnimControl() {
         assert animControl != null;
         return animControl;
     }
@@ -146,7 +193,7 @@ public class TrackItem {
      *
      * @return the pre-existing instance (not null)
      */
-    Track getTrack() {
+    Object getTrack() {
         assert track != null;
         return track;
     }
@@ -161,12 +208,10 @@ public class TrackItem {
         Validate.nonNull(otherItem, "other item");
 
         boolean result;
-        Track otherTrack = otherItem.getTrack();
+        Object otherTrack = otherItem.getTrack();
         if (track instanceof BoneTrack && otherTrack instanceof BoneTrack) {
-            BoneTrack boneTrack = (BoneTrack) track;
-            int boneIndex = boneTrack.getTargetBoneIndex();
-            BoneTrack otherBoneTrack = (BoneTrack) otherTrack;
-            int otherBoneIndex = otherBoneTrack.getTargetBoneIndex();
+            int boneIndex = ((BoneTrack) track).getTargetBoneIndex();
+            int otherBoneIndex = ((BoneTrack) otherTrack).getTargetBoneIndex();
 
             if (boneIndex == otherBoneIndex) {
                 result = true;
@@ -174,17 +219,29 @@ public class TrackItem {
                 result = false;
             }
 
+        } else if (track instanceof TransformTrack
+                && otherTrack instanceof TransformTrack) {
+            HasLocalTransform target = ((TransformTrack) track).getTarget();
+            HasLocalTransform otherTarget
+                    = ((TransformTrack) otherTrack).getTarget();
+
+            if (target == otherTarget) {
+                result = true;
+            } else {
+                result = false;
+            }
+
         } else if (track instanceof SpatialTrack
                 && otherTrack instanceof SpatialTrack) {
-            SpatialTrack spatialTrack = (SpatialTrack) track;
-            Spatial spatial = spatialTrack.getTrackSpatial();
+            Spatial spatial = ((SpatialTrack) track).getTrackSpatial();
             if (spatial == null) {
                 spatial = animControl.getSpatial();
             }
 
-            AnimControl otherAnimControl = otherItem.getAnimControl();
-            SpatialTrack otherSpatialTrack = (SpatialTrack) otherTrack;
-            Spatial otherSpatial = otherSpatialTrack.getTrackSpatial();
+            AnimControl otherAnimControl
+                    = (AnimControl) otherItem.getAnimControl();
+            Spatial otherSpatial
+                    = ((SpatialTrack) otherTrack).getTrackSpatial();
             if (otherSpatial == null) {
                 otherSpatial = otherAnimControl.getSpatial();
             }

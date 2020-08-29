@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -26,11 +26,14 @@
  */
 package maud.model.cgm;
 
+import com.jme3.anim.AnimComposer;
+import com.jme3.anim.AnimTrack;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.BoneTrack;
 import com.jme3.animation.Track;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.control.AbstractControl;
 import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
 import jme3utilities.Validate;
@@ -42,6 +45,7 @@ import jme3utilities.wes.TweenTransforms;
 import jme3utilities.wes.TweenVectors;
 import jme3utilities.wes.VectorCurve;
 import maud.Maud;
+import maud.MaudUtil;
 import maud.view.ScoreResources;
 import maud.view.ScoreView;
 
@@ -84,13 +88,13 @@ public class StaffTrack {
      */
     private static int numSamples = 0;
     /**
+     * animation track currently loaded for visualization
+     */
+    private static Object track = null;
+    /**
      * text for the track label
      */
     private static String labelText = null;
-    /**
-     * bone/spatial track currently loaded for visualization
-     */
-    private static Track track = null;
     // *************************************************************************
     // constructors
 
@@ -125,7 +129,7 @@ public class StaffTrack {
         if (track == null) {
             return false;
         }
-        Quaternion[] rotations = MyAnimation.getRotations(track);
+        Quaternion[] rotations = MaudUtil.getTrackRotations(track);
         if (rotations == null) {
             return false;
         } else {
@@ -142,7 +146,7 @@ public class StaffTrack {
         if (track == null) {
             return false;
         }
-        Vector3f[] scales = MyAnimation.getScales(track);
+        Vector3f[] scales = MaudUtil.getTrackScales(track);
         if (scales == null) {
             return false;
         } else {
@@ -159,7 +163,7 @@ public class StaffTrack {
         if (track == null) {
             return false;
         }
-        Vector3f[] translations = MyAnimation.getTranslations(track);
+        Vector3f[] translations = MaudUtil.getTrackTranslations(track);
         if (translations == null) {
             return false;
         } else {
@@ -178,7 +182,8 @@ public class StaffTrack {
     }
 
     /**
-     * Load the bone track (from the loaded animation) for the indexed bone.
+     * Load the track (from the loaded animation) that targets the indexed Bone
+     * or Joint.
      *
      * @param boneIndex which bone (&ge;0)
      */
@@ -191,7 +196,7 @@ public class StaffTrack {
     }
 
     /**
-     * Load the indexed spatial track from the loaded animation.
+     * Load the indexed spatial track from the loaded Animation.
      *
      * @param spatialTrackIndex which spatial track (&ge;0)
      */
@@ -199,8 +204,15 @@ public class StaffTrack {
         Validate.nonNegative(spatialTrackIndex, "spatial track index");
 
         track = cgm.getAnimation().findSpatialTrack(spatialTrackIndex);
-        AnimControl animControl = cgm.getAnimControl().find();
-        labelText = MyAnimation.describe(track, animControl);
+        AbstractControl control = cgm.getAnimControl().find();
+        if (control instanceof AnimControl) {
+            AnimControl animControl = (AnimControl) control;
+            labelText = MyAnimation.describe((Track) track, animControl);
+        } else {
+            AnimComposer composer = (AnimComposer) control;
+            labelText = MaudUtil.describe((AnimTrack) track, composer);
+        }
+
         loadTrack();
     }
 
@@ -215,7 +227,7 @@ public class StaffTrack {
         Validate.nonNegative(numPlots, "number of plots");
         Validate.nonNull(resources, "resources");
 
-        Quaternion[] rotations = MyAnimation.getRotations(track);
+        Quaternion[] rotations = MaudUtil.getTrackRotations(track);
         /*
          * copy frame values
          */
@@ -233,7 +245,7 @@ public class StaffTrack {
              */
             TweenTransforms tt = Maud.getModel().getTweenTransforms();
             TweenRotations technique = tt.getTweenRotations();
-            float times[] = track.getKeyFrameTimes();
+            float times[] = MaudUtil.getTrackTimes(track);
             float duration = cgm.getAnimation().duration();
             RotationCurve parms;
             parms = technique.precompute(times, duration, rotations);
@@ -311,7 +323,7 @@ public class StaffTrack {
         Validate.nonNegative(numPlots, "number of plots");
         Validate.nonNull(resources, "resources");
 
-        Vector3f[] scales = MyAnimation.getScales(track);
+        Vector3f[] scales = MaudUtil.getTrackScales(track);
         /*
          * copy frame values
          */
@@ -328,7 +340,7 @@ public class StaffTrack {
              */
             TweenTransforms tt = Maud.getModel().getTweenTransforms();
             TweenVectors technique = tt.getTweenScales();
-            float times[] = track.getKeyFrameTimes();
+            float times[] = MaudUtil.getTrackTimes(track);
             float duration = cgm.getAnimation().duration();
             VectorCurve parms = technique.precompute(times, duration, scales);
             Vector3f tempV = new Vector3f();
@@ -398,7 +410,7 @@ public class StaffTrack {
         Validate.nonNegative(numPlots, "number of plots");
         Validate.nonNull(resources, "resources");
 
-        Vector3f[] translations = MyAnimation.getTranslations(track);
+        Vector3f[] translations = MaudUtil.getTrackTranslations(track);
         /*
          * copy frame values
          */
@@ -415,7 +427,7 @@ public class StaffTrack {
              */
             TweenTransforms tt = Maud.getModel().getTweenTransforms();
             TweenVectors technique = tt.getTweenTranslations();
-            float times[] = track.getKeyFrameTimes();
+            float times[] = MaudUtil.getTrackTimes(track);
             float duration = cgm.getAnimation().duration();
             VectorCurve parms
                     = technique.precompute(times, duration, translations);
@@ -522,7 +534,7 @@ public class StaffTrack {
         /*
          * Copy keyframe times to nts[].
          */
-        float[] times = track.getKeyFrameTimes();
+        float[] times = MaudUtil.getTrackTimes(track);
         assert times[0] == 0f : times[0];
         int numFrames = times.length;
         nts = new float[numFrames];

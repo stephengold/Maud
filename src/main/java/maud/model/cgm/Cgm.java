@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -26,11 +26,15 @@
  */
 package maud.model.cgm;
 
+import com.jme3.anim.AnimClip;
+import com.jme3.anim.AnimComposer;
+import com.jme3.anim.AnimTrack;
+import com.jme3.anim.Armature;
+import com.jme3.anim.TransformTrack;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Animation;
 import com.jme3.animation.Bone;
 import com.jme3.animation.Skeleton;
-import com.jme3.animation.SpatialTrack;
 import com.jme3.animation.Track;
 import com.jme3.bullet.animation.DynamicAnimControl;
 import com.jme3.light.Light;
@@ -41,6 +45,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 import com.jme3.util.clone.Cloner;
 import java.util.ArrayList;
@@ -241,10 +246,23 @@ public class Cgm implements Cloneable {
     // new methods exposed
 
     /**
+     * Count all animation controls.
+     *
+     * @return the number found (&ge;0)
+     */
+    public int countAnimationControls() {
+        List<AnimComposer> animComposerList = listSgcs(AnimComposer.class);
+        List<AnimControl> animControlList = listSgcs(AnimControl.class);
+
+        int result = animComposerList.size() + animControlList.size();
+        return result;
+    }
+
+    /**
      * Count immediate children of the spatial in the specified position.
      *
      * @param treePosition tree position of spatial (not null, unaffected)
-     * @return number found (&ge;0)
+     * @return the number found (&ge;0)
      */
     public int countChildren(List<Integer> treePosition) {
         Spatial spatial = rootSpatial;
@@ -280,7 +298,8 @@ public class Cgm implements Cloneable {
     }
 
     /**
-     * Count scene-graph controls of the specified type in the C-G model.
+     * Count scene-graph controls of the specified type in the C-G model. TODO
+     * re-order methods
      *
      * @param <T> superclass of Control
      * @param controlType superclass of Control to search for
@@ -320,15 +339,16 @@ public class Cgm implements Cloneable {
     }
 
     /**
-     * Count skeleton instances in the C-G model.
+     * Count Armature/Skeleton instances in the C-G model.
      *
-     * @return number found (&ge;0)
+     * @return the number found (&ge;0)
      */
     public int countSkeletons() {
         int count = 0;
         if (isLoaded()) {
             List<Skeleton> list = MySkeleton.listSkeletons(rootSpatial, null);
-            count = list.size();
+            List<Armature> aList = MaudUtil.listArmatures(rootSpatial, null);
+            count = list.size() + aList.size();
         }
 
         assert count >= 0 : count;
@@ -510,14 +530,18 @@ public class Cgm implements Cloneable {
             Node node = (Node) spatial;
             spatial = node.getChild(childPosition);
         }
-        Transform result = spatial.getLocalTransform();
 
-        SpatialTrack track = loadedAnimation.findTrackForSpatial(spatial);
-        if (track != null) {
-            TweenTransforms technique = Maud.getModel().getTweenTransforms();
-            float time = playOptions.getTime();
+        Transform result = spatial.getLocalTransform();
+        TweenTransforms technique = Maud.getModel().getTweenTransforms();
+        float time = playOptions.getTime();
+        Object track = loadedAnimation.findTrackForSpatial(spatial);
+        if (track instanceof Track) {
             float duration = loadedAnimation.duration();
-            result = technique.interpolate(time, track, duration, result, null);
+            Transform fallback = spatial.getLocalTransform();
+            result = technique.interpolate(time, (Track) track, duration,
+                    fallback, null);
+        } else if (track instanceof TransformTrack) {
+            result = technique.interpolate(time, (TransformTrack) track, null);
         }
 
         return result;
@@ -872,25 +896,45 @@ public class Cgm implements Cloneable {
     }
 
     /**
-     * Enumerate all anim controls and assign them names.
+     * Enumerate all animation controls in the same order as
+     * listAnimControlNames().
+     *
+     * @return a new list of controls
+     */
+    List<AbstractControl> listAnimationControls() {
+        List<AnimComposer> animComposerList = listSgcs(AnimComposer.class);
+        List<AnimControl> animControlList = listSgcs(AnimControl.class);
+
+        int numControls = animComposerList.size() + animControlList.size();
+        List<AbstractControl> result = new ArrayList<>(numControls);
+        result.addAll(animComposerList);
+        result.addAll(animControlList);
+
+        assert result.size() == numControls;
+        return result;
+    }
+
+    /**
+     * Enumerate all animation controls and assign them names.
      *
      * @return a new list of names
      */
     public List<String> listAnimControlNames() {
-        List<AnimControl> animControlList = listSgcs(AnimControl.class);
-        int numAnimControls = animControlList.size();
+        List<AbstractControl> controlList = listAnimationControls();
+        int count = controlList.size();
+        List<String> result = new ArrayList<>(count);
 
-        List<String> nameList = new ArrayList<>(numAnimControls);
-        for (int index = 0; index < numAnimControls; index++) {
-            AnimControl animControl = animControlList.get(index);
-            Spatial sp = animControl.getSpatial();
+        for (int listIndex = 0; listIndex < count; ++listIndex) {
+            AbstractControl control = controlList.get(listIndex);
+            Spatial sp = control.getSpatial();
             String spName = sp.getName();
             spName = MyString.quote(spName);
-            nameList.add(spName);
+            result.add(spName);
         }
-        MyString.dedup(nameList, " #");
+        MyString.dedup(result, " #");
 
-        return nameList;
+        assert result.size() == count;
+        return result;
     }
 
     /**
@@ -1007,22 +1051,38 @@ public class Cgm implements Cloneable {
     public List<TrackItem> listTrackItems() {
         List<TrackItem> result = new ArrayList<>(100);
 
-        List<String> animControlNames = listAnimControlNames();
-        List<AnimControl> animControls = listSgcs(AnimControl.class);
-        int numAnimControls = animControls.size();
-        assert animControlNames.size() == numAnimControls;
-        for (int acIndex = 0; acIndex < numAnimControls; acIndex++) {
-            String animControlName = animControlNames.get(acIndex);
-            AnimControl animControl = animControls.get(acIndex);
+        List<String> controlNames = listAnimControlNames();
+        List<AbstractControl> controls = listAnimationControls();
+        int numControls = controls.size();
+        assert controlNames.size() == numControls;
 
-            Collection<String> animationNames = animControl.getAnimationNames();
-            for (String animationName : animationNames) {
-                Animation animation = animControl.getAnim(animationName);
-                Track[] tracks = animation.getTracks();
-                for (Track track : tracks) {
-                    TrackItem item = new TrackItem(animationName,
-                            animControlName, animControl, track);
-                    result.add(item);
+        for (int controlIndex = 0; controlIndex < numControls; ++controlIndex) {
+            String controlName = controlNames.get(controlIndex);
+            AbstractControl control = controls.get(controlIndex);
+            if (control instanceof AnimComposer) {
+                AnimComposer animComposer = (AnimComposer) control;
+                Collection<String> clipNames = animComposer.getAnimClipsNames();
+                for (String clipName : clipNames) {
+                    AnimClip clip = animComposer.getAnimClip(clipName);
+                    AnimTrack[] tracks = clip.getTracks();
+                    for (AnimTrack track : tracks) {
+                        TrackItem item = new TrackItem(clipName,
+                                controlName, animComposer, track);
+                        result.add(item);
+                    }
+                }
+
+            } else if (control instanceof AnimControl) {
+                AnimControl ac = (AnimControl) control;
+                Collection<String> animationNames = ac.getAnimationNames();
+                for (String animationName : animationNames) {
+                    Animation animation = ac.getAnim(animationName);
+                    Track[] tracks = animation.getTracks();
+                    for (Track track : tracks) {
+                        TrackItem item = new TrackItem(animationName,
+                                controlName, ac, track);
+                        result.add(item);
+                    }
                 }
             }
         }

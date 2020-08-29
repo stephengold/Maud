@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -338,6 +338,7 @@ public class CheckLoaded {
             lightNames.add(name);
         }
 
+        // TODO check armatures, skinning controls, and composers
         List<Skeleton> skeletons = MySkeleton.listSkeletons(cgmRoot, null);
         for (Skeleton skeleton : skeletons) {
             if (!skeleton(skeleton)) {
