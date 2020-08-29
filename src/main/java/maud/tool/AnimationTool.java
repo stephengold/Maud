@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -26,7 +26,6 @@
  */
 package maud.tool;
 
-import com.jme3.animation.AnimControl;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
@@ -203,7 +202,7 @@ class AnimationTool extends Tool {
         String previousButton = "";
 
         Cgm cgm = Maud.getModel().getTarget();
-        int numAnimControls = cgm.countSgcs(AnimControl.class);
+        int numAnimControls = cgm.countAnimationControls();
         if (numAnimControls > 0) {
             selectButton = "Select animControl";
             SelectedAnimControl animControl = cgm.getAnimControl();

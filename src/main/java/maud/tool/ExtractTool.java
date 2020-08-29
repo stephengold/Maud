@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018-2019, Stephen Gold
+ Copyright (c) 2018-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -26,7 +26,6 @@
  */
 package maud.tool;
 
-import com.jme3.animation.AnimControl;
 import java.util.logging.Logger;
 import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.Tool;
@@ -82,7 +81,7 @@ class ExtractTool extends Tool {
         if (targetAnimControlName != null) {
             animControlButton = targetAnimControlName;
         } else {
-            int numAnimControls = target.countSgcs(AnimControl.class);
+            int numAnimControls = target.countAnimationControls();
             if (numAnimControls > 0) {
                 animControlButton = "( none selected )";
             }
