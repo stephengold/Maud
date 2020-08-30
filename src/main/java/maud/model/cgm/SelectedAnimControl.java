@@ -184,7 +184,8 @@ public class SelectedAnimControl implements JmeCloneable {
             int numTracks = oldTracks.length;
             AnimTrack[] newTracks = new AnimTrack[numTracks];
             for (int i = 0; i < numTracks; ++i) {
-                AnimTrack clone = (AnimTrack) MaudUtil.cloneTrack(oldTracks[i]);
+                AnimTrack clone
+                        = (AnimTrack) TrackEdit.cloneTrack(oldTracks[i]);
                 newTracks[i] = clone;
             }
             copyClip.setTracks(newTracks);
@@ -266,28 +267,48 @@ public class SelectedAnimControl implements JmeCloneable {
                 maxDuration = duration;
             }
         }
-        /*
-         * Mix the selected tracks together into a new animation.
-         * TODO handle AnimTracks
-         */
-        Animation mix = new Animation(animationName, (float) maxDuration);
-        for (TrackItem item : selectedTracks) {
-            Track track = (Track) item.getTrack();
-            Track clone = track.clone();
-            if (track instanceof SpatialTrack) {
-                SpatialTrack spatialTrack = (SpatialTrack) track;
-                Spatial spatial = spatialTrack.getTrackSpatial();
-                if (spatial == null) {
-                    AbstractControl animControl = item.getAnimControl();
-                    spatial = animControl.getSpatial();
+
+        AbstractControl control = find();
+        if (control instanceof AnimControl) {
+            /*
+             * Mix the selected tracks together into a new Animation.
+             */
+            Animation mix = new Animation(animationName, (float) maxDuration);
+            for (TrackItem item : selectedTracks) {
+                Track track = (Track) item.getTrack();
+                Track clone = track.clone();
+                if (track instanceof SpatialTrack) {
+                    SpatialTrack spatialTrack = (SpatialTrack) track;
+                    Spatial spatial = spatialTrack.getTrackSpatial();
+                    if (spatial == null) {
+                        AbstractControl animControl = item.getAnimControl();
+                        spatial = animControl.getSpatial();
+                    }
+                    SpatialTrack cloneSt = (SpatialTrack) clone;
+                    cloneSt.setTrackSpatial(spatial);
                 }
-                SpatialTrack cloneSt = (SpatialTrack) clone;
-                cloneSt.setTrackSpatial(spatial);
+                mix.addTrack(clone);
             }
-            mix.addTrack(clone);
+            editableCgm.addAnimation(mix);
+
+        } else {
+            /*
+             * Mix the selected tracks together into a new clip.
+             */
+            AnimClip mix = new AnimClip(animationName);
+            int numSelected = selectedTracks.size();
+            AnimTrack[] trackArray = new AnimTrack[numSelected];
+            int outIndex = 0;
+            for (TrackItem item : selectedTracks) {
+                AnimTrack track = (AnimTrack) item.getTrack();
+                AnimTrack clone = (AnimTrack) TrackEdit.cloneTrack(track);
+                trackArray[outIndex] = clone;
+                ++outIndex;
+            }
+            mix.setTracks(trackArray);
+            editableCgm.addAnimation(mix);
         }
 
-        editableCgm.addAnimation(mix);
     }
 
     /**
@@ -302,8 +323,14 @@ public class SelectedAnimControl implements JmeCloneable {
         assert !hasRealAnimation(newAnimName) : newAnimName;
 
         Pose pose = cgm.getPose().get();
-        Animation newAnimation = pose.capture(newAnimName);
-        editableCgm.addAnimation(newAnimation);
+        AbstractControl control = find();
+        if (control instanceof AnimControl) {
+            Animation newAnimation = pose.capture(newAnimName);
+            editableCgm.addAnimation(newAnimation);
+        } else {
+            AnimClip newClip = pose.captureToClip(newAnimName);
+            editableCgm.addAnimation(newClip);
+        }
     }
 
     /**

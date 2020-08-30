@@ -674,7 +674,7 @@ public class EditableCgm extends LoadedCgm {
      * @return the number of tracks edited (&ge;0)
      */
     public static int removeRepeats(AnimClip clip) {
-        int result = MaudUtil.removeRepeats(clip);
+        int result = AnimationEdit.removeRepeats(clip);
         return result;
     }
 
@@ -1646,8 +1646,8 @@ public class EditableCgm extends LoadedCgm {
             Collection<String> names = composer.getAnimClipsNames();
             for (String animationName : names) {
                 AnimClip clip = composer.getAnimClip(animationName);
-                numTracksZfed += MaudUtil.zeroFirst(clip);
-                numTracksRred += MaudUtil.removeRepeats(clip);
+                numTracksZfed += AnimationEdit.zeroFirst(clip);
+                numTracksRred += AnimationEdit.removeRepeats(clip);
                 numTracksNqed
                         += AnimationEdit.normalizeQuaternions(clip, 0.00005f);
             }

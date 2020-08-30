@@ -217,7 +217,7 @@ public class SelectedTrack implements JmeCloneable {
                         null, scales);
                 newSelected = newTrack;
             } else {
-                newTrack = MaudUtil.cloneTrack(oldTrack);
+                newTrack = TrackEdit.cloneTrack(oldTrack);
             }
             TmpTracks.add(newTrack);
         }
@@ -252,7 +252,7 @@ public class SelectedTrack implements JmeCloneable {
                         rotations, null);
                 newSelected = newTrack;
             } else {
-                newTrack = MaudUtil.cloneTrack(oldTrack);
+                newTrack = TrackEdit.cloneTrack(oldTrack);
             }
             TmpTracks.add(newTrack);
         }
@@ -300,7 +300,7 @@ public class SelectedTrack implements JmeCloneable {
                         rotations, scales);
                 newSelected = newTrack;
             } else {
-                newTrack = MaudUtil.cloneTrack(oldTrack);
+                newTrack = TrackEdit.cloneTrack(oldTrack);
             }
             TmpTracks.add(newTrack);
         }
@@ -498,12 +498,12 @@ public class SelectedTrack implements JmeCloneable {
                     int jointIndex = joint.getId();
                     Pose pose = cgm.getPose().get();
                     Transform local = pose.localTransform(jointIndex, null);
-                    newTrack = MaudUtil.insertKeyframe(transformTrack, time,
+                    newTrack = TrackEdit.insertKeyframe(transformTrack, time,
                             local);
                     newSelected = newTrack;
                 }
             } else {
-                newTrack = MaudUtil.cloneTrack(oldTrack);
+                newTrack = TrackEdit.cloneTrack(oldTrack);
             }
             TmpTracks.add(newTrack);
         } // TODO new bone tracks?
@@ -620,7 +620,7 @@ public class SelectedTrack implements JmeCloneable {
             Object newTrack;
             if (oldTrack == selected) {
                 if (selected instanceof TransformTrack) {
-                    newTrack = MaudUtil.reduce((TransformTrack) oldTrack,
+                    newTrack = TrackEdit.reduce((TransformTrack) oldTrack,
                             factor);
                     newSelected = newTrack;
                 } else {
@@ -628,7 +628,7 @@ public class SelectedTrack implements JmeCloneable {
                     newSelected = newTrack;
                 }
             } else {
-                newTrack = MaudUtil.cloneTrack(oldTrack);
+                newTrack = TrackEdit.cloneTrack(oldTrack);
             }
             TmpTracks.add(newTrack);
         }
@@ -667,12 +667,12 @@ public class SelectedTrack implements JmeCloneable {
                             sampleRate, duration);
                     newSelected = newTrack;
                 } else {
-                    newTrack = MaudUtil.resampleAtRate(
+                    newTrack = TrackEdit.resampleAtRate(
                             (TransformTrack) selected, sampleRate, duration);
                     newSelected = newTrack;
                 }
             } else {
-                newTrack = MaudUtil.cloneTrack(oldTrack);
+                newTrack = TrackEdit.cloneTrack(oldTrack);
             }
             TmpTracks.add(newTrack);
         }
@@ -712,12 +712,12 @@ public class SelectedTrack implements JmeCloneable {
                             numSamples, duration);
                     newSelected = newTrack;
                 } else {
-                    newTrack = MaudUtil.resampleToNumber(
+                    newTrack = TrackEdit.resampleToNumber(
                             (TransformTrack) selected, numSamples, duration);
                     newSelected = newTrack;
                 }
             } else {
-                newTrack = MaudUtil.cloneTrack(oldTrack);
+                newTrack = TrackEdit.cloneTrack(oldTrack);
             }
             TmpTracks.add(newTrack);
         }
@@ -918,13 +918,13 @@ public class SelectedTrack implements JmeCloneable {
                             SmoothVectors.LoopLerp, duration);
                     newSelected = newTrack;
                 } else {
-                    newTrack = MaudUtil.smooth((TransformTrack) selected, 0.2f,
+                    newTrack = TrackEdit.smooth((TransformTrack) selected, 0.2f,
                             SmoothVectors.LoopLerp, SmoothRotations.LoopNlerp,
                             SmoothVectors.LoopLerp, duration);
                     newSelected = newTrack;
                 }
             } else {
-                newTrack = MaudUtil.cloneTrack(oldTrack);
+                newTrack = TrackEdit.cloneTrack(oldTrack);
             }
             TmpTracks.add(newTrack);
         }
@@ -1087,7 +1087,7 @@ public class SelectedTrack implements JmeCloneable {
                         translations, rotations, scales);
                 newSelected = newTrack;
             } else {
-                newTrack = MaudUtil.cloneTrack(oldTrack);
+                newTrack = TrackEdit.cloneTrack(oldTrack);
             }
             TmpTracks.add(newTrack);
         }
@@ -1126,12 +1126,12 @@ public class SelectedTrack implements JmeCloneable {
                             endWeight);
                     newSelected = newTrack;
                 } else {
-                    newTrack = MaudUtil.wrap((TransformTrack) selected,
+                    newTrack = TrackEdit.wrap((TransformTrack) selected,
                             duration, endWeight);
                     newSelected = newTrack;
                 }
             } else {
-                newTrack = MaudUtil.cloneTrack(oldTrack);
+                newTrack = TrackEdit.cloneTrack(oldTrack);
             }
             TmpTracks.add(newTrack);
         }
@@ -1232,7 +1232,7 @@ public class SelectedTrack implements JmeCloneable {
             Object newTrack;
             if (oldTrack == selected) {
                 if (oldTrack instanceof TransformTrack) {
-                    newTrack = MaudUtil.deleteRange((TransformTrack) selected,
+                    newTrack = TrackEdit.deleteRange((TransformTrack) selected,
                             startIndex, number);
                 } else {
                     newTrack = TrackEdit.deleteRange((Track) selected,
@@ -1240,7 +1240,7 @@ public class SelectedTrack implements JmeCloneable {
                 }
                 newSelected = newTrack;
             } else {
-                newTrack = MaudUtil.cloneTrack(oldTrack);
+                newTrack = TrackEdit.cloneTrack(oldTrack);
             }
             TmpTracks.add(newTrack);
         }
@@ -1365,7 +1365,7 @@ public class SelectedTrack implements JmeCloneable {
                         translations, rotations, scales);
                 newSelected = newTrack;
             } else {
-                newTrack = MaudUtil.cloneTrack(oldTrack);
+                newTrack = TrackEdit.cloneTrack(oldTrack);
             }
             TmpTracks.add(newTrack);
         }

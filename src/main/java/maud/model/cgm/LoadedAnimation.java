@@ -177,7 +177,7 @@ public class LoadedAnimation implements Cloneable {
                     newTracks[i] = TrackEdit.behead(oldTrack, neckTime,
                             neckTransform);
                 } else {
-                    newTracks[i] = (AnimTrack) MaudUtil.cloneTrack(trk);
+                    newTracks[i] = (AnimTrack) TrackEdit.cloneTrack(trk);
                 }
                 if (trk == oldSelectedTrack) {
                     newSelectedTrack = newTracks[i];
@@ -196,9 +196,9 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Calculate the current transform of the indexed bone.
+     * Determine the current user/animation transform of the indexed bone/joint.
      *
-     * @param boneIndex which bone to calculate
+     * @param boneIndex the index of the subject bone/joint (&ge;0)
      * @param storeResult (modified if not null)
      * @return transform (either storeResult or a new instance)
      */
@@ -235,7 +235,10 @@ public class LoadedAnimation implements Cloneable {
                 result.loadIdentity();
             } else {
                 double time = (double) cgm.getPlay().getTime();
-                track.getDataAtTime(time, result);
+                Transform local = new Transform();
+                track.getDataAtTime(time, local);
+                Pose pose = cgm.getPose().get();
+                pose.userForLocal(boneIndex, local, result);
             }
         }
 
@@ -385,16 +388,16 @@ public class LoadedAnimation implements Cloneable {
                             keyframeIndex, 1);
                     ++numDeletions;
                 } else {
-                    newTrack = MaudUtil.cloneTrack(track);
+                    newTrack = TrackEdit.cloneTrack(track);
                 }
 
             } else if (track instanceof TransformTrack && keyframeIndex >= 1) {
-                newTrack = MaudUtil.deleteRange((TransformTrack) track,
+                newTrack = TrackEdit.deleteRange((TransformTrack) track,
                         keyframeIndex, 1);
                 ++numDeletions;
 
             } else { // TODO other track types
-                newTrack = MaudUtil.cloneTrack(track);
+                newTrack = TrackEdit.cloneTrack(track);
             }
 
             if (track == oldSelectedTrack) {
@@ -426,7 +429,7 @@ public class LoadedAnimation implements Cloneable {
         Object[] oldTracks = getTracks();
         for (Object oldTrack : oldTracks) {
             if (oldTrack != selectedTrack) {
-                Object newTrack = MaudUtil.cloneTrack(oldTrack);
+                Object newTrack = TrackEdit.cloneTrack(oldTrack);
                 TmpTracks.add(newTrack);
             }
         }
@@ -737,19 +740,19 @@ public class LoadedAnimation implements Cloneable {
                 HasLocalTransform target = transformTrack.getTarget();
                 if (target instanceof Joint) {
                     int jointIndex = ((Joint) target).getId();
-                    Transform user = pose.userTransform(jointIndex, null);
+                    Transform local = pose.localTransform(jointIndex, null);
                     if (frameIndex == -1) {
-                        newTrack = MaudUtil.insertKeyframe(transformTrack,
-                                atTime, user);
+                        newTrack = TrackEdit.insertKeyframe(transformTrack,
+                                atTime, local);
                     } else {
-                        newTrack = MaudUtil.replaceKeyframe(transformTrack,
-                                frameIndex, user);
+                        newTrack = TrackEdit.replaceKeyframe(transformTrack,
+                                frameIndex, local);
                     }
                 } else {
-                    newTrack = MaudUtil.cloneTrack(oldTrack);
+                    newTrack = TrackEdit.cloneTrack(oldTrack);
                 }
             } else {
-                newTrack = MaudUtil.cloneTrack(oldTrack);
+                newTrack = TrackEdit.cloneTrack(oldTrack);
             }
 
             if (oldTrack == oldSelectedTrack) {
@@ -1034,9 +1037,9 @@ public class LoadedAnimation implements Cloneable {
                     || oldTrack instanceof SpatialTrack) {
                 newTrack = TrackEdit.reduce((Track) oldTrack, factor);
             } else if (oldTrack instanceof TransformTrack) {
-                newTrack = MaudUtil.reduce((TransformTrack) oldTrack, factor);
+                newTrack = TrackEdit.reduce((TransformTrack) oldTrack, factor);
             } else { // TODO other track types
-                newTrack = MaudUtil.cloneTrack(oldTrack);
+                newTrack = TrackEdit.cloneTrack(oldTrack);
             }
 
             if (oldTrack == oldSelectedTrack) {
@@ -1083,7 +1086,7 @@ public class LoadedAnimation implements Cloneable {
         TmpTracks.clear();
         Object[] oldTracks = getTracks();
         for (Object oldTrack : oldTracks) {
-            Object newTrack = MaudUtil.cloneTrack(oldTrack);
+            Object newTrack = TrackEdit.cloneTrack(oldTrack);
 
             if (oldTrack == oldSelectedTrack) {
                 newSelectedTrack = newTrack;
@@ -1115,7 +1118,7 @@ public class LoadedAnimation implements Cloneable {
             } else if (oldTrack instanceof AnimTrack) {
                 newTrack = TrackEdit.reverse((AnimTrack) oldTrack);
             } else { // TODO other track types
-                newTrack = MaudUtil.cloneTrack(oldTrack);
+                newTrack = TrackEdit.cloneTrack(oldTrack);
             }
 
             if (oldTrack == oldSelectedTrack) {
@@ -1158,10 +1161,10 @@ public class LoadedAnimation implements Cloneable {
                 newTrack = techniques.resampleAtRate((Track) oldTrack,
                         sampleRate, duration);
             } else if (oldTrack instanceof TransformTrack) {
-                newTrack = MaudUtil.resampleAtRate((TransformTrack) oldTrack,
+                newTrack = TrackEdit.resampleAtRate((TransformTrack) oldTrack,
                         sampleRate, duration);
             } else { // TODO other track types
-                newTrack = MaudUtil.cloneTrack(oldTrack);
+                newTrack = TrackEdit.cloneTrack(oldTrack);
             }
 
             if (oldTrack == oldSelectedTrack) {
@@ -1206,10 +1209,10 @@ public class LoadedAnimation implements Cloneable {
                 newTrack = techniques.resampleToNumber((Track) oldTrack,
                         numSamples, duration);
             } else if (oldTrack instanceof TransformTrack) {
-                newTrack = MaudUtil.resampleToNumber((TransformTrack) oldTrack,
+                newTrack = TrackEdit.resampleToNumber((TransformTrack) oldTrack,
                         numSamples, duration);
             } else { // TODO other track types
-                newTrack = MaudUtil.cloneTrack(oldTrack);
+                newTrack = TrackEdit.cloneTrack(oldTrack);
             }
 
             if (oldTrack == oldSelectedTrack) {
@@ -1339,7 +1342,7 @@ public class LoadedAnimation implements Cloneable {
                 newTrack = TrackEdit.truncate(transformTrack,
                         newDuration, endTransform);
             } else { // TODO other track types
-                newTrack = MaudUtil.cloneTrack(oldTrack);
+                newTrack = TrackEdit.cloneTrack(oldTrack);
             }
 
             if (oldTrack == oldSelectedTrack) {
@@ -1393,10 +1396,10 @@ public class LoadedAnimation implements Cloneable {
                 }
             } else if (track instanceof SpatialTrack) {
                 newTrack = TrackEdit.simplify((Track) track);
-            } else if (track instanceof AnimTrack) {
-                // TODO
+            } else if (track instanceof TransformTrack) {
+                newTrack = TrackEdit.simplify((TransformTrack) track);
             } else {
-                newTrack = MaudUtil.cloneTrack(track);
+                newTrack = TrackEdit.cloneTrack(track);
             }
 
             if (track == oldSelectedTrack) {
@@ -1439,7 +1442,7 @@ public class LoadedAnimation implements Cloneable {
                 newTrack = TrackEdit.truncate(transformTrack, endTime,
                         endTransform);
             } else { // TODO other track types
-                newTrack = MaudUtil.cloneTrack(oldTrack);
+                newTrack = TrackEdit.cloneTrack(oldTrack);
             }
 
             if (oldTrack == oldSelectedTrack) {
@@ -1480,10 +1483,10 @@ public class LoadedAnimation implements Cloneable {
                 newTrack = TrackEdit.wrap((Track) oldTrack, duration,
                         endWeight);
             } else if (oldTrack instanceof TransformTrack) {
-                newTrack = MaudUtil.wrap((TransformTrack) oldTrack, duration,
+                newTrack = TrackEdit.wrap((TransformTrack) oldTrack, duration,
                         endWeight);
             } else { // TODO other track types
-                newTrack = MaudUtil.cloneTrack(oldTrack);
+                newTrack = TrackEdit.cloneTrack(oldTrack);
             }
 
             if (oldTrack == oldSelectedTrack) {

@@ -115,17 +115,18 @@ public class SelectedFrame implements Cloneable {
             if (oldTrack == oldSelected) {
                 Pose pose = cgm.getPose().get();
                 int boneIndex = sTrack.targetBoneIndex();
-                Transform user = pose.userTransform(boneIndex, null);
                 if (oldTrack instanceof BoneTrack) {
+                    Transform user = pose.userTransform(boneIndex, null);
                     newTrack = TrackEdit.replaceKeyframe((BoneTrack) oldTrack,
                             frameIndex, user);
                 } else {
-                    newTrack = MaudUtil.replaceKeyframe(
-                            (TransformTrack) oldTrack, frameIndex, user);
+                    Transform local = pose.localTransform(boneIndex, null);
+                    newTrack = TrackEdit.replaceKeyframe(
+                            (TransformTrack) oldTrack, frameIndex, local);
                 }
                 newSelected = newTrack;
             } else {
-                newTrack = MaudUtil.cloneTrack(oldTrack);
+                newTrack = TrackEdit.cloneTrack(oldTrack);
             }
             TmpTracks.add(newTrack);
         }
@@ -259,7 +260,7 @@ public class SelectedFrame implements Cloneable {
                 assert newTrack != null;
                 newSelected = newTrack;
             } else {
-                newTrack = MaudUtil.cloneTrack(oldTrack);
+                newTrack = TrackEdit.cloneTrack(oldTrack);
             }
             TmpTracks.add(newTrack);
         }
