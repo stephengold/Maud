@@ -125,7 +125,9 @@ public class SelectedTrack implements JmeCloneable {
         int count = 0;
         if (selected != null) {
             Quaternion[] rotations = MaudUtil.getTrackRotations(selected);
-            count = countNe(rotations);
+            if (rotations != null) {
+                count = countNe(rotations);
+            }
         }
 
         return count;
@@ -139,8 +141,10 @@ public class SelectedTrack implements JmeCloneable {
     public int countScales() {
         int result = 0;
         if (selected != null) {
-            Vector3f[] rotations = MaudUtil.getTrackScales(selected);
-            result = MyArray.countNe(rotations);
+            Vector3f[] scales = MaudUtil.getTrackScales(selected);
+            if (scales != null) {
+                result = MyArray.countNe(scales);
+            }
         }
 
         return result;
@@ -155,8 +159,10 @@ public class SelectedTrack implements JmeCloneable {
     public int countTranslations() {
         int result = 0;
         if (selected != null) {
-            Vector3f[] rotations = MaudUtil.getTrackTranslations(selected);
-            result = MyArray.countNe(rotations);
+            Vector3f[] translations = MaudUtil.getTrackTranslations(selected);
+            if (translations != null) {
+                result = MyArray.countNe(translations);
+            }
         }
 
         return result;
