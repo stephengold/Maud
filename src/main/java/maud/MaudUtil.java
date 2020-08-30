@@ -1648,6 +1648,53 @@ public class MaudUtil {
     }
 
     /**
+     * Copy a TransformTrack, deleting the scale component if it consists
+     * entirely of identities. TODO move to TrackEdit
+     *
+     * @param oldTrack the input track (not null, unaffected)
+     * @return a new TransformTrack with the same target
+     */
+    public static TransformTrack simplify(TransformTrack oldTrack) {
+        boolean keepScales = false;
+
+        float[] oldTimes = oldTrack.getTimes();
+        int numFrames = oldTimes.length;
+        assert numFrames > 0 : numFrames;
+        Vector3f[] oldScales = oldTrack.getScales();
+        for (int index = 0; index < numFrames; ++index) {
+            if (oldScales != null) {
+                Vector3f scale = oldScales[index];
+                if (!MyVector3f.isScaleIdentity(scale)) {
+                    keepScales = true;
+                }
+            }
+        }
+
+        Vector3f[] oldTranslations = oldTrack.getTranslations();
+        Quaternion[] oldRotations = oldTrack.getRotations();
+
+        float[] newTimes = new float[numFrames];
+        Vector3f[] newTranslations = new Vector3f[numFrames];
+        Quaternion[] newRotations = new Quaternion[numFrames];
+        Vector3f[] newScales = keepScales ? new Vector3f[numFrames] : null;
+
+        for (int index = 0; index < numFrames; ++index) {
+            newTimes[index] = oldTimes[index];
+            newTranslations[index] = oldTranslations[index].clone();
+            newRotations[index] = oldRotations[index].clone();
+            if (keepScales) {
+                newScales[index] = oldScales[index].clone();
+            }
+        }
+
+        HasLocalTransform target = oldTrack.getTarget();
+        TransformTrack result = new TransformTrack(target, newTimes,
+                newTranslations, newRotations, newScales);
+
+        return result;
+    }
+
+    /**
      * Copy a TransformTrack, smoothing it using the specified techniques. TODO
      * move to TrackEdit
      *
