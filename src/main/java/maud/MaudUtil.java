@@ -447,12 +447,8 @@ public class MaudUtil {
                 builder.append(MyString.quote(targetName));
             }
 
-            if (transformTrack.getTranslations() != null) {
-                builder.append("T");
-            }
-            if (transformTrack.getRotations() != null) {
-                builder.append("R");
-            }
+            builder.append("T");
+            builder.append("R");
             if (transformTrack.getScales() != null) {
                 builder.append("S");
             }

@@ -195,8 +195,7 @@ public class SelectedTrack implements JmeCloneable {
      * SpatialTrack or TransformTrack.
      */
     public void deleteRotations() {
-        assert selected instanceof SpatialTrack
-                || selected instanceof TransformTrack;
+        assert selected instanceof SpatialTrack;
 
         Object newSelected = null;
 
@@ -279,8 +278,7 @@ public class SelectedTrack implements JmeCloneable {
      * SpatialTrack or TransformTrack.
      */
     public void deleteTranslations() {
-        assert selected instanceof SpatialTrack
-                || selected instanceof TransformTrack;
+        assert selected instanceof SpatialTrack;
 
         Object newSelected = null;
 
@@ -493,9 +491,9 @@ public class SelectedTrack implements JmeCloneable {
                     Joint joint = (Joint) transformTrack.getTarget();
                     int jointIndex = joint.getId();
                     Pose pose = cgm.getPose().get();
-                    Transform user = pose.userTransform(jointIndex, null);
+                    Transform local = pose.localTransform(jointIndex, null);
                     newTrack = MaudUtil.insertKeyframe(transformTrack, time,
-                            user);
+                            local);
                     newSelected = newTrack;
                 }
             } else {
