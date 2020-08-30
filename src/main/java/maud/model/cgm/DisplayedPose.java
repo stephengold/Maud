@@ -98,12 +98,7 @@ public class DisplayedPose implements JmeCloneable {
     void resetToBind(Object skeleton) {
         if (skeleton instanceof Armature) {
             pose = new Pose((Armature) skeleton);
-            // TODO use pose.setToBind()
-            Transform tmpTransform = new Transform();
-            for (int jointI = 0; jointI < pose.countBones(); ++jointI) {
-                pose.bindTransform(jointI, tmpTransform);
-                pose.set(jointI, tmpTransform);
-            }
+            pose.setToBind();
         } else {
             pose = new Pose((Skeleton) skeleton);
         }

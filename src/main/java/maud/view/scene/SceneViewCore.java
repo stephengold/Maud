@@ -1456,9 +1456,9 @@ public class SceneViewCore
         Vector3f scale = transform.getScale();
 
         for (int boneIndex = 0; boneIndex < boneCount; ++boneIndex) {
-            pose.userTransform(boneIndex, transform);
             if (skeleton instanceof Armature) {
                 Joint joint = ((Armature) skeleton).getJoint(boneIndex);
+                pose.localTransform(boneIndex, transform);
                 joint.setLocalTransform(transform);
             } else {
                 Bone bone = ((Skeleton) skeleton).getBone(boneIndex);
@@ -1466,6 +1466,7 @@ public class SceneViewCore
                 if (!haveControl) {
                     bone.setUserControl(true);
                 }
+                pose.userTransform(boneIndex, transform);
                 bone.setUserTransforms(translation, rotation, scale);
                 if (!haveControl) {
                     bone.setUserControl(false);
