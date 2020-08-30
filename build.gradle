@@ -57,11 +57,11 @@ dependencies {
     implementation 'com.github.stephengold:jme3-utilities-nifty:0.9.15'
     implementation 'com.github.stephengold:Minie:2.0.1'
     implementation 'com.github.stephengold:SkyControl:0.9.27'
-    implementation 'com.github.stephengold:Wes:0.5.2'
-    implementation "org.jmonkeyengine:jme3-blender:$jmonkeyengineVersion"
-    implementation "org.jmonkeyengine:jme3-desktop:$jmonkeyengineVersion"
-    implementation "org.jmonkeyengine:jme3-lwjgl:$jmonkeyengineVersion"
-    implementation "org.jmonkeyengine:jme3-plugins:$jmonkeyengineVersion"
+    implementation 'com.github.stephengold:Wes:0.6.0'
+    implementation 'org.jmonkeyengine:jme3-blender:' + jmonkeyengineVersion
+    implementation 'org.jmonkeyengine:jme3-desktop:' + jmonkeyengineVersion
+    implementation 'org.jmonkeyengine:jme3-lwjgl:' + jmonkeyengineVersion
+    implementation 'org.jmonkeyengine:jme3-plugins:' + jmonkeyengineVersion
 
     // from jitpack repositories:
     implementation 'com.github.xbuf.jme3_xbuf:jme3_xbuf_loader:0.9.1'
