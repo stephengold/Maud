@@ -531,8 +531,9 @@ public class EditorModel {
         for (WindowController tool : Maud.gui.listWindowControllers()) {
             if (tool.isEnabled()) {
                 String toolId = tool.getId();
-                assert toolId.endsWith("Tool");
-                String name = MyString.removeSuffix(toolId, "Tool");
+                assert toolId.contains("Tool") : toolId;
+                String name = toolId.split("Tool")[0];
+                name = MyString.firstToLower(name);
                 Element element = tool.getElement();
                 int x = element.getX();
                 int y = element.getY();
