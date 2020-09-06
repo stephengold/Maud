@@ -290,6 +290,7 @@ public class LoadedCgm extends Cgm {
 
         CheckLoaded.cgm(cgmRoot);
         rootSpatial = cgmRoot.clone();
+        getVertex().deselect();
         getSceneView().loadCgm(cgmRoot);
         updateSceneWireframe();
         /*
