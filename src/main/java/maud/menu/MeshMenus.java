@@ -187,7 +187,7 @@ public class MeshMenus {
             builder.addTool("Extreme tool");
             SelectedVertex vertex = target.getVertex();
             if (vertex.isSelected()) {
-                //builder.add("Neighbor"); TODO
+                builder.add("Neighbor");
                 builder.add("Next");
                 builder.add("None");
                 builder.add("Previous");
@@ -195,6 +195,24 @@ public class MeshMenus {
 
             builder.show("select menuItem Mesh -> Select vertex -> ");
         }
+    }
+
+    /**
+     * Display a "Mesh -&gt; Select vertex -&gt; Neighbor" menu.
+     */
+    public static void selectVertexNeighbor() {
+        SelectedVertex vertex = Maud.getModel().getTarget().getVertex();
+        int maxNumber = 10;
+        List<Integer> neighborIndices = vertex.listNeighbors(maxNumber);
+
+        int indexBase = Maud.getModel().getMisc().indexBase();
+        MenuBuilder builder = new MenuBuilder();
+        for (int vertexIndex : neighborIndices) {
+            String text = Integer.toString(indexBase + vertexIndex);
+            builder.add(text);
+        }
+
+        builder.show(ActionPrefix.selectVertex);
     }
 
     /**
@@ -229,7 +247,9 @@ public class MeshMenus {
             case "Extreme tool":
                 Maud.gui.tools.select("extremeVertex");
                 break;
-            //case "Neighbor": TODO
+            case "Neighbor":
+                selectVertexNeighbor();
+                break;
             case "Next":
                 Maud.getModel().getTarget().getVertex().selectNext();
                 break;

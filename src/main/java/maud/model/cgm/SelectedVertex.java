@@ -37,12 +37,15 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer;
+import com.jme3.scene.VertexBuffer.Type;
 import java.nio.FloatBuffer;
+import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyMesh;
 import jme3utilities.Validate;
 import jme3utilities.math.MyVector3f;
 import jme3utilities.wes.Pose;
+import maud.Population;
 import maud.view.scene.SceneUpdater;
 
 /**
@@ -252,6 +255,37 @@ public class SelectedVertex implements Cloneable {
         } else {
             return true;
         }
+    }
+
+    /**
+     * Enumerate the closest vertices (in terms of bind position) in the
+     * selected Mesh.
+     *
+     * @param maxNumber the maximum number of vertices to return (&gt;0)
+     * @return a new list of vertex indices
+     */
+    public List<Integer> listNeighbors(int maxNumber) {
+        Validate.positive(maxNumber, "max number");
+
+        Population<Float, Integer> population = new Population<>(maxNumber);
+        Mesh mesh = cgm.getSpatial().getMesh();
+        Vector3f position = MyMesh.vertexVector3f(mesh, Type.BindPosePosition,
+                selectedIndex, null);
+
+        Vector3f tmpPosition = new Vector3f();
+        int numVertices = mesh.getVertexCount();
+
+        for (int vertexIndex = 0; vertexIndex < numVertices; ++vertexIndex) {
+            if (vertexIndex != selectedIndex) {
+                MyMesh.vertexVector3f(mesh, Type.BindPosePosition, vertexIndex,
+                        tmpPosition);
+                float squaredDistance = position.distanceSquared(tmpPosition);
+                population.add(vertexIndex, -squaredDistance);
+            }
+        }
+
+        List<Integer> result = population.listElements();
+        return result;
     }
 
     /**
