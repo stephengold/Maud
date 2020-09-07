@@ -959,7 +959,7 @@ public class MaudUtil {
 
     /**
      * Enumerate all Armature instances in the specified subtree of a scene
-     * graph. Note: recursive! TODO move to MySkeleton
+     * graph. Note: recursive! TODO use MySkeleton
      *
      * @param subtree (not null, aliases created)
      * @param addResult storage for results (added to if not null)
@@ -992,6 +992,48 @@ public class MaudUtil {
         }
 
         return addResult;
+    }
+
+    /**
+     * Mirror the specified Quaternion along the indexed axis. TODO move to
+     * MyQuaternion
+     *
+     * @param input the Quaternion to mirror (not null, unaffected)
+     * @param axisIndex which axis to mirror: 0&rarr;X, 1&rarr;Y, 2&rarr;Z
+     * @param storeResult storage for the result (modified if not null, may be
+     * the same as input)
+     * @return a mirrored Quaternion (either storeResult or a new instance)
+     */
+    public static Quaternion mirrorAxis(Quaternion input, int axisIndex,
+            Quaternion storeResult) {
+        Quaternion result = (storeResult == null) ? new Quaternion()
+                : storeResult;
+
+        float x = input.getX();
+        float y = input.getY();
+        float z = input.getZ();
+        float w = input.getW();
+
+        switch (axisIndex) {
+            case MyVector3f.xAxis:
+                y = -y;
+                z = -z;
+                break;
+            case MyVector3f.yAxis:
+                x = -x;
+                z = -z;
+                break;
+            case MyVector3f.zAxis:
+                x = -x;
+                y = -y;
+                break;
+            default:
+                String message = "axisIndex = " + axisIndex;
+                throw new IllegalArgumentException(message);
+        }
+        result.set(x, y, z, w);
+
+        return result;
     }
 
     /**
