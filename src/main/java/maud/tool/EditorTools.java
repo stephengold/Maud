@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -69,6 +69,7 @@ public class EditorTools {
     final private AnimationTool animation;
     final private AxesTool axes;
     final private BackgroundTool background;
+    final private BoneMirrorTool boneMirror;
     final private BoneRotationTool boneRotation;
     final private BoneScaleTool boneScale;
     final private BoneTool bone;
@@ -134,6 +135,7 @@ public class EditorTools {
         animation = new AnimationTool(screenController);
         axes = new AxesTool(screenController);
         background = new BackgroundTool(screenController);
+        boneMirror = new BoneMirrorTool(screenController);
         boneRotation = new BoneRotationTool(screenController);
         boneScale = new BoneScaleTool(screenController);
         bone = new BoneTool(screenController);
@@ -195,9 +197,9 @@ public class EditorTools {
      * @param stateManager (not null)
      */
     public void attachAll(AppStateManager stateManager) {
-        stateManager.attachAll(animation, axes, background, bone, boneRotation,
-                boneScale, boneTranslation, bounds, camera, cgm, cursor, dump,
-                extract, extremeVertex, history, keyframe,
+        stateManager.attachAll(animation, axes, background, bone, boneMirror,
+                boneRotation, boneScale, boneTranslation, bounds, camera, cgm,
+                cursor, dump, extract, extremeVertex, history, keyframe,
                 joint, lightColor, lightDirection, lightPosition, lights, link,
                 mapping, material, mesh, overrides, pco, physics, platform,
                 render, retarget, sceneLighting, score, settings,

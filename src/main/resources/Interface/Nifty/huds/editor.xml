@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -427,6 +427,45 @@ Approximate minimum screen size: 640x480
                                  id="id4ToAvoidNiftyWarning"
                                  width="65px">
                             <interact onRelease="perform(select tool boneTranslation)"/>
+                        </control>
+                    </panel>
+                </panel>
+            </control>
+
+            <control name="window" id="boneMirrorTool" title="Bone-Mirror Tool"
+                     hideOnClose="true"
+                     height="145px" width="230px" x="140" y="130">
+                <panel childLayout="vertical">
+                    <panel height="4px"/>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Target bone:  "/>
+                        <control name="button" id="bmTargetButton"
+                                 width="130px">
+                            <interact onRelease="perform(select bone)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Source bone:  "/>
+                        <control name="button" id="bmSourceButton"
+                                 width="130px">
+                            <interact onRelease="perform(select sourceBone)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Mirror axis:  "/>
+                        <control name="button" id="linkAxis2Button"
+                                 width="20px">
+                            <interact onRelease="perform(select linkToolAxis)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="center" height="28px">
+                        <control name="label" id="bmFeedback"
+                                 color="#800f"
+                                 textHAlign="center"
+                                 width="*"/>
+                        <control name="button" id="bmButton"
+                                 width="60px">
+                            <interact onRelease="perform(set boneMirror)"/>
                         </control>
                     </panel>
                 </panel>

@@ -132,16 +132,14 @@ public class DisplayedPose implements JmeCloneable {
     }
 
     /**
-     * Alter the rotation of the indexed bone to match the loaded animation.
+     * Alter the user/animation rotation of the indexed bone.
      *
      * @param boneIndex which bone to rotate (&ge;0)
+     * @param userRotation the desired rotation (not null, unaffected)
      */
-    void setRotationToAnimation(int boneIndex) {
+    void setRotation(int boneIndex, Quaternion userRotation) {
         assert boneIndex >= 0 : boneIndex;
-
-        Transform animT = cgm.getAnimation().boneTransform(boneIndex, null);
-        Quaternion animQ = animT.getRotation();
-        pose.setRotation(boneIndex, animQ);
+        pose.setRotation(boneIndex, userRotation);
     }
 
     /**

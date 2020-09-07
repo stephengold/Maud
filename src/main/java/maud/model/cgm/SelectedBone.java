@@ -688,7 +688,29 @@ public class SelectedBone implements Cloneable {
     public void setRotationToAnimation() {
         if (shouldEnableControls()) {
             int boneIndex = index();
-            editableCgm.getPose().setRotationToAnimation(boneIndex);
+            Transform animT = cgm.getAnimation().boneTransform(boneIndex, null);
+            Quaternion animQ = animT.getRotation();
+            editableCgm.getPose().setRotation(boneIndex, animQ);
+        }
+    }
+
+    /**
+     * Mirror the user rotation of the source bone along the link-tool axis.
+     */
+    public void setRotationToMirror() {
+        if (shouldEnableControls()) {
+            Cgm source = Maud.getModel().getSource();
+            int sbIndex = source.getBone().index();
+            Pose sourcePose = source.getPose().get();
+            Quaternion sourceRotation = sourcePose.modelOrientation(sbIndex, null);
+
+            int axisIndex = Maud.getModel().getMisc().linkToolAxis();
+            Transform model = new Transform();
+            MaudUtil.mirrorAxis(sourceRotation, axisIndex, model.getRotation());
+
+            int tbIndex = index();
+            Quaternion user = editableCgm.getPose().get().userForModel(tbIndex, model.getRotation(), null);
+            editableCgm.getPose().setRotation(tbIndex, user);
         }
     }
 

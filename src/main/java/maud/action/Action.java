@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -260,6 +260,7 @@ public class Action {
     final static String selectVertex = "select vertex";
 
     final static String setAnisotropy = "set anisotropy";
+    final static String setBoneMirror = "set boneMirror";
     final static String setBufferInstanceSpan = "set bufferInstanceSpan";
     final static String setBufferLimit = "set bufferLimit";
     final static String setBufferStride = "set bufferStride";
