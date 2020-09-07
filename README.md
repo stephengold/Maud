@@ -90,7 +90,7 @@ Java source code is provided under
 ## How to build Maud from source
 
 Maud currently targets
-Version 3.2.4 of jMonkeyEngine.  You are welcome to use the Engine
+Version 3.3.2 of jMonkeyEngine.  You are welcome to use the Engine
 without installing its Integrated Development Environment (IDE),
 but I use the IDE, so I tend to assume you will too.
 
