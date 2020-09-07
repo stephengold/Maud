@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -28,7 +28,6 @@ package maud.tool;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Mesh;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
@@ -79,7 +78,6 @@ class SpatialTool extends Tool {
         updateMesh();
         updateName();
         updateParent();
-        updateShadows();
         updateTransform();
         updateTreePosition();
         updateType();
@@ -195,16 +193,6 @@ class SpatialTool extends Tool {
         }
 
         setButtonText("spatialParent", " " + parentText);
-    }
-
-    /**
-     * Update the display of the spatial's shadow mode.
-     */
-    private void updateShadows() {
-        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
-        RenderQueue.ShadowMode mode = spatial.getLocalShadowMode();
-        String shadowsText = mode.toString();
-        setStatusText("spatialShadows", " " + shadowsText);
     }
 
     /**
