@@ -251,10 +251,13 @@ public class Cgm implements Cloneable {
      * @return the number found (&ge;0)
      */
     public int countAnimationControls() {
-        List<AnimComposer> animComposerList = listSgcs(AnimComposer.class);
-        List<AnimControl> animControlList = listSgcs(AnimControl.class);
+        int result = 0;
+        if (isLoaded()) {
+            List<AnimComposer> animComposerList = listSgcs(AnimComposer.class);
+            List<AnimControl> animControlList = listSgcs(AnimControl.class);
+            result = animComposerList.size() + animControlList.size();
+        }
 
-        int result = animComposerList.size() + animControlList.size();
         return result;
     }
 
