@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -326,6 +326,19 @@ class SetOZAction {
         } else if (actionString.startsWith(ActionPrefix.setUserData)) {
             arg = MyString.remainder(actionString, ActionPrefix.setUserData);
             target.getUserData().setValue(arg);
+
+        } else if (actionString.startsWith(ActionPrefix.setVertexData)) {
+            arg = MyString.remainder(actionString, ActionPrefix.setVertexData);
+            String[] args = arg.split(" ");
+            int componentIndex = Integer.parseInt(args[0]);
+            if (args.length == 1) {
+                EditorDialogs.setVertexData(componentIndex);
+            } else if (args.length == 2) {
+                float value = Float.parseFloat(args[1]);
+                target.getVertex().setComponent(componentIndex, value);
+            } else {
+                handled = false;
+            }
 
         } else if (actionString.startsWith(ActionPrefix.setVertexPointSize)) {
             arg = MyString.remainder(actionString,

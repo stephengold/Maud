@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -237,10 +237,10 @@ class VertexTool extends Tool {
             }
         }
 
-        setStatusText("vertexData0", data0);
-        setStatusText("vertexData1", data1);
-        setStatusText("vertexData2", data2);
-        setStatusText("vertexData3", data3);
+        setButtonText("vertexData0", data0);
+        setButtonText("vertexData1", data1);
+        setButtonText("vertexData2", data2);
+        setButtonText("vertexData3", data3);
         setStatusText("vertexLabel0", label0);
         setStatusText("vertexLabel1", label1);
         setStatusText("vertexLabel2", label2);

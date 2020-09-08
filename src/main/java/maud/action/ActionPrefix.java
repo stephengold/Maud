@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -686,6 +686,11 @@ public class ActionPrefix {
      * argument is a color
      */
     final public static String setVertexColor = "set vertexColor ";
+    /**
+     * arguments are a zero-base component index (0-3) and an optional decimal
+     * value
+     */
+    final public static String setVertexData = "set vertexData ";
     /**
      * argument is a decimal size in pixels
      */

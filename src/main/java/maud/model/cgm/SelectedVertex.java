@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -213,6 +213,30 @@ public class SelectedVertex implements Cloneable {
     }
 
     /**
+     * Read the indexed component of the vertex data from the selected
+     * FloatBuffer.
+     *
+     * @param componentIndex (0-3)
+     * @return the component value
+     */
+    public float floatComponent(int componentIndex) {
+        SelectedBuffer buffer = cgm.getBuffer();
+        int numComponentsPerElement = buffer.countComponents();
+        int lastComponent = numComponentsPerElement - 1;
+        Validate.inRange(componentIndex, "component index", 0, lastComponent);
+        VertexBuffer.Format format = buffer.format();
+        assert format == VertexBuffer.Format.Float : format;
+
+        int floatIndex
+                = selectedIndex * numComponentsPerElement + componentIndex;
+        VertexBuffer vertexBuffer = buffer.find();
+        FloatBuffer floatBuffer = (FloatBuffer) vertexBuffer.getDataReadOnly();
+        float result = floatBuffer.get(floatIndex);
+
+        return result;
+    }
+
+    /**
      * Read the index of the selected vertex.
      *
      * @return the vertex index, or -1 if none selected
@@ -351,6 +375,27 @@ public class SelectedVertex implements Cloneable {
         assert newCgm.getVertex() == this;
 
         cgm = newCgm;
+    }
+
+    /**
+     * Alter the indexed component of the vertex data in the selected
+     * FloatBuffer.
+     *
+     * @param componentIndex which component to modify (0-3)
+     * @param newValue the desired value
+     */
+    public void setComponent(int componentIndex, float newValue) {
+        SelectedBuffer selectedBuffer = cgm.getBuffer();
+        int numComponentsPerElement = selectedBuffer.countComponents();
+        int lastComponent = numComponentsPerElement - 1;
+        Validate.inRange(componentIndex, "component index", 0, lastComponent);
+
+        VertexBuffer.Format format = selectedBuffer.format();
+        assert format == VertexBuffer.Format.Float : format;
+
+        int floatIndex
+                = selectedIndex * numComponentsPerElement + componentIndex;
+        selectedBuffer.putFloat(floatIndex, newValue);
     }
 
     /**

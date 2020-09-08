@@ -51,6 +51,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.shader.VarType;
 import java.nio.Buffer;
+import java.nio.FloatBuffer;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -418,6 +419,21 @@ public class SceneView extends SceneViewCore {
             Light cloneLight = light.clone();
             owner.addLight(cloneLight);
         }
+    }
+
+    /**
+     * Alter the indexed float in the selected FloatBuffer.
+     *
+     * @param floatIndex which float to modify
+     * @param newValue the desired value
+     */
+    public void putFloat(int floatIndex, float newValue) {
+        Validate.nonNegative(floatIndex, "float index");
+
+        VertexBuffer vertexBuffer = findBuffer();
+        FloatBuffer floatBuffer = (FloatBuffer) vertexBuffer.getData();
+        floatBuffer.put(floatIndex, newValue);
+        vertexBuffer.updateData(floatBuffer);
     }
 
     /**

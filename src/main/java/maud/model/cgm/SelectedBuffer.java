@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -32,6 +32,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.util.IntMap;
 import java.nio.Buffer;
+import java.nio.FloatBuffer;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -291,7 +292,7 @@ public class SelectedBuffer implements Cloneable {
      * Read the limit of the buffer: the index of the first element that should
      * not be read or written.
      *
-     * @return limit (&ge;0)
+     * @return the limit (&ge;0)
      */
     public int limit() {
         VertexBuffer buffer = find();
@@ -304,9 +305,9 @@ public class SelectedBuffer implements Cloneable {
 
     /**
      * Read the position of the buffer: the index of the next element to be read
-     * or written.
+     * or written sequentially.
      *
-     * @return limit (&ge;0)
+     * @return the position (&ge;0)
      */
     public int position() {
         VertexBuffer buffer = find();
@@ -315,6 +316,30 @@ public class SelectedBuffer implements Cloneable {
 
         assert result >= 0 : result;
         return result;
+    }
+
+    /**
+     * Alter the indexed float in the selected FloatBuffer.
+     *
+     * @param floatIndex which float to modify (&ge;0)
+     * @param newValue the desired value
+     */
+    public void putFloat(int floatIndex, float newValue) {
+        Validate.nonNegative(floatIndex, "float index");
+        
+        VertexBuffer vertexBuffer = find();
+        FloatBuffer floatBuffer = (FloatBuffer) vertexBuffer.getData();
+        float oldValue = floatBuffer.get(floatIndex);
+        if (oldValue != newValue) {
+            History.autoAdd();
+            floatBuffer.put(floatIndex, newValue);
+            vertexBuffer.updateData(floatBuffer);
+            cgm.getSceneView().putFloat(floatIndex, newValue);
+            String desc = describe();
+            String description = String.format("set element %d of %s to %f",
+                    floatIndex, desc, newValue);
+            editableCgm.getEditState().setEdited(description);
+        }
     }
 
     /**
@@ -333,8 +358,8 @@ public class SelectedBuffer implements Cloneable {
     /**
      * Select the indexed buffer.
      *
-     * @param newIndex index of the buffer in the selected spatial's list
-     * (&ge;0) or -1 for none
+     * @param newIndex index of the desired buffer in the selected spatial's
+     * list (&ge;0) or -1 for none
      */
     public void select(int newIndex) {
         Validate.inRange(newIndex, "new index", -1, Integer.MAX_VALUE);
@@ -450,7 +475,8 @@ public class SelectedBuffer implements Cloneable {
     /**
      * Alter the stride of the selected buffer.
      *
-     * @param newStride new value for stride (&ge;0)
+     * @param newStride the desired amount of additional data (in bytes, &ge;0,
+     * 0=packed)
      */
     public void setStride(int newStride) {
         Validate.nonNegative(newStride, "new stride");
@@ -490,7 +516,7 @@ public class SelectedBuffer implements Cloneable {
     /**
      * Read the stride of the buffer.
      *
-     * @return stride (in bytes, &ge;0)
+     * @return the amount of padding (in bytes, &ge;0, 0=packed)
      */
     public int stride() {
         VertexBuffer buffer = find();

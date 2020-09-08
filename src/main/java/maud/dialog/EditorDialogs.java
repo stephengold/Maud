@@ -1309,6 +1309,26 @@ public class EditorDialogs {
     }
 
     /**
+     * Display a "set vertexData" dialog.
+     *
+     * @param componentIndex (0-3)
+     */
+    public static void setVertexData(int componentIndex) {
+        Validate.inRange(componentIndex, "component index", 0, 3);
+
+        Maud.gui.closeAllPopups();
+        EditableCgm target = Maud.getModel().getTarget();
+        float oldValue = target.getVertex().floatComponent(componentIndex);
+        DialogController controller = new FloatDialog("Set",
+                Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY, false);
+        String defaultText = Float.toString(oldValue);
+        String actionPrefix = ActionPrefix.setVertexData
+                + Integer.toString(componentIndex) + " ";
+        Maud.gui.showTextEntryDialog("Enter new float value:", defaultText,
+                actionPrefix, controller);
+    }
+
+    /**
      * Display a "wrap animation" dialog.
      */
     public static void wrapAnimation() {

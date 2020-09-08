@@ -3492,33 +3492,37 @@ Approximate minimum screen size: 640x480
                                 <control name="label" id="vertexLabel0"
                                          width="10px"/>
                                 <control name="label" text="=  "/>
-                                <control name="label" id="vertexData0"
-                                         backgroundColor="#ffff"
-                                         width="*"/>
+                                <control name="button" id="vertexData0Button"
+                                         width="*">
+                                    <interact onRelease="perform(set vertexData 0)"/>
+                                </control>
                             </panel>
                             <panel childLayout="horizontal">
                                 <control name="label" id="vertexLabel1"
                                          width="10px"/>
                                 <control name="label" text="=  "/>
-                                <control name="label" id="vertexData1"
-                                         backgroundColor="#ffff"
-                                         width="*"/>
+                                <control name="button" id="vertexData1Button"
+                                         width="*">
+                                    <interact onRelease="perform(set vertexData 1)"/>
+                                </control>
                             </panel>
                             <panel childLayout="horizontal">
                                 <control name="label" id="vertexLabel2"
                                          width="10px"/>
                                 <control name="label" text="=  "/>
-                                <control name="label" id="vertexData2"
-                                         backgroundColor="#ffff"
-                                         width="*"/>
+                                <control name="button" id="vertexData2Button"
+                                         width="*">
+                                    <interact onRelease="perform(set vertexData 2)"/>
+                                </control>
                             </panel>
                             <panel childLayout="horizontal">
                                 <control name="label" id="vertexLabel3"
                                          width="10px"/>
                                 <control name="label" text="=  "/>
-                                <control name="label" id="vertexData3"
-                                         backgroundColor="#ffff"
-                                         width="*"/>
+                                <control name="button" id="vertexData3Button"
+                                         width="*">
+                                    <interact onRelease="perform(set vertexData 3)"/>
+                                </control>
                             </panel>
                         </panel>
                     </panel>
