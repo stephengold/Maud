@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -53,7 +53,6 @@ import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.ui.InputMode;
 import maud.action.EditorInputMode;
 import maud.menu.BuildMenus;
-import maud.menu.ViewMenus;
 import maud.mesh.Lozenge;
 import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
@@ -298,10 +297,7 @@ public class EditorScreen extends GuiScreenController {
             mouseView.considerGnomons(selection);
             mouseView.considerKeyframes(selection);
             mouseView.considerTracks(selection);
-            boolean success = selection.select();
-            if (!success) {
-                ViewMenus.pick();
-            }
+            selection.select();
         }
     }
 
