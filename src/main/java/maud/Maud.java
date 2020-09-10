@@ -28,7 +28,6 @@ package maud;
 
 import com.atr.jme.font.asset.TrueTypeLoader;
 import com.jme3.app.SimpleApplication;
-import com.jme3.app.state.ScreenshotAppState;
 import com.jme3.asset.AssetConfig;
 import com.jme3.audio.openal.ALAudioRenderer;
 import com.jme3.bullet.util.NativeLibrary;
@@ -45,7 +44,6 @@ import jme3utilities.UncachedKey;
 import jme3utilities.Validate;
 import jme3utilities.ViewPortAppState;
 import jme3utilities.debug.PerformanceAppState;
-import jme3utilities.minie.PhysicsDumper;
 import jme3utilities.nifty.GuiApplication;
 import jme3utilities.nifty.bind.BindScreen;
 import jme3utilities.nifty.displaysettings.DsScreen;
@@ -108,10 +106,6 @@ public class Maud extends GuiApplication {
      * application instance
      */
     private static Maud application;
-    /**
-     * dumper for scene dumps
-     */
-    final private static PhysicsDumper dumper = new PhysicsDumper();
     // *************************************************************************
     // new methods exposed
 
@@ -216,7 +210,7 @@ public class Maud extends GuiApplication {
 
     /**
      * Perform the action described by the specified action string using the
-     * editor screen's input mode. Invoked via reflection, from scripts.
+     * editor screen's input mode. Invoked mainly by reflection, from scripts.
      *
      * @param actionString (not null)
      */
@@ -344,8 +338,8 @@ public class Maud extends GuiApplication {
     }
 
     /**
-     * Process an action (from the GUI or keyboard) that wasn't handled by the
-     * input mode.
+     * Process an action from the GUI or keyboard that wasn't handled by the
+     * active InputMode.
      *
      * @param actionString textual description of the action (not null)
      * @param ongoing true if the action is ongoing, otherwise false
