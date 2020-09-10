@@ -110,8 +110,11 @@ public class SelectedTrack implements JmeCloneable {
      * @return the count (&ge;0)
      */
     public int countKeyframes() {
-        float[] times = MaudUtil.getTrackTimes(selected);
-        int count = times.length;
+        int count = 0;
+        if (selected != null) {
+            float[] times = MaudUtil.getTrackTimes(selected);
+            count = times.length;
+        }
 
         return count;
     }
