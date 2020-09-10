@@ -54,7 +54,7 @@ dependencies {
     runtimeOnly    'com.github.nifty-gui:nifty-style-black:1.4.3'
     implementation 'com.github.stephengold:Heart:6.0.0'
     implementation 'com.github.stephengold:jme3-utilities-ui:0.9.0'
-    implementation 'com.github.stephengold:jme3-utilities-nifty:0.9.15'
+    implementation 'com.github.stephengold:jme3-utilities-nifty:0.9.16'
     implementation 'com.github.stephengold:Minie:3.0.0'
     implementation 'com.github.stephengold:SkyControl:0.9.27'
     implementation 'com.github.stephengold:Wes:0.6.1'
@@ -68,6 +68,11 @@ dependencies {
 
     // from stephengold's bintray repositories:
     //runtimeOnly 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
+}
+
+task runForceDialog(type: JavaExec) {
+    args '--forceDialog'
+    main 'maud.Maud'
 }
 
 // cleanup tasks
