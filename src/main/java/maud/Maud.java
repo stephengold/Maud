@@ -460,6 +460,7 @@ public class Maud extends GuiApplication {
                 super.applyOverrides(settings);
 
                 setForceDialog(forceDialog);
+                settings.setAudioRenderer(null);
                 settings.setRenderer(renderer);
                 String logoAssetPath = "Textures/icons/Maud-settings.png";
                 settings.setSettingsDialogImage(logoAssetPath);
