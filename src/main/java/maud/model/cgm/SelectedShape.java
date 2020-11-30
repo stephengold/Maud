@@ -203,7 +203,7 @@ public class SelectedShape implements JmeCloneable {
     /**
      * Calculate the half extents of the selected shape.
      *
-     * @param storeResult (modified if not null)
+     * @param storeResult storage for the result (modified if not null)
      * @return half extents on the local axes in world units (either storeResult
      * or a new instance)
      */
@@ -465,7 +465,7 @@ public class SelectedShape implements JmeCloneable {
     /**
      * Calculate the transform of the shape.
      *
-     * @param storeResult (modified if not null)
+     * @param storeResult storage for the result (modified if not null)
      * @return world transform (either storeResult or a new instance)
      */
     public Transform transform(Transform storeResult) {

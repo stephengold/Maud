@@ -807,7 +807,7 @@ public class SceneView extends SceneViewCore {
      * Copy the world transform of the C-G model, based on an animated geometry
      * if possible.
      *
-     * @param storeResult (modified if not null)
+     * @param storeResult storage for the result (modified if not null)
      * @return the world transform (either storeResult or a new instance)
      */
     public Transform worldTransform(Transform storeResult) {

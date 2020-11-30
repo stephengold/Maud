@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018-2019, Stephen Gold
+ Copyright (c) 2018-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -303,7 +303,7 @@ public class RenderOptions implements Cloneable {
     /**
      * Copy the background color for a source C-G model with no sky simulation.
      *
-     * @param storeResult (modified if not null)
+     * @param storeResult storage for the result (modified if not null)
      * @return the background color (either storeResult or a new instance, not
      * null)
      */
@@ -318,7 +318,7 @@ public class RenderOptions implements Cloneable {
     /**
      * Copy the background color for a target C-G model with no sky simulation.
      *
-     * @param storeResult (modified if not null)
+     * @param storeResult storage for the result (modified if not null)
      * @return the background color (either storeResult or a new instance, not
      * null)
      */

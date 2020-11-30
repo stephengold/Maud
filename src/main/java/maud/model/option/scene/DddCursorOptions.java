@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -77,7 +77,7 @@ public class DddCursorOptions implements Cloneable {
      * Copy one of the colors of the cursor.
      *
      * @param index which color to copy (0 or 1)
-     * @param storeResult (modified if not null)
+     * @param storeResult storage for the result (modified if not null)
      * @return color (either storeResult or a new instance)
      */
     public ColorRGBA copyColor(int index, ColorRGBA storeResult) {

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -160,7 +160,7 @@ public class PhysicsUtil {
      * Determine the orientation of the specified collision object.
      *
      * @param pco (not null, unaffected)
-     * @param storeResult (modified if not null)
+     * @param storeResult storage for the result (modified if not null)
      * @return orientation (in physics-space coordinates, either storeResult or
      * a new instance)
      */
@@ -283,7 +283,7 @@ public class PhysicsUtil {
      * Calculate the transform of the specified collision object.
      *
      * @param pco (not null, unaffected)
-     * @param storeResult (modified if not null)
+     * @param storeResult storage for the result (modified if not null)
      * @return world transform (either storeResult or a new instance)
      */
     public static Transform transform(PhysicsCollisionObject pco,

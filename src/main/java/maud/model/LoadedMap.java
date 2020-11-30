@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -91,7 +91,7 @@ public class LoadedMap implements Cloneable {
      * model.
      *
      * @param boneIndex which target bone to calculate (&ge;0)
-     * @param storeResult (modified if not null)
+     * @param storeResult storage for the result (modified if not null)
      * @return transform (either storeResult or a new instance)
      */
     public Transform boneTransform(int boneIndex, Transform storeResult) {
@@ -129,7 +129,7 @@ public class LoadedMap implements Cloneable {
     /**
      * Copy the effective twist of the selected bone mapping.
      *
-     * @param storeResult (modified if not null)
+     * @param storeResult storage for the result (modified if not null)
      * @return the twist rotation (either storeResult or a new instance, not
      * null)
      */

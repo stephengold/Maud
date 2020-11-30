@@ -199,7 +199,7 @@ public class LoadedAnimation implements Cloneable {
      * Determine the current user/animation transform of the indexed bone/joint.
      *
      * @param boneIndex the index of the subject bone/joint (&ge;0)
-     * @param storeResult (modified if not null)
+     * @param storeResult storage for the result (modified if not null)
      * @return transform (either storeResult or a new instance)
      */
     public Transform boneTransform(int boneIndex, Transform storeResult) {

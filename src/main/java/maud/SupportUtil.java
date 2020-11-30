@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -219,7 +219,7 @@ public class SupportUtil {
      * @param geometry (not null)
      * @param vertexIndex index into the geometry's vertices (&ge;0)
      * @param pose (not null, unaffected)
-     * @param storeResult (modified if not null)
+     * @param storeResult storage for the result (modified if not null)
      * @return the sensitivity matrix (either storeResult or a new instance)
      */
     public static Matrix3f sensitivity(int boneIndex, Geometry geometry,

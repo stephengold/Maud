@@ -84,7 +84,7 @@ public class SelectedVertex implements Cloneable {
     /**
      * Copy the bone indices of the vertex.
      *
-     * @param storeResult (modified if not null)
+     * @param storeResult storage for the result (modified if not null)
      * @return an array of bone indices (either storeResult or a new instance,
      * not null)
      */
@@ -102,7 +102,7 @@ public class SelectedVertex implements Cloneable {
     /**
      * Copy the bone weights of the vertex.
      *
-     * @param storeResult (modified if not null)
+     * @param storeResult storage for the result (modified if not null)
      * @return an array of weights (either storeResult or a new instance, not
      * null)
      */
@@ -120,7 +120,7 @@ public class SelectedVertex implements Cloneable {
     /**
      * Copy the color of the selected vertex.
      *
-     * @param storeResult (modified if not null)
+     * @param storeResult storage for the result (modified if not null)
      * @return a color (either storeResult or a new instance, not null)
      */
     public ColorRGBA color(ColorRGBA storeResult) {
@@ -138,7 +138,7 @@ public class SelectedVertex implements Cloneable {
      * Copy Vector2f data from the specified buffer for the selected vertex.
      *
      * @param bufferType which vertex buffer to read (8 legal values)
-     * @param storeResult (modified if not null)
+     * @param storeResult storage for the result (modified if not null)
      * @return a data vector (either storeResult or a new instance)
      */
     public Vector2f copyVector2f(VertexBuffer.Type bufferType,
@@ -156,7 +156,7 @@ public class SelectedVertex implements Cloneable {
      * Copy Vector3f data for the selected vertex from the specified buffer.
      *
      * @param bufferType which vertex buffer to read (5 legal values)
-     * @param storeResult (modified if not null)
+     * @param storeResult storage for the result (modified if not null)
      * @return a data vector (either storeResult or a new instance, not null)
      */
     public Vector3f copyVector3f(VertexBuffer.Type bufferType,
@@ -185,7 +185,7 @@ public class SelectedVertex implements Cloneable {
      * Copy Vector4f data for the selected vertex from the specified buffer.
      *
      * @param bufferType which vertex buffer to read (5 legal values)
-     * @param storeResult (modified if not null)
+     * @param storeResult storage for the result (modified if not null)
      * @return a data vector (either storeResult or a new instance)
      */
     public Vector4f copyVector4f(VertexBuffer.Type bufferType,
@@ -415,7 +415,7 @@ public class SelectedVertex implements Cloneable {
     /**
      * Calculate the world location of the selected vertex.
      *
-     * @param storeResult (modified if not null)
+     * @param storeResult storage for the result (modified if not null)
      * @return world coordinates (either storeResult or a new instance)
      */
     public Vector3f worldLocation(Vector3f storeResult) {

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -69,7 +69,7 @@ public class BoundsOptions implements Cloneable {
     /**
      * Copy the color of the visualization.
      *
-     * @param storeResult (modified if not null)
+     * @param storeResult storage for the result (modified if not null)
      * @return color (either storeResult or a new instance)
      */
     public ColorRGBA copyColor(ColorRGBA storeResult) {

@@ -525,6 +525,8 @@ public class EditableCgm extends LoadedCgm {
                 sceneView.deleteSubtree(nodePosition);
             }
 
+            // TODO SkinningControl
+            
         } else if (selectedSgc instanceof PhysicsControl) {
             /*
              * Notify CgmPhysics about the removal.

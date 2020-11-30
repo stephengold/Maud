@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -558,7 +558,7 @@ public class SelectedLight implements JmeCloneable {
     /**
      * Calculate a transform for the light.
      *
-     * @param storeResult (modified if not null)
+     * @param storeResult storage for the result (modified if not null)
      * @return a Transform (in world coordinates, either storeResult or a new
      * instance, not null)
      */

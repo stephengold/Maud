@@ -198,7 +198,7 @@ public class SelectedPco implements JmeCloneable {
     /**
      * Copy the location of the selected object.
      *
-     * @param storeResult (modified if not null)
+     * @param storeResult storage for the result (modified if not null)
      * @return a location vector (in physics-space coordinates, either
      * storeResult or a new instance)
      */
@@ -221,7 +221,7 @@ public class SelectedPco implements JmeCloneable {
     /**
      * Copy the orientation of the selected object.
      *
-     * @param storeResult (modified if not null)
+     * @param storeResult storage for the result (modified if not null)
      * @return an orientation (in physics-space coordinates, either storeResult
      * or a new instance)
      */
@@ -383,7 +383,7 @@ public class SelectedPco implements JmeCloneable {
     /**
      * Calculate the transform of the object.
      *
-     * @param storeResult (modified if not null)
+     * @param storeResult storage for the result (modified if not null)
      * @return the transform (either storeResult or a new instance)
      */
     public Transform transform(Transform storeResult) {

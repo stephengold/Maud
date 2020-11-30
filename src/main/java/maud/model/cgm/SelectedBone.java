@@ -418,7 +418,7 @@ public class SelectedBone implements Cloneable {
     /**
      * Calculate the model orientation of the selected bone.
      *
-     * @param storeResult (modified if not null)
+     * @param storeResult storage for the result (modified if not null)
      * @return the orientation in model space (either storeResult or a new
      * instance, not null)
      */
@@ -436,7 +436,7 @@ public class SelectedBone implements Cloneable {
     /**
      * Calculate the model transform of the selected bone.
      *
-     * @param storeResult (modified if not null)
+     * @param storeResult storage for the result (modified if not null)
      * @return the Transform (either storeResult or a new instance, not null)
      */
     public Transform modelTransform(Transform storeResult) {
@@ -756,7 +756,7 @@ public class SelectedBone implements Cloneable {
     /**
      * Calculate the animation/user rotation of the selected bone.
      *
-     * @param storeResult (modified if not null)
+     * @param storeResult storage for the result (modified if not null)
      * @return the user rotation (either storeResult or a new instance, not
      * null)
      */
@@ -774,7 +774,7 @@ public class SelectedBone implements Cloneable {
     /**
      * Calculate the animation/user scale of the selected bone.
      *
-     * @param storeResult (modified if not null)
+     * @param storeResult storage for the result (modified if not null)
      * @return user scale (either storeResult or a new instance)
      */
     public Vector3f userScale(Vector3f storeResult) {
@@ -790,7 +790,7 @@ public class SelectedBone implements Cloneable {
     /**
      * Calculate the animation/user translation of the selected bone.
      *
-     * @param storeResult (modified if not null)
+     * @param storeResult storage for the result (modified if not null)
      * @return user translation (either storeResult or a new instance)
      */
     public Vector3f userTranslation(Vector3f storeResult) {
@@ -806,7 +806,7 @@ public class SelectedBone implements Cloneable {
     /**
      * Calculate the world location of the selected bone in the scene view.
      *
-     * @param storeResult (modified if not null)
+     * @param storeResult storage for the result (modified if not null)
      * @return world coordinates (either storeResult or a new instance)
      */
     public Vector3f worldLocation(Vector3f storeResult) {

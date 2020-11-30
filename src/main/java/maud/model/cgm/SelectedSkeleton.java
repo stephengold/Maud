@@ -581,7 +581,7 @@ public class SelectedSkeleton implements JmeCloneable {
      *
      * @param showBones selection option (not null)
      * @param selectedBi the index of the selected bone, or noBoneIndex if none
-     * @param storeResult (modified if not null)
+     * @param storeResult storage for the result (modified if not null)
      * @return a set of bone indices (either storeResult or a new instance, not
      * null)
      */

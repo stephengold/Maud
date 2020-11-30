@@ -1152,7 +1152,7 @@ public class MaudUtil {
      * display mode is QuatCoeff.
      *
      * @param sliderPositions (not null, length=3)
-     * @param storeResult (modified if not null)
+     * @param storeResult storage for the result (modified if not null)
      * @return rotation (either storeResult or a new quaternion)
      */
     public static Quaternion setFromSliders(float[] sliderPositions,

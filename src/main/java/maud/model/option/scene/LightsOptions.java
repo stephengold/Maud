@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018-2019, Stephen Gold
+ Copyright (c) 2018-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -70,7 +70,7 @@ public class LightsOptions implements Cloneable {
     /**
      * Copy the direction of the main (directional) light.
      *
-     * @param storeResult (modified if not null)
+     * @param storeResult storage for the result (modified if not null)
      * @return a unit vector in world coordinates (either storeResult or a new
      * instance)
      */

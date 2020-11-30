@@ -1289,7 +1289,7 @@ public class SelectedSpatial implements JmeCloneable {
     /**
      * Copy the local rotation of the spatial.
      *
-     * @param storeResult (modified if not null)
+     * @param storeResult storage for the result (modified if not null)
      * @return local rotation (either storeResult or a new instance)
      */
     public Quaternion localRotation(Quaternion storeResult) {
@@ -1306,7 +1306,7 @@ public class SelectedSpatial implements JmeCloneable {
     /**
      * Copy the local scale of the spatial.
      *
-     * @param storeResult (modified if not null)
+     * @param storeResult storage for the result (modified if not null)
      * @return local scale vector (either storeResult or a new instance)
      */
     public Vector3f localScale(Vector3f storeResult) {
@@ -1322,7 +1322,7 @@ public class SelectedSpatial implements JmeCloneable {
     /**
      * Copy the local translation of the spatial.
      *
-     * @param storeResult (modified if not null)
+     * @param storeResult storage for the result (modified if not null)
      * @return local translation vector (either storeResult or a new instance)
      */
     public Vector3f localTranslation(Vector3f storeResult) {

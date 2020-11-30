@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -105,7 +105,7 @@ public class DddCursor {
     /**
      * Copy the location of the cursor.
      *
-     * @param storeResult (modified if not null)
+     * @param storeResult storage for the result (modified if not null)
      * @return world coordinates (either storeResult or a new vector)
      */
     public Vector3f location(Vector3f storeResult) {
