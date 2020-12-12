@@ -115,18 +115,10 @@ public class SceneViewCore
     // constants and loggers
 
     /**
-     * linear size of the marker for the selected vertex (in pixels)
-     */
-    final private static float vertexSize = 12f;
-    /**
      * message logger for this class
      */
     final private static Logger logger
             = Logger.getLogger(SceneViewCore.class.getName());
-    /**
-     * local copy of {@link com.jme3.math.Quaternion#IDENTITY}
-     */
-    final private static Quaternion rotateIdentity = new Quaternion();
     /**
      * local copy of {@link com.jme3.math.Transform#IDENTITY}
      */
@@ -141,14 +133,6 @@ public class SceneViewCore
      */
     final private static Vector3f cursorStartLocation
             = new Vector3f(0f, 0f, 0f);
-    /**
-     * local copy of {@link com.jme3.math.Vector3f#UNIT_XYZ}
-     */
-    final private static Vector3f scaleIdentity = new Vector3f(1f, 1f, 1f);
-    /**
-     * local copy of {@link com.jme3.math.Vector3f#ZERO}
-     */
-    final private static Vector3f translateIdentity = new Vector3f(0f, 0f, 0f);
     // *************************************************************************
     // fields
 
