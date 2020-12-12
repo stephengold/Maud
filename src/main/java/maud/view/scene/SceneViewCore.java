@@ -412,7 +412,7 @@ public class SceneViewCore
      *
      * @return the pre-existing instance (not null)
      */
-    DirectionalLight getMainLight() {
+    public DirectionalLight getMainLight() {
         assert mainLight != null;
         return mainLight;
     }
