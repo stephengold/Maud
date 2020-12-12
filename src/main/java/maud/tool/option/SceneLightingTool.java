@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018-2019, Stephen Gold
+ Copyright (c) 2018-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -26,6 +26,7 @@
  */
 package maud.tool.option;
 
+import com.jme3.light.DirectionalLight;
 import com.jme3.math.Vector3f;
 import java.util.List;
 import java.util.logging.Logger;
@@ -34,7 +35,10 @@ import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.SliderTransform;
 import jme3utilities.nifty.Tool;
 import maud.Maud;
+import maud.model.cgm.Cgm;
 import maud.model.option.scene.LightsOptions;
+import maud.model.option.scene.SceneOptions;
+import maud.view.scene.SceneView;
 
 /**
  * The controller for the "Scene Lighting" tool in Maud's editor screen.
@@ -127,22 +131,33 @@ public class SceneLightingTool extends Tool {
      */
     @Override
     protected void toolUpdate() {
-        LightsOptions options = Maud.getModel().getScene().getLights();
+        SceneOptions sceneOptions = Maud.getModel().getScene();
+        LightsOptions lightsOptions = sceneOptions.getLights();
+        boolean isSkySimulated = sceneOptions.getRender().isSkySimulated();
 
-        Vector3f direction = options.direction(null);
-        float[] components = direction.toArray(null);
+        Vector3f direction;
+        if (isSkySimulated) {
+            Cgm cgm = Maud.getModel().getTarget(); // arbitrary choice of Cgm
+            SceneView sceneView = cgm.getSceneView();
+            DirectionalLight main = sceneView.getMainLight();
+            direction = main.getDirection(); // alias
+        } else {
+            direction = lightsOptions.direction(null);
+        }
+
         for (int iAxis = 0; iAxis < numAxes; iAxis++) {
             String sliderName = axisNames[iAxis] + "Dir";
-            float value = components[iAxis];
+            setSliderEnabled(sliderName, !isSkySimulated);
+            float value = direction.get(iAxis);
             setSlider(sliderName, directionSt, value);
             updateSliderStatus(sliderName, value, "");
         }
 
-        float ambientLevel = options.getAmbientLevel();
+        float ambientLevel = lightsOptions.getAmbientLevel();
         setSlider("ambientLevel", levelSt, ambientLevel);
         updateSliderStatus("ambientLevel", ambientLevel, "");
 
-        float mainLevel = options.getMainLevel();
+        float mainLevel = lightsOptions.getMainLevel();
         setSlider("mainLevel", levelSt, mainLevel);
         updateSliderStatus("mainLevel", mainLevel, "");
     }
