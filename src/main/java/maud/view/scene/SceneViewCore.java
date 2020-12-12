@@ -136,15 +136,19 @@ public class SceneViewCore
     // *************************************************************************
     // fields
 
-    /*
-     * ambient light added to the scene
-     */
-    final private AmbientLight ambientLight = new AmbientLight();
     /**
      * animation control with the selected skeleton - apparently needed for
      * software skinning, though it's unclear why
      */
     private AbstractControl animControl;
+    /**
+     * skeleton control with the selected skeleton
+     */
+    private AbstractControl skeletonControl;
+    /*
+     * ambient light added to the scene
+     */
+    final private AmbientLight ambientLight = new AmbientLight();
     /*
      * visualizer for axes added to the scene
      */
@@ -183,6 +187,10 @@ public class SceneViewCore
      */
     final private Node parent;
     /**
+     * selected skeleton in this view's copy of the C-G model
+     */
+    private Object skeleton;
+    /**
      * supporting platform
      */
     final private Platform platform = new Platform(this);
@@ -190,14 +198,6 @@ public class SceneViewCore
      * test projectile
      */
     final private Projectile projectile = new Projectile(this);
-    /**
-     * selected skeleton in this view's copy of the C-G model
-     */
-    private Object skeleton;
-    /**
-     * skeleton control with the selected skeleton
-     */
-    private AbstractControl skeletonControl;
     /**
      * skeleton visualizer added to the overlay scene
      */
