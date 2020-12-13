@@ -128,8 +128,7 @@ public class EditorDialogs {
                 JmeVersion.GIT_SHORT_HASH);
         text += String.format("%n   nifty version=%s (BSD license)",
                 MyString.quote(niftyVersion));
-        text += String.format(
-                "%n   jme3-utilities-heart version=%s (BSD license)",
+        text += String.format("%n   Heart version=%s (BSD license)",
                 MyString.quote(Heart.versionShort()));
         text += String.format("%n   Minie version=%s (BSD license)",
                 MyString.quote(MinieVersion.versionShort()));
