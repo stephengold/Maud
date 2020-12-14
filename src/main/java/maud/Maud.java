@@ -31,6 +31,7 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetConfig;
 import com.jme3.audio.openal.ALAudioRenderer;
 import com.jme3.bullet.util.NativeLibrary;
+import com.jme3.environment.EnvironmentCamera;
 import com.jme3.scene.plugins.bvh.BVHLoader;
 import com.jme3.system.AppSettings;
 import java.io.File;
@@ -86,6 +87,10 @@ public class Maud extends GuiApplication {
      * true once {@link #startup1()} has completed, until then false
      */
     private boolean didStartup1 = false;
+    /**
+     * true IFF the EnvironmentCamera is busy (TODO JME issue #1446)
+     */
+    public static volatile boolean envCamIsBusy = false;
     /**
      * true to load startup script, false to skip it
      */
@@ -527,6 +532,11 @@ public class Maud extends GuiApplication {
         String hotkeyBindingsAssetPath = "Interface/bindings/editor.properties";
         gui.inputMode.setConfigPath(hotkeyBindingsAssetPath);
         stateManager.attach(gui.inputMode);
+        /*
+         * Attach an EnvironmentCamera to tune PBR lighting.
+         */
+        EnvironmentCamera environmentCamera = new EnvironmentCamera();
+        stateManager.attach(environmentCamera);
         /*
          * Disable the JME statistic displays.
          * These can be re-enabled by pressing the F5 hotkey.

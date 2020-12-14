@@ -40,10 +40,15 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.collision.CollisionResult;
+import com.jme3.environment.EnvironmentCamera;
+import com.jme3.environment.LightProbeFactory;
+import com.jme3.environment.generation.JobProgressAdapter;
 import com.jme3.input.InputManager;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
+import com.jme3.light.LightProbe;
 import com.jme3.material.MatParamOverride;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Matrix4f;
 import com.jme3.math.Quaternion;
@@ -68,6 +73,7 @@ import com.jme3.util.clone.JmeCloneable;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyCamera;
 import jme3utilities.MyMesh;
@@ -109,8 +115,7 @@ import maud.view.ViewType;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class SceneViewCore
-        implements EditorView, JmeCloneable {
+public class SceneViewCore implements EditorView, JmeCloneable {
     // *************************************************************************
     // constants and loggers
 
@@ -145,15 +150,15 @@ public class SceneViewCore
      * skeleton control with the selected skeleton
      */
     private AbstractControl skeletonControl;
-    /*
+    /**
      * ambient light added to the scene
      */
     final private AmbientLight ambientLight = new AmbientLight();
-    /*
+    /**
      * visualizer for axes added to the scene
      */
     private AxesVisualizer axesVisualizer;
-    /*
+    /**
      * bounds visualizer added to the overlay scene
      */
     private BoundsVisualizer boundsVisualizer;
@@ -173,10 +178,14 @@ public class SceneViewCore
      * 3-D cursor
      */
     final private DddCursor cursor = new DddCursor(this);
-    /*
-     * directional added to the scene
+    /**
+     * directional light added to the scene
      */
     final private DirectionalLight mainLight = new DirectionalLight();
+    /**
+     * light probes added to the scene
+     */
+    final private List<LightProbe> addedProbes = new ArrayList<>(8);
     /**
      * root node of the overlay scene (not null)
      */
@@ -263,6 +272,47 @@ public class SceneViewCore
     // new methods exposed
 
     /**
+     * Add a LightProbe based on the current ViewPort background and Camera
+     * location and frustum.
+     */
+    public void addLightProbe() {
+        assert !Maud.envCamIsBusy;
+
+        ViewPort viewPort = getViewPort();
+        ColorRGBA backgroundColor = viewPort.getBackgroundColor(); // alias
+        Camera camera = getCamera();
+        Vector3f location = camera.getLocation();
+        float far = camera.getFrustumFar();
+
+        AppStateManager stateManager = Maud.getApplication().getStateManager();
+        EnvironmentCamera environmentCamera
+                = stateManager.getState(EnvironmentCamera.class);
+        environmentCamera.setPosition(location);
+        MaudUtil.setEnvironmentCameraBackground(backgroundColor);
+
+        int lpIndex = 1 + addedProbes.size();
+        String lpName = String.format("Probe#%d", lpIndex);
+        JobProgressAdapter<LightProbe> progress
+                = new JobProgressAdapter<LightProbe>() {
+            @Override
+            public void done(LightProbe result) {
+                Maud.envCamIsBusy = false;
+                logger.log(Level.WARNING, "Finished generating {0}.", lpName);
+            }
+        };
+        logger.log(Level.WARNING, "Began generating {0}.", lpName);
+        Maud.envCamIsBusy = true;
+
+        Node sceneRoot = getSceneRoot();
+        LightProbe probe = LightProbeFactory.makeProbe(environmentCamera,
+                sceneRoot, progress);
+        sceneRoot.addLight(probe);
+        addedProbes.add(probe);
+        probe.getArea().setRadius(far);
+        probe.setName(lpName);
+    }
+
+    /**
      * Attach an orphan spatial to the scene's overlay root node.
      *
      * @param orphan spatial to clone (not null)
@@ -282,6 +332,26 @@ public class SceneViewCore
 
         Node baseRoot = getSceneRoot();
         baseRoot.attachChild(orphan);
+    }
+
+    /**
+     * Count all light probes added using addLightProbe(), which may include one
+     * that isn't yet ready.
+     */
+    public int countAddedLightProbes() {
+        int result = addedProbes.size();
+        return result;
+    }
+
+    /**
+     * Delete all light probes added using addLightProbe().
+     */
+    public void deleteAddedLightProbes() {
+        Node sceneRoot = getSceneRoot();
+        for (LightProbe probe : addedProbes) {
+            sceneRoot.removeLight(probe);
+        }
+        addedProbes.clear();
     }
 
     /**
@@ -951,6 +1021,7 @@ public class SceneViewCore
      */
     @Override
     public void cloneFields(Cloner cloner, Object original) {
+        // addedProbes not cloned: shared
         // ambientLight not cloned: shared
         animControl = cloner.clone(animControl);
         // axesVisualizer not cloned: shared

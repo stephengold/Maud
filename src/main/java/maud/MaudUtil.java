@@ -43,9 +43,12 @@ import com.jme3.animation.EffectTrack;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.SpatialTrack;
 import com.jme3.animation.Track;
+import com.jme3.app.state.AppStateManager;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
+import com.jme3.environment.EnvironmentCamera;
 import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Matrix4f;
 import com.jme3.math.Quaternion;
@@ -70,6 +73,7 @@ import com.jme3.texture.image.ColorSpace;
 import com.jme3.util.BufferUtils;
 import java.io.IOException;
 import java.io.Writer;
+import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
@@ -1110,6 +1114,33 @@ public class MaudUtil {
             }
 
             vertexBuffer.setUpdateNeeded();
+        }
+    }
+
+    /**
+     * Alter the background color of an EnvironmentCamera. See JME issue #1447.
+     *
+     * @param bgColor the desired color (not null, unaffected)
+     */
+    public static void setEnvironmentCameraBackground(ColorRGBA bgColor) {
+        Validate.nonNull(bgColor, "color");
+
+        Field field;
+        try {
+            field = EnvironmentCamera.class.getDeclaredField("backGroundColor");
+        } catch (NoSuchFieldException exception) {
+            throw new RuntimeException();
+        }
+        field.setAccessible(true);
+
+        AppStateManager stateManager = Maud.getApplication().getStateManager();
+        EnvironmentCamera environmentCamera
+                = stateManager.getState(EnvironmentCamera.class);
+        try {
+            ColorRGBA color = (ColorRGBA) field.get(environmentCamera);
+            color.set(bgColor);
+        } catch (IllegalAccessException exception) {
+            throw new RuntimeException();
         }
     }
 
