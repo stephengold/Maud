@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -80,14 +80,6 @@ public class SceneUpdater {
      */
     final private static ColorRGBA invisibleColor
             = new ColorRGBA(0f, 0f, 0f, 0f);
-    /**
-     * multiplier for ambient light
-     */
-    final private static float ambientMultiplier = 1f;
-    /**
-     * multiplier for main light
-     */
-    final private static float mainMultiplier = 2f;
     /**
      * message logger for this class
      */
@@ -499,7 +491,8 @@ public class SceneUpdater {
      * @param cgm which C-G model (not null)
      */
     private static void updateSky(Cgm cgm) {
-        RenderOptions renderOptions = Maud.getModel().getScene().getRender();
+        SceneOptions sceneOptions = Maud.getModel().getScene();
+        RenderOptions renderOptions = sceneOptions.getRender();
         boolean skySimulated = renderOptions.isSkySimulated();
 
         SceneView sceneView = cgm.getSceneView();
@@ -514,8 +507,11 @@ public class SceneUpdater {
             sky.getSunAndStars().setHour(hour);
 
             Updater updater = sky.getUpdater();
-            updater.setAmbientMultiplier(ambientMultiplier);
-            updater.setMainMultiplier(mainMultiplier);
+            LightsOptions lightsOptions = sceneOptions.getLights();
+            float ambientLevel = lightsOptions.getAmbientLevel();
+            updater.setAmbientMultiplier(ambientLevel);
+            float mainLevel = lightsOptions.getMainLevel();
+            updater.setMainMultiplier(mainLevel);
 
         } else {
             updateAmbientLight(sceneView);
