@@ -3068,7 +3068,7 @@ Approximate minimum screen size: 640x480
 
             <control name="window" id="textureTool" title="Texture Tool"
                      hideOnClose="true"
-                     height="222px" width="490px" x="150" y="120">
+                     height="712px" width="490px" x="150" y="120">
                 <panel childLayout="vertical">
                     <panel height="3px"/>
                     <panel childLayout="horizontal" height="28px">
@@ -3175,6 +3175,7 @@ Approximate minimum screen size: 640x480
                                  textHAlign="center"
                                  width="*"/>
                     </panel>
+                    <panel height="490px"/> // texture preview panel: its height should match the windows's width
                 </panel>
             </control>
 

@@ -29,6 +29,7 @@ package maud;
 import com.jme3.app.Application;
 import com.jme3.app.StatsAppState;
 import com.jme3.app.state.AppStateManager;
+import com.jme3.material.MatParamTexture;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
@@ -38,6 +39,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.texture.Texture;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.screen.Screen;
@@ -49,7 +51,9 @@ import jme3utilities.MyCamera;
 import jme3utilities.MySpatial;
 import jme3utilities.debug.PerformanceAppState;
 import jme3utilities.math.MyMath;
+import jme3utilities.mesh.RectangleMesh;
 import jme3utilities.nifty.GuiScreenController;
+import jme3utilities.nifty.Tool;
 import jme3utilities.ui.InputMode;
 import maud.action.EditorInputMode;
 import maud.menu.BuildMenus;
@@ -132,6 +136,10 @@ public class EditorScreen extends GuiScreenController {
      * controllers for tool windows
      */
     final public EditorTools tools = new EditorTools(this);
+    /**
+     * previewer for the selected Texture
+     */
+    private Geometry texturePreviewer;
     /**
      * POV that's being dragged, or null for none
      */
@@ -356,6 +364,28 @@ public class EditorScreen extends GuiScreenController {
             selection.select();
         }
     }
+
+    /**
+     * Alter which Texture is previewed.
+     *
+     * @param newTexture the desired Texture, or null for none
+     */
+    public void setPreviewedTexture(Texture newTexture) {
+        Texture oldTexture = getPreviewTexture();
+        if (oldTexture != newTexture) {
+            Material material = texturePreviewer.getMaterial();
+            /*
+             * Suppress warnings about the fact that the ColorMap parameter
+             * doesn't specify a color space.
+             */
+            Logger matLogger = Logger.getLogger(Material.class.getName());
+            Level oldLevel = matLogger.getLevel();
+            matLogger.setLevel(Level.SEVERE);
+
+            material.setTexture("ColorMap", newTexture);
+            matLogger.setLevel(oldLevel);
+        }
+    }
     // *************************************************************************
     // GuiScreenController methods
 
@@ -392,6 +422,13 @@ public class EditorScreen extends GuiScreenController {
         setListener(inputMode);
 
         super.initialize(stateManager, application);
+        /*
+         * Initialize the texture previewer to a square, unshaded and all white.
+         */
+        RectangleMesh square = new RectangleMesh();
+        texturePreviewer = new Geometry("texture preview", square);
+        Material material = MyAsset.createUnshadedMaterial(assetManager);
+        texturePreviewer.setMaterial(material);
     }
 
     /**
@@ -467,6 +504,7 @@ public class EditorScreen extends GuiScreenController {
             Drag.updateGnomon();
         }
         updateDragPov();
+        updateTexturePreviewer();
         /*
          * Update the views.
          */
@@ -477,6 +515,22 @@ public class EditorScreen extends GuiScreenController {
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Access the Texture that's being previewed.
+     *
+     * @return the pre-existing instance, or null if none
+     */
+    private Texture getPreviewTexture() {
+        Material material = texturePreviewer.getMaterial();
+        MatParamTexture mpt = material.getTextureParam("ColorMap");
+        Texture result = null;
+        if (mpt != null) {
+            result = mpt.getTextureValue();
+        }
+
+        return result;
+    }
 
     /**
      * Update the menu bar and status bar.
@@ -609,6 +663,36 @@ public class EditorScreen extends GuiScreenController {
             default:
                 logger.log(Level.SEVERE, "mode={0}", mode);
                 throw new IllegalStateException("invalid performance mode");
+        }
+    }
+
+    /**
+     * Update the texture previewer.
+     */
+    private void updateTexturePreviewer() {
+        Tool textureTool = Maud.gui.findTool("texture");
+        boolean enabled = textureTool.isEnabled();
+        if (enabled) {
+            guiNode.attachChild(texturePreviewer);
+            /*
+             * Scale the Geometry so that its width matches
+             * that of the Tool.
+             */
+            Element toolElement = textureTool.getElement();
+            float width = toolElement.getWidth();
+            texturePreviewer.setLocalScale(width);
+            /*
+             * Translate the Geometry so that its lower left corner matches
+             * that of the Tool.
+             */
+            float x = toolElement.getX();
+            int toolHeight = toolElement.getHeight();
+            int toolY = toolElement.getY();
+            int guiHeight = guiViewPort.getCamera().getHeight();
+            float y = guiHeight - toolY - toolHeight;
+            texturePreviewer.setLocalTranslation(x, y, 0f);
+        } else {
+            texturePreviewer.removeFromParent();
         }
     }
 

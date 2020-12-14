@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018-2019, Stephen Gold
+ Copyright (c) 2018-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -276,6 +276,15 @@ public class SelectedTexture implements JmeCloneable {
         }
 
         return index;
+    }
+
+    /**
+     * Access the Texture itself.
+     *
+     * @return the pre-existing instance, or null if nulled out
+     */
+    public Texture get() {
+        return selectedTexture;
     }
 
     /**
