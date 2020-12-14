@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Stephen Gold
+ Copyright (c) 2019-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,11 +31,11 @@ import com.jme3.export.binary.BinaryExporter;
 import com.jme3.export.xml.XMLExporter;
 
 /**
- * Enumerate the file formats in which Maud can save/export data.
+ * Enumerate the file formats in which Maud can save/export CGMs.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public enum OutputFormats {
+public enum CgmOutputFormat {
     // *************************************************************************
     // values
 

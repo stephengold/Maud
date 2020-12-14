@@ -37,7 +37,7 @@ import maud.action.ActionPrefix;
 import maud.dialog.EditorDialogs;
 import maud.model.EditableMap;
 import maud.model.History;
-import maud.model.cgm.OutputFormats;
+import maud.model.cgm.CgmOutputFormat;
 import maud.model.cgm.SelectedTexture;
 
 /**
@@ -344,7 +344,7 @@ public class EditorMenus {
                 break;
             case "Export to XML":
                 actionPrefix = ActionPrefix.saveMapUnconfirmed
-                        + OutputFormats.XML.toString() + " ";
+                        + CgmOutputFormat.XML.toString() + " ";
                 EditorDialogs.saveMap("Export", actionPrefix);
                 break;
             case "Invert":
@@ -355,7 +355,7 @@ public class EditorMenus {
                 break;
             case "Save":
                 actionPrefix = ActionPrefix.saveMapUnconfirmed
-                        + OutputFormats.J3O.toString() + " ";
+                        + CgmOutputFormat.J3O.toString() + " ";
                 EditorDialogs.saveMap("Save", actionPrefix);
                 break;
             case "Tool":

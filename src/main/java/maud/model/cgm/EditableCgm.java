@@ -1424,7 +1424,7 @@ public class EditableCgm extends LoadedCgm {
      * @param format the output format (not null)
      * @return true if successful, otherwise false
      */
-    public boolean writeToFile(OutputFormats format, String baseFilePath) {
+    public boolean writeToFile(CgmOutputFormat format, String baseFilePath) {
         Validate.nonNull(format, "format");
         Validate.nonEmpty(baseFilePath, "base file path");
 
@@ -1458,7 +1458,7 @@ public class EditableCgm extends LoadedCgm {
         }
 
         if (success) {
-            boolean maudCanLoadIt = (format == OutputFormats.J3O);
+            boolean maudCanLoadIt = (format == CgmOutputFormat.J3O);
             String af = assetFolderForWrite();
             String eventDescription = "write model to " + filePath;
             if (maudCanLoadIt && baseFilePath.startsWith(af)) {

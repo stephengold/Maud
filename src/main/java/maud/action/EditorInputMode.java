@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -44,8 +44,8 @@ import maud.dialog.ResampleType;
 import maud.model.EditorModel;
 import maud.model.History;
 import maud.model.cgm.Cgm;
+import maud.model.cgm.CgmOutputFormat;
 import maud.model.cgm.EditableCgm;
-import maud.model.cgm.OutputFormats;
 import maud.model.cgm.SelectedTrack;
 import maud.view.EditorView;
 import maud.view.ViewType;
@@ -457,7 +457,7 @@ public class EditorInputMode extends InputMode {
      */
     private boolean saveAction(String actionString) {
         EditorModel model = Maud.getModel();
-        OutputFormats format;
+        CgmOutputFormat format;
         String argList, baseFilePath;
         String[] args;
         boolean handled = true;
@@ -466,7 +466,7 @@ public class EditorInputMode extends InputMode {
             argList = MyString.remainder(actionString, ActionPrefix.saveCgm);
             if (argList.contains(" ")) {
                 args = argList.split(" ");
-                format = OutputFormats.valueOf(args[0]);
+                format = CgmOutputFormat.valueOf(args[0]);
                 baseFilePath = MyString.remainder(argList, args[0] + " ");
                 model.getTarget().writeToFile(format, baseFilePath);
             } else {
@@ -478,7 +478,7 @@ public class EditorInputMode extends InputMode {
                     ActionPrefix.saveCgmUnconfirmed);
             if (argList.contains(" ")) {
                 args = argList.split(" ");
-                format = OutputFormats.valueOf(args[0]);
+                format = CgmOutputFormat.valueOf(args[0]);
                 baseFilePath = MyString.remainder(argList, args[0] + " ");
                 EditorDialogs.confirmOverwrite(ActionPrefix.saveCgm, format,
                         baseFilePath);
@@ -490,7 +490,7 @@ public class EditorInputMode extends InputMode {
             argList = MyString.remainder(actionString, ActionPrefix.saveMap);
             if (argList.contains(" ")) {
                 args = argList.split(" ");
-                format = OutputFormats.valueOf(args[0]);
+                format = CgmOutputFormat.valueOf(args[0]);
                 baseFilePath = MyString.remainder(argList, args[0] + " ");
                 model.getMap().writeToFile(format, baseFilePath);
             } else {
@@ -502,7 +502,7 @@ public class EditorInputMode extends InputMode {
                     ActionPrefix.saveMapUnconfirmed);
             if (argList.contains(" ")) {
                 args = argList.split(" ");
-                format = OutputFormats.valueOf(args[0]);
+                format = CgmOutputFormat.valueOf(args[0]);
                 baseFilePath = MyString.remainder(argList, args[0] + " ");
                 EditorDialogs.confirmOverwrite(ActionPrefix.saveMap, format,
                         baseFilePath);

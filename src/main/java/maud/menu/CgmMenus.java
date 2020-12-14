@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,7 +31,7 @@ import maud.Maud;
 import maud.action.ActionPrefix;
 import maud.dialog.EditorDialogs;
 import maud.model.EditorModel;
-import maud.model.cgm.OutputFormats;
+import maud.model.cgm.CgmOutputFormat;
 import maud.model.cgm.SelectedSpatial;
 
 /**
@@ -107,7 +107,7 @@ public class CgmMenus {
         switch (remainder) {
             case "Export to XML":
                 actionPrefix = ActionPrefix.saveCgmUnconfirmed
-                        + OutputFormats.XML.toString() + " ";
+                        + CgmOutputFormat.XML.toString() + " ";
                 EditorDialogs.saveCgm("Export", actionPrefix);
                 break;
 
@@ -129,7 +129,7 @@ public class CgmMenus {
 
             case "Save":
                 actionPrefix = ActionPrefix.saveCgmUnconfirmed
-                        + OutputFormats.J3O.toString() + " ";
+                        + CgmOutputFormat.J3O.toString() + " ";
                 EditorDialogs.saveCgm("Save", actionPrefix);
                 break;
 

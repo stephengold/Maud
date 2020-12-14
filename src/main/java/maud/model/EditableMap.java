@@ -42,7 +42,7 @@ import jme3utilities.math.MyVector3f;
 import jme3utilities.ui.ActionApplication;
 import maud.Maud;
 import maud.model.cgm.Cgm;
-import maud.model.cgm.OutputFormats;
+import maud.model.cgm.CgmOutputFormat;
 import maud.model.cgm.SelectedSkeleton;
 
 /**
@@ -308,7 +308,7 @@ public class EditableMap extends LoadedMap {
      * @param format the output format (not null)
      * @return true if successful, otherwise false
      */
-    public boolean writeToFile(OutputFormats format, String baseFilePath) {
+    public boolean writeToFile(CgmOutputFormat format, String baseFilePath) {
         Validate.nonNull(format, "format");
         Validate.nonEmpty(baseFilePath, "base file path");
 
@@ -341,7 +341,7 @@ public class EditableMap extends LoadedMap {
         }
 
         if (success) {
-            boolean maudCanLoadIt = (format == OutputFormats.J3O);
+            boolean maudCanLoadIt = (format == CgmOutputFormat.J3O);
             String af = assetFolderForWrite();
             String eventDescription = "write map to " + filePath;
             if (maudCanLoadIt && baseFilePath.startsWith(af)) {

@@ -68,7 +68,7 @@ import maud.model.cgm.EditableCgm;
 import maud.model.cgm.LoadedAnimation;
 import maud.model.cgm.LoadedCgm;
 import maud.model.cgm.MatParamRef;
-import maud.model.cgm.OutputFormats;
+import maud.model.cgm.CgmOutputFormat;
 import maud.model.cgm.PlayOptions;
 import maud.model.cgm.PlayTimes;
 import maud.model.cgm.SelectedBone;
@@ -179,7 +179,7 @@ public class EditorDialogs {
      * @param baseFilePath base file path (not null, not empty)
      */
     public static void confirmOverwrite(String actionPrefix,
-            OutputFormats format, String baseFilePath) {
+            CgmOutputFormat format, String baseFilePath) {
         Validate.nonEmpty(actionPrefix, "action prefix");
         Validate.nonEmpty(baseFilePath, "base file path");
 
