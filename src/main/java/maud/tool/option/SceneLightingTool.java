@@ -35,8 +35,9 @@ import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.SliderTransform;
 import jme3utilities.nifty.Tool;
 import maud.Maud;
-import maud.model.cgm.Cgm;
+import maud.model.EditorModel;
 import maud.model.option.scene.LightsOptions;
+import maud.model.option.scene.RenderOptions;
 import maud.model.option.scene.SceneOptions;
 import maud.view.scene.SceneView;
 
@@ -86,6 +87,19 @@ public class SceneLightingTool extends Tool {
     // Tool methods
 
     /**
+     * Enumerate this tool's check boxes.
+     *
+     * @return a new list of names (unique id prefixes)
+     */
+    @Override
+    protected List<String> listCheckBoxes() {
+        List<String> result = super.listCheckBoxes();
+        result.add("sky2");
+
+        return result;
+    }
+
+    /**
      * Enumerate this tool's sliders.
      *
      * @return a new list of names (unique id prefixes)
@@ -101,6 +115,26 @@ public class SceneLightingTool extends Tool {
         result.add("mainLevel");
 
         return result;
+    }
+
+    /**
+     * Update the MVC model based on a check-box event.
+     *
+     * @param name the name (unique id prefix) of the check box
+     * @param isChecked the new state of the check box (true&rarr;checked,
+     * false&rarr;unchecked)
+     */
+    @Override
+    public void onCheckBoxChanged(String name, boolean isChecked) {
+        RenderOptions options = Maud.getModel().getScene().getRender();
+        switch (name) {
+            case "sky2":
+                options.setSkySimulated(isChecked);
+                break;
+
+            default:
+                super.onCheckBoxChanged(name, isChecked);
+        }
     }
 
     /**
@@ -131,14 +165,38 @@ public class SceneLightingTool extends Tool {
      */
     @Override
     protected void toolUpdate() {
-        SceneOptions sceneOptions = Maud.getModel().getScene();
-        LightsOptions lightsOptions = sceneOptions.getLights();
+        EditorModel model = Maud.getModel();
+        SceneOptions sceneOptions = model.getScene();
         boolean isSkySimulated = sceneOptions.getRender().isSkySimulated();
+        setChecked("sky2", isSkySimulated);
 
+        SceneView sceneView = model.getTarget().getSceneView();
+        int count = sceneView.countAddedLightProbes();
+        String countText;
+        if (Maud.envCamIsBusy && count > 0) {
+            countText = Integer.toString(count - 1) + "+";
+        } else {
+            countText = Integer.toString(count);
+        }
+        setStatusText("probeCount", countText);
+
+        String addText;
+        if (Maud.envCamIsBusy) {
+            addText = "";
+        } else {
+            addText = "Add";
+        }
+        setButtonText("probeAdd", addText);
+
+        if (count > 0) {
+            setButtonText("probeDeleteAll", "Delete all");
+        } else {
+            setButtonText("probeDeleteAll", "");
+        }
+
+        LightsOptions lightsOptions = sceneOptions.getLights();
         Vector3f direction;
         if (isSkySimulated) {
-            Cgm cgm = Maud.getModel().getTarget(); // arbitrary choice of Cgm
-            SceneView sceneView = cgm.getSceneView();
             DirectionalLight main = sceneView.getMainLight();
             direction = main.getDirection(); // alias
         } else {

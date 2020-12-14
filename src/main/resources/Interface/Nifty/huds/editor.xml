@@ -2186,8 +2186,27 @@ Approximate minimum screen size: 640x480
 
             <control name="window" id="sceneLightingTool" title="Scene Lighting Tool"
                      hideOnClose="true"
-                     height="300px" width="170px" x="105" y="165">
+                     height="360px" width="190px" x="105" y="165">
+                <panel height="4px"/>
                 <panel childLayout="vertical">
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="checkbox" id="sky2CheckBox"/>
+                        <control name="label" text="  simulate sky"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Probes:  "/>
+                        <control name="label" id="probeCount"
+                                 textHAlign="center"
+                                 width="*"/>
+                        <control name="button" id="probeAddButton"
+                                 width="*">
+                            <interact onRelease="perform(new probe targetView)"/>
+                        </control>
+                        <control name="button" id="probeDeleteAllButton"
+                                 width="63px">
+                            <interact onRelease="perform(delete probes targetView)"/>
+                        </control>
+                    </panel>
                     <panel childLayout="horizontal" height="27px">
                         <control name="label" id="ambientLevelSliderStatus"
                                  width="*"

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -44,6 +44,7 @@ import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedAnimControl;
 import maud.model.cgm.UserDataType;
 import maud.tool.HistoryTool;
+import maud.view.scene.SceneView;
 
 /**
  * Process actions that start with the word "new".
@@ -80,6 +81,7 @@ class NewAction {
         boolean handled = true;
 
         EditorModel model = Maud.getModel();
+        Cgm source = model.getSource();
         Cgm target = model.getTarget();
         switch (actionString) {
             case Action.newAnimation:
@@ -97,7 +99,7 @@ class NewAction {
                 break;
 
             case Action.newAnimationFromRetarget:
-                String sourceName = model.getSource().getAnimation().name();
+                String sourceName = source.getAnimation().name();
                 EditorDialogs.newAnimation(
                         ActionPrefix.newAnimationFromRetarget, "Retarget",
                         sourceName);
@@ -134,6 +136,10 @@ class NewAction {
                 EnumMenus.selectOverrideType();
                 break;
 
+            case Action.newProbeTargetView:
+                addProbeToSceneView(target);
+                break;
+
             case Action.newSgc:
                 ShowMenus.addNewSgc();
                 break;
@@ -164,6 +170,18 @@ class NewAction {
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Add a LightProbe to the SceneView of the specified CGM.
+     *
+     * @param cgm which CGM (not null)
+     */
+    private static void addProbeToSceneView(Cgm cgm) {
+        SceneView sceneView = cgm.getSceneView();
+        if (sceneView.getCamera() != null) {
+            sceneView.addLightProbe();
+        }
+    }
 
     /**
      * Process an ongoing action that starts with the word "new" -- 2nd part:

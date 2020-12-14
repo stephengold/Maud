@@ -58,6 +58,7 @@ public class Action {
     final static String deleteMapping = "delete mapping";
     final static String deleteMatParam = "delete matParam";
     final static String deleteOverride = "delete override";
+    final static String deleteProbesTargetView = "delete probes targetView";
     /**
      * delete the selected S-G control
      */
@@ -99,6 +100,7 @@ public class Action {
     final static String newMapping = "new mapping";
     final static String newMatParam = "new matParam";
     final static String newOverride = "new override";
+    final static String newProbeTargetView = "new probe targetView";
     final static String newSgc = "new sgc";
     final static String newSingleKeyframe = "new singleKeyframe";
     final static String newTexture = "new texture";

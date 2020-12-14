@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018-2019, Stephen Gold
+ Copyright (c) 2018-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import maud.Maud;
 import maud.model.cgm.EditableCgm;
+import maud.view.scene.SceneView;
 
 /**
  * Process actions that start with the word "delete".
@@ -93,6 +94,11 @@ class DeleteAction {
 
             case Action.deleteOverride:
                 target.getOverride().delete();
+                break;
+
+            case Action.deleteProbesTargetView:
+                SceneView sceneView = target.getSceneView();
+                sceneView.deleteAddedLightProbes();
                 break;
 
             case Action.deleteSgc:
