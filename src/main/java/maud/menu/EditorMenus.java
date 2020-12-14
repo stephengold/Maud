@@ -425,8 +425,7 @@ public class EditorMenus {
                 break;
 
             case "Display settings":
-                Maud.gui.closeAllPopups();
-                Maud.getDisplaySettingsScreen().activate();
+                Maud.gui.goDisplaySettingsScreen();
                 break;
 
             case "Dump tool":

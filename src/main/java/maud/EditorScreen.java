@@ -167,6 +167,15 @@ public class EditorScreen extends GuiScreenController {
     }
 
     /**
+     * Activate the "DisplaySettings" screen.
+     */
+    public void goDisplaySettingsScreen() {
+        closeAllPopups();
+        texturePreviewer.removeFromParent();
+        Maud.getDisplaySettingsScreen().activate();
+    }
+
+    /**
      * Select a loaded C-G model (source or target) based on the screen location
      * of the mouse pointer.
      *
