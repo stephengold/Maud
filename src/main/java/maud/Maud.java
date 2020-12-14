@@ -51,7 +51,6 @@ import jme3utilities.nifty.displaysettings.DsScreen;
 import jme3utilities.ui.ActionApplication;
 import jme3utilities.ui.DisplaySettings;
 import jme3utilities.ui.DisplaySizeLimits;
-import jme3utilities.ui.InputMode;
 import maud.dialog.QuitDialog;
 import maud.model.EditState;
 import maud.model.EditorModel;
@@ -360,8 +359,7 @@ public class Maud extends GuiApplication {
             handled = true;
             switch (actionString) {
                 case "edit bindings":
-                    InputMode activeInputMode = InputMode.getActiveMode();
-                    bindScreen.activate(activeInputMode);
+                    Maud.gui.goBindScreen();
                     break;
                 case "quit":
                     quitUnconfirmed();

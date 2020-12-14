@@ -162,6 +162,7 @@ public class EditorScreen extends GuiScreenController {
      */
     public void goBindScreen() {
         closeAllPopups();
+        texturePreviewer.removeFromParent();
         Maud.bindScreen.activate(inputMode);
     }
 
