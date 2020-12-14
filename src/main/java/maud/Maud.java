@@ -453,7 +453,7 @@ public class Maud extends GuiApplication {
          */
         String applicationName = "Maud";// v1.0.0-alpha.8";
         DisplaySizeLimits dsl = new DisplaySizeLimits(
-                640, 480, // min width, height
+                640, 720, // min width, height
                 2_048, 1_080 // max width, height
         );
         DisplaySettings displaySettings

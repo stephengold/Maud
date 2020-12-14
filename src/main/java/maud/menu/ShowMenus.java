@@ -56,9 +56,9 @@ public class ShowMenus {
 
     /**
      * maximum number of items in a menu, derived from the minimum display
-     * height of 480 pixels TODO calculate based on actual height
+     * height of 720 pixels TODO calculate based on actual height
      */
-    final public static int maxItems = 19;
+    final public static int maxItems = 28;
     /**
      * message logger for this class
      */

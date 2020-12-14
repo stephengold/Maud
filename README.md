@@ -45,7 +45,7 @@ Summary of features:
 Maud was designed for a desktop environment with:
 
  + a wheel mouse and
- + a display at least 640 pixels wide and 480 pixels tall.
+ + a display at least 640 pixels wide and 720 pixels tall.
 
 Java source code is provided under
 [a FreeBSD license](https://github.com/stephengold/Maud/blob/master/LICENSE).
