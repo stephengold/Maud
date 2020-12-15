@@ -245,6 +245,10 @@ public class ActionPrefix {
      */
     final public static String saveMapUnconfirmed = "save mapUnconfirmed ";
     /**
+     * arguments are a boolean and an asset path
+     */
+    final public static String saveTexture = "save texture ";
+    /**
      * arguments are a spatial name and a deduplication index
      */
     final public static String selectAnimControl = "select animControl ";

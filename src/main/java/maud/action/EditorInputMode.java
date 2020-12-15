@@ -69,7 +69,7 @@ public class EditorInputMode extends InputMode {
     /**
      * asset path to the cursor for this input mode
      */
-    final private static String assetPath = "Textures/cursors/default.cur";
+    final private static String cursorPath = "Textures/cursors/default.cur";
     // *************************************************************************
     // fields
 
@@ -125,7 +125,7 @@ public class EditorInputMode extends InputMode {
     public void initialize(AppStateManager stateManager,
             Application application) {
         AssetManager am = application.getAssetManager();
-        JmeCursor cursor = (JmeCursor) am.loadAsset(assetPath);
+        JmeCursor cursor = (JmeCursor) am.loadAsset(cursorPath);
         setCursor(cursor);
 
         super.initialize(stateManager, application);
@@ -457,6 +457,7 @@ public class EditorInputMode extends InputMode {
      */
     private boolean saveAction(String actionString) {
         EditorModel model = Maud.getModel();
+        EditableCgm target = model.getTarget();
         CgmOutputFormat format;
         String argList, baseFilePath;
         String[] args;
@@ -468,7 +469,7 @@ public class EditorInputMode extends InputMode {
                 args = argList.split(" ");
                 format = CgmOutputFormat.valueOf(args[0]);
                 baseFilePath = MyString.remainder(argList, args[0] + " ");
-                model.getTarget().writeToFile(format, baseFilePath);
+                target.writeToFile(format, baseFilePath);
             } else {
                 handled = false;
             }
@@ -506,6 +507,18 @@ public class EditorInputMode extends InputMode {
                 baseFilePath = MyString.remainder(argList, args[0] + " ");
                 EditorDialogs.confirmOverwrite(ActionPrefix.saveMap, format,
                         baseFilePath);
+            } else {
+                handled = false;
+            }
+
+        } else if (actionString.startsWith(ActionPrefix.saveTexture)) {
+            argList = MyString.remainder(actionString,
+                    ActionPrefix.saveTexture);
+            if (argList.contains(" ")) {
+                args = argList.split(" ");
+                boolean flipY = Boolean.valueOf(args[0]);
+                String assetPath = MyString.remainder(argList, args[0] + " ");
+                target.getTexture().writeImageToAsset(assetPath, flipY);
             } else {
                 handled = false;
             }

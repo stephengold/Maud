@@ -64,11 +64,11 @@ import maud.action.ActionPrefix;
 import maud.model.EditorModel;
 import maud.model.WhichCgm;
 import maud.model.cgm.Cgm;
+import maud.model.cgm.CgmOutputFormat;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.LoadedAnimation;
 import maud.model.cgm.LoadedCgm;
 import maud.model.cgm.MatParamRef;
-import maud.model.cgm.CgmOutputFormat;
 import maud.model.cgm.PlayOptions;
 import maud.model.cgm.PlayTimes;
 import maud.model.cgm.SelectedBone;
@@ -88,7 +88,7 @@ import maud.model.option.ShapeParameter;
 import org.lwjgl.Sys;
 
 /**
- * Dialog boxes created by Maud's "editor" screen.
+ * Dialog boxes created by Maud's "editor" screen (utility class).
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -172,7 +172,7 @@ public class EditorDialogs {
     }
 
     /**
-     * Display a confirmation dialog for overwriting a file.
+     * Display a confirmation dialog for overwriting a CGM file.
      *
      * @param actionPrefix action prefix before the format (not null, not empty)
      * @param format the output format (not null)
@@ -680,6 +680,27 @@ public class EditorDialogs {
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter base file path for map:",
                 baseFilePath, actionPrefix, controller);
+    }
+
+    /**
+     * Display a dialog to enter the new asset path and flipY flag for saving
+     * the selected Texture.
+     */
+    public static void saveTexture() {
+        List<String> extList = new ArrayList<>(5);
+        extList.add(".bmp");
+        extList.add(".gif");
+        extList.add(".jpeg");
+        extList.add(".jpg");
+        extList.add(".png");
+        NewTextureDialog controller
+                = new NewTextureDialog("Save", "flipY", extList);
+        Maud.gui.closeAllPopups();
+
+        SelectedTexture selTexture = Maud.getModel().getTarget().getTexture();
+        String defaultAssetPath = selTexture.lastAssetPath();
+        Maud.gui.showTextAndCheckDialog("Enter new asset path for texture:",
+                defaultAssetPath, ActionPrefix.saveTexture, controller);
     }
 
     /**

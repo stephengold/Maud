@@ -41,7 +41,7 @@ import maud.model.cgm.CgmOutputFormat;
 import maud.model.cgm.SelectedTexture;
 
 /**
- * Menus in Maud's editor screen.
+ * Menus in Maud's editor screen (utility class).
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -150,6 +150,9 @@ public class EditorMenus {
         if (texture.hasKey()) {
             MenuBuilder builder = newLocationMenu();
             builder.show(ActionPrefix.loadTextureLocator);
+
+        } else if (texture.hasImage()) { // keyless texture: add a key
+            EditorDialogs.saveTexture();
         }
     }
 

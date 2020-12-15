@@ -40,16 +40,21 @@ import com.jme3.texture.Texture3D;
 import com.jme3.texture.TextureCubeMap;
 import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
+import java.awt.image.RenderedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
+import jme3utilities.Heart;
 import jme3utilities.MySpatial;
+import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.nifty.WindowController;
 import jme3utilities.ui.Locators;
 import maud.DescribeUtil;
 import maud.Maud;
+import maud.MaudUtil;
 
 /**
  * The MVC model of the selected texture in a loaded C-G model.
@@ -84,7 +89,7 @@ public class SelectedTexture implements JmeCloneable {
     /**
      * most recent asset path (not null)
      */
-    private String lastAssetPath = "Textures/platform/wood_0534.jpg";
+    private String lastAssetPath = "Textures/untitled.jpg";
     /**
      * selected texture, or null if nulled out
      */
@@ -319,6 +324,21 @@ public class SelectedTexture implements JmeCloneable {
     }
 
     /**
+     * Test whether the texture has an image.
+     *
+     * @return true if has image, otherwise false
+     */
+    public boolean hasImage() {
+        if (selectedTexture == null) {
+            return false;
+        } else if (selectedTexture.getImage() == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
      * Test whether the texture has an R axis.
      *
      * @return true if it has an R axis, otherwise false
@@ -395,6 +415,16 @@ public class SelectedTexture implements JmeCloneable {
         } else {
             return true;
         }
+    }
+
+    /**
+     * Determine the most recent asset path for a Texture.
+     *
+     * @return the path (not empty, not null)
+     */
+    public String lastAssetPath() {
+        assert lastAssetPath != null;
+        return lastAssetPath;
     }
 
     /**
@@ -854,6 +884,34 @@ public class SelectedTexture implements JmeCloneable {
 
         assert result != null;
         return result;
+    }
+
+    /**
+     * Write the image to the specified asset path, then replace the selected
+     * texture with a new texture keyed to that asset.
+     *
+     * @param assetPath asset path to the output file (not null, not empty)
+     * @param flipY true&rarr;flip the Y coordinate, false&rarr;don't flip
+     */
+    public void writeImageToAsset(String assetPath, boolean flipY) {
+        Validate.nonNull(assetPath, "asset path");
+
+        Image image = selectedTexture.getImage();
+        RenderedImage renderedImage = MaudUtil.render(image, flipY);
+        String filePath = Maud.filePath(assetPath);
+        try {
+            Heart.writeImage(filePath, renderedImage);
+        } catch (IOException exception) {
+            throw new RuntimeException(exception);
+        }
+
+        TextureKey key = new TextureKey(assetPath, flipY);
+        AssetManager assetManager = Locators.getAssetManager();
+        Texture clone = assetManager.loadTexture(key);
+        String description = "texture keyed to " + MyString.quote(assetPath);
+        editableCgm.replaceSelectedTexture(clone, description);
+
+        lastAssetPath = assetPath;
     }
     // *************************************************************************
     // JmeCloneable methods
