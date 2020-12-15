@@ -40,13 +40,13 @@ import com.jme3.texture.Texture3D;
 import com.jme3.texture.TextureCubeMap;
 import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
+import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
-import jme3utilities.Heart;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
@@ -896,11 +896,20 @@ public class SelectedTexture implements JmeCloneable {
     public void writeImageToAsset(String assetPath, boolean flipY) {
         Validate.nonNull(assetPath, "asset path");
 
+        int awtType = BufferedImage.TYPE_4BYTE_ABGR;
+        String lowerCase = assetPath.toLowerCase();
+        if (lowerCase.endsWith(".bmp")
+                || lowerCase.endsWith(".jpg")
+                || lowerCase.endsWith(".jpeg")) {
+            awtType = BufferedImage.TYPE_3BYTE_BGR;
+        }
+
         Image image = selectedTexture.getImage();
-        RenderedImage renderedImage = MaudUtil.render(image, flipY);
+        RenderedImage renderedImage = MaudUtil.render(image, flipY, awtType);
+
         String filePath = Maud.filePath(assetPath);
         try {
-            Heart.writeImage(filePath, renderedImage);
+            MaudUtil.writeImage(filePath, renderedImage);
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }
