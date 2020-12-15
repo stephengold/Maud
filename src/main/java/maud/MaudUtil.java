@@ -71,6 +71,9 @@ import com.jme3.texture.Texture3D;
 import com.jme3.texture.TextureCubeMap;
 import com.jme3.texture.image.ColorSpace;
 import com.jme3.util.BufferUtils;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Field;
@@ -1087,6 +1090,62 @@ public class MaudUtil {
     }
 
     /**
+     * Convert a JME image to an AWT image.
+     *
+     * @param imageIn the input Image (not null, 2-D, single buffer, limited
+     * subset of formats, unaffected)
+     * @param flipY true&rarr;flip the Y coordinate, false&rarr;don't flip
+     * @return a new BufferedImage
+     */
+    public static BufferedImage render(Image imageIn, boolean flipY) {
+        int depth = imageIn.getDepth();
+        assert depth <= 1 : depth; // 3-D images aren't handled
+
+        int numBuffers = imageIn.getData().size();
+        assert numBuffers == 1 : numBuffers; // multiple buffers aren't handled
+
+        Image.Format format = imageIn.getFormat();
+        int bpp = format.getBitsPerPixel();
+        assert (bpp % 8) == 0 : bpp; // pixels must be a whole number of bytes
+        int bytesPerPixel = bpp / 8;
+
+        int height = imageIn.getHeight();
+        int width = imageIn.getWidth();
+        int numBytes = height * width * bytesPerPixel;
+        ByteBuffer byteBuffer = imageIn.getData(0);
+        int capacity = byteBuffer.capacity();
+        assert capacity >= numBytes : "capacity = " + capacity
+                + ", numBytes = " + numBytes;
+
+        BufferedImage result = new BufferedImage(width, height,
+                BufferedImage.TYPE_4BYTE_ABGR);
+        int[] pixelBytes = new int[bytesPerPixel];
+        Graphics2D graphics = result.createGraphics();
+        int byteOffset = 0;
+        for (int yIn = 0; yIn < height; ++yIn) {
+            int yOut;
+            if (flipY) {
+                yOut = height - 1 - yIn;
+            } else {
+                yOut = yIn;
+            }
+
+            for (int x = 0; x < width; ++x) {
+                for (int byteIndx = 0; byteIndx < bytesPerPixel; ++byteIndx) {
+                    int pixelByte = byteBuffer.get(byteOffset);
+                    pixelBytes[byteIndx] = 0xff & pixelByte;
+                    ++byteOffset;
+                }
+                Color color = pixelColor(format, pixelBytes);
+                graphics.setColor(color);
+                graphics.fillRect(x, yOut, 1, 1);
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Apply the specified rotation to all data in the specified VertexBuffer.
      *
      * @param mesh the subject mesh (not null)
@@ -1259,5 +1318,95 @@ public class MaudUtil {
         writer.write("Maud.perform('");
         writer.write(actionString);
         writer.write("');\n");
+    }
+    // *************************************************************************
+    // private methods
+
+    /**
+     * Determine the color of a single pixel in a JME image.
+     *
+     * @param format the image format (not null, limited subset)
+     * @param bytes the pixel's ByteBuffer data (not null, unaffected)
+     * @return a new Color
+     */
+    private static Color pixelColor(Image.Format format, int[] bytes) {
+        float a, b, g, r;
+        int numBytes = bytes.length;
+
+        switch (format) {
+            case ABGR8:
+                assert numBytes == 4 : numBytes;
+                a = bytes[0] / 255f;
+                b = bytes[1] / 255f;
+                g = bytes[2] / 255f;
+                r = bytes[3] / 255f;
+                break;
+
+            case ARGB8:
+                assert numBytes == 4 : numBytes;
+                a = bytes[0] / 255f;
+                r = bytes[1] / 255f;
+                g = bytes[2] / 255f;
+                b = bytes[3] / 255f;
+                break;
+
+            case Alpha8:
+                assert numBytes == 1 : numBytes;
+                a = bytes[0] / 255f;
+                b = g = r = 1f;
+                break;
+
+            case BGR8:
+                assert numBytes == 3 : numBytes;
+                b = bytes[0] / 255f;
+                g = bytes[1] / 255f;
+                r = bytes[2] / 255f;
+                a = 1f;
+                break;
+
+            case BGRA8:
+                assert numBytes == 4 : numBytes;
+                b = bytes[0] / 255f;
+                g = bytes[1] / 255f;
+                r = bytes[2] / 255f;
+                a = bytes[3] / 255f;
+                break;
+
+            case Luminance8:
+                assert numBytes == 1 : numBytes;
+                b = g = r = bytes[0] / 255f;
+                a = 1f;
+                break;
+
+            case Luminance8Alpha8:
+                assert numBytes == 2 : numBytes;
+                b = g = r = bytes[0] / 255f;
+                a = bytes[1] / 255;
+                break;
+
+            case RGB8:
+                assert numBytes == 3 : numBytes;
+                r = bytes[0] / 255f;
+                g = bytes[1] / 255f;
+                b = bytes[2] / 255f;
+                a = 1f;
+                break;
+
+            case RGBA8:
+                assert numBytes == 4 : numBytes;
+                r = bytes[0] / 255f;
+                g = bytes[1] / 255f;
+                b = bytes[2] / 255f;
+                a = bytes[3] / 255f;
+                break;
+
+            // TODO handle more formats
+            default:
+                String message = "format = " + format;
+                throw new IllegalArgumentException(message);
+        }
+
+        Color result = new Color(r, g, b, a);
+        return result;
     }
 }
