@@ -682,7 +682,8 @@ public class EditorScreen extends GuiScreenController {
     private void updateTexturePreviewer() {
         Tool textureTool = Maud.gui.findTool("texture");
         boolean enabled = textureTool.isEnabled();
-        if (enabled) {
+        boolean visible = Maud.getModel().getMisc().isTexturePreviewVisible();
+        if (visible && enabled) {
             guiNode.attachChild(texturePreviewer);
             /*
              * Scale the Geometry so that its width matches

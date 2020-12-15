@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -80,6 +80,11 @@ public class MiscOptions implements Cloneable {
      * visibility of the menu bar (true &rarr; visible, false &rarr; hidden)
      */
     private boolean menuBarVisibility = true;
+    /**
+     * visibility of the texture preview (true &rarr; visible, false &rarr;
+     * hidden)
+     */
+    private boolean texturePreviewVisibility = false;
     /**
      * submenu warp fraction for the X coordinates (&ge;0, &le;1)
      */
@@ -192,6 +197,15 @@ public class MiscOptions implements Cloneable {
      */
     public boolean isMenuBarVisible() {
         return menuBarVisibility;
+    }
+
+    /**
+     * Test the visibility of the texture preview.
+     *
+     * @return true &rarr; visible, false &rarr; hidden
+     */
+    public boolean isTexturePreviewVisible() {
+        return texturePreviewVisibility;
     }
 
     /**
@@ -437,6 +451,15 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
+     * Alter the visibility of the texture preview.
+     *
+     * @param newSetting (true &rarr; visible, false &rarr; hidden)
+     */
+    public void setTexturePreviewVisible(boolean newSetting) {
+        texturePreviewVisibility = newSetting;
+    }
+
+    /**
      * Alter the message to display in the status bar.
      *
      * @param newMessage what to display (not null)
@@ -561,6 +584,13 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
+     * Toggle the visibility of the texture preview.
+     */
+    public void toggleTexturePreviewVisibility() {
+        setTexturePreviewVisible(!texturePreviewVisibility);
+    }
+
+    /**
      * Write the options to a script using the specified writer.
      *
      * @param writer (not null)
@@ -580,6 +610,10 @@ public class MiscOptions implements Cloneable {
 
         action = ActionPrefix.sfMenuBarVisible
                 + Boolean.toString(menuBarVisibility);
+        MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.sfTexturePreviewVisible
+                + Boolean.toString(texturePreviewVisibility);
         MaudUtil.writePerformAction(writer, action);
 
         action = String.format("%s%f %f", ActionPrefix.setSubmenuWarp,

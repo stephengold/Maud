@@ -233,7 +233,7 @@ public class ActionPrefix {
      */
     final public static String saveCgm = "save cgm ";
     /**
-     * argument are an output-format type and a base file path
+     * arguments are an output-format type and a base file path
      */
     final public static String saveCgmUnconfirmed = "save cgmUnconfirmed ";
     /**
@@ -783,6 +783,11 @@ public class ActionPrefix {
      * argument is a boolean value
      */
     final public static String sfSkySimulated = "setFlag skySimulated ";
+    /**
+     * argument is a boolean value
+     */
+    final public static String sfTexturePreviewVisible
+            = "setFlag texturePreviewVisible ";
     /**
      * argument is the name of a license type
      */

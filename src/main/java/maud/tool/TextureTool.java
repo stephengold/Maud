@@ -34,6 +34,7 @@ import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.Tool;
 import maud.DescribeUtil;
 import maud.Maud;
+import maud.model.EditorModel;
 import maud.model.cgm.SelectedTexture;
 
 /**
@@ -75,6 +76,7 @@ class TextureTool extends Tool {
         List<String> result = super.listCheckBoxes();
         result.add("flipY");
         result.add("mipMap");
+        result.add("texturePreview");
 
         return result;
     }
@@ -88,7 +90,8 @@ class TextureTool extends Tool {
      */
     @Override
     public void onCheckBoxChanged(String name, boolean isChecked) {
-        SelectedTexture texture = Maud.getModel().getTarget().getTexture();
+        EditorModel model = Maud.getModel();
+        SelectedTexture texture = model.getTarget().getTexture();
         switch (name) {
             case "flipY":
                 texture.setFlipY(isChecked);
@@ -96,6 +99,10 @@ class TextureTool extends Tool {
 
             case "mipMap":
                 texture.setGenerateMips(isChecked);
+                break;
+
+            case "texturePreview":
+                model.getMisc().setTexturePreviewVisible(isChecked);
                 break;
 
             default:

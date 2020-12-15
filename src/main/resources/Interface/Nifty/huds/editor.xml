@@ -3095,6 +3095,9 @@ Approximate minimum screen size: 640x480
                             <interact onRelease="perform(set texture null)"/>
                         </control>
                         <panel/>
+                        <control name="checkbox" id="texturePreviewCheckBox"
+                                 width="20px"/>
+                        <control name="label" text="  preview    "/>
                         <control name="button" id="textureSelectButton"
                                  width="100px">
                             <interact onRelease="perform(select texture)"/>
