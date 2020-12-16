@@ -378,6 +378,8 @@ public class SelectedSpatial implements JmeCloneable {
                     gInPRot);
             MaudUtil.rotateBuffer(mesh, VertexBuffer.Type.Normal, gInPRot);
             // TODO binormal, tangent?
+
+            mesh.updateBound();
         }
 
         List<Spatial> spatials = MySpatial.listSpatials(subtree);
