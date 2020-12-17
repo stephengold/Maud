@@ -46,6 +46,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
@@ -1126,10 +1127,17 @@ public class SelectedTexture implements JmeCloneable {
         List<String> specList = Maud.getModel().getLocations().listAll();
         Locators.register(specList);
         AssetManager assetManager = Locators.getAssetManager();
-        Texture loaded = assetManager.loadTexture(key);
+        Texture loaded = null;
+        try {
+            loaded = assetManager.loadTexture(key);
+        } catch (ClassCastException exception) {
+            logger.log(Level.WARNING, "Failed to load {0} as an image.",
+                    MyString.quote(assetPath));
+        }
         Locators.restore();
 
-        assert loaded != null;
-        editableCgm.replaceSelectedTexture(loaded, eventDescription);
+        if (loaded != null) {
+            editableCgm.replaceSelectedTexture(loaded, eventDescription);
+        }
     }
 }
