@@ -195,10 +195,8 @@ class NewTextureDialog implements DialogController {
         Locators.save();
         Locators.unregisterAll();
         Locators.registerDefault();
-        List<String> specs = Maud.getModel().getLocations().listAll();
-        for (String spec : specs) {
-            Locators.register(spec);
-        }
+        List<String> specList = Maud.getModel().getLocations().listAll();
+        Locators.register(specList);
         /*
          * Temporarily hush AssetManager warnings about missing resources.
          */
