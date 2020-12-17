@@ -1696,6 +1696,25 @@ public class SelectedSpatial implements JmeCloneable {
     // private methods
 
     /**
+     * Test whether the specified Spatial is a Geometry whose Material defines
+     * the selected parameter.
+     */
+    private boolean definesSelectedMatParam(Spatial newSpatial) {
+        boolean result = false;
+        if (newSpatial instanceof Geometry) {
+            Material material = ((Geometry) newSpatial).getMaterial();
+            if (material != null) {
+                String parameterName = cgm.getMatParam().getName();
+                if (material.getParam(parameterName) != null) {
+                    result = true;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Access the described buffer.
      *
      * @param description which buffer (not null)
@@ -1748,7 +1767,9 @@ public class SelectedSpatial implements JmeCloneable {
         Spatial found = find();
         if (found != last) {
             cgm.getBuffer().deselect();
-            cgm.getMatParam().deselect();
+            if (!definesSelectedMatParam(found)) {
+                cgm.getMatParam().deselect();
+            }
             cgm.getOverride().deselect();
             cgm.getUserData().deselect();
             cgm.getVertex().deselect();
