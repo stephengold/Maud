@@ -538,7 +538,7 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Count uses of the material.
+     * Count uses of the selected material.
      *
      * @return count (&ge;0)
      */
@@ -717,6 +717,21 @@ public class SelectedSpatial implements JmeCloneable {
             String desc = bufferDescs.get(index);
             result = findBuffer(desc);
         }
+
+        return result;
+    }
+
+    /**
+     * Determine the index of the selected Geometry among all geometries.
+     *
+     * @return the index, or -1 if the selected spatial is not a Geometry
+     */
+    public int findGeometryIndex() {
+        Spatial spatial = find();
+        Spatial cgmRoot = cgm.getRootSpatial();
+        List<Geometry> geomList
+                = MySpatial.listSpatials(cgmRoot, Geometry.class, null);
+        int result = geomList.indexOf(spatial);
 
         return result;
     }
@@ -1466,6 +1481,27 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
+     * Select the next Geometry (in cyclical index order).
+     */
+    public void selectNextGeometry() {
+        Spatial spatial = find();
+        assert spatial instanceof Geometry;
+
+        Spatial cgmRoot = cgm.getRootSpatial();
+        List<Geometry> geomList
+                = MySpatial.listSpatials(cgmRoot, Geometry.class, null);
+        int oldIndex = geomList.indexOf(spatial);
+        assert oldIndex != -1;
+        int newIndex = oldIndex + 1;
+        if (newIndex >= geomList.size()) {
+            newIndex = 0;
+        }
+
+        Spatial newSpatial = geomList.get(newIndex);
+        select(newSpatial);
+    }
+
+    /**
      * Select the parent of the selected spatial.
      */
     public void selectParent() {
@@ -1477,6 +1513,27 @@ public class SelectedSpatial implements JmeCloneable {
             assert find() == parent;
             postSelect();
         }
+    }
+
+    /**
+     * Select the previous Geometry (in cyclical index order).
+     */
+    public void selectPreviousGeometry() {
+        Spatial spatial = find();
+        assert spatial instanceof Geometry;
+
+        Spatial cgmRoot = cgm.getRootSpatial();
+        List<Geometry> geomList
+                = MySpatial.listSpatials(cgmRoot, Geometry.class, null);
+        int oldIndex = geomList.indexOf(spatial);
+        assert oldIndex != -1;
+        int newIndex = oldIndex - 1;
+        if (newIndex < 0) {
+            newIndex = geomList.size() - 1;
+        }
+
+        Spatial newSpatial = geomList.get(newIndex);
+        select(newSpatial);
     }
 
     /**

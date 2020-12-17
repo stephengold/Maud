@@ -1659,9 +1659,34 @@ Approximate minimum screen size: 640x480
 
             <control name="window" id="materialTool" title="Material Tool"
                      hideOnClose="true"
-                     height="173px" width="525px" x="135" y="135">
+                     height="211px" width="525px" x="135" y="135">
                 <panel childLayout="vertical">
                     <panel height="4px"/>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="button" id="matPreviousButton"
+                                 width="20px">
+                            <interact onRelease="perform(previous geometry)"/>
+                        </control>
+                        <control name="label" id="matIndex"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="90px"/>
+                        <control name="button" id="matNextButton"
+                                 width="20px">
+                            <interact onRelease="perform(next geometry)"/>
+                        </control>
+                        <control name="label" text="  "/>
+                        <control name="button" id="matTreePositionButton"
+                                 width="*">
+                            <interact onRelease="perform(select tool spatial)"/>
+                        </control>
+                        <control name="label" text="  "/>
+                        <control name="button" id="matSelectButton"
+                                 width="110px">
+                            <interact onRelease="perform(select spatial Geometries)"/>
+                        </control>
+                    </panel>
+                    <panel height="10px"/>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Name:  "/>
                         <control name="label" id="matName"
@@ -1679,11 +1704,6 @@ Approximate minimum screen size: 640x480
                         <control name="label" id="matDef"
                                  backgroundColor="#ffff"
                                  width="*"/>
-                        <panel width="20px"/>
-                        <control name="button" id="matSelectButton"
-                                 width="50px">
-                            <interact onRelease="perform(select spatial Geometries)"/>
-                        </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Uses:  "/>

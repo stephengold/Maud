@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -115,15 +115,49 @@ class MaterialTool extends Tool {
      */
     @Override
     protected void toolUpdate() {
+        updateIndex();
         updateNames();
         updateRenderState();
         updateParameterIndex();
         updateParameterName();
         updateParameterValue();
         updateSelect();
+        updateTreePosition();
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Update the index status and next/previous buttons.
+     */
+    private void updateIndex() {
+        String indexStatus;
+        String nextButton = "", previousButton = "";
+
+        Cgm target = Maud.getModel().getTarget();
+        int numMaterials = target.countGeometries();
+        SelectedSpatial selected = target.getSpatial();
+        int selectedIndex = selected.findGeometryIndex();
+        if (selectedIndex >= 0) {
+            indexStatus = DescribeUtil.index(selectedIndex, numMaterials);
+            if (numMaterials > 1) {
+                nextButton = "+";
+                previousButton = "-";
+            }
+        } else { // none selected
+            if (numMaterials == 0) {
+                indexStatus = "no materials";
+            } else if (numMaterials == 1) {
+                indexStatus = "one material";
+            } else {
+                indexStatus = String.format("%d materials", numMaterials);
+            }
+        }
+
+        setStatusText("matIndex", indexStatus);
+        setButtonText("matNext", nextButton);
+        setButtonText("matPrevious", previousButton);
+    }
 
     /**
      * Update the definition name, material name, add/rename buttons, and use
@@ -301,9 +335,25 @@ class MaterialTool extends Tool {
         if (names.isEmpty()) {
             selectButton = "";
         } else {
-            selectButton = "Select";
+            selectButton = "Select geometry";
         }
 
         setButtonText("matSelect", selectButton);
+    }
+
+    /**
+     * Update the display of the geometry's position in the model's scene graph.
+     */
+    private void updateTreePosition() {
+        String positionText;
+
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        if (spatial.isCgmRoot()) {
+            positionText = "model root";
+        } else {
+            positionText = spatial.toString();
+        }
+
+        setButtonText("matTreePosition", positionText);
     }
 }

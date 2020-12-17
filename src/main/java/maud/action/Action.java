@@ -111,6 +111,7 @@ public class Action {
     final static String nextBone = "next bone";
     final static String nextBuffer = "next buffer";
     final static String nextCheckpoint = "next checkpoint";
+    final static String nextGeometry = "next geometry";
     final static String nextJoint = "next joint";
     final static String nextLight = "next light";
     final static String nextLink = "next link";
@@ -142,6 +143,7 @@ public class Action {
     final static String previousBone = "previous bone";
     final static String previousBuffer = "previous buffer";
     final static String previousCheckpoint = "previous checkpoint";
+    final static String previousGeometry = "previous geometry";
     final static String previousJoint = "previous joint";
     final static String previousLight = "previous light";
     final static String previousLink = "previous link";

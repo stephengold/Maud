@@ -284,6 +284,20 @@ public class Cgm implements Cloneable {
     }
 
     /**
+     * Count geometries in the C-G model.
+     *
+     * @return the number found (&ge;0)
+     */
+    public int countGeometries() {
+        List<Geometry> list
+                = MySpatial.listSpatials(rootSpatial, Geometry.class, null);
+        int count = list.size();
+
+        assert count >= 0 : count;
+        return count;
+    }
+
+    /**
      * Count lights of the specified type in the C-G model.
      *
      * @param <T> superclass of Light

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -87,6 +87,10 @@ class NextAction {
 
             case Action.nextCheckpoint:
                 History.redo();
+                break;
+
+            case Action.nextGeometry:
+                target.getSpatial().selectNextGeometry();
                 break;
 
             case Action.nextJoint:
