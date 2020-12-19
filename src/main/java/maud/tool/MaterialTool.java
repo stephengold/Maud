@@ -289,7 +289,11 @@ class MaterialTool extends Tool {
             String name = param.getName();
             nameText = MyString.quote(name);
             VarType varType = param.getVarType();
-            typeText = varType.toString();
+            if (varType == null) {
+                typeText = "null";
+            } else {
+                typeText = varType.toString();
+            }
         } else {
             dButton = "";
             nameText = "none (no parameter selected)";
