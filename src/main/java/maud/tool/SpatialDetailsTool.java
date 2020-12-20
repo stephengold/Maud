@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -132,7 +132,7 @@ class SpatialDetailsTool extends Tool {
     }
 
     /**
-     * Update the spatial's bound-type status and toggle button.
+     * Update the spatial's (world) bounding volume.
      */
     private void updateBound() {
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
@@ -141,13 +141,7 @@ class SpatialDetailsTool extends Tool {
         if (type != null) {
             typeText = type.toString();
         }
-        setStatusText("spatialBound", " " + typeText);
-
-        String toggleText = "";
-        if (spatial.isGeometry()) {
-            toggleText = "Toggle";
-        }
-        setButtonText("spatialBoundType", toggleText);
+        setButtonText("spatialBound", typeText);
     }
 
     /**

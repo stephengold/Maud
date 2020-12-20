@@ -2884,13 +2884,10 @@ Approximate minimum screen size: 640x480
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="Bound type:  "/>
-                        <control name="label" id="spatialBound"
-                                 backgroundColor="#ffff"
-                                 width="*"/>
-                        <control name="button" id="spatialBoundTypeButton"
-                                 width="55px">
-                            <interact onRelease="perform(toggle boundType)"/>
+                        <control name="label" text="Bounding volume:  "/>
+                        <control name="button" id="spatialBoundButton"
+                                 width="*">
+                            <interact onRelease="perform(select tool spatialBounds)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
@@ -2922,6 +2919,151 @@ Approximate minimum screen size: 640x480
                     <panel childLayout="horizontal" height="28px">
                         <control name="checkbox" id="spatialIgnoreTransformCheckBox"/>
                         <control name="label" text="  ignore transform"/>
+                    </panel>
+                </panel>
+            </control>
+
+            <control name="window" id="spatialBoundsTool" title="Spatial-Bounds Tool"
+                     hideOnClose="true"
+                     height="320px" width="400px" x="60" y="210">
+                <panel childLayout="vertical">
+                    <panel height="4px"/>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Spatial:  "/>
+                        <control name="label" id="spatialName3"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Bounding volume shape:  "/>
+                        <control name="label" id="spatialBound"
+                                 backgroundColor="#ffff"
+                                 width="60px"/>
+                        <control name="button" id="spatialBoundTypeButton"
+                                 width="55px">
+                            <interact onRelease="perform(toggle boundType)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="World center"
+                                 width="90px"/>
+                        <control name="label" id="spatialBoundWCX"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="label" text="  "/>
+                        <control name="label" id="spatialBoundWCY"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="label" text="  "/>
+                        <control name="label" id="spatialBoundWCZ"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="World radii"
+                                 width="90px"/>
+                        <control name="label" id="spatialBoundWRX"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="label" text="  "/>
+                        <control name="label" id="spatialBoundWRY"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="label" text="  "/>
+                        <control name="label" id="spatialBoundWRZ"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="World minima"
+                                 width="90px"/>
+                        <control name="label" id="spatialBoundWMinX"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="label" text="  "/>
+                        <control name="label" id="spatialBoundWMinY"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="label" text="  "/>
+                        <control name="label" id="spatialBoundWMinZ"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="World maxima"
+                                 width="90px"/>
+                        <control name="label" id="spatialBoundWMaxX"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="label" text="  "/>
+                        <control name="label" id="spatialBoundWMaxY"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="label" text="  "/>
+                        <control name="label" id="spatialBoundWMaxZ"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                    </panel>
+                    <panel height="10px"/>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Mesh center"
+                                 width="90px"/>
+                        <control name="label" id="spatialBoundMCX"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="label" text="  "/>
+                        <control name="label" id="spatialBoundMCY"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="label" text="  "/>
+                        <control name="label" id="spatialBoundMCZ"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Mesh radii"
+                                 width="90px"/>
+                        <control name="label" id="spatialBoundMRX"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="label" text="  "/>
+                        <control name="label" id="spatialBoundMRY"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="label" text="  "/>
+                        <control name="label" id="spatialBoundMRZ"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Mesh minima"
+                                 width="90px"/>
+                        <control name="label" id="spatialBoundMMinX"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="label" text="  "/>
+                        <control name="label" id="spatialBoundMMinY"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="label" text="  "/>
+                        <control name="label" id="spatialBoundMMinZ"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Mesh maxima"
+                                 width="90px"/>
+                        <control name="label" id="spatialBoundMMaxX"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="label" text="  "/>
+                        <control name="label" id="spatialBoundMMaxY"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
+                        <control name="label" text="  "/>
+                        <control name="label" id="spatialBoundMMaxZ"
+                                 backgroundColor="#ffff"
+                                 width="*"/>
                     </panel>
                 </panel>
             </control>

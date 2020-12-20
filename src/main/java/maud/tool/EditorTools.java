@@ -76,8 +76,8 @@ public class EditorTools {
     final private BoneTranslationTool boneTranslation;
     final private BoundsTool bounds;
     final private CameraTool camera;
-    final private CgmTool cgm;
 
+    final private CgmTool cgm;
     final private CursorTool cursor;
     final private DumpTool dump;
     final private ExtractTool extract;
@@ -87,8 +87,8 @@ public class EditorTools {
     final private KeyframeTool keyframe;
     final private LightColorTool lightColor;
     final private LightDirectionTool lightDirection;
-    final private LightPositionTool lightPosition;
 
+    final private LightPositionTool lightPosition;
     final private LightsTool lights;
     final private LinkTool link;
     final private MappingTool mapping;
@@ -98,8 +98,8 @@ public class EditorTools {
     final private PcoTool pco;
     final private PhysicsTool physics;
     final private PlatformTool platform;
-    final private RenderTool render;
 
+    final private RenderTool render;
     final private RetargetTool retarget;
     final private SceneLightingTool sceneLighting;
     final private ScoreTool score;
@@ -109,8 +109,9 @@ public class EditorTools {
     final private SkeletonTool skeleton;
     final private SkyTool sky;
     final private SourceAnimationTool sourceAnimation;
-    final private SpatialDetailsTool spatialDetails;
 
+    final private SpatialBoundsTool spatialBounds;
+    final private SpatialDetailsTool spatialDetails;
     final private SpatialRotationTool spatialRotation;
     final private SpatialScaleTool spatialScale;
     final private SpatialTool spatial;
@@ -119,6 +120,7 @@ public class EditorTools {
     final private TrackTool track;
     final private TweeningTool tweening;
     final private TwistTool twist;
+
     final private UserDataTool userData;
     final private VertexTool vertex;
     // *************************************************************************
@@ -142,8 +144,8 @@ public class EditorTools {
         boneTranslation = new BoneTranslationTool(screenController);
         bounds = new BoundsTool(screenController);
         camera = new CameraTool(screenController);
-        cgm = new CgmTool(screenController);
 
+        cgm = new CgmTool(screenController);
         cursor = new CursorTool(screenController);
         dump = new DumpTool(screenController);
         extract = new ExtractTool(screenController);
@@ -153,8 +155,8 @@ public class EditorTools {
         keyframe = new KeyframeTool(screenController);
         lightColor = new LightColorTool(screenController);
         lightDirection = new LightDirectionTool(screenController);
-        lightPosition = new LightPositionTool(screenController);
 
+        lightPosition = new LightPositionTool(screenController);
         lights = new LightsTool(screenController);
         link = new LinkTool(screenController);
         mapping = new MappingTool(screenController);
@@ -164,8 +166,8 @@ public class EditorTools {
         pco = new PcoTool(screenController);
         physics = new PhysicsTool(screenController);
         platform = new PlatformTool(screenController);
-        render = new RenderTool(screenController);
 
+        render = new RenderTool(screenController);
         retarget = new RetargetTool(screenController);
         sceneLighting = new SceneLightingTool(screenController);
         score = new ScoreTool(screenController);
@@ -175,8 +177,9 @@ public class EditorTools {
         skeleton = new SkeletonTool(screenController);
         sky = new SkyTool(screenController);
         sourceAnimation = new SourceAnimationTool(screenController);
-        spatialDetails = new SpatialDetailsTool(screenController);
 
+        spatialBounds = new SpatialBoundsTool(screenController);
+        spatialDetails = new SpatialDetailsTool(screenController);
         spatialRotation = new SpatialRotationTool(screenController);
         spatialScale = new SpatialScaleTool(screenController);
         spatial = new SpatialTool(screenController);
@@ -185,6 +188,7 @@ public class EditorTools {
         track = new TrackTool(screenController);
         tweening = new TweeningTool(screenController);
         twist = new TwistTool(screenController);
+
         userData = new UserDataTool(screenController);
         vertex = new VertexTool(screenController);
     }
@@ -204,7 +208,7 @@ public class EditorTools {
                 mapping, material, mesh, overrides, pco, physics, platform,
                 render, retarget, sceneLighting, score, settings,
                 sgc, shape, skeleton, sky, sourceAnimation, spatial,
-                spatialDetails, spatialRotation, spatialScale,
+                spatialBounds, spatialDetails, spatialRotation, spatialScale,
                 spatialTranslation, texture, track, tweening, twist, userData,
                 vertex);
     }
