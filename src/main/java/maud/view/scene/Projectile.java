@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -28,6 +28,7 @@ package maud.view.scene;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.SphereCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -187,7 +188,8 @@ public class Projectile {
         RigidBodyControl rbc = new RigidBodyControl(shape, mass);
         rbc.setCcdSweptSphereRadius(0.2f * radius);
         rbc.setCcdMotionThreshold(1e-10f);
-        view.getPhysicsSpace().add(rbc);
+        PhysicsSpace physicsSpace = view.getPhysicsSpace();
+        rbc.setPhysicsSpace(physicsSpace);
         rbc.setGravity(gravity);
 
         AssetManager assetManager = Locators.getAssetManager();

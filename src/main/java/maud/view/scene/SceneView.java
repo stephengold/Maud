@@ -161,7 +161,7 @@ public class SceneView extends SceneViewCore {
         spatial.addControl(copy);
 
         PhysicsSpace space = getPhysicsSpace();
-        space.add(copy);
+        copy.setPhysicsSpace(space);
 
         return copy;
     }
