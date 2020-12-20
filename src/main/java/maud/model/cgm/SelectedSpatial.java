@@ -467,6 +467,34 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
+     * Copy the spatial's world bound or mesh bound.
+     *
+     * @param meshFlag true for the mesh bound, false for the world bound
+     * @return a new instance, or null if the bound is null
+     */
+    public BoundingVolume copyBound(boolean meshFlag) {
+        Spatial spatial = find();
+
+        BoundingVolume result;
+        if (meshFlag) {
+            if (spatial instanceof Geometry) {
+                Geometry geom = (Geometry) spatial;
+                Mesh mesh = geom.getMesh();
+                result = mesh.getBound();
+            } else {
+                result = null;
+            }
+        } else {
+            result = spatial.getWorldBound();
+        }
+
+        if (result != null) {
+            result = result.clone();
+        }
+        return result;
+    }
+
+    /**
      * Count how many children are attached to the spatial.
      *
      * @return count (&ge;0) or 0 if the spatial is not a scene-graph node
@@ -677,9 +705,9 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Name the type of the spatial.
+     * Describe the spatial's type, i.e. "Geometry".
      *
-     * @return textual description (not null)
+     * @return a textual description (not null)
      */
     public String describeType() {
         Spatial spatial = find();
