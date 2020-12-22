@@ -669,6 +669,15 @@ public class ActionPrefix {
      */
     final public static String setSkeletonPointSize = "set skeletonPointSize ";
     /**
+     * argument is a Vector3f
+     */
+    final public static String setSpatialScale = "set spatial scale ";
+    /**
+     * argument is a Vector3f
+     */
+    final public static String setSpatialTranslation
+            = "set spatial translation ";
+    /**
      * arguments are 2 decimal fractions
      */
     final public static String setSubmenuWarp = "set submenuWarp ";

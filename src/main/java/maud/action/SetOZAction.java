@@ -28,10 +28,12 @@ package maud.action;
 
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector3f;
 import com.jme3.shader.VarType;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.math.MyColor;
+import jme3utilities.nifty.dialog.VectorDialog;
 import maud.Maud;
 import maud.dialog.EditorDialogs;
 import maud.model.EditorModel;
@@ -120,6 +122,14 @@ class SetOZAction {
 
             case Action.setSpatialAngleSnapZ:
                 target.getSpatial().snapRotation(PhysicsSpace.AXIS_Z);
+                break;
+
+            case Action.setSpatialScale:
+                EditorDialogs.setSpatialScale();
+                break;
+
+            case Action.setSpatialTranslation:
+                EditorDialogs.setSpatialTranslation();
                 break;
 
             case Action.setTextureClone:
@@ -271,6 +281,19 @@ class SetOZAction {
                     ActionPrefix.setSkeletonPointSize);
             float pointSize = Float.valueOf(arg);
             model.getScene().getSkeleton().setPointSize(pointSize);
+
+        } else if (actionString.startsWith(ActionPrefix.setSpatialScale)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setSpatialScale);
+            Vector3f newValue = (Vector3f) VectorDialog.parseVector(arg);
+            target.setSpatialScale(newValue);
+
+        } else if (actionString.startsWith(
+                ActionPrefix.setSpatialTranslation)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setSpatialTranslation);
+            Vector3f newValue = (Vector3f) VectorDialog.parseVector(arg);
+            target.setSpatialTranslation(newValue);
 
         } else if (actionString.startsWith(ActionPrefix.setSubmenuWarp)) {
             arg = MyString.remainder(actionString, ActionPrefix.setSubmenuWarp);

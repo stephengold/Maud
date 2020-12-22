@@ -282,6 +282,8 @@ public class Action {
     final static String setSpatialAngleSnapX = "set spatialAngle snapX";
     final static String setSpatialAngleSnapY = "set spatialAngle snapY";
     final static String setSpatialAngleSnapZ = "set spatialAngle snapZ";
+    final static String setSpatialScale = "set spatial scale";
+    final static String setSpatialTranslation = "set spatial translation";
     final static String setTextureClone = "set texture clone";
     final static String setTextureNull = "set texture null";
     final static String setTimeLimitLower = "set timeLimit lower";

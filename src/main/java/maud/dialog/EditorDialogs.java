@@ -1261,6 +1261,32 @@ public class EditorDialogs {
     }
 
     /**
+     * Display a "set spatial scale" dialog.
+     */
+    public static void setSpatialScale() {
+        Maud.gui.closeAllPopups();
+        EditableCgm target = Maud.getModel().getTarget();
+        Vector3f oldValue = target.getSpatial().localScale(null);
+        String defaultText = oldValue.toString();
+        DialogController controller = new VectorDialog("Set", 3, false);
+        Maud.gui.showTextEntryDialog("Enter new scale vector:",
+                defaultText, ActionPrefix.setSpatialScale, controller);
+    }
+
+    /**
+     * Display a "set spatial translation" dialog.
+     */
+    public static void setSpatialTranslation() {
+        Maud.gui.closeAllPopups();
+        EditableCgm target = Maud.getModel().getTarget();
+        Vector3f oldValue = target.getSpatial().localTranslation(null);
+        String defaultText = oldValue.toString();
+        DialogController controller = new VectorDialog("Set", 3, false);
+        Maud.gui.showTextEntryDialog("Enter new translation vector:",
+                defaultText, ActionPrefix.setSpatialTranslation, controller);
+    }
+
+    /**
      * Display a "set userData" dialog.
      */
     public static void setUserData() {

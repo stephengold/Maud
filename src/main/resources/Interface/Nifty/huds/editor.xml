@@ -3180,6 +3180,11 @@ Approximate minimum screen size: 640x480
                                      width="70px">
                                 <interact onRelease="perform(reset spatial scale)"/>
                             </control>
+                            <control name="button" label="Set"
+                                     id="id43ToAvoidNiftyWarning"
+                                     width="70px">
+                                <interact onRelease="perform(set spatial scale)"/>
+                            </control>
                         </panel>
                     </panel>
                 </panel>
@@ -3222,6 +3227,11 @@ Approximate minimum screen size: 640x480
                                      id="id51ToAvoidNiftyWarning"
                                      width="70px">
                                 <interact onRelease="perform(reset spatial translation)"/>
+                            </control>
+                            <control name="button" label="Set"
+                                     id="id52ToAvoidNiftyWarning"
+                                     width="70px">
+                                <interact onRelease="perform(set spatial translation)"/>
                             </control>
                         </panel>
                     </panel>
