@@ -377,7 +377,11 @@ public class SelectedSpatial implements JmeCloneable {
             MaudUtil.rotateBuffer(mesh, VertexBuffer.Type.BindPoseNormal,
                     gInPRot);
             MaudUtil.rotateBuffer(mesh, VertexBuffer.Type.Normal, gInPRot);
-            // TODO binormal, tangent?
+            MaudUtil.rotateTangentBuffer(mesh, VertexBuffer.Type.BindPoseTangent,
+                    gInPRot);
+            MaudUtil.rotateTangentBuffer(mesh, VertexBuffer.Type.Tangent,
+                    gInPRot);
+            // TODO binormal?
 
             mesh.updateBound();
         }
