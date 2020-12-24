@@ -31,6 +31,7 @@ import com.jme3.shader.VarType;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import maud.Maud;
+import maud.MeshNormals;
 import maud.ShapeType;
 import maud.dialog.EditorDialogs;
 import maud.menu.AnimationMenus;
@@ -130,6 +131,10 @@ class NewAction {
 
             case Action.newMatParam:
                 ShowMenus.addNewMatParam("");
+                break;
+
+            case Action.newNormals:
+                EnumMenus.newNormals();
                 break;
 
             case Action.newOverride:
@@ -297,6 +302,12 @@ class NewAction {
                     = MyString.remainder(actionString, ActionPrefix.newMcc);
             ShapeType shapeType = ShapeType.valueOf(shapeName);
             target.getSpatial().addCharacterControl(shapeType);
+
+        } else if (actionString.startsWith(ActionPrefix.newNormals)) {
+            String arg
+                    = MyString.remainder(actionString, ActionPrefix.newNormals);
+            MeshNormals meshNormals = MeshNormals.valueOf(arg);
+            target.getSpatial().generateNormals(meshNormals);
 
         } else if (actionString.startsWith(ActionPrefix.newOverride)) {
             String args = MyString.remainder(actionString,

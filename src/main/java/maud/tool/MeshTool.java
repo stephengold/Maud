@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018-2019, Stephen Gold
+ Copyright (c) 2018-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -223,11 +223,13 @@ class MeshTool extends Tool {
      * Update the information on the selected mesh.
      */
     private void updateMeshInfo() {
-        String animatedText, btButton, modeButton, elementsText;
+        String animatedText, btButton, calcButton, modeButton, elementsText;
         String verticesText, weightsButton;
 
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         if (spatial.hasMesh()) {
+            calcButton = "Calc normals";
+
             if (spatial.hasAnimatedMesh()) {
                 animatedText = "animated mesh";
                 int mnwpv = spatial.getMaxNumWeights();
@@ -260,6 +262,7 @@ class MeshTool extends Tool {
                 animatedText = "no mesh";
             }
             btButton = "";
+            calcButton = "";
             elementsText = "(no mesh)";
             modeButton = "";
             verticesText = "(no mesh)";
@@ -268,6 +271,7 @@ class MeshTool extends Tool {
 
         setStatusText("meshAnimated", animatedText);
         setButtonText("meshBoundType", btButton);
+        setButtonText("meshCalculateNormals", calcButton);
         setStatusText("meshElements", elementsText);
         setButtonText("meshMode", modeButton);
         setStatusText("meshVertices", verticesText);

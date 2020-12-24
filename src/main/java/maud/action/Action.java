@@ -99,6 +99,7 @@ public class Action {
     final static String newLight = "new light";
     final static String newMapping = "new mapping";
     final static String newMatParam = "new matParam";
+    final static String newNormals = "new normals";
     final static String newOverride = "new override";
     final static String newProbeTargetView = "new probe targetView";
     final static String newSgc = "new sgc";

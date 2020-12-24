@@ -1813,6 +1813,11 @@ Approximate minimum screen size: 640x480
                                  width="20px">
                             <interact onRelease="perform(set meshWeights)"/>
                         </control>
+                        <control name="label" text="    "/>
+                        <control name="button" id="meshCalculateNormalsButton"
+                                 width="100px">
+                            <interact onRelease="perform(new normals)"/>
+                        </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Elements:  "/>

@@ -169,6 +169,10 @@ public class ActionPrefix {
      */
     final public static String newMcc = "new mcc ";
     /**
+     * argument is the name of a MeshNormals
+     */
+    final public static String newNormals = "new normals ";
+    /**
      * arguments are the name of the VarType and an optional parameter name
      */
     final public static String newOverride = "new override ";

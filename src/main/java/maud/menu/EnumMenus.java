@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018-2019, Stephen Gold
+ Copyright (c) 2018-2020, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -121,6 +121,29 @@ public class EnumMenus {
         }
 
         builder.show(ActionPrefix.newLight);
+    }
+
+    /**
+     * Display a menu to generate mesh normals using the "new normals " action
+     * prefix.
+     */
+    public static void newNormals() {
+        MenuBuilder builder = new MenuBuilder();
+
+        SelectedSpatial ss = Maud.getModel().getTarget().getSpatial();
+        Mesh.Mode mode = ss.getMeshMode();
+        assert mode == Mesh.Mode.Triangles
+                || mode == Mesh.Mode.TriangleStrip
+                || mode == Mesh.Mode.TriangleFan : mode;
+        boolean hasIndexBuffer = ss.hasVertexBuffer(VertexBuffer.Type.Index);
+
+        if (mode == Mesh.Mode.Triangles && !hasIndexBuffer) {
+            builder.addEdit("Facet");
+        }
+        builder.addEdit("Smooth");
+        builder.addEdit("Sphere");
+
+        builder.show(ActionPrefix.newNormals);
     }
 
     /**
