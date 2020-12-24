@@ -86,6 +86,7 @@ import jme3utilities.math.MyVector3f;
 import jme3utilities.ui.Locators;
 import maud.Maud;
 import maud.MaudUtil;
+import maud.MeshNormals;
 import maud.PhysicsUtil;
 import maud.ShapeType;
 import maud.model.History;
@@ -377,8 +378,8 @@ public class SelectedSpatial implements JmeCloneable {
             MaudUtil.rotateBuffer(mesh, VertexBuffer.Type.BindPoseNormal,
                     gInPRot);
             MaudUtil.rotateBuffer(mesh, VertexBuffer.Type.Normal, gInPRot);
-            MaudUtil.rotateTangentBuffer(mesh, VertexBuffer.Type.BindPoseTangent,
-                    gInPRot);
+            MaudUtil.rotateTangentBuffer(mesh,
+                    VertexBuffer.Type.BindPoseTangent, gInPRot);
             MaudUtil.rotateTangentBuffer(mesh, VertexBuffer.Type.Tangent,
                     gInPRot);
             // TODO binormal?
@@ -766,6 +767,20 @@ public class SelectedSpatial implements JmeCloneable {
         int result = geomList.indexOf(spatial);
 
         return result;
+    }
+
+    /**
+     * Generate mesh normals from positions.
+     *
+     * @param algorithm which algorithm to use (not null)
+     */
+    public void generateNormals(MeshNormals algorithm) {
+        Validate.nonNull(algorithm, "algorithm");
+
+        Mesh oldMesh = getMesh();
+        Mesh newMesh = MaudUtil.generateNormals(oldMesh, algorithm);
+        String message = "generate mesh normals for " + algorithm;
+        editableCgm.setMesh(newMesh, message);
     }
 
     /**

@@ -1165,7 +1165,7 @@ public class EditableCgm extends LoadedCgm {
         Spatial spatial = getSpatial().find();
 
         History.autoAdd();
-        spatial.setMaterial(newMaterial);
+        spatial.setMaterial(newMaterial); // NOTE: if Node, modifies whole tree!
         getSceneView().setMaterial(newMaterial);
         getMatParam().postSetMaterial(newMaterial);
         getTexture().postEdit();
@@ -1200,6 +1200,24 @@ public class EditableCgm extends LoadedCgm {
                 "alter value of material parameter %s",
                 MyString.quote(parameterName));
         editState.setEdited(description);
+    }
+
+    /**
+     * Apply the specified Mesh to the selected Geometry.
+     *
+     * @param newMesh the replacement Mesh (not null)
+     * @param eventDescription description for the edit history (not null)
+     */
+    void setMesh(Mesh newMesh, String eventDescription) {
+        assert newMesh != null;
+        assert eventDescription != null;
+
+        Geometry geometry = (Geometry) getSpatial().find();
+
+        History.autoAdd();
+        geometry.setMesh(newMesh);
+        getSceneView().setMesh(newMesh);
+        editState.setEdited(eventDescription);
     }
 
     /**

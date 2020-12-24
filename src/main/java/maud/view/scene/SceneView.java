@@ -591,6 +591,20 @@ public class SceneView extends SceneViewCore {
     }
 
     /**
+     * Apply the specified Mesh to the selected Geometry.
+     *
+     * @param modelMesh the MVC model's Mesh (not null, unaffected)
+     */
+    public void setMesh(Mesh modelMesh) {
+        assert modelMesh != null;
+
+        Spatial spatial = selectedSpatial();
+        Geometry geometry = (Geometry) spatial;
+        Mesh newMesh = modelMesh.deepClone();
+        geometry.setMesh(newMesh);
+    }
+
+    /**
      * Alter the mode of the selected mesh.
      *
      * @param newMode new value for mode (not null)
