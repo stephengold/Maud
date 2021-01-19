@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -340,6 +340,10 @@ public class CheckLoaded {
         List<Light> lights = MyLight.listLights(cgmRoot, Light.class, null);
         for (Light light : lights) {
             String name = light.getName();
+            if (name == null || name.isEmpty()) {
+                logger.log(Level.WARNING, "model contains a nameless Light");
+                return false;
+            }
             if (lightNames.contains(name)) {
                 logger.log(Level.WARNING,
                         "model contains multiple lights named {0}",
