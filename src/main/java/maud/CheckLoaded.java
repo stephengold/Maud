@@ -38,6 +38,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.VertexBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -46,6 +47,9 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyLight;
+import jme3utilities.MyMesh;
+import static jme3utilities.MyMesh.isAnimated;
+import static jme3utilities.MyMesh.vertexVector3f;
 import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
@@ -308,6 +312,13 @@ public class CheckLoaded {
             spatialNames.add(name);
         }
 
+        List<Mesh> meshes = MyMesh.listMeshes(cgmRoot, null);
+        for (Mesh mesh : meshes) {
+            if (!mesh(mesh)) {
+                return false;
+            }
+        }
+
         List<String> materialNames = new ArrayList<>(16);
         List<Material> materials = MySpatial.listMaterials(cgmRoot, null);
         for (Material material : materials) {
@@ -360,6 +371,37 @@ public class CheckLoaded {
             if (maxWeightsPerVert < 1) {
                 logger.warning("model has animated mesh without bone weights");
                 return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Check for anomalies in a loaded Mesh.
+     *
+     * @param mesh (not null, unaffected)
+     * @return false if issues found, otherwise true
+     */
+    public static boolean mesh(Mesh mesh) {
+        if (MyMesh.hasNormals(mesh)) {
+            Vector3f tmpVector = new Vector3f();
+            int numVertices = mesh.getVertexCount();
+            for (int vertexI = 0; vertexI < numVertices; ++vertexI) {
+                if (isAnimated(mesh)) {
+                    vertexVector3f(mesh, VertexBuffer.Type.BindPoseNormal,
+                            vertexI, tmpVector);
+                } else {
+                    vertexVector3f(mesh, VertexBuffer.Type.Normal, vertexI,
+                            tmpVector);
+                }
+                if (!tmpVector.isUnitVector()) {
+                    float length = tmpVector.length();
+                    logger.log(Level.WARNING,
+                            "normal not a unit vector, length = {0}",
+                            new Object[]{length});
+                    return false;
+                }
             }
         }
 
