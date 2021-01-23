@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018-2020, Stephen Gold
+ Copyright (c) 2018-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -48,6 +48,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.Heart;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
@@ -910,7 +911,7 @@ public class SelectedTexture implements JmeCloneable {
 
         String filePath = Maud.filePath(assetPath);
         try {
-            MaudUtil.writeImage(filePath, renderedImage);
+            Heart.writeImage(filePath, renderedImage);
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }

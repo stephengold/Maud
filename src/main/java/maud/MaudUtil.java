@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -76,8 +76,6 @@ import com.jme3.util.BufferUtils;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
-import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Field;
@@ -89,7 +87,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 import jme3utilities.MyAnimation;
 import jme3utilities.MyMesh;
 import static jme3utilities.MyMesh.hasIndices;
@@ -1530,75 +1527,6 @@ public class MaudUtil {
             }
 
             vertexBuffer.setUpdateNeeded();
-        }
-    }
-
-    /**
-     * Write an image to a file, attempting to overwrite any pre-existing file.
-     * TODO use Heart library
-     *
-     * @param filePath the path to the output file (not null, not empty)
-     * @param image the image to be written (not null)
-     * @throws IOException if the file cannot be written
-     */
-    public static void writeImage(String filePath, RenderedImage image)
-            throws IOException {
-        Validate.nonEmpty(filePath, "path");
-        Validate.nonNull(image, "image");
-        /*
-         * Determine the output format based on the filename
-         * or else default to PNG.
-         */
-        String formatName = "png";
-        String lowerCase = filePath.toLowerCase();
-        if (lowerCase.endsWith(".bmp")) {
-            formatName = "bmp";
-        } else if (lowerCase.endsWith(".gif")) {
-            formatName = "gif";
-        } else if (lowerCase.endsWith(".jpg") || lowerCase.endsWith(".jpeg")) {
-            formatName = "jpeg";
-        }
-        // TODO write MicroSoft's DDS file format as well
-        /*
-         * ImageIO fails silently when asked to write alpha to a BMP.
-         * It throws an IIOException when asked to write alpha to a JPEG.
-         */
-        boolean hasAlpha = image.getColorModel().hasAlpha();
-        if (hasAlpha
-                && (formatName.equals("bmp") || formatName.equals("jpeg"))) {
-            logger.log(Level.SEVERE, "unable to write alpha channel to a {0}",
-                    formatName.toUpperCase());
-        }
-
-        File textureFile = new File(filePath);
-        try {
-            /*
-             * If a parent directory/folder is needed, create it.
-             */
-            File parentDirectory = textureFile.getParentFile();
-            if (parentDirectory != null && !parentDirectory.exists()) {
-                boolean success = parentDirectory.mkdirs();
-                if (!success) {
-                    throw new IOException();
-                }
-            }
-
-            ImageIO.write(image, formatName, textureFile);
-            logger.log(Level.INFO, "wrote texture to {0}",
-                    MyString.quote(filePath));
-
-        } catch (IOException exception) {
-            logger.log(Level.SEVERE, "write to {0} failed",
-                    MyString.quote(filePath));
-            boolean success = textureFile.delete();
-            if (success) {
-                logger.log(Level.INFO, "deleted file {0}",
-                        MyString.quote(filePath));
-            } else {
-                logger.log(Level.SEVERE, "delete of {0} failed",
-                        MyString.quote(filePath));
-            }
-            throw exception;
         }
     }
 
