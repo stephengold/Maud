@@ -31,7 +31,7 @@ tasks.withType(JavaExec) { // runtime options:
     jvmArgs '-XX:+UseG1GC', '-XX:MaxGCPauseMillis=10'
 }
 
-ext.jmonkeyengineVersion = '3.3.2-stable' // from jcenter
+ext.jmonkeyengineVersion = '3.3.2-stable' // from mavenCentral
 
 mainClassName = 'maud.Maud'
 if (!hasProperty('mainClass')) {
@@ -49,9 +49,8 @@ repositories {
 }
 
 dependencies {
-    // from jcenter (or mavenLocal) repositories:
+    // from mavenCentral (or mavenLocal) repositories:
     implementation 'ch.qos.logback:logback-classic:1.2.3'
-    implementation 'com.atr:jme-ttf:2.2.2'
     runtimeOnly    'com.github.nifty-gui:nifty-style-black:1.4.3'
     implementation 'com.github.stephengold:Heart:6.4.2'
     implementation 'com.github.stephengold:jme3-utilities-ui:0.9.2'
@@ -63,6 +62,8 @@ dependencies {
     implementation 'org.jmonkeyengine:jme3-desktop:' + jmonkeyengineVersion
     implementation 'org.jmonkeyengine:jme3-lwjgl:' + jmonkeyengineVersion
     implementation 'org.jmonkeyengine:jme3-plugins:' + jmonkeyengineVersion
+
+    implementation 'com.atr:jme-ttf:2.2.2'
 
     // from jitpack repositories:
     implementation 'com.github.xbuf.jme3_xbuf:jme3_xbuf_loader:0.9.1'
