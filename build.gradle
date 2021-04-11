@@ -44,7 +44,7 @@ repositories {
     //maven { url 'https://dl.bintray.com/stephengold/org.jmonkeyengine' } // for jme3-testdata
     //maven { url 'https://dl.bintray.com/jmonkeyengine/contrib' }
     mavenCentral()
-    jcenter() // for jme-ttf
+    maven { url 'https://jcenter.bintray.com/' } // for jme-ttf
     maven { url 'https://jitpack.io' } // for jme3_xbuf_loader
 }
 
