@@ -7,14 +7,16 @@ description = 'an editor for the animated 3-D models'
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
-tasks.withType(JavaCompile) { // compile-time options:
+ext.jmonkeyengineVersion = '3.4.0-beta2' // from mavenCentral
+
+tasks.withType(JavaCompile) { // Java compile-time options:
     options.compilerArgs << '-Xdiags:verbose'
     options.compilerArgs << '-Xlint:unchecked'
     //options.deprecation = true
     options.encoding = 'UTF-8'
 }
 
-tasks.withType(JavaExec) { // runtime options:
+tasks.withType(JavaExec) { // Java runtime options:
     //args '--forceDialog'
     //args '--openGL3'
     //args '--openGL33'
@@ -31,8 +33,6 @@ tasks.withType(JavaExec) { // runtime options:
     jvmArgs '-XX:+UseG1GC', '-XX:MaxGCPauseMillis=10'
 }
 
-ext.jmonkeyengineVersion = '3.3.2-stable' // from mavenCentral
-
 mainClassName = 'maud.Maud'
 if (!hasProperty('mainClass')) {
     ext.mainClass = mainClassName
@@ -41,8 +41,6 @@ jar.manifest.attributes('Main-Class': mainClassName)
 
 repositories {
     //mavenLocal()
-    //maven { url 'https://dl.bintray.com/stephengold/org.jmonkeyengine' } // for jme3-testdata
-    //maven { url 'https://dl.bintray.com/jmonkeyengine/contrib' }
     mavenCentral()
     maven { url 'https://jcenter.bintray.com/' } // for jme-ttf
     maven { url 'https://jitpack.io' } // for jme3_xbuf_loader
@@ -52,13 +50,13 @@ dependencies {
     // from mavenCentral (or mavenLocal) repositories:
     implementation 'ch.qos.logback:logback-classic:1.2.3'
     runtimeOnly    'com.github.nifty-gui:nifty-style-black:1.4.3'
-    implementation 'com.github.stephengold:Heart:6.4.3+for33'
-    implementation 'com.github.stephengold:jme3-utilities-ui:0.9.3+for33'
-    implementation 'com.github.stephengold:jme3-utilities-nifty:0.9.19+for33'
-    implementation 'com.github.stephengold:Minie:4.1.0+big3+for33'
-    implementation 'com.github.stephengold:SkyControl:0.9.31+for33'
-    implementation 'com.github.stephengold:Wes:0.6.3+for33'
-    implementation 'org.jmonkeyengine:jme3-blender:' + jmonkeyengineVersion
+    implementation 'com.github.stephengold:Heart:6.4.3+for34'
+    implementation 'com.github.stephengold:jme3-utilities-ui:0.9.3+for34'
+    implementation 'com.github.stephengold:jme3-utilities-nifty:0.9.19+for34'
+    implementation 'com.github.stephengold:Minie:4.1.0+big3+for34'
+    implementation 'com.github.stephengold:SkyControl:0.9.31+for34'
+    implementation 'com.github.stephengold:Wes:0.6.3+for34'
+    implementation 'org.jmonkeyengine:jme3-blender:3.3.2-stable'
     implementation 'org.jmonkeyengine:jme3-desktop:' + jmonkeyengineVersion
     implementation 'org.jmonkeyengine:jme3-lwjgl:' + jmonkeyengineVersion
     implementation 'org.jmonkeyengine:jme3-plugins:' + jmonkeyengineVersion
