@@ -60,14 +60,12 @@ dependencies {
     implementation 'org.jmonkeyengine:jme3-desktop:' + jmonkeyengineVersion
     implementation 'org.jmonkeyengine:jme3-lwjgl:' + jmonkeyengineVersion
     implementation 'org.jmonkeyengine:jme3-plugins:' + jmonkeyengineVersion
+    //runtimeOnly 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
 
     implementation 'com.atr:jme-ttf:2.2.2'
 
     // from jitpack repositories:
     implementation 'com.github.xbuf.jme3_xbuf:jme3_xbuf_loader:0.9.1'
-
-    // from stephengold's bintray repositories:
-    //runtimeOnly 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
 }
 
 task runForceDialog(type: JavaExec) {
