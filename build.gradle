@@ -61,7 +61,7 @@ dependencies {
     implementation 'org.jmonkeyengine:jme3-plugins:' + jmonkeyengineVersion
     //runtimeOnly 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
 
-    implementation 'com.github.stephengold:jme-ttf:2.2.3'
+    implementation 'com.github.stephengold:jme-ttf:2.2.3+for34'
 
     // from jitpack repositories:
     implementation 'com.github.xbuf.jme3_xbuf:jme3_xbuf_loader:0.9.1'
