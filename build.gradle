@@ -42,7 +42,6 @@ jar.manifest.attributes('Main-Class': mainClassName)
 repositories {
     //mavenLocal()
     mavenCentral()
-    maven { url 'https://jcenter.bintray.com/' } // for jme-ttf
     maven { url 'https://jitpack.io' } // for jme3_xbuf_loader
 }
 
@@ -62,7 +61,7 @@ dependencies {
     implementation 'org.jmonkeyengine:jme3-plugins:' + jmonkeyengineVersion
     //runtimeOnly 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
 
-    implementation 'com.atr:jme-ttf:2.2.2'
+    implementation 'com.github.stephengold:jme-ttf:2.2.3'
 
     // from jitpack repositories:
     implementation 'com.github.xbuf.jme3_xbuf:jme3_xbuf_loader:0.9.1'
