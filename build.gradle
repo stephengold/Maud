@@ -54,7 +54,7 @@ dependencies {
     implementation 'com.github.stephengold:jme3-utilities-nifty:0.9.19+for34'
     implementation 'com.github.stephengold:Minie:4.1.0+big3+for34'
     implementation 'com.github.stephengold:SkyControl:0.9.31+for34'
-    implementation 'com.github.stephengold:Wes:0.6.3+for34'
+    implementation 'com.github.stephengold:Wes:0.6.4+for34'
     implementation 'org.jmonkeyengine:jme3-blender:3.3.2-stable'
     implementation 'org.jmonkeyengine:jme3-desktop:' + jmonkeyengineVersion
     implementation 'org.jmonkeyengine:jme3-lwjgl:' + jmonkeyengineVersion
