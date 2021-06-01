@@ -7,7 +7,7 @@ description = 'An editor for animated 3-D models.'
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
-ext.jmonkeyengineVersion = '3.4.0-beta4' // from mavenCentral
+ext.jmonkeyengineVersion = '3.4.0-stable' // from mavenCentral
 
 tasks.withType(JavaCompile) { // Java compile-time options:
     options.compilerArgs << '-Xdiags:verbose'
@@ -49,19 +49,19 @@ dependencies {
     // from mavenCentral (or mavenLocal) repositories:
     implementation 'ch.qos.logback:logback-classic:1.2.3'
     runtimeOnly    'com.github.nifty-gui:nifty-style-black:1.4.3'
-    implementation 'com.github.stephengold:Heart:6.4.3+for34'
-    implementation 'com.github.stephengold:jme3-utilities-ui:0.9.3+for34'
-    implementation 'com.github.stephengold:jme3-utilities-nifty:0.9.19+for34'
+    implementation 'com.github.stephengold:Heart:6.4.4'
+    implementation 'com.github.stephengold:jme3-utilities-ui:0.9.4'
+    implementation 'com.github.stephengold:jme3-utilities-nifty:0.9.20'
     implementation 'com.github.stephengold:Minie:4.1.0+big3+for34'
-    implementation 'com.github.stephengold:SkyControl:0.9.31+for34'
-    implementation 'com.github.stephengold:Wes:0.6.5+for34'
+    implementation 'com.github.stephengold:SkyControl:0.9.32'
+    implementation 'com.github.stephengold:Wes:0.6.6'
     implementation 'org.jmonkeyengine:jme3-blender:3.3.2-stable'
     implementation 'org.jmonkeyengine:jme3-desktop:' + jmonkeyengineVersion
     implementation 'org.jmonkeyengine:jme3-lwjgl:' + jmonkeyengineVersion
     implementation 'org.jmonkeyengine:jme3-plugins:' + jmonkeyengineVersion
     //runtimeOnly 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
 
-    implementation 'com.github.stephengold:jme-ttf:2.2.3+for34'
+    implementation 'com.github.stephengold:jme-ttf:2.2.4'
 
     // from jitpack repositories:
     implementation 'com.github.xbuf.jme3_xbuf:jme3_xbuf_loader:0.9.1'
