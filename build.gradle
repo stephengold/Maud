@@ -69,7 +69,7 @@ dependencies {
 
 task runForceDialog(type: JavaExec) {
     args '--forceDialog'
-    main 'maud.Maud'
+    mainClass = 'maud.Maud'
 }
 
 // cleanup tasks
