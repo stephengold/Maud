@@ -1333,6 +1333,7 @@ public class MaudUtil {
 
     /**
      * Apply the specified rotation to all data in the specified VertexBuffer.
+     * TODO use MyMesh
      *
      * @param mesh the subject mesh (not null)
      * @param bufferType which buffer to read (not null)
@@ -1364,6 +1365,7 @@ public class MaudUtil {
 
     /**
      * Apply the specified rotation to all data in the specified tangent buffer.
+     * TODO use MyMesh
      *
      * @param mesh the subject mesh (not null)
      * @param bufferType which buffer to read (not null)
