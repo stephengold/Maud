@@ -993,7 +993,8 @@ public class SelectedTexture implements JmeCloneable {
     }
 
     /**
-     * Enumerate all non-null texture instances in the C-G model.
+     * Enumerate all non-null texture instances in the C-G model. TODO use
+     * MySpatial
      *
      * @return a new list (not null)
      */
