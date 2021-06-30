@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -283,6 +283,7 @@ public class Action {
     final static String setSpatialAngleSnapX = "set spatialAngle snapX";
     final static String setSpatialAngleSnapY = "set spatialAngle snapY";
     final static String setSpatialAngleSnapZ = "set spatialAngle snapZ";
+    final static String setSpatialRotation = "set spatial rotation";
     final static String setSpatialScale = "set spatial scale";
     final static String setSpatialTranslation = "set spatial translation";
     final static String setTextureClone = "set texture clone";

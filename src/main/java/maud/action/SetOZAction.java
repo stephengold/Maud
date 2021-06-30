@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -28,11 +28,14 @@ package maud.action;
 
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.shader.VarType;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.math.MyColor;
+import jme3utilities.math.MyVector3f;
 import jme3utilities.nifty.dialog.VectorDialog;
 import maud.Maud;
 import maud.dialog.EditorDialogs;
@@ -44,6 +47,7 @@ import maud.model.cgm.PlayOptions;
 import maud.model.cgm.PlayTimes;
 import maud.model.cgm.SelectedOverride;
 import maud.model.option.RigidBodyParameter;
+import maud.model.option.RotationDisplayMode;
 import maud.model.option.ShapeParameter;
 import maud.model.option.scene.SkeletonColors;
 
@@ -122,6 +126,10 @@ class SetOZAction {
 
             case Action.setSpatialAngleSnapZ:
                 target.getSpatial().snapRotation(PhysicsSpace.AXIS_Z);
+                break;
+
+            case Action.setSpatialRotation:
+                EditorDialogs.setSpatialRotation();
                 break;
 
             case Action.setSpatialScale:
@@ -281,6 +289,35 @@ class SetOZAction {
                     ActionPrefix.setSkeletonPointSize);
             float pointSize = Float.valueOf(arg);
             model.getScene().getSkeleton().setPointSize(pointSize);
+
+        } else if (actionString.startsWith(ActionPrefix.setSpatialRotation)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setSpatialRotation);
+            Vector3f vector = (Vector3f) VectorDialog.parseVector(arg);
+            Quaternion q = new Quaternion();
+            RotationDisplayMode mode = model.getMisc().rotationDisplayMode();
+            switch (mode) {
+                case Degrees:
+                    vector.multLocal(FastMath.DEG_TO_RAD);
+                    q.fromAngles(vector.x, vector.y, vector.z);
+                    break;
+                case Radians:
+                    q.fromAngles(vector.x, vector.y, vector.z);
+                    break;
+                case QuatCoeff:
+                    double ssq = MyVector3f.lengthSquared(vector);
+                    if (ssq > 1.0) {
+                        q.set(vector.x, vector.y, vector.z, 0f);
+                        q.normalizeLocal();
+                    } else {
+                        double w = Math.sqrt(1.0 - ssq);
+                        q.set(vector.x, vector.y, vector.z, (float) w);
+                    }
+                    break;
+                default:
+                    throw new IllegalStateException("mode = " + mode);
+            }
+            target.setSpatialRotation(q);
 
         } else if (actionString.startsWith(ActionPrefix.setSpatialScale)) {
             arg = MyString.remainder(actionString,

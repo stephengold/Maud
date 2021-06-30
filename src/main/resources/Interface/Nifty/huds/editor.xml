@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -3118,30 +3118,22 @@ Approximate minimum screen size: 640x480
                             <control name="label" id="zSaSliderStatus"
                                      textHAlign="center"
                                      width="*"/>
-                            <panel childLayout="horizontal" height="30px">
-                                <panel/>
-                                <control name="button" id="rotationMode2Button"
-                                         width="85px">
-                                    <interact onRelease="perform(next rotationDisplay)"/>
-                                </control>
-                                <panel/>
-                            </panel>
-                            <panel childLayout="horizontal" height="30px">
-                                <panel/>
-                                <control name="button" label="Snap"
-                                         id="id39ToAvoidNiftyWarning">
-                                    <interact onRelease="perform(set spatialAngle cardinal)"/>
-                                </control>
-                                <panel/>
-                            </panel>
-                            <panel childLayout="horizontal" height="30px">
-                                <panel/>
-                                <control name="button" label="Reset"
-                                         id="id40ToAvoidNiftyWarning">
-                                    <interact onRelease="perform(reset spatial rotation)"/>
-                                </control>
-                                <panel/>
-                            </panel>
+                            <control name="button" id="rotationMode2Button"
+                                     width="85px">
+                                <interact onRelease="perform(next rotationDisplay)"/>
+                            </control>
+                            <control name="button" label="Snap"
+                                     id="id39ToAvoidNiftyWarning">
+                                <interact onRelease="perform(set spatialAngle cardinal)"/>
+                            </control>
+                            <control name="button" label="Reset"
+                                     id="id40ToAvoidNiftyWarning">
+                                <interact onRelease="perform(reset spatial rotation)"/>
+                            </control>
+                            <control name="button" label="Set"
+                                     id="id41ToAvoidNiftyWarning">
+                                <interact onRelease="perform(set spatial rotation)"/>
+                            </control>
                         </panel>
                     </panel>
                 </panel>

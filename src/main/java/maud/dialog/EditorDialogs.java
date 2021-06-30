@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -30,6 +30,7 @@ import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
@@ -84,6 +85,7 @@ import maud.model.cgm.SelectedTexture;
 import maud.model.cgm.SelectedTrack;
 import maud.model.cgm.TrackItem;
 import maud.model.option.RigidBodyParameter;
+import maud.model.option.RotationDisplayMode;
 import maud.model.option.ShapeParameter;
 import org.lwjgl.Sys;
 
@@ -1258,6 +1260,40 @@ public class EditorDialogs {
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter a keyframe index:", defaultText,
                 actionPrefix, controller);
+    }
+
+    /**
+     * Display a "set spatial rotation" dialog.
+     */
+    public static void setSpatialRotation() {
+        Maud.gui.closeAllPopups();
+        EditorModel model = Maud.getModel();
+        EditableCgm target = model.getTarget();
+
+        Quaternion q = target.getSpatial().localRotation(null);
+        float[] tmpArray = new float[3];
+        Vector3f oldValue = new Vector3f();
+        RotationDisplayMode mode = model.getMisc().rotationDisplayMode();
+        switch (mode) {
+            case Degrees:
+                q.toAngles(tmpArray);
+                oldValue.set(tmpArray[0], tmpArray[1], tmpArray[2]);
+                oldValue.multLocal(FastMath.RAD_TO_DEG);
+                break;
+            case Radians:
+                q.toAngles(tmpArray);
+                oldValue.set(tmpArray[0], tmpArray[1], tmpArray[2]);
+                break;
+            case QuatCoeff:
+                oldValue.set(q.getX(), q.getY(), q.getZ());
+                break;
+            default:
+                throw new IllegalStateException("mode = " + mode);
+        }
+        String defaultText = oldValue.toString();
+        DialogController controller = new VectorDialog("Set", 3, false);
+        Maud.gui.showTextEntryDialog("Enter new rotation vector:",
+                defaultText, ActionPrefix.setSpatialRotation, controller);
     }
 
     /**

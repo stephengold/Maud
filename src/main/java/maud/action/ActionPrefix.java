@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -672,6 +672,10 @@ public class ActionPrefix {
      * argument is a decimal size in pixels
      */
     final public static String setSkeletonPointSize = "set skeletonPointSize ";
+    /**
+     * argument is a Vector3f
+     */
+    final public static String setSpatialRotation = "set spatial rotation ";
     /**
      * argument is a Vector3f
      */
