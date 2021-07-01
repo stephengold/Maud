@@ -1,9 +1,9 @@
 Licensing history for assets in src/main/resources/Textures/icons
 
 Stephen Gold authored "Maud.png", "Maud-settings.png", "bone.png", "bvh.png",
-"dialog.png", "edit.png", "ellipsis.png", "folder.png", "geometry.png",
+"edit.png", "ellipsis.png", "folder.png", "geometry.png",
 "jar.png", "jme.png", "node.png", "ogre.png", "rotate.png", "scale.png",
-"submenu.png", "texture.png", "tool.png", "translate.png", "xbuf.png",
+"texture.png", "translate.png", "xbuf.png",
 and "zip.png".  He makes them available under the Creative Commons
 Attribution-Share Alike 3.0 Unported license -- see
 https://creativecommons.org/licenses/by-sa/3.0/ for details.
