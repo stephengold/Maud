@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -228,7 +228,7 @@ public class CameraOptions implements Cloneable {
      * Toggle the movement mode for scene POVs.
      */
     public void toggleMovement() {
-        if (movementMode.equals(MovementMode.Orbit)) {
+        if (movementMode == MovementMode.Orbit) {
             setMode(MovementMode.Fly);
         } else {
             setMode(MovementMode.Orbit);
@@ -239,7 +239,7 @@ public class CameraOptions implements Cloneable {
      * Toggle the projection mode for scene POVs.
      */
     public void toggleProjection() {
-        if (projectionMode.equals(ProjectionMode.Parallel)) {
+        if (projectionMode == ProjectionMode.Parallel) {
             projectionMode = ProjectionMode.Perspective;
         } else {
             projectionMode = ProjectionMode.Parallel;

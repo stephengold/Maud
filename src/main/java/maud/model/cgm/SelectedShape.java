@@ -446,7 +446,7 @@ public class SelectedShape implements JmeCloneable {
         assert canSet(parameter);
         float oldValue = value(parameter);
         if (newValue != oldValue) {
-            if (parameter.equals(ShapeParameter.Margin)) {
+            if (parameter == ShapeParameter.Margin) {
                 if (newValue > 0f) {
                     History.autoAdd();
                     set(parameter, newValue);

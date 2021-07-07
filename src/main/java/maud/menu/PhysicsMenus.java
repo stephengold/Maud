@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -382,7 +382,7 @@ public class PhysicsMenus {
         RigidBodyParameter selectedRbp
                 = Maud.getModel().getMisc().rbParameter();
         for (RigidBodyParameter rbp : RigidBodyParameter.values()) {
-            if (!rbp.equals(selectedRbp)) {
+            if (rbp != selectedRbp) {
                 String name = rbp.toString();
                 if (name.startsWith(namePrefix)) {
                     matchingNames.add(name);
@@ -466,7 +466,7 @@ public class PhysicsMenus {
 
         ShapeParameter selected = Maud.getModel().getMisc().shapeParameter();
         for (ShapeParameter parm : ShapeParameter.values()) {
-            if (!parm.equals(selected)) {
+            if (parm != selected) {
                 String name = parm.toString();
                 builder.add(name);
             }

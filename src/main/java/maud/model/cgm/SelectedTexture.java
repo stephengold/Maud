@@ -823,7 +823,7 @@ public class SelectedTexture implements JmeCloneable {
         assert hasKey();
 
         Texture.Type oldHint = typeHint();
-        if (!newHint.equals(oldHint)) {
+        if (newHint != oldHint) {
             String assetPath = assetPath();
             int anisotropy = anisotropy();
             boolean flipY = isFlipY();

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -513,9 +513,9 @@ public class ScoreView implements EditorView {
     public ViewPort getViewPort() {
         ViewPort result = null;
         ViewMode viewMode = Maud.getModel().getMisc().viewMode();
-        if (viewMode.equals(ViewMode.Hybrid)) {
+        if (viewMode == ViewMode.Hybrid) {
             result = viewPort3;
-        } else if (viewMode.equals(ViewMode.Score)) {
+        } else if (viewMode == ViewMode.Score) {
             if (Maud.getModel().getSource().isLoaded()) {
                 result = viewPort2;
             } else {
