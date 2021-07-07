@@ -1609,7 +1609,7 @@ public class MaudUtil {
             case Luminance8Alpha8:
                 assert numBytes == 2 : numBytes;
                 b = g = r = bytes[0] / 255f;
-                a = bytes[1] / 255;
+                a = bytes[1] / 255f;
                 break;
 
             case RGB8:
