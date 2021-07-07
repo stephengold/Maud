@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -101,7 +101,7 @@ class AssetDialog extends TextEntryDialog {
         String msg = "";
         if (hasExtension(assetPath)) {
             if (!exists(assetPath)) {
-                msg = String.format("asset doesn't exist");
+                msg = "asset doesn't exist";
             }
         } else {
             String list = MyString.join("/", extensions);

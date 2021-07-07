@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -187,7 +187,7 @@ class SpatialDetailsTool extends Tool {
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         int sgcCount = spatial.countSubtreeSgcs();
         if (sgcCount == 1) {
-            String item = String.format(" one control");
+            String item = " one control";
             list.add(item);
         } else if (sgcCount > 1) {
             String item = String.format(" %d controls", sgcCount);
@@ -196,7 +196,7 @@ class SpatialDetailsTool extends Tool {
 
         int dataCount = spatial.countSubtreeUserData();
         if (dataCount == 1) {
-            String item = String.format(" one datum");
+            String item = " one datum";
             list.add(item);
         } else if (dataCount > 1) {
             String item = String.format(" %d data", dataCount);
@@ -205,7 +205,7 @@ class SpatialDetailsTool extends Tool {
 
         int vertexCount = spatial.countSubtreeVertices();
         if (vertexCount == 1) {
-            String item = String.format(" one vertex");
+            String item = " one vertex";
             list.add(item);
         } else if (vertexCount > 1) {
             String item = String.format(" %d vertices", vertexCount);

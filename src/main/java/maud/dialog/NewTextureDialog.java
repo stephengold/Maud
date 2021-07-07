@@ -229,7 +229,7 @@ class NewTextureDialog implements DialogController {
         String msg = "";
         if (hasExtension(assetPath)) {
             if (exists(assetPath)) {
-                msg = String.format("path already in use");
+                msg = "path already in use";
             }
         } else {
             String list = MyString.join("/", extensions);
