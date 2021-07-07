@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -363,7 +363,7 @@ public class SelectedShape implements JmeCloneable {
     public void selectFirstChild() {
         if (selectedShape instanceof CompoundCollisionShape) {
             CompoundCollisionShape ccs = (CompoundCollisionShape) selectedShape;
-            ChildCollisionShape children[] = ccs.listChildren();
+            ChildCollisionShape[] children = ccs.listChildren();
             if (children.length > 0) {
                 ChildCollisionShape child = children[0];
                 CollisionShape shape = child.getShape();

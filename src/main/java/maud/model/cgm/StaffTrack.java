@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -245,7 +245,7 @@ public class StaffTrack {
              */
             TweenTransforms tt = Maud.getModel().getTweenTransforms();
             TweenRotations technique = tt.getTweenRotations();
-            float times[] = MaudUtil.getTrackTimes(track);
+            float[] times = MaudUtil.getTrackTimes(track);
             float duration = cgm.getAnimation().duration();
             RotationCurve parms;
             parms = technique.precompute(times, duration, rotations);
@@ -340,7 +340,7 @@ public class StaffTrack {
              */
             TweenTransforms tt = Maud.getModel().getTweenTransforms();
             TweenVectors technique = tt.getTweenScales();
-            float times[] = MaudUtil.getTrackTimes(track);
+            float[] times = MaudUtil.getTrackTimes(track);
             float duration = cgm.getAnimation().duration();
             VectorCurve parms = technique.precompute(times, duration, scales);
             Vector3f tempV = new Vector3f();
@@ -427,7 +427,7 @@ public class StaffTrack {
              */
             TweenTransforms tt = Maud.getModel().getTweenTransforms();
             TweenVectors technique = tt.getTweenTranslations();
-            float times[] = MaudUtil.getTrackTimes(track);
+            float[] times = MaudUtil.getTrackTimes(track);
             float duration = cgm.getAnimation().duration();
             VectorCurve parms
                     = technique.precompute(times, duration, translations);

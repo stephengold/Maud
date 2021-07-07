@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -58,7 +58,7 @@ public class DddCursorOptions implements Cloneable {
     /**
      * colors of the cursor
      */
-    private ColorRGBA colors[] = {
+    private ColorRGBA[] colors = {
         new ColorRGBA(1f, 1f, 0f, 1f),
         new ColorRGBA(0f, 0f, 0f, 1f)
     };

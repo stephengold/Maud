@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -1107,8 +1107,8 @@ public class EditableCgm extends LoadedCgm {
         SelectedLink selectedLink = getLink();
 
         RangeOfMotion oldRom = selectedLink.getRangeOfMotion();
-        float max[] = new float[numAxes];
-        float min[] = new float[numAxes];
+        float[] max = new float[numAxes];
+        float[] min = new float[numAxes];
         for (int axis = 0; axis < numAxes; ++axis) {
             if (axis == axisIndex) {
                 max[axis] = maxAngle;

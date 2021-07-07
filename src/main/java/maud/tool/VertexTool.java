@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -152,7 +152,7 @@ class VertexTool extends Tool {
             VertexBuffer.Type bufferType = buffer.type();
             switch (bufferType) {
                 case BoneIndex:
-                    int boneIndex[] = vertex.boneIndices(null);
+                    int[] boneIndex = vertex.boneIndices(null);
                     data0 = String.format(" %d", boneIndex[0]);
                     data1 = String.format(" %d", boneIndex[1]);
                     data2 = String.format(" %d", boneIndex[2]);
@@ -164,7 +164,7 @@ class VertexTool extends Tool {
                     break;
 
                 case BoneWeight:
-                    float boneWeight[] = vertex.boneWeights(null);
+                    float[] boneWeight = vertex.boneWeights(null);
                     data0 = String.format(" %f", boneWeight[0]);
                     data1 = String.format(" %f", boneWeight[1]);
                     data2 = String.format(" %f", boneWeight[2]);

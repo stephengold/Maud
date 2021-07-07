@@ -65,8 +65,8 @@ public class Sparkline extends Mesh {
      * @param mode mode for the mesh (Mode.Lines, Mode.LineStrip, or
      * Mode.Points)
      */
-    public Sparkline(int numVertices, float[] xs, float ys[], float height,
-            Mode mode) {
+    public Sparkline(int numVertices, float[] xs, float[] ys, float height,
+                     Mode mode) {
         Validate.nonNegative(numVertices, "num vertices");
         Validate.nonNull(xs, "x values");
         Validate.nonNull(ys, "y values");
