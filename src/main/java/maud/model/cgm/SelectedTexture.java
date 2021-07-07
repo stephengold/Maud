@@ -438,8 +438,8 @@ public class SelectedTexture implements JmeCloneable {
     public List<String> listSelectables(String prefix) {
         List<Texture> nonNulls = listNonNullTextures();
         List<MatParamRef> nullRefs = listTextureRefs(null);
-        int numSelectibles = nonNulls.size() + nullRefs.size();
-        List<String> result = new ArrayList<>(numSelectibles);
+        int numSelectables = nonNulls.size() + nullRefs.size();
+        List<String> result = new ArrayList<>(numSelectables);
 
         for (Texture texture : nonNulls) {
             String desc = DescribeUtil.texture(texture);

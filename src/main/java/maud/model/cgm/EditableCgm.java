@@ -520,7 +520,7 @@ public class EditableCgm extends LoadedCgm {
                 boolean success = attachmentsNode.removeFromParent();
                 assert success;
                 /*
-                 * Sychronize with the scene view.
+                 * Synchronize with the scene view.
                  */
                 sceneView.deleteSubtree(nodePosition);
             }
@@ -534,7 +534,7 @@ public class EditableCgm extends LoadedCgm {
             PhysicsControl pc = (PhysicsControl) selectedSgc;
             getPhysics().removePhysicsControl(pc);
             /*
-             * Sychronize with the scene view.
+             * Synchronize with the scene view.
              */
             List<Integer> treePosition = findSpatial(controlled);
             int pcPosition = PhysicsUtil.pcToPosition(controlled, pc);
@@ -576,7 +576,7 @@ public class EditableCgm extends LoadedCgm {
         boolean success = subtree.removeFromParent();
         assert success;
         /*
-         * Sychronize the scene view.
+         * Synchronize the scene view.
          */
         SceneView sceneView = getSceneView();
         sceneView.deleteSubtree();

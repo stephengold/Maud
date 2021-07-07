@@ -741,7 +741,7 @@ build script) to configure Maud prior to executing its startup script:
  + `--openGL3` (or `-3`)
   to force LWJGL to use the core OpenGL3.2 renderer.
   Forcing this renderer enables Maud to run on systems with
-  non-proprietrary GPU drivers.
+  non-proprietary GPU drivers.
  + `--skipStartup` (or `-s`)
   to bypass the startup script.  If this argument is not specified, Maud
   looks for a startup script and attempts to execute it before displaying the

@@ -238,7 +238,7 @@ public class CheckLoaded {
 
         int targetBoneIndex = boneTrack.getTargetBoneIndex();
         if (targetBoneIndex < 0 || targetBoneIndex >= numBones) {
-            logger.warning("track for non-existant bone");
+            logger.warning("track for non-existent bone");
             return false;
         }
         if (targetBoneIndexSet.contains(targetBoneIndex)) {

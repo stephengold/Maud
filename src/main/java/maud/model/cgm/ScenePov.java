@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -447,17 +447,17 @@ public class ScenePov implements Cloneable, Pov {
      *
      * @param elevationAngle elevation angle of the goal, measured upward from
      * the X-Z plane (in radians)
-     * @param aziumth azimuth of the goal, measured clockwise from +X around the
+     * @param azimuth azimuth of the goal, measured clockwise from +X around the
      * axis (in radians)
      */
-    private void setOrbitGoal(float elevationAngle, float aziumth) {
+    private void setOrbitGoal(float elevationAngle, float azimuth) {
         CameraOptions options = Maud.getModel().getScene().getCamera();
         assert options.isOrbitMode();
 
         if (!isPivoting) {
             float clampedElevation = options.clampElevation(elevationAngle);
             Vector3f direction
-                    = MyVector3f.fromAltAz(clampedElevation, aziumth);
+                    = MyVector3f.fromAltAz(clampedElevation, azimuth);
             directionalGoal.set(direction);
         }
     }

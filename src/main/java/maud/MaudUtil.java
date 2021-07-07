@@ -779,7 +779,7 @@ public class MaudUtil {
                     /*
                      * Copy the vectors from the expanded target buffer
                      * to the clone's target buffer using the original indices.
-                     * Most elements in the clont's target buffer
+                     * Most elements in the clone's target buffer
                      * will be written to more than once,
                      * but that shouldn't matter.
                      */
@@ -1317,9 +1317,9 @@ public class MaudUtil {
             }
 
             for (int x = 0; x < width; ++x) {
-                for (int byteIndx = 0; byteIndx < bytesPerPixel; ++byteIndx) {
+                for (int byteI = 0; byteI < bytesPerPixel; ++byteI) {
                     int pixelByte = byteBuffer.get(byteOffset);
-                    pixelBytes[byteIndx] = 0xff & pixelByte;
+                    pixelBytes[byteI] = 0xff & pixelByte;
                     ++byteOffset;
                 }
                 Color color = pixelColor(format, pixelBytes);

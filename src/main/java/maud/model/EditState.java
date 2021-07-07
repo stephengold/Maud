@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -66,7 +66,7 @@ public class EditState implements Cloneable {
      * <li> "" for no continuous edit in progress
      * </ul>
      */
-    private String continousEditState = "";
+    private String continuousEditState = "";
     // *************************************************************************
     // new methods exposed
 
@@ -86,7 +86,7 @@ public class EditState implements Cloneable {
         /*
          * Potentially new continuous edits.
          */
-        continousEditState = "";
+        continuousEditState = "";
     }
 
     /**
@@ -101,9 +101,9 @@ public class EditState implements Cloneable {
         Validate.nonNull(newShape, "new shape");
 
         String oldState = "ss" + oldShape.toString();
-        if (oldState.equals(continousEditState)) {
+        if (oldState.equals(continuousEditState)) {
             String newState = "ss" + newShape.toString();
-            continousEditState = newState;
+            continuousEditState = newState;
         }
     }
 
@@ -117,7 +117,7 @@ public class EditState implements Cloneable {
         Validate.nonNull(eventDescription, "event description");
 
         ++editCount;
-        continousEditState = "";
+        continuousEditState = "";
         History.addEvent(eventDescription);
     }
 
@@ -129,10 +129,10 @@ public class EditState implements Cloneable {
      */
     public void setEditedLightColor(String lightName) {
         String newState = "lc" + lightName;
-        if (!newState.equals(continousEditState)) {
+        if (!newState.equals(continuousEditState)) {
             History.autoAdd();
             ++editCount;
-            continousEditState = newState;
+            continuousEditState = newState;
             String description = String.format("recolor light named %s",
                     MyString.quote(lightName));
             History.addEvent(description);
@@ -147,10 +147,10 @@ public class EditState implements Cloneable {
      */
     public void setEditedLightPosDir(String lightName) {
         String newState = "lpd" + lightName;
-        if (!newState.equals(continousEditState)) {
+        if (!newState.equals(continuousEditState)) {
             History.autoAdd();
             ++editCount;
-            continousEditState = newState;
+            continuousEditState = newState;
             String description = String.format(
                     "reposition and/or redirect light named %s",
                     MyString.quote(lightName));
@@ -166,10 +166,10 @@ public class EditState implements Cloneable {
      */
     public void setEditedRangeOfMotion(String linkName) {
         String newState = "rom" + linkName;
-        if (!newState.equals(continousEditState)) {
+        if (!newState.equals(continuousEditState)) {
             History.autoAdd();
             ++editCount;
-            continousEditState = newState;
+            continuousEditState = newState;
             String description = String.format("alter range of motion for %s",
                     MyString.quote(linkName));
             History.addEvent(description);
@@ -184,10 +184,10 @@ public class EditState implements Cloneable {
      */
     public void setEditedPhysicsPosition(String objectName) {
         String newState = "pp" + objectName;
-        if (!newState.equals(continousEditState)) {
+        if (!newState.equals(continuousEditState)) {
             History.autoAdd();
             ++editCount;
-            continousEditState = newState;
+            continuousEditState = newState;
             History.addEvent("reposition collision object " + objectName);
         }
     }
@@ -200,10 +200,10 @@ public class EditState implements Cloneable {
      */
     public void setEditedShapeSize(String shapeName) {
         String newState = "ss" + shapeName;
-        if (!newState.equals(continousEditState)) {
+        if (!newState.equals(continuousEditState)) {
             History.autoAdd();
             ++editCount;
-            continousEditState = newState;
+            continuousEditState = newState;
             History.addEvent("resize collision shape " + shapeName);
         }
     }
@@ -217,10 +217,10 @@ public class EditState implements Cloneable {
      */
     public void setEditedSpatialTransform(String spatialPosition) {
         String newState = "st" + spatialPosition;
-        if (!newState.equals(continousEditState)) {
+        if (!newState.equals(continuousEditState)) {
             History.autoAdd();
             ++editCount;
-            continousEditState = newState;
+            continuousEditState = newState;
             History.addEvent("transform spatial " + spatialPosition);
         }
     }
@@ -233,10 +233,10 @@ public class EditState implements Cloneable {
      */
     public void setEditedTwist(String targetBoneName) {
         String newState = "tw" + targetBoneName;
-        if (!newState.equals(continousEditState)) {
+        if (!newState.equals(continuousEditState)) {
             History.autoAdd();
             ++editCount;
-            continousEditState = newState;
+            continuousEditState = newState;
             String event = "set twist for " + MyString.quote(targetBoneName);
             History.addEvent(event);
         }
@@ -249,7 +249,7 @@ public class EditState implements Cloneable {
      */
     public void setPristine(String eventDescription) {
         editCount = 0;
-        continousEditState = "";
+        continuousEditState = "";
         History.addEvent(eventDescription);
     }
     // *************************************************************************

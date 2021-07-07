@@ -294,7 +294,7 @@ public class IQELoader implements AssetLoader {
             case "pq":
                 finishMesh();
                 if (args.length < 8) {
-                    throw new IOException("Pose entries (pq) must specify Tx Ty Tz Qx Qy Qz Qw exlicitly.");
+                    throw new IOException("Pose entries (pq) must specify Tx Ty Tz Qx Qy Qz Qw explicitly.");
                 }
                 if (currentAnim == null) {
                     if (poseCount >= bones.size()) {
