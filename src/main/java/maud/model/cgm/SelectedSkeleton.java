@@ -225,7 +225,7 @@ public class SelectedSkeleton implements JmeCloneable {
         }
 
         if (storeSelectedSgcFlag != null) {
-            storeSelectedSgcFlag[0] = selectedSgcFlag; // side-effect
+            storeSelectedSgcFlag[0] = selectedSgcFlag; // side effect
         }
         return skeleton;
     }
@@ -840,7 +840,7 @@ public class SelectedSkeleton implements JmeCloneable {
     }
 
     /**
-     * Select an skeleton by name.
+     * Select a skeleton by name.
      *
      * @param name which skeleton to select (not null, not empty)
      */

@@ -37,7 +37,7 @@ import java.util.logging.Logger;
  * <p>
  * In local space, the lozenge extends from (-x,0,0) to (+x,0,0) and from
  * (0,-y,0) to (0,+y,0) with normals set to (0,0,zNorm). In texture space, it
- * extends extends from (0,0.5) to (1,0.5) and from (0.5,0) to (0.5,1).
+ * extends from (0,0.5) to (1,0.5) and from (0.5,0) to (0.5,1).
  *
  * @author Stephen Gold sgold@sonic.net
  */

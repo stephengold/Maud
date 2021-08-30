@@ -254,8 +254,6 @@ public class Platform implements BulletDebugAppState.DebugAppStateFilter {
      * Update the square slab to the specified diameter.
      *
      * @param diameter (&ge;0)
-     * @return a new, orphaned spatial with its own RigidBodyControl, not added
-     * to any physics space
      */
     private void updateSquare(float diameter) {
         if (square == null) {

@@ -111,7 +111,7 @@ public class ShowMenus {
     }
 
     /**
-     * Display a "SGC -&gt; Add new" menu.
+     * Display an "SGC -&gt; Add new" menu.
      */
     public static void addNewSgc() {
         MenuBuilder builder = new MenuBuilder();

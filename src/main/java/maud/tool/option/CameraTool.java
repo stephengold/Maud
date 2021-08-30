@@ -60,7 +60,7 @@ public class CameraTool extends Tool {
     /**
      * Instantiate an uninitialized tool.
      *
-     * @param screenController the controller of the screen that will contains
+     * @param screenController the controller of the screen that will contain
      * the tool (not null)
      */
     public CameraTool(GuiScreenController screenController) {

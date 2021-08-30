@@ -241,7 +241,6 @@ public class ViewMenus {
      * Handle a "select menuItem" action from the "View -> Select mode" menu.
      *
      * @param remainder not-yet-parsed portion of the menu path (not null)
-     * @return true if the action is handled, otherwise false
      */
     private static void menuViewMode(String remainder) {
         assert remainder != null;

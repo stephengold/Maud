@@ -314,7 +314,7 @@ public class SelectedTexture implements JmeCloneable {
     /**
      * Test whether selected texture has an asset key.
      *
-     * @return true if has key, otherwise false
+     * @return true if it has a key, otherwise false
      */
     public boolean hasKey() {
         TextureKey key = getKey();
@@ -328,7 +328,7 @@ public class SelectedTexture implements JmeCloneable {
     /**
      * Test whether the texture has an image.
      *
-     * @return true if has image, otherwise false
+     * @return true if it has an image, otherwise false
      */
     public boolean hasImage() {
         if (selectedTexture == null) {

@@ -113,7 +113,7 @@ public class Cgm implements Cloneable {
     private ScenePov scenePov = new ScenePov();
     /**
      * rendered 3-D visualization of the C-G model (set by
-     * {@link #setViews(maud.SceneView, maud.ScoreView)} or {@link #clone()})
+     * {@link #setViews(maud.view.scene.SceneView, maud.view.ScoreView)} or {@link #clone()})
      */
     private SceneView sceneView = null;
     /**
@@ -122,7 +122,7 @@ public class Cgm implements Cloneable {
     private ScorePov scorePov = new ScorePov();
     /**
      * 2-D visualization of the loaded animation (set by
-     * {@link #setViews(maud.SceneView, maud.ScoreView)}
+     * {@link #setViews(maud.view.scene.SceneView, maud.view.ScoreView)}
      */
     private ScoreView scoreView = null;
     /**

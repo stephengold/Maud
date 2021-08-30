@@ -243,7 +243,7 @@ class NewTextureDialog implements DialogController {
      * Test whether the specified asset path has one of the required extensions.
      *
      * @param assetPath path to test (not null)
-     * @return true if it end with an extension on the list, otherwise false
+     * @return true if it ends with an extension on the list, otherwise false
      */
     private boolean hasExtension(String assetPath) {
         assert assetPath != null;

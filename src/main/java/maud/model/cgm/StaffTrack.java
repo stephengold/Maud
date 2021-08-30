@@ -68,7 +68,7 @@ public class StaffTrack {
 
     /**
      * the C-G model currently being visualized, set by
-     * {@link #setCgm(maud.model.Cgm)}
+     * {@link #setCgm(maud.model.cgm.Cgm)}
      */
     private static Cgm cgm;
     /**

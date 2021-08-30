@@ -38,7 +38,7 @@ import maud.Maud;
 import maud.model.cgm.Pov;
 
 /**
- * The analog listener for the input device that zooms a POV. Currently this
+ * The analog listener for the input device that zooms a POV. Currently, this
  * device is the scroll wheel on the mouse.
  *
  * @author Stephen Gold sgold@sonic.net

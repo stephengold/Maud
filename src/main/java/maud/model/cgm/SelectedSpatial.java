@@ -450,7 +450,7 @@ public class SelectedSpatial implements JmeCloneable {
 
     /**
      * Clone the material and apply it to the selected spatial, in order to
-     * eliminate any sharing of the material.)
+     * eliminate any sharing of the material.
      */
     public void cloneMaterial() {
         Material oldMaterial = getMaterial();
