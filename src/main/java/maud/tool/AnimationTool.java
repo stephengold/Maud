@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -248,7 +248,7 @@ class AnimationTool extends Tool {
         if (animControl.isSelected()) {
             addButton = "Add new";
             loadButton = "Load animation";
-            int numAnimations = animControl.countAnimations();
+            int numAnimations = animControl.countRealAnimations();
             if (cgm.getAnimation().isReal()) {
                 int selectedIndex = cgm.getAnimation().findIndex();
                 indexStatus = DescribeUtil.index(selectedIndex, numAnimations);

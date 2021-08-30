@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -394,11 +394,11 @@ public class SelectedAnimControl implements JmeCloneable {
     }
 
     /**
-     * Count how many real animations are in the animation control. TODO rename
+     * Count how many real animations are in the animation control.
      *
      * @return the count (&ge;0)
      */
-    public int countAnimations() {
+    public int countRealAnimations() {
         int result;
 
         AbstractControl control = find();
