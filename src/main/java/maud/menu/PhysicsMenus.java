@@ -51,6 +51,7 @@ import maud.model.cgm.SelectedShape;
 import maud.model.cgm.SelectedSpatial;
 import maud.model.option.RigidBodyParameter;
 import maud.model.option.ShapeParameter;
+import maud.tool.EditorTools;
 
 /**
  * Menus in Maud's editor screen that relate to physics shapes, collision
@@ -167,7 +168,7 @@ public class PhysicsMenus {
                     break;
 
                 case "Collision-object tool":
-                    Maud.gui.tools.select("pco");
+                    EditorTools.select("pco");
                     break;
 
                 case "Compound shape":
@@ -179,7 +180,7 @@ public class PhysicsMenus {
                     break;
 
                 case "Joint tool":
-                    Maud.gui.tools.select("joint");
+                    EditorTools.select("joint");
                     break;
 
                 case "Link selected bone":
@@ -187,7 +188,7 @@ public class PhysicsMenus {
                     break;
 
                 case "Link tool":
-                    Maud.gui.tools.select("link");
+                    EditorTools.select("link");
                     break;
 
                 case "Mass":
@@ -211,7 +212,7 @@ public class PhysicsMenus {
                     break;
 
                 case "Shape tool":
-                    Maud.gui.tools.select("shape");
+                    EditorTools.select("shape");
                     break;
 
                 default:
@@ -489,10 +490,10 @@ public class PhysicsMenus {
             if (physics.hasPco(userId)) {
                 SelectedPco object = target.getPco();
                 object.select(userId);
-                Maud.gui.tools.select("pco");
+                EditorTools.select("pco");
             } else {
                 shape.select(userId);
-                Maud.gui.tools.select("shape");
+                EditorTools.select("shape");
             }
         } else if (numUsers > 1) {
             MenuBuilder builder = new MenuBuilder();
@@ -518,7 +519,7 @@ public class PhysicsMenus {
         if (namePrefix.contains(":")) {
             if (physics.hasShape(namePrefix)) {
                 shape.select(namePrefix);
-                Maud.gui.tools.select("shape");
+                EditorTools.select("shape");
                 return;
             }
         }
@@ -526,7 +527,7 @@ public class PhysicsMenus {
             long pcoId = MyPco.parseId(namePrefix);
             if (physics.hasPco(pcoId)) {
                 target.getPco().select(pcoId);
-                Maud.gui.tools.select("pco");
+                EditorTools.select("pco");
                 return;
             }
         }

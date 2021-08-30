@@ -43,6 +43,7 @@ import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.option.LoadBvhAxisOrder;
 import maud.model.option.scene.MovementMode;
+import maud.tool.EditorTools;
 
 /**
  * Process actions that start with the word "select" and a letter in the f-n
@@ -130,17 +131,17 @@ class SelectFNAction {
             case Action.selectLinkedBone:
                 String name = target.getLink().boneName();
                 target.getBone().select(name);
-                Maud.gui.tools.select("bone");
+                EditorTools.select("bone");
                 break;
 
             case Action.selectLinkedJoint:
                 target.getLink().selectJoint();
-                Maud.gui.tools.select("joint");
+                EditorTools.select("joint");
                 break;
 
             case Action.selectLinkedPco:
                 target.getLink().selectPco();
-                Maud.gui.tools.select("pco");
+                EditorTools.select("pco");
                 break;
 
             case Action.selectLinkParent:
@@ -223,7 +224,7 @@ class SelectFNAction {
             JointEnd end = JointEnd.valueOf(arg);
             String bodyName = target.getJoint().endName(end);
             target.getPco().select(bodyName);
-            Maud.gui.tools.select("pco");
+            EditorTools.select("pco");
 
         } else if (actionString.startsWith(ActionPrefix.selectKeyframe)) {
             arg = MyString.remainder(actionString, ActionPrefix.selectKeyframe);

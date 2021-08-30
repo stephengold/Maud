@@ -32,6 +32,7 @@ import maud.Maud;
 import maud.dialog.EditorDialogs;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
+import maud.tool.EditorTools;
 
 /**
  * Keyframe menus in Maud's editor screen.
@@ -135,7 +136,7 @@ class KeyframeMenus {
                     break;
 
                 case "Tool":
-                    Maud.gui.tools.select("keyframe");
+                    EditorTools.select("keyframe");
                     break;
 
                 default:

@@ -39,6 +39,7 @@ import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedBone;
 import maud.model.cgm.SelectedSkeleton;
+import maud.tool.EditorTools;
 
 /**
  * Bone menus in Maud's editor screen.
@@ -135,7 +136,7 @@ public class BoneMenus {
                     break;
 
                 case "Mirror":
-                    Maud.gui.tools.select("boneMirror");
+                    EditorTools.select("boneMirror");
                     break;
 
                 case "Rename":
@@ -143,11 +144,11 @@ public class BoneMenus {
                     break;
 
                 case "Rotate":
-                    Maud.gui.tools.select("boneRotation");
+                    EditorTools.select("boneRotation");
                     break;
 
                 case "Scale":
-                    Maud.gui.tools.select("boneScale");
+                    EditorTools.select("boneScale");
                     break;
 
                 case "Select":
@@ -159,11 +160,11 @@ public class BoneMenus {
                     break;
 
                 case "Tool":
-                    Maud.gui.tools.select("bone");
+                    EditorTools.select("bone");
                     break;
 
                 case "Translate":
-                    Maud.gui.tools.select("boneTranslation");
+                    EditorTools.select("boneTranslation");
                     break;
 
                 default:

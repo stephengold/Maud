@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import maud.Maud;
 import maud.model.option.ViewMode;
+import maud.tool.EditorTools;
 import maud.view.ViewType;
 
 /**
@@ -176,37 +177,37 @@ public class ViewMenus {
         boolean handled = true;
         switch (remainder) {
             case "Axes":
-                Maud.gui.tools.select("axes");
+                EditorTools.select("axes");
                 break;
             case "Background":
-                Maud.gui.tools.select("background");
+                EditorTools.select("background");
                 break;
             case "Bounds":
-                Maud.gui.tools.select("bounds");
+                EditorTools.select("bounds");
                 break;
             case "Camera":
-                Maud.gui.tools.select("camera");
+                EditorTools.select("camera");
                 break;
             case "Cursor":
-                Maud.gui.tools.select("cursor");
+                EditorTools.select("cursor");
                 break;
             case "Lighting":
-                Maud.gui.tools.select("sceneLighting");
+                EditorTools.select("sceneLighting");
                 break;
             case "Physics":
-                Maud.gui.tools.select("physics");
+                EditorTools.select("physics");
                 break;
             case "Platform":
-                Maud.gui.tools.select("platform");
+                EditorTools.select("platform");
                 break;
             case "Render":
-                Maud.gui.tools.select("render");
+                EditorTools.select("render");
                 break;
             case "Skeleton":
-                Maud.gui.tools.select("skeleton");
+                EditorTools.select("skeleton");
                 break;
             case "Sky":
-                Maud.gui.tools.select("sky");
+                EditorTools.select("sky");
                 break;
             default:
                 handled = false;
@@ -225,10 +226,10 @@ public class ViewMenus {
         boolean handled = true;
         switch (remainder) {
             case "Background":
-                Maud.gui.tools.select("background");
+                EditorTools.select("background");
                 break;
             case "Tool":
-                Maud.gui.tools.select("score");
+                EditorTools.select("score");
                 break;
             default:
                 handled = false;

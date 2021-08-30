@@ -460,7 +460,7 @@ public class EditableMap extends LoadedMap {
      *
      * @return a new quaternion
      */
-    private Quaternion estimateTwist() {
+    private static Quaternion estimateTwist() {
         EditorModel model = Maud.getModel();
         Quaternion sourceMo
                 = model.getSource().getBone().modelOrientation(null);

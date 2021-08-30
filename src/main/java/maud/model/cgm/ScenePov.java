@@ -455,7 +455,7 @@ public class ScenePov implements Cloneable, Pov {
         assert options.isOrbitMode();
 
         if (!isPivoting) {
-            float clampedElevation = options.clampElevation(elevationAngle);
+            float clampedElevation = CameraOptions.clampElevation(elevationAngle);
             Vector3f direction
                     = MyVector3f.fromAltAz(clampedElevation, azimuth);
             directionalGoal.set(direction);
@@ -479,7 +479,7 @@ public class ScenePov implements Cloneable, Pov {
         assert options.isOrbitMode();
         assert !isPivoting;
 
-        float clampedElevation = options.clampElevation(elevationAngle);
+        float clampedElevation = CameraOptions.clampElevation(elevationAngle);
         Vector3f direction = MyVector3f.fromAltAz(clampedElevation, azimuth);
         centerLocation(povLocation);
         float clampedRange = clampRange(range);
@@ -510,7 +510,7 @@ public class ScenePov implements Cloneable, Pov {
 
         boolean parallel = options.isParallelProjection();
         if (parallel) {
-            float halfHeight = options.getFrustumYHalfTangent() * range;
+            float halfHeight = CameraOptions.getFrustumYHalfTangent() * range;
             float halfWidth = aspectRatio * halfHeight;
             camera.setFrustumBottom(-halfHeight);
             camera.setFrustumFar(far);
@@ -520,7 +520,7 @@ public class ScenePov implements Cloneable, Pov {
             camera.setFrustumTop(halfHeight);
             camera.setParallelProjection(true);
         } else {
-            float yDegrees = options.getFrustumYDegrees();
+            float yDegrees = CameraOptions.getFrustumYDegrees();
             camera.setFrustumPerspective(yDegrees, aspectRatio, near, far);
         }
     }

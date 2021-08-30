@@ -103,7 +103,7 @@ public class EditorInputMode extends InputMode {
      */
     @Override
     public void deactivate() {
-        zoomListener.unmap();
+        ZoomListener.unmap();
         super.deactivate();
     }
 
@@ -276,7 +276,7 @@ public class EditorInputMode extends InputMode {
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
      */
-    private boolean applyAction(String actionString) {
+    private static boolean applyAction(String actionString) {
         Cgm target = Maud.getModel().getTarget();
 
         boolean handled = true;
@@ -347,7 +347,7 @@ public class EditorInputMode extends InputMode {
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
      */
-    private boolean launchAction(String actionString) {
+    private static boolean launchAction(String actionString) {
         boolean handled = false;
         if (actionString.equals(Action.launchProjectile)) {
             EditorView view = Maud.gui.mouseView();
@@ -367,7 +367,7 @@ public class EditorInputMode extends InputMode {
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
      */
-    private boolean reduceAction(String actionString) {
+    private static boolean reduceAction(String actionString) {
         EditableCgm target = Maud.getModel().getTarget();
         String arg;
         boolean handled = false;
@@ -402,7 +402,7 @@ public class EditorInputMode extends InputMode {
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
      */
-    private boolean resampleAction(String actionString) {
+    private static boolean resampleAction(String actionString) {
         EditableCgm target = Maud.getModel().getTarget();
         String arg;
         boolean handled = false;
@@ -455,7 +455,7 @@ public class EditorInputMode extends InputMode {
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
      */
-    private boolean saveAction(String actionString) {
+    private static boolean saveAction(String actionString) {
         EditorModel model = Maud.getModel();
         EditableCgm target = model.getTarget();
         CgmOutputFormat format;
@@ -536,7 +536,7 @@ public class EditorInputMode extends InputMode {
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
      */
-    private boolean toggleAction(String actionString) {
+    private static boolean toggleAction(String actionString) {
         boolean handled = true;
 
         EditorModel model = Maud.getModel();
@@ -611,7 +611,7 @@ public class EditorInputMode extends InputMode {
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
      */
-    private boolean viewAction(String actionString) {
+    private static boolean viewAction(String actionString) {
         boolean handled = false;
         switch (actionString) {
             case Action.viewHorizontal:
@@ -641,7 +641,7 @@ public class EditorInputMode extends InputMode {
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
      */
-    private boolean warpAction(String actionString) {
+    private static boolean warpAction(String actionString) {
         boolean handled = false;
         switch (actionString) {
             case Action.warpCursor:
@@ -666,7 +666,7 @@ public class EditorInputMode extends InputMode {
      * @param actionString textual description of the action (not null)
      * @return true if the action is handled, otherwise false
      */
-    private boolean wrapAction(String actionString) {
+    private static boolean wrapAction(String actionString) {
         boolean handled = true;
 
         Cgm target = Maud.getModel().getTarget();

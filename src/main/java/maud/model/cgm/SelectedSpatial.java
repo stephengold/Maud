@@ -90,6 +90,7 @@ import maud.MeshNormals;
 import maud.PhysicsUtil;
 import maud.ShapeType;
 import maud.model.History;
+import maud.tool.EditorTools;
 import maud.view.scene.SceneView;
 
 /**
@@ -1504,7 +1505,7 @@ public class SelectedSpatial implements JmeCloneable {
         Spatial owner = cgm.getLight().getOwner();
         if (owner != null) {
             select(owner);
-            Maud.gui.tools.select("spatial");
+            EditorTools.select("spatial");
         }
     }
 

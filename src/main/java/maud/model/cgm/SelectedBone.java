@@ -50,6 +50,7 @@ import jme3utilities.Validate;
 import jme3utilities.wes.Pose;
 import maud.Maud;
 import maud.MaudUtil;
+import maud.tool.EditorTools;
 
 /**
  * The MVC model of the selected bone in a loaded C-G model.
@@ -658,7 +659,7 @@ public class SelectedBone implements Cloneable {
             Object track = cgm.getAnimation().findTrackForBone(selectedIndex);
             if (track != null) {
                 cgm.getTrack().select(track);
-                Maud.gui.tools.select("track");
+                EditorTools.select("track");
             }
         }
     }

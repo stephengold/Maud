@@ -87,6 +87,7 @@ import maud.model.cgm.TrackItem;
 import maud.model.option.RigidBodyParameter;
 import maud.model.option.RotationDisplayMode;
 import maud.model.option.ShapeParameter;
+import maud.tool.EditorTools;
 import org.lwjgl.Sys;
 
 /**
@@ -1056,7 +1057,7 @@ public class EditorDialogs {
                     ref = target.getMatParam().makeRef();
                 }
                 target.getTexture().select(ref);
-                Maud.gui.tools.select("texture");
+                EditorTools.select("texture");
                 return;
 
             case Vector2:

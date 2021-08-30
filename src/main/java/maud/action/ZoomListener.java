@@ -90,7 +90,7 @@ class ZoomListener implements AnalogListener {
     /**
      * Unmap the input device.
      */
-    void unmap() {
+    static void unmap() {
         Maud application = Maud.getApplication();
         InputManager inputMgr = application.getInputManager();
 

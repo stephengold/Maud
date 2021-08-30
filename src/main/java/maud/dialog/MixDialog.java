@@ -171,7 +171,7 @@ class MixDialog implements DialogController {
      * @param dialogElement (not null)
      * @return true if any selected, otherwise false
      */
-    private boolean anySelected(Element dialogElement) {
+    private static boolean anySelected(Element dialogElement) {
         assert dialogElement != null;
 
         List<Integer> indices = getSelectedIndices(dialogElement);
@@ -188,7 +188,7 @@ class MixDialog implements DialogController {
      * @param dialogElement (not null)
      * @return a text string (not null)
      */
-    private List<Integer> getSelectedIndices(Element dialogElement) {
+    private static List<Integer> getSelectedIndices(Element dialogElement) {
         assert dialogElement != null;
 
         ListBox listBox = dialogElement.findNiftyControl("#box", ListBox.class);

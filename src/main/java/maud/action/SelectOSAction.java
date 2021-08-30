@@ -52,6 +52,7 @@ import maud.model.option.scene.OrbitCenter;
 import maud.model.option.scene.PlatformType;
 import maud.model.option.scene.ProjectionMode;
 import maud.model.option.scene.SkeletonColors;
+import maud.tool.EditorTools;
 
 /**
  * Process actions that start with the word "select" and a letter in the o-s
@@ -112,7 +113,7 @@ class SelectOSAction {
             case Action.selectPcoShape:
                 if (target.getPco().isSelected()) {
                     target.getShape().selectPcoShape();
-                    Maud.gui.tools.select("shape");
+                    EditorTools.select("shape");
                 }
                 break;
 
@@ -151,13 +152,13 @@ class SelectOSAction {
                 String pcoName = sgc.pcoName();
                 if (!pcoName.isEmpty() && sgc.isEnabled()) {
                     target.getPco().select(pcoName);
-                    Maud.gui.tools.select("pco");
+                    EditorTools.select("pco");
                 }
                 break;
 
             case Action.selectSgcSpatial:
                 target.getSpatial().selectControlled();
-                Maud.gui.tools.select("spatial");
+                EditorTools.select("spatial");
                 break;
 
             case Action.selectShadowMode:

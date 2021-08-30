@@ -36,6 +36,7 @@ import maud.dialog.EditorDialogs;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedBone;
 import maud.model.cgm.SelectedSpatial;
+import maud.tool.EditorTools;
 
 /**
  * Spatial menus in Maud's editor screen.
@@ -151,7 +152,7 @@ public class SpatialMenus {
                     break;
 
                 case "Details tool":
-                    Maud.gui.tools.select("spatialDetails");
+                    EditorTools.select("spatialDetails");
                     break;
 
                 case "Edit material":
@@ -159,27 +160,27 @@ public class SpatialMenus {
                     break;
 
                 case "Lights tool":
-                    Maud.gui.tools.select("lights");
+                    EditorTools.select("lights");
                     break;
 
                 case "Material tool":
-                    Maud.gui.tools.select("material");
+                    EditorTools.select("material");
                     break;
 
                 case "Mesh tool":
-                    Maud.gui.tools.select("mesh");
+                    EditorTools.select("mesh");
                     break;
 
                 case "Overrides tool":
-                    Maud.gui.tools.select("overrides");
+                    EditorTools.select("overrides");
                     break;
 
                 case "Rotate tool":
-                    Maud.gui.tools.select("spatialRotation");
+                    EditorTools.select("spatialRotation");
                     break;
 
                 case "Scale tool":
-                    Maud.gui.tools.select("spatialScale");
+                    EditorTools.select("spatialScale");
                     break;
 
                 case "Select":
@@ -187,15 +188,15 @@ public class SpatialMenus {
                     break;
 
                 case "Tool":
-                    Maud.gui.tools.select("spatial");
+                    EditorTools.select("spatial");
                     break;
 
                 case "Translate tool":
-                    Maud.gui.tools.select("spatialTranslation");
+                    EditorTools.select("spatialTranslation");
                     break;
 
                 case "User-Data tool":
-                    Maud.gui.tools.select("userData");
+                    EditorTools.select("userData");
                     break;
 
                 default:

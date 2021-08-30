@@ -70,6 +70,7 @@ import jme3utilities.wes.TweenTransforms;
 import maud.Maud;
 import maud.MaudUtil;
 import maud.SupportUtil;
+import maud.tool.EditorTools;
 
 /**
  * The MVC model of the selected track in a loaded animation.
@@ -783,12 +784,12 @@ public class SelectedTrack implements JmeCloneable {
             BoneTrack boneTrack = (BoneTrack) selected;
             int boneIndex = boneTrack.getTargetBoneIndex();
             cgm.getBone().select(boneIndex);
-            Maud.gui.tools.select("bone");
+            EditorTools.select("bone");
         } else if (selected instanceof SpatialTrack) {
             SpatialTrack spatialTrack = (SpatialTrack) selected;
             Spatial spatial = spatialTrack.getTrackSpatial();
             cgm.getSpatial().select(spatial);
-            Maud.gui.tools.select("spatial");
+            EditorTools.select("spatial");
         }
     }
 

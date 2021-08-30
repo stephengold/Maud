@@ -32,6 +32,7 @@ import maud.Maud;
 import maud.action.ActionPrefix;
 import maud.dialog.EditorDialogs;
 import maud.model.cgm.SelectedSpatial;
+import maud.tool.EditorTools;
 
 /**
  * Menus in Maud's editor screen that deal with scene-graph controls.
@@ -105,7 +106,7 @@ class SgcMenus {
                     break;
 
                 case "Tool":
-                    Maud.gui.tools.select("sgc");
+                    EditorTools.select("sgc");
                     break;
 
                 default:

@@ -713,7 +713,7 @@ public class EditorScreen extends GuiScreenController {
      * @param cgm (not null)
      * @param tpf time interval between frames (in seconds, &ge;0)
      */
-    private void updateTrackTime(Cgm cgm, float tpf) {
+    private static void updateTrackTime(Cgm cgm, float tpf) {
         LoadedAnimation animation = cgm.getAnimation();
         assert animation.isMoving();
         PlayOptions play = cgm.getPlay();

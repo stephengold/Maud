@@ -38,6 +38,7 @@ import maud.dialog.EditorDialogs;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedSpatial;
 import maud.model.cgm.SelectedVertex;
+import maud.tool.EditorTools;
 
 /**
  * Mesh/buffer/vertex menus in Maud's editor screen.
@@ -109,7 +110,7 @@ public class MeshMenus {
         } else {
             switch (remainder) {
                 case "Extreme vertex tool":
-                    Maud.gui.tools.select("extremeVertex");
+                    EditorTools.select("extremeVertex");
                     break;
 
                 case "Select":
@@ -125,11 +126,11 @@ public class MeshMenus {
                     break;
 
                 case "Tool":
-                    Maud.gui.tools.select("mesh");
+                    EditorTools.select("mesh");
                     break;
 
                 case "Vertex tool":
-                    Maud.gui.tools.select("vertex");
+                    EditorTools.select("vertex");
                     break;
 
                 default:
@@ -245,7 +246,7 @@ public class MeshMenus {
                 EditorDialogs.selectVertex();
                 break;
             case "Extreme tool":
-                Maud.gui.tools.select("extremeVertex");
+                EditorTools.select("extremeVertex");
                 break;
             case "Neighbor":
                 selectVertexNeighbor();

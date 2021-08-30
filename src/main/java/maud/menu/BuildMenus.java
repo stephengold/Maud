@@ -81,7 +81,7 @@ public class BuildMenus {
     /**
      * Display a "Settings -> Add asset location" menu.
      */
-    void addAssetLocation() {
+    static void addAssetLocation() {
         Map<String, File> fileMap = Heart.driveMap();
         /*
          * Add working directory.
@@ -114,7 +114,7 @@ public class BuildMenus {
      * @param args action arguments (not null, not empty)
      * @param loadedCgm load slot (not null)
      */
-    public void loadCgmAsset(String args, LoadedCgm loadedCgm) {
+    public static void loadCgmAsset(String args, LoadedCgm loadedCgm) {
         EditorModel model = Maud.getModel();
         String menuPrefix = null;
         if (loadedCgm == model.getSource()) {
@@ -192,7 +192,7 @@ public class BuildMenus {
      * @param spec URL specification (not null, not empty)
      * @param slot load slot (not null)
      */
-    public void loadCgmLocator(String spec, LoadedCgm slot) {
+    public static void loadCgmLocator(String spec, LoadedCgm slot) {
         if (spec.equals(EditorMenus.defaultLocation)) {
             buildClasspathCgmMenu();
             if (slot == Maud.getModel().getSource()) {
@@ -220,7 +220,7 @@ public class BuildMenus {
      *
      * @param args action arguments (not null, not empty)
      */
-    public void loadMapAsset(String args) {
+    public static void loadMapAsset(String args) {
         EditorModel model = Maud.getModel();
         String indexString = args.split(" ")[0];
         String spec = model.getLocations().specForIndex(indexString);
@@ -270,7 +270,7 @@ public class BuildMenus {
      * @param spec URL specification or
      * defaultLocation/identityForSource/identityForTarget(not null, not empty)
      */
-    public void loadMapLocator(String spec) {
+    public static void loadMapLocator(String spec) {
         EditorModel model = Maud.getModel();
         switch (spec) {
             case EditorMenus.defaultLocation:
@@ -306,7 +306,7 @@ public class BuildMenus {
      *
      * @param args action arguments (not null, not empty)
      */
-    public void loadTextureAsset(String args) {
+    public static void loadTextureAsset(String args) {
         String indexString = args.split(" ")[0];
         String assetPath = MyString.remainder(args, indexString + " ");
         EditorModel model = Maud.getModel();
@@ -376,7 +376,7 @@ public class BuildMenus {
      *
      * @param spec URL specification or defaultLocation (not null, not empty)
      */
-    public void loadTextureLocator(String spec) {
+    public static void loadTextureLocator(String spec) {
         if (spec.equals(EditorMenus.defaultLocation)) {
             buildClasspathTextureMenu();
             builder.show(ActionPrefix.loadTextureAsset + "-1 /");
@@ -484,7 +484,7 @@ public class BuildMenus {
      *
      * @param argument action argument (not null)
      */
-    public void newAssetLocation(String argument) {
+    public static void newAssetLocation(String argument) {
         if (argument.endsWith(EditorMenus.addThis)) {
             String path = MyString.removeSuffix(argument, EditorMenus.addThis);
             Maud.getModel().getLocations().addFilesystem(path);
@@ -511,7 +511,7 @@ public class BuildMenus {
     /**
      * Build a menu of models on the classpath.
      */
-    private void buildClasspathCgmMenu() {
+    private static void buildClasspathCgmMenu() {
         builder.reset();
         /*
          * Add items for C-G models included (on the classpath) with Maud.
@@ -556,7 +556,7 @@ public class BuildMenus {
     /**
      * Build a "Map -> Load -> from classpath" menu.
      */
-    private void buildClasspathMapMenu() {
+    private static void buildClasspathMapMenu() {
         builder.reset();
 
         builder.addJme("BallerinaToMhGame"); // 20 mappings
@@ -575,7 +575,7 @@ public class BuildMenus {
     /**
      * Build a menu of textures on the classpath.
      */
-    private void buildClasspathTextureMenu() {
+    private static void buildClasspathTextureMenu() {
         builder.reset();
         /*
          * Add items for textures included (on the classpath) with Maud.
@@ -610,7 +610,7 @@ public class BuildMenus {
      * @param folderPath file path to the directory/folder (not null)
      * @param prefix required name prefix (not null)
      */
-    private void buildFolderMenu(String folderPath, String prefix) {
+    private static void buildFolderMenu(String folderPath, String prefix) {
         assert folderPath != null;
         assert prefix != null;
 
@@ -649,7 +649,7 @@ public class BuildMenus {
      *
      * @param fileMap map of files to include (not null)
      */
-    private void buildFolderMenu(Map<String, File> fileMap) {
+    private static void buildFolderMenu(Map<String, File> fileMap) {
         assert fileMap != null;
         /*
          * Generate a list of file names (and prefixes) to display in the menu.
@@ -679,7 +679,7 @@ public class BuildMenus {
     /**
      * Build a Help menu.
      */
-    private void buildHelpMenu() {
+    private static void buildHelpMenu() {
         builder.addDialog("About Maud");
         builder.addDialog("License");
         //builder.add("Wiki"); TODO
@@ -699,7 +699,7 @@ public class BuildMenus {
     /**
      * Build a Map menu.
      */
-    private void buildMapMenu() {
+    private static void buildMapMenu() {
         builder.addTool("Tool");
         builder.addSubmenu("Load");
         LoadedMap map = Maud.getModel().getMap();
@@ -718,7 +718,7 @@ public class BuildMenus {
     /**
      * Build a Material menu.
      */
-    private void buildMaterialMenu() {
+    private static void buildMaterialMenu() {
         builder.addTool("Tool");
 
         Cgm target = Maud.getModel().getTarget();
@@ -746,7 +746,7 @@ public class BuildMenus {
     /**
      * Build a Settings menu.
      */
-    private void buildSettingsMenu() {
+    private static void buildSettingsMenu() {
         builder.addTool("Tool");
         builder.addSubmenu("Add asset location");
         if (Maud.getModel().getLocations().hasRemovable()) {

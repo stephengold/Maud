@@ -45,6 +45,7 @@ import maud.model.cgm.SelectedAnimControl;
 import maud.model.cgm.SelectedSkeleton;
 import maud.model.cgm.SelectedTrack;
 import maud.model.cgm.TrackItem;
+import maud.tool.EditorTools;
 
 /**
  * Animation/track menus in Maud's editor screen.
@@ -280,15 +281,15 @@ public class AnimationMenus {
                     break;
 
                 case "Source tool":
-                    Maud.gui.tools.select("sourceAnimation");
+                    EditorTools.select("sourceAnimation");
                     break;
 
                 case "Tool":
-                    Maud.gui.tools.select("animation");
+                    EditorTools.select("animation");
                     break;
 
                 case "Tweening tool":
-                    Maud.gui.tools.select("tweening");
+                    EditorTools.select("tweening");
                     break;
 
                 case "Unload":
@@ -350,7 +351,7 @@ public class AnimationMenus {
                 break;
 
             case "Tool":
-                Maud.gui.tools.select("track");
+                EditorTools.select("track");
                 break;
 
             case "Translate for support":
@@ -467,7 +468,7 @@ public class AnimationMenus {
                 break;
 
             case "Extract sub-animation":
-                Maud.gui.tools.select("extract");
+                EditorTools.select("extract");
                 break;
 
             case "Mix tracks":
@@ -485,7 +486,7 @@ public class AnimationMenus {
                 break;
 
             case "Retarget source animation":
-                Maud.gui.tools.select("retarget");
+                EditorTools.select("retarget");
                 break;
 
             default:

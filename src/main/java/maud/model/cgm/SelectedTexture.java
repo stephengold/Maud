@@ -978,7 +978,7 @@ public class SelectedTexture implements JmeCloneable {
      * @param collection (not null, modified)
      * @param param (not null, unaffected)
      */
-    private void addTexture(Collection<Texture> collection, MatParam param) {
+    private static void addTexture(Collection<Texture> collection, MatParam param) {
         VarType varType = param.getVarType();
         switch (varType) {
             case Texture2D:
@@ -1061,7 +1061,7 @@ public class SelectedTexture implements JmeCloneable {
      * @param texture the texture to find (may be null, unaffected)
      * @return true if referenced, otherwise false
      */
-    private boolean referencesTexture(MatParam param, Texture texture) {
+    private static boolean referencesTexture(MatParam param, Texture texture) {
         boolean result = false;
 
         VarType varType = param.getVarType();

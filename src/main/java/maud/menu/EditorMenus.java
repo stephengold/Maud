@@ -39,6 +39,7 @@ import maud.model.EditableMap;
 import maud.model.History;
 import maud.model.cgm.CgmOutputFormat;
 import maud.model.cgm.SelectedTexture;
+import maud.tool.EditorTools;
 
 /**
  * Menus in Maud's editor screen (utility class).
@@ -322,7 +323,7 @@ public class EditorMenus {
                 History.clear();
                 break;
             case "Tool":
-                Maud.gui.tools.select("history");
+                EditorTools.select("history");
                 break;
             default:
                 handled = false;
@@ -362,10 +363,10 @@ public class EditorMenus {
                 EditorDialogs.saveMap("Save", actionPrefix);
                 break;
             case "Tool":
-                Maud.gui.tools.select("mapping");
+                EditorTools.select("mapping");
                 break;
             case "Twist tool":
-                Maud.gui.tools.select("twist");
+                EditorTools.select("twist");
                 break;
             case "Unload":
                 map.unload();
@@ -399,11 +400,11 @@ public class EditorMenus {
                 break;
 
             case "Texture tool":
-                Maud.gui.tools.select("texture");
+                EditorTools.select("texture");
                 break;
 
             case "Tool":
-                Maud.gui.tools.select("material");
+                EditorTools.select("material");
                 break;
 
             default:
@@ -432,7 +433,7 @@ public class EditorMenus {
                 break;
 
             case "Dump tool":
-                Maud.gui.tools.select("dump");
+                EditorTools.select("dump");
                 break;
 
             case "Hotkeys":
@@ -456,11 +457,11 @@ public class EditorMenus {
                 break;
 
             case "Tool":
-                Maud.gui.tools.select("settings");
+                EditorTools.select("settings");
                 break;
 
             case "Tweening tool":
-                Maud.gui.tools.select("tweening");
+                EditorTools.select("tweening");
                 break;
 
             case "Update startup script":

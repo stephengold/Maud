@@ -88,7 +88,7 @@ public class CameraOptions implements Cloneable {
      * @param angle desired elevation angle (in radians)
      * @return clamped angle (in radians)
      */
-    public float clampElevation(float angle) {
+    public static float clampElevation(float angle) {
         float result;
         result = FastMath.clamp(angle, minElevationAngle, maxElevationAngle);
         return result;
@@ -118,7 +118,7 @@ public class CameraOptions implements Cloneable {
      *
      * @return angle (in degrees of arc, &gt;0, &lt;180)
      */
-    public float getFrustumYDegrees() {
+    public static float getFrustumYDegrees() {
         assert frustumYDegrees > 0f : frustumYDegrees;
         assert frustumYDegrees < 180f : frustumYDegrees;
         return frustumYDegrees;
@@ -129,7 +129,7 @@ public class CameraOptions implements Cloneable {
      *
      * @return tangent of 1/2 the vertical angle (&gt;0)
      */
-    public float getFrustumYHalfTangent() {
+    public static float getFrustumYHalfTangent() {
         float yRadians = MyMath.toRadians(frustumYDegrees);
         float tangent = FastMath.tan(yRadians / 2f);
 

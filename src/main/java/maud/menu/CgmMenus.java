@@ -33,6 +33,7 @@ import maud.dialog.EditorDialogs;
 import maud.model.EditorModel;
 import maud.model.cgm.CgmOutputFormat;
 import maud.model.cgm.SelectedSpatial;
+import maud.tool.EditorTools;
 
 /**
  * Menus in Maud's editor screen that deal with computer-graphics models.
@@ -112,7 +113,7 @@ public class CgmMenus {
                 break;
 
             case "History":
-                Maud.gui.tools.select("history");
+                EditorTools.select("history");
                 break;
 
             case "Load":
@@ -134,7 +135,7 @@ public class CgmMenus {
                 break;
 
             case "Tool":
-                Maud.gui.tools.select("cgm");
+                EditorTools.select("cgm");
                 break;
 
             case "Unload source model":

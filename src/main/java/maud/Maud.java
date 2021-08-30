@@ -397,7 +397,7 @@ public class Maud extends GuiApplication {
     /**
      * If confirmed, terminate the application.
      */
-    private void quitUnconfirmed() {
+    private static void quitUnconfirmed() {
         EditState cgmEditState = editorModel.getTarget().getEditState();
         int cgmEdits = cgmEditState.countUnsavedEdits();
 

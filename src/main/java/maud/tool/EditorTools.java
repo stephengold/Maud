@@ -218,7 +218,7 @@ public class EditorTools {
      *
      * @param toolName which tool to select (not null, not empty)
      */
-    public void select(String toolName) {
+    public static void select(String toolName) {
         Validate.nonEmpty(toolName, "tool name");
 
         Tool tool = Maud.gui.findTool(toolName);
