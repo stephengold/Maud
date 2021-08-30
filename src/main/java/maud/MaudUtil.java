@@ -32,7 +32,6 @@ import com.jme3.anim.AnimTrack;
 import com.jme3.anim.Armature;
 import com.jme3.anim.Joint;
 import com.jme3.anim.MorphTrack;
-import com.jme3.anim.SkinningControl;
 import com.jme3.anim.TransformTrack;
 import com.jme3.anim.util.HasLocalTransform;
 import com.jme3.animation.Animation;
@@ -446,7 +445,7 @@ public class MaudUtil {
 
     /**
      * For the specified camera ray, find the nearest collision involving a
-     * triangle facing the camera.  Geometries with CullHint.Always are ignored.
+     * triangle facing the camera. Geometries with CullHint.Always are ignored.
      *
      * @param subtree collidable subtree of the scene graph (not null,
      * unaffected)
@@ -1151,43 +1150,6 @@ public class MaudUtil {
         }
 
         return result;
-    }
-
-    /**
-     * Enumerate all Armature instances in the specified subtree of a scene
-     * graph. Note: recursive! TODO use MySkeleton
-     *
-     * @param subtree (not null, aliases created)
-     * @param addResult storage for results (added to if not null)
-     * @return an expanded list (either storeResult or a new instance)
-     */
-    public static List<Armature> listArmatures(Spatial subtree,
-            List<Armature> addResult) {
-        Validate.nonNull(subtree, "subtree");
-        if (addResult == null) {
-            addResult = new ArrayList<>(4);
-        }
-
-        int numSgcs = subtree.getNumControls();
-        for (int sgcIndex = 0; sgcIndex < numSgcs; ++sgcIndex) {
-            Control sgc = subtree.getControl(sgcIndex);
-            if (sgc instanceof SkinningControl) {
-                Armature armature = ((SkinningControl) sgc).getArmature();
-                if (armature != null && !addResult.contains(armature)) {
-                    addResult.add(armature);
-                }
-            }
-        }
-
-        if (subtree instanceof Node) {
-            Node node = (Node) subtree;
-            List<Spatial> children = node.getChildren();
-            for (Spatial child : children) {
-                listArmatures(child, addResult);
-            }
-        }
-
-        return addResult;
     }
 
     /**

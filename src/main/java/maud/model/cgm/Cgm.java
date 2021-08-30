@@ -364,7 +364,7 @@ public class Cgm implements Cloneable {
         int count = 0;
         if (isLoaded()) {
             List<Skeleton> list = MySkeleton.listSkeletons(rootSpatial, null);
-            List<Armature> aList = MaudUtil.listArmatures(rootSpatial, null);
+            List<Armature> aList = MySkeleton.listArmatures(rootSpatial, null);
             count = list.size() + aList.size();
         }
 
