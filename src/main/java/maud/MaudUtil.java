@@ -718,7 +718,7 @@ public class MaudUtil {
      * @param normalBufferType (Normal or BindPoseNormal)
      * @param positionBufferType (Position or BindPosePosition)
      * @param algorithm which algorithm to use (not null)
-     * @return a new instance
+     * @return a new Mesh
      */
     public static Mesh generateNormals(Mesh mesh,
             VertexBuffer.Type normalBufferType,
@@ -739,6 +739,10 @@ public class MaudUtil {
             case Facet: // NOTE: fail if expansion is needed in this case!
                 generateFacetNormals(result, normalBufferType,
                         positionBufferType);
+                break;
+
+            case None:
+                mesh.clearBuffer(normalBufferType);
                 break;
 
             case Smooth:

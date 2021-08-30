@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020, Stephen Gold
+ Copyright (c) 2020-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -28,6 +28,7 @@ package maud;
 
 /**
  * Enumerate algorithms for auto-generating mesh normals from position data.
+ * TODO use Heart library
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -40,11 +41,15 @@ public enum MeshNormals {
      */
     Facet,
     /**
+     * no normals (delete if present)
+     */
+    None,
+    /**
      * smoothed normals
      */
     Smooth,
     /**
-     * sphere normals
+     * sphere normals (normal direction is determined by position)
      */
     Sphere;
 }
