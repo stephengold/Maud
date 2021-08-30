@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -148,7 +148,7 @@ public class SceneView extends SceneViewCore {
         logger.log(Level.INFO, "");
         Validate.nonNull(physicsControl, "physics control");
 
-        PhysicsControl copy = (PhysicsControl) Heart.deepCopy(physicsControl);
+        PhysicsControl copy = Heart.deepCopy(physicsControl);
         if (copy instanceof RigidBodyControl) {
             /*
              * Force kinematic mode for visualization purposes.

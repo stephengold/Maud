@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018-2020, Stephen Gold
+ Copyright (c) 2018-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -178,7 +178,7 @@ public class SelectedLink implements JmeCloneable {
     public void createAttachmentLink() {
         String boneName = editableCgm.getBone().name();
         Spatial cgmRoot = Maud.getModel().getSource().getRootSpatial();
-        Spatial cloneCgm = (Spatial) Heart.deepCopy(cgmRoot);
+        Spatial cloneCgm = Heart.deepCopy(cgmRoot);
         editableCgm.attachBone(boneName, cloneCgm);
         select("Attachment:" + boneName);
     }

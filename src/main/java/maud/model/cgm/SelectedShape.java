@@ -624,7 +624,7 @@ public class SelectedShape implements JmeCloneable {
         assert newShape != null;
         assert !(newShape instanceof CompoundCollisionShape);
 
-        CollisionShape cloneShape = (CollisionShape) Heart.deepCopy(newShape);
+        CollisionShape cloneShape = Heart.deepCopy(newShape);
         CgmPhysics physics = cgm.getPhysics();
 
         History.autoAdd();
@@ -649,7 +649,7 @@ public class SelectedShape implements JmeCloneable {
         assert eventDescription != null;
         assert !eventDescription.isEmpty();
 
-        CollisionShape cloneShape = (CollisionShape) Heart.deepCopy(newShape);
+        CollisionShape cloneShape = Heart.deepCopy(newShape);
         CgmPhysics physics = cgm.getPhysics();
 
         History.autoAdd();
