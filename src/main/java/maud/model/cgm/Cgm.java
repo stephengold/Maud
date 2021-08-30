@@ -315,21 +315,6 @@ public class Cgm implements Cloneable {
     }
 
     /**
-     * Count scene-graph controls of the specified type in the C-G model. TODO
-     * re-order methods
-     *
-     * @param <T> superclass of Control
-     * @param controlType superclass of Control to search for
-     * @return number found (&ge;0)
-     */
-    public <T extends Control> int countSgcs(Class<T> controlType) {
-        int count = MySpatial.countControls(rootSpatial, controlType);
-
-        assert count >= 0 : count;
-        return count;
-    }
-
-    /**
      * Count material instances in the C-G model.
      *
      * @return number found (&ge;0)
@@ -350,6 +335,21 @@ public class Cgm implements Cloneable {
     public int countMeshes() {
         List<Mesh> list = MyMesh.listMeshes(rootSpatial, null);
         int count = list.size();
+
+        assert count >= 0 : count;
+        return count;
+    }
+
+    /**
+     * Count scene-graph controls of the specified type in the C-G model. TODO
+     * re-order methods
+     *
+     * @param <T> superclass of Control
+     * @param controlType superclass of Control to search for
+     * @return number found (&ge;0)
+     */
+    public <T extends Control> int countSgcs(Class<T> controlType) {
+        int count = MySpatial.countControls(rootSpatial, controlType);
 
         assert count >= 0 : count;
         return count;
