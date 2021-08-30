@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -292,6 +292,29 @@ public class BoneMenus {
                 }
             }
             builder.show(ActionPrefix.selectBoneChild);
+        }
+    }
+
+    /**
+     * Handle a "select (source)skeleton" action without an argument.
+     *
+     * @param cgm which load slot (not null)
+     */
+    public static void selectSkeleton(Cgm cgm) {
+        if (cgm.isLoaded()) {
+            MenuBuilder builder = new MenuBuilder();
+            List<String> names = cgm.listSkeletonNames();
+            for (String name : names) {
+                builder.add(name);
+            }
+
+            if (cgm == Maud.getModel().getTarget()) {
+                builder.show(ActionPrefix.selectSkeleton);
+//            } else if (cgm == Maud.getModel().getSource()) {
+//                builder.show(ActionPrefix.selectSourceSkeleton);
+            } else {
+                throw new IllegalArgumentException();
+            }
         }
     }
 

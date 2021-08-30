@@ -442,6 +442,10 @@ public class ActionPrefix {
      */
     final public static String selectShapeUser = "select shapeUser ";
     /**
+     * arguments are a description and a deduplication index
+     */
+    final public static String selectSkeleton = "select skeleton ";
+    /**
      * argument is the name of a SkeletonColors
      */
     final public static String selectSkeletonColor = "select skeletonColor ";

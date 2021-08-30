@@ -343,9 +343,28 @@ Approximate minimum screen size: 640x480
 
             <control name="window" id="boneTool" title="Bone Tool"
                      hideOnClose="true"
-                     height="220px" width="270px" x="205" y="65">
+                     height="248px" width="270px" x="205" y="65">
                 <panel childLayout="vertical">
                     <panel height="3px"/>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="button" id="skeletonPreviousButton"
+                                 width="20px">
+                            <interact onRelease="perform(previous skeleton)"/>
+                        </control>
+                        <control name="label" id="skeletonIndex"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="110px"/>
+                        <control name="button" id="skeletonNextButton"
+                                 width="20px">
+                            <interact onRelease="perform(next skeleton)"/>
+                        </control>
+                        <panel/>
+                        <control name="button" id="skeletonSelectButton"
+                                 width="120px">
+                            <interact onRelease="perform(select skeleton)"/>
+                        </control>
+                    </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="button" id="bonePreviousButton"
                                  width="20px">

@@ -245,6 +245,7 @@ public class Action {
     final static String selectShapeChild = "select shapeChild";
     final static String selectShapeParm = "select shapeParm";
     final static String selectShapeUser = "select shapeUser";
+    final static String selectSkeleton = "select skeleton";
     final static String selectSkeletonColor = "select skeletonColor";
     final static String selectSourceAnimControl = "select sourceAnimControl";
     final static String selectSourceBone = "select sourceBone";

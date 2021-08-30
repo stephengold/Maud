@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -36,6 +36,7 @@ import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.LoadedAnimation;
 import maud.model.cgm.SelectedBone;
+import maud.model.cgm.SelectedSkeleton;
 
 /**
  * The controller for the "Bone" tool in Maud's editor screen.
@@ -73,6 +74,7 @@ class BoneTool extends Tool {
     @Override
     protected void toolUpdate() {
         updateChildren();
+        updateControlIndex();
         updateHasTrack();
         updateIndex();
         updateInfluence();
@@ -106,6 +108,48 @@ class BoneTool extends Tool {
 
         setButtonText("boneSelectChild", button);
         setStatusText("boneChildren", " " + status);
+    }
+
+    /**
+     * Update the skeleton control index status and previous/next/select
+     * buttons.
+     */
+    private void updateControlIndex() {
+        String indexStatus;
+        String selectButton = "";
+        String nextButton = "";
+        String previousButton = "";
+
+        Cgm cgm = Maud.getModel().getTarget();
+        int numSkeletons = cgm.countSkeletons();
+        if (numSkeletons > 0) {
+            selectButton = "Select armature";
+            SelectedSkeleton skeleton = cgm.getSkeleton();
+            if (skeleton.isSelected()) {
+                int selectedIndex = skeleton.findIndex();
+                indexStatus
+                        = DescribeUtil.index(selectedIndex, numSkeletons);
+                if (numSkeletons > 1) {
+                    nextButton = "+";
+                    previousButton = "-";
+                }
+            } else {
+                if (numSkeletons == 1) {
+                    indexStatus = "one armature";
+                } else {
+                    indexStatus
+                            = String.format("%d armatures", numSkeletons);
+                }
+            }
+
+        } else {
+            indexStatus = "not skinned";
+        }
+
+        setButtonText("skeletonPrevious", previousButton);
+        setStatusText("skeletonIndex", indexStatus);
+        setButtonText("skeletonNext", nextButton);
+        setButtonText("skeletonSelect", selectButton);
     }
 
     /**
