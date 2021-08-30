@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -375,12 +375,12 @@ public class SelectedSpatial implements JmeCloneable {
                     gInParent);
 
             Quaternion gInPRot = gInParent.getRotation();
-            MaudUtil.rotateBuffer(mesh, VertexBuffer.Type.BindPoseNormal,
+            MyMesh.rotateBuffer(mesh, VertexBuffer.Type.BindPoseNormal,
                     gInPRot);
-            MaudUtil.rotateBuffer(mesh, VertexBuffer.Type.Normal, gInPRot);
-            MaudUtil.rotateTangentBuffer(mesh,
+            MyMesh.rotateBuffer(mesh, VertexBuffer.Type.Normal, gInPRot);
+            MyMesh.rotateTangentBuffer(mesh,
                     VertexBuffer.Type.BindPoseTangent, gInPRot);
-            MaudUtil.rotateTangentBuffer(mesh, VertexBuffer.Type.Tangent,
+            MyMesh.rotateTangentBuffer(mesh, VertexBuffer.Type.Tangent,
                     gInPRot);
             // TODO binormal?
 
