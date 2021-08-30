@@ -360,8 +360,7 @@ public class MaudUtil {
     }
 
     /**
-     * Describe a track's type with a single character. TODO merge to
-     * MyAnimation
+     * Describe a track's type with a single character. TODO use MyAnimation
      *
      * @param track the track to describe (may be null, unaffected)
      * @return a mnemonic character
@@ -1129,7 +1128,7 @@ public class MaudUtil {
     }
 
     /**
-     * Mirror the specified Quaternion along the indexed axis. TODO move to
+     * Mirror the specified Quaternion along the indexed axis. TODO use
      * MyQuaternion
      *
      * @param input the Quaternion to mirror (not null, unaffected)
