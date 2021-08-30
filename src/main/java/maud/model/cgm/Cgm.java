@@ -1049,6 +1049,55 @@ public class Cgm implements Cloneable {
     }
 
     /**
+     * Enumerate all skeletons in the same order as listSkeletonNames().
+     *
+     * @return a new list of instances
+     */
+    List<Object> listSkeletons() {
+        if (rootSpatial == null) {
+            return new ArrayList<>(0);
+        }
+        List<Armature> armatures = MySkeleton.listArmatures(rootSpatial, null);
+        List<Skeleton> skeletons = MySkeleton.listSkeletons(rootSpatial, null);
+
+        int total = armatures.size() + skeletons.size();
+        List<Object> result = new ArrayList<>(total);
+        result.addAll(armatures);
+        result.addAll(skeletons);
+
+        assert result.size() == total;
+        return result;
+    }
+
+    /**
+     * Enumerate all skeletons and assign them names.
+     *
+     * @return a new list of names
+     */
+    public List<String> listSkeletonNames() {
+        List<Object> list = listSkeletons();
+        int count = list.size();
+        List<String> result = new ArrayList<>(count);
+
+        for (int listIndex = 0; listIndex < count; ++listIndex) {
+            Object skeleton = list.get(listIndex);
+            String description;
+            if (skeleton instanceof Armature) {
+                int numJoints = ((Armature) skeleton).getJointCount();
+                description = String.format("Armature[%d]", numJoints);
+            } else {
+                int numBones = ((Skeleton) skeleton).getBoneCount();
+                description = String.format("Skeleton[%d]", numBones);
+            }
+            result.add(description);
+        }
+        MyString.dedup(result, " #");
+
+        assert result.size() == count;
+        return result;
+    }
+
+    /**
      * Enumerate named spatials whose names begin with the specified prefix.
      *
      * @param prefix which name prefix (not null, may be empty)
