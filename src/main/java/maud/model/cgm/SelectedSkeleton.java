@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -59,9 +59,10 @@ import maud.view.scene.SceneView;
 /**
  * The MVC model of a selected Armature or Skeleton in the Maud application.
  *
- * If the selected S-G control is a SkeletonControl or AnimControl, use that
- * control's skeleton, otherwise use the skeleton of the first SkeletonControl
- * or AnimControl in the C-G model's root spatial.
+ * If the selected S-G control is a AnimControl, SkeletonControl, or
+ * SkinningControl, use that control's skeleton, otherwise use the skeleton of
+ * the first AnimControl, SkeletonControl, or SkinningControl in the C-G model's
+ * root spatial.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -240,7 +241,7 @@ public class SelectedSkeleton implements JmeCloneable {
     }
 
     /**
-     * Find a geometry that is animated by the selected skeleton control.
+     * Find a Geometry that is animated by the selected skeleton control.
      *
      * @return the tree position, or null if none found
      */
@@ -256,7 +257,26 @@ public class SelectedSkeleton implements JmeCloneable {
     }
 
     /**
-     * Find the spatial associated with the selected skeleton.
+     * Find the index of the selected skeleton, if any.
+     *
+     * @return index, or -1 if no skeleton is selected
+     */
+    public int findIndex() {
+        int result;
+        Object skeleton = find();
+        if (skeleton == null) {
+            result = -1;
+        } else {
+            List<Object> list = cgm.listSkeletons();
+            result = list.indexOf(skeleton);
+            assert result != -1;
+        }
+
+        return result;
+    }
+
+    /**
+     * Find the Spatial associated with the selected skeleton.
      *
      * @return the pre-existing instance, or null if none selected
      */
@@ -817,6 +837,23 @@ public class SelectedSkeleton implements JmeCloneable {
             view.setSkeleton(foundSkeleton, selectedSgcFlag[0]);
             last = foundSkeleton;
         }
+    }
+
+    /**
+     * Select an skeleton by name.
+     *
+     * @param name which skeleton to select (not null, not empty)
+     */
+    public void select(String name) {
+        Validate.nonEmpty(name, "name");
+
+        List<String> names = cgm.listSkeletonNames();
+        int index = names.indexOf(name);
+        assert index != -1;
+        List<Object> list = cgm.listSkeletons();
+        Object skeleton = list.get(index);
+        boolean success = cgm.getSgc().selectSkeleton(skeleton);
+        assert success : name;
     }
 
     /**

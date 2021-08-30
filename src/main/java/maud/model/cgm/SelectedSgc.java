@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -26,6 +26,11 @@
  */
 package maud.model.cgm;
 
+import com.jme3.anim.Armature;
+import com.jme3.anim.SkinningControl;
+import com.jme3.animation.AnimControl;
+import com.jme3.animation.Skeleton;
+import com.jme3.animation.SkeletonControl;
 import com.jme3.bullet.animation.DynamicAnimControl;
 import com.jme3.bullet.animation.TorsoLink;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
@@ -391,6 +396,47 @@ public class SelectedSgc implements JmeCloneable {
             Control sgc = sgcs.get(newIndex);
             select(sgc);
         }
+    }
+
+    /**
+     * Select an S-G control with the specified Armature or Skeleton.
+     *
+     * @param skeleton which Armature or Skeleton to find (not null)
+     * @return true if successful, otherwise false
+     */
+    boolean selectSkeleton(Object skeleton) {
+        Validate.nonNull(skeleton, "skeleton");
+
+        List<SkinningControl> skinningControlList
+                = cgm.listSgcs(SkinningControl.class);
+        for (SkinningControl skinningControl : skinningControlList) {
+            Armature armature = skinningControl.getArmature();
+            if (skeleton == armature) {
+                select(skinningControl);
+                return true;
+            }
+        }
+
+        List<AnimControl> animControlList = cgm.listSgcs(AnimControl.class);
+        for (AnimControl animControl : animControlList) {
+            Skeleton sk = animControl.getSkeleton();
+            if (skeleton == sk) {
+                select(animControl);
+                return true;
+            }
+        }
+
+        List<SkeletonControl> skeletonControlList
+                = cgm.listSgcs(SkeletonControl.class);
+        for (SkeletonControl skeletonControl : skeletonControlList) {
+            Skeleton sk = skeletonControl.getSkeleton();
+            if (skeleton == sk) {
+                select(skeletonControl);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
