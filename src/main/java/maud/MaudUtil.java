@@ -446,7 +446,7 @@ public class MaudUtil {
 
     /**
      * For the specified camera ray, find the nearest collision involving a
-     * triangle facing the camera.
+     * triangle facing the camera.  Geometries with CullHint.Always are ignored.
      *
      * @param subtree collidable subtree of the scene graph (not null,
      * unaffected)
@@ -466,10 +466,15 @@ public class MaudUtil {
          * so the first result is also the nearest one.
          */
         for (int resultIndex = 0; resultIndex < results.size(); resultIndex++) {
+            CollisionResult result = results.getCollision(resultIndex);
+            Geometry geometry = result.getGeometry();
+            Spatial.CullHint cull = geometry.getCullHint();
+            if (cull == Spatial.CullHint.Always) {
+                continue;
+            }
             /*
              * Calculate the offset from the camera to the point of contact.
              */
-            CollisionResult result = results.getCollision(resultIndex);
             Vector3f contactPoint = result.getContactPoint();
             Vector3f offset = contactPoint.subtract(ray.origin);
             /*
