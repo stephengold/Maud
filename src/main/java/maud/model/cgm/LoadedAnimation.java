@@ -234,7 +234,7 @@ public class LoadedAnimation implements Cloneable {
             if (track == null) {
                 result.loadIdentity();
             } else {
-                double time = (double) cgm.getPlay().getTime();
+                double time = cgm.getPlay().getTime();
                 Transform local = new Transform();
                 track.getDataAtTime(time, local);
                 Pose pose = cgm.getPose().get();
@@ -856,11 +856,11 @@ public class LoadedAnimation implements Cloneable {
             Object[] tracks = getTracks();
             for (Object track : tracks) {
                 if (track instanceof BoneTrack) {
-                    String name = MyAnimation.getTargetName((BoneTrack) track,
+                    String name = MyAnimation.getTargetName((Track) track,
                             (AnimControl) control);
                     result.add(name);
                 } else if (track instanceof TransformTrack) {
-
+                    // TODO
                 }
             }
         }

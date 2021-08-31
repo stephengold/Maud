@@ -28,6 +28,7 @@ package maud.model.cgm;
 
 import com.jme3.anim.TransformTrack;
 import com.jme3.animation.BoneTrack;
+import com.jme3.animation.Track;
 import com.jme3.math.Transform;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
@@ -117,7 +118,7 @@ public class SelectedFrame implements Cloneable {
                 int boneIndex = sTrack.targetBoneIndex();
                 if (oldTrack instanceof BoneTrack) {
                     Transform user = pose.userTransform(boneIndex, null);
-                    newTrack = TrackEdit.replaceKeyframe((BoneTrack) oldTrack,
+                    newTrack = TrackEdit.replaceKeyframe((Track) oldTrack,
                             frameIndex, user);
                 } else {
                     Transform local = pose.localTransform(boneIndex, null);
