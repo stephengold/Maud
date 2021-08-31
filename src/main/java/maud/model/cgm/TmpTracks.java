@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020, Stephen Gold
+ Copyright (c) 2020-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -48,6 +48,14 @@ class TmpTracks {
      */
     final private static Logger logger
             = Logger.getLogger(TmpTracks.class.getName());
+    // *************************************************************************
+    // constructors
+
+    /**
+     * A private constructor to inhibit instantiation of this class.
+     */
+    private TmpTracks() {
+    }
     // *************************************************************************
     // fields
 
