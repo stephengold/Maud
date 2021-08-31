@@ -821,6 +821,11 @@ Approximate minimum screen size: 640x480
                                  backgroundColor="#ffff"
                                  textHAlign="center"
                                  width="40px"/>
+                        <control name="label" text="    Hidden:  "/>
+                        <control name="label" id="cgmHiddens"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="40px"/>
                     </panel>
                 </panel>
             </control>

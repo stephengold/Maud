@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -26,6 +26,7 @@
  */
 package maud.tool;
 
+import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
@@ -132,5 +133,11 @@ class CgmTool extends Tool {
         int numSkeletons = target.countSkeletons();
         String skeletonsText = Integer.toString(numSkeletons);
         setStatusText("cgmSkeletons", skeletonsText);
+        /*
+         * hidden spatials
+         */
+        int numHiddens = target.countHiddenSpatials(Spatial.class);
+        String hiddensText = Integer.toString(numHiddens);
+        setStatusText("cgmHiddens", hiddensText);
     }
 }
