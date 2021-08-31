@@ -337,6 +337,8 @@ public class SceneViewCore implements EditorView, JmeCloneable {
     /**
      * Count all light probes added using addLightProbe(), which may include one
      * that isn't yet ready.
+     * 
+     * @return the count (&ge;0)
      */
     public int countAddedLightProbes() {
         int result = addedProbes.size();
