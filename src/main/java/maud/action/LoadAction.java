@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import maud.Maud;
 import maud.menu.AnimationMenus;
+import maud.menu.BuildMenus;
 import maud.menu.CgmMenus;
 import maud.menu.EditorMenus;
 import maud.model.EditorModel;
@@ -131,12 +132,12 @@ class LoadAction {
 
         } else if (actionString.startsWith(ActionPrefix.loadCgmAsset)) {
             args = MyString.remainder(actionString, ActionPrefix.loadCgmAsset);
-            Maud.gui.buildMenus.loadCgmAsset(args, target);
+            BuildMenus.loadCgmAsset(args, target);
 
         } else if (actionString.startsWith(ActionPrefix.loadCgmLocator)) {
             spec = MyString.remainder(actionString,
                     ActionPrefix.loadCgmLocator);
-            Maud.gui.buildMenus.loadCgmLocator(spec, target);
+            BuildMenus.loadCgmLocator(spec, target);
 
         } else if (actionString.startsWith(ActionPrefix.loadCgmNamed)) {
             name = MyString.remainder(actionString, ActionPrefix.loadCgmNamed);
@@ -144,12 +145,12 @@ class LoadAction {
 
         } else if (actionString.startsWith(ActionPrefix.loadMapAsset)) {
             args = MyString.remainder(actionString, ActionPrefix.loadMapAsset);
-            Maud.gui.buildMenus.loadMapAsset(args);
+            BuildMenus.loadMapAsset(args);
 
         } else if (actionString.startsWith(ActionPrefix.loadMapLocator)) {
             spec = MyString.remainder(actionString,
                     ActionPrefix.loadMapLocator);
-            Maud.gui.buildMenus.loadMapLocator(spec);
+            BuildMenus.loadMapLocator(spec);
 
         } else if (actionString.startsWith(ActionPrefix.loadMapNamed)) {
             name = MyString.remainder(actionString,
@@ -164,12 +165,12 @@ class LoadAction {
         } else if (actionString.startsWith(ActionPrefix.loadSourceCgmAsset)) {
             args = MyString.remainder(actionString,
                     ActionPrefix.loadSourceCgmAsset);
-            Maud.gui.buildMenus.loadCgmAsset(args, source);
+            BuildMenus.loadCgmAsset(args, source);
 
         } else if (actionString.startsWith(ActionPrefix.loadSourceCgmLocator)) {
             spec = MyString.remainder(actionString,
                     ActionPrefix.loadSourceCgmLocator);
-            Maud.gui.buildMenus.loadCgmLocator(spec, source);
+            BuildMenus.loadCgmLocator(spec, source);
 
         } else if (actionString.startsWith(ActionPrefix.loadSourceCgmNamed)) {
             name = MyString.remainder(actionString,
@@ -179,12 +180,12 @@ class LoadAction {
         } else if (actionString.startsWith(ActionPrefix.loadTextureAsset)) {
             args = MyString.remainder(actionString,
                     ActionPrefix.loadTextureAsset);
-            Maud.gui.buildMenus.loadTextureAsset(args);
+            BuildMenus.loadTextureAsset(args);
 
         } else if (actionString.startsWith(ActionPrefix.loadTextureLocator)) {
             spec = MyString.remainder(actionString,
                     ActionPrefix.loadTextureLocator);
-            Maud.gui.buildMenus.loadTextureLocator(spec);
+            BuildMenus.loadTextureLocator(spec);
 
         } else {
             handled = false;

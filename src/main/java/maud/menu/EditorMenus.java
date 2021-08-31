@@ -424,8 +424,7 @@ public class EditorMenus {
         boolean handled = true;
         switch (remainder) {
             case "Add asset location":
-                BuildMenus bm = new BuildMenus();
-                bm.addAssetLocation();
+                BuildMenus.addAssetLocation();
                 break;
 
             case "Display settings":

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -35,6 +35,7 @@ import maud.MeshNormals;
 import maud.ShapeType;
 import maud.dialog.EditorDialogs;
 import maud.menu.AnimationMenus;
+import maud.menu.BuildMenus;
 import maud.menu.EnumMenus;
 import maud.menu.ShowMenus;
 import maud.model.EditorModel;
@@ -203,7 +204,7 @@ class NewAction {
         if (actionString.startsWith(ActionPrefix.newAssetLocation)) {
             String path = MyString.remainder(actionString,
                     ActionPrefix.newAssetLocation);
-            Maud.gui.buildMenus.newAssetLocation(path);
+            BuildMenus.newAssetLocation(path);
 
         } else if (actionString.startsWith(ActionPrefix.newAssetLocationSpec)) {
             String spec = MyString.remainder(actionString,
