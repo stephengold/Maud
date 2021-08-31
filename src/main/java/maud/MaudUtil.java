@@ -88,8 +88,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
 import jme3utilities.MyMesh;
-import static jme3utilities.MyMesh.hasIndices;
-import static jme3utilities.MyMesh.vpt;
 import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
@@ -840,7 +838,7 @@ public class MaudUtil {
             VertexBuffer.Type normalBufferType,
             VertexBuffer.Type positionBufferType) {
         assert mesh.getMode() == Mesh.Mode.Triangles : mesh.getMode();
-        assert !hasIndices(mesh);
+        assert !MyMesh.hasIndices(mesh);
 
         FloatBuffer positionBuffer = mesh.getFloatBuffer(positionBufferType);
         int numFloats = positionBuffer.limit();
@@ -853,16 +851,16 @@ public class MaudUtil {
         Vector3f pos2 = new Vector3f();
         Vector3f pos3 = new Vector3f();
 
-        int numTriangles = numFloats / vpt / numAxes;
+        int numTriangles = numFloats / MyMesh.vpt / numAxes;
         for (int triIndex = 0; triIndex < numTriangles; ++triIndex) {
-            int trianglePosition = triIndex * vpt * numAxes;
+            int trianglePosition = triIndex * MyMesh.vpt * numAxes;
             MyBuffer.get(positionBuffer, trianglePosition, pos1);
             MyBuffer.get(positionBuffer, trianglePosition + numAxes, pos2);
             MyBuffer.get(positionBuffer, trianglePosition + 2 * numAxes, pos3);
             triangle.set(pos1, pos2, pos3);
 
             Vector3f normal = triangle.getNormal();
-            for (int j = 0; j < vpt; ++j) {
+            for (int j = 0; j < MyMesh.vpt; ++j) {
                 normalBuffer.put(normal.x);
                 normalBuffer.put(normal.y);
                 normalBuffer.put(normal.z);
