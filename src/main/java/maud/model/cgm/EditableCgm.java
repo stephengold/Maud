@@ -993,6 +993,24 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
+     * Alter the cull hints of all spatials in the CGM.
+     *
+     * @param newHint new value for cull hint (not null)
+     */
+    public void setCullHintAll(Spatial.CullHint newHint) {
+        Validate.nonNull(newHint, "cull hint");
+
+        if (rootSpatial != null) {
+            History.autoAdd();
+            int numChanges = setCullHintRecursive(rootSpatial, newHint);
+            String description = String.format(
+                    "set cull hint of %d spatial%s to %s",
+                    numChanges, (numChanges == 1) ? "" : "s", newHint);
+            editState.setEdited(description);
+        }
+    }
+
+    /**
      * Alter the depth-test setting of the selected material.
      *
      * @param newState true &rarr; enable test, false &rarr; disable it
@@ -1704,5 +1722,39 @@ public class EditableCgm extends LoadedCgm {
             }
             editState.setEdited(description);
         }
+    }
+
+    /**
+     * Alter the cull hints of all spatials in the specified subtree of the CGM.
+     * Note: recursive!
+     *
+     * @param subtree the subtree to modify not null)
+     * @param newHint new value for cull hint (not null)
+     * @return the number of spatials modified (&ge;0)
+     */
+    private int setCullHintRecursive(Spatial subtree,
+            Spatial.CullHint newHint) {
+        int result;
+
+        Spatial.CullHint oldHint = subtree.getLocalCullHint();
+        if (oldHint == newHint) {
+            result = 0;
+        } else {
+            subtree.setCullHint(newHint);
+            List<Integer> treePosition = findSpatial(subtree);
+            getSceneView().setCullHint(treePosition, newHint);
+            result = 1;
+        }
+
+        if (subtree instanceof Node) {
+            Node node = (Node) subtree;
+            List<Spatial> children = node.getChildren();
+            for (Spatial child : children) {
+                result += setCullHintRecursive(child, newHint);
+            }
+        }
+
+        assert result >= 0 : result;
+        return result;
     }
 }

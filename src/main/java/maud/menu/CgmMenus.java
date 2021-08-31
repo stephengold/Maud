@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -26,12 +26,14 @@
  */
 package maud.menu;
 
+import com.jme3.scene.Spatial;
 import java.util.logging.Logger;
 import maud.Maud;
 import maud.action.ActionPrefix;
 import maud.dialog.EditorDialogs;
 import maud.model.EditorModel;
 import maud.model.cgm.CgmOutputFormat;
+import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedSpatial;
 import maud.tool.EditorTools;
 
@@ -78,6 +80,16 @@ public class CgmMenus {
             }
             builder.add("Unload source model");
         }
+
+        EditableCgm target = model.getTarget();
+        int numSpatials = target.countSpatials(Spatial.class);
+        int numInherits
+                = target.countSpatials(Spatial.class, Spatial.CullHint.Inherit);
+        assert numInherits <= numSpatials;
+        boolean allInherit = (numInherits == numSpatials);
+        if (!allInherit) {
+            builder.addEdit("Reset cull hints to Inherit");
+        }
     }
 
     /**
@@ -103,6 +115,9 @@ public class CgmMenus {
      * @return true if the action is handled, otherwise false
      */
     static boolean menuCgm(String remainder) {
+        EditorModel model = Maud.getModel();
+        EditableCgm target = model.getTarget();
+
         String actionPrefix;
         boolean handled = true;
         switch (remainder) {
@@ -125,7 +140,11 @@ public class CgmMenus {
                 break;
 
             case "Merge source model":
-                Maud.getModel().getTarget().getSpatial().attachClone();
+                target.getSpatial().attachClone();
+                break;
+
+            case "Reset cull hints to Inherit":
+                target.setCullHintAll(Spatial.CullHint.Inherit);
                 break;
 
             case "Save":
@@ -139,7 +158,7 @@ public class CgmMenus {
                 break;
 
             case "Unload source model":
-                Maud.getModel().getSource().unload();
+                model.getSource().unload();
                 break;
 
             default:
