@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -27,6 +27,7 @@
 package maud.tool;
 
 import com.jme3.material.RenderState;
+import com.jme3.scene.Geometry;
 import com.jme3.shader.VarType;
 import java.util.List;
 import java.util.logging.Logger;
@@ -135,7 +136,7 @@ class MaterialTool extends Tool {
         String nextButton = "", previousButton = "";
 
         Cgm target = Maud.getModel().getTarget();
-        int numMaterials = target.countGeometries();
+        int numMaterials = target.countSpatials(Geometry.class);
         SelectedSpatial selected = target.getSpatial();
         int selectedIndex = selected.findGeometryIndex();
         if (selectedIndex >= 0) {
