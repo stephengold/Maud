@@ -743,7 +743,7 @@ Approximate minimum screen size: 640x480
 
             <control name="window" id="cgmTool" title="Model Tool"
                      hideOnClose="true"
-                     height="160px" width="440px" x="175" y="95">
+                     height="160px" width="540px" x="55" y="95">
                 <panel childLayout="vertical">
                     <panel height="4px"/>
                     <panel childLayout="horizontal" height="28px">
