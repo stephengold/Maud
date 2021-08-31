@@ -517,14 +517,22 @@ public class SceneView extends SceneViewCore {
     }
 
     /**
-     * Alter the cull hint of the selected spatial.
+     * Alter the cull hint of the specified Spatial.
      *
+     * @param treePosition tree position of the Spatial to modify (not null,
+     * unaffected)
      * @param newHint new value for cull hint (not null)
      */
-    public void setCullHint(Spatial.CullHint newHint) {
+    public void setCullHint(List<Integer> treePosition,
+            Spatial.CullHint newHint) {
+        Validate.nonNull(treePosition, "tree position");
         Validate.nonNull(newHint, "cull hint");
 
-        Spatial spatial = selectedSpatial();
+        Spatial spatial = getCgmRoot();
+        for (int childPosition : treePosition) {
+            Node node = (Node) spatial;
+            spatial = node.getChild(childPosition);
+        }
         spatial.setCullHint(newHint);
     }
 

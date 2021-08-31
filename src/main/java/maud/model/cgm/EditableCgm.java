@@ -981,9 +981,11 @@ public class EditableCgm extends LoadedCgm {
         Spatial modelSpatial = getSpatial().find();
         Spatial.CullHint oldHint = modelSpatial.getLocalCullHint();
         if (oldHint != newHint) {
+            List<Integer> treePosition = findSpatial(modelSpatial);
+            assert treePosition != null;
             History.autoAdd();
             modelSpatial.setCullHint(newHint);
-            getSceneView().setCullHint(newHint);
+            getSceneView().setCullHint(treePosition, newHint);
             String description = String.format(
                     "set cull hint of spatial to %s", newHint);
             editState.setEdited(description);
