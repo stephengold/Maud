@@ -298,19 +298,6 @@ public class Cgm implements Cloneable {
     }
 
     /**
-     * Count hidden spatials of the specified type in the C-G model.
-     *
-     * @return the number found (&ge;0)
-     */
-    public <T extends Spatial> int countHiddenSpatials(Class<T> spatialType) {
-        int count = MaudUtil.countSpatials(rootSpatial, spatialType,
-                Spatial.CullHint.Always);
-
-        assert count >= 0 : count;
-        return count;
-    }
-
-    /**
      * Count lights of the specified type in the C-G model.
      *
      * @param <T> superclass of Light
@@ -383,6 +370,24 @@ public class Cgm implements Cloneable {
 
         assert count >= 0 : count;
         return count;
+    }
+
+    /**
+     * Count spatials of the specified type with the specified local cull hint
+     * in the C-G model.
+     *
+     * @param <T> subclass of Spatial
+     * @param spatialType the subclass of Spatial to search for (not null)
+     * @param hint the enum value to search for (may be null)
+     * @return the number found (&ge;0)
+     */
+    public <T extends Spatial> int countSpatials(Class<T> spatialType,
+            Spatial.CullHint hint) {
+        int result
+                = MaudUtil.countSpatials(rootSpatial, spatialType, hint);
+
+        assert result >= 0 : result;
+        return result;
     }
 
     /**

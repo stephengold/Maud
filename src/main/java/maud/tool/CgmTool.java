@@ -136,7 +136,8 @@ class CgmTool extends Tool {
         /*
          * hidden spatials
          */
-        int numHiddens = target.countHiddenSpatials(Spatial.class);
+        int numHiddens
+                = target.countSpatials(Spatial.class, Spatial.CullHint.Always);
         String hiddensText = Integer.toString(numHiddens);
         setStatusText("cgmHiddens", hiddensText);
     }
