@@ -228,8 +228,8 @@ class SpatialDetailsTool extends Tool {
     private void updateLights() {
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         int numLights = spatial.countLights();
-        String statusText = String.format(" %d", numLights);
-        setStatusText("spatialLights", statusText);
+        String buttonText = Integer.toString(numLights);
+        setButtonText("spatialLights", buttonText);
     }
 
     /**
@@ -248,8 +248,8 @@ class SpatialDetailsTool extends Tool {
     private void updateOverrides() {
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         int numOverrides = spatial.countOverrides();
-        String statusText = String.format(" %d", numOverrides);
-        setStatusText("spatialOverrides", statusText);
+        String buttonText = Integer.toString(numOverrides);
+        setButtonText("spatialOverrides", buttonText);
     }
 
     /**
@@ -258,8 +258,8 @@ class SpatialDetailsTool extends Tool {
     private void updateSgcs() {
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         int numSgcs = spatial.countSgcs();
-        String statusText = String.format(" %d", numSgcs);
-        setStatusText("spatialControls", statusText);
+        String buttonText = Integer.toString(numSgcs);
+        setButtonText("spatialControls", buttonText);
     }
 
     /**
@@ -278,7 +278,7 @@ class SpatialDetailsTool extends Tool {
     private void updateUserData() {
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         int numKeys = spatial.countUserData();
-        String statusText = String.format(" %d", numKeys);
-        setStatusText("spatialUserData", statusText);
+        String buttonText = Integer.toString(numKeys);
+        setButtonText("spatialUserData", buttonText);
     }
 }

@@ -2874,41 +2874,25 @@ Approximate minimum screen size: 640x480
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Controls:  "/>
-                        <control name="label" id="spatialControls"
-                                 backgroundColor="#ffff"
-                                 width="*"/>
-                        <control name="button" label="Tool"
-                                 id="id29ToAvoidNiftyWarning"
-                                 width="36px">
+                        <control name="button" id="spatialControlsButton"
+                                 width="*">
                             <interact onRelease="perform(select tool sgc)"/>
                         </control>
                         <control name="label" text="  User data:  "/>
-                        <control name="label" id="spatialUserData"
-                                 backgroundColor="#ffff"
-                                 width="*"/>
-                        <control name="button" label="Tool"
-                                 id="id30ToAvoidNiftyWarning"
-                                 width="36px">
+                        <control name="button" id="spatialUserDataButton"
+                                 width="*">
                             <interact onRelease="perform(select tool userData)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Lights:  "/>
-                        <control name="label" id="spatialLights"
-                                 backgroundColor="#ffff"
-                                 width="*"/>
-                        <control name="button" label="Tool"
-                                 id="id31ToAvoidNiftyWarning"
-                                 width="36px">
+                        <control name="button" id="spatialLightsButton"
+                                 width="*">
                             <interact onRelease="perform(select tool lights)"/>
                         </control>
                         <control name="label" text="  Overrides:  "/>
-                        <control name="label" id="spatialOverrides"
-                                 backgroundColor="#ffff"
-                                 width="*"/>
-                        <control name="button" label="Tool"
-                                 id="id32ToAvoidNiftyWarning"
-                                 width="36px">
+                        <control name="button" id="spatialOverridesButton"
+                                 width="*">
                             <interact onRelease="perform(select tool overrides)"/>
                         </control>
                     </panel>
