@@ -153,21 +153,22 @@ public class MaudUtil {
     }
 
     /**
-     * Count the hidden spatials of the specified type in the specified subtree
-     * of a scene graph. Note: recursive!
+     * Count the spatials of the specified type with the specified local cull
+     * hint in the specified subtree of a scene graph. Note: recursive!
      *
      * @param <T> subclass of Spatial
      * @param subtree the subtree to analyze (may be null, unaffected)
-     * @param spatialType the subclass of Spatial to search for
+     * @param spatialType the subclass of Spatial to search for (not null)
+     * @param hint the enum value to search for (may be null)
      * @return the count (&ge;0)
      */
-    public static <T extends Spatial> int countHiddenSpatials(Spatial subtree,
-            Class<T> spatialType) {
+    public static <T extends Spatial> int countSpatials(Spatial subtree,
+            Class<T> spatialType, Spatial.CullHint hint) {
         int result = 0;
 
         if (subtree != null
                 && spatialType.isAssignableFrom(subtree.getClass())
-                && subtree.getLocalCullHint() == Spatial.CullHint.Always) {
+                && subtree.getLocalCullHint() == hint) {
             ++result;
         }
 
@@ -175,7 +176,7 @@ public class MaudUtil {
             Node node = (Node) subtree;
             List<Spatial> children = node.getChildren();
             for (Spatial child : children) {
-                result += countHiddenSpatials(child, spatialType);
+                result += countSpatials(child, spatialType, hint);
             }
         }
 

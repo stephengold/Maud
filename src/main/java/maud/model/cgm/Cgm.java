@@ -303,7 +303,8 @@ public class Cgm implements Cloneable {
      * @return the number found (&ge;0)
      */
     public <T extends Spatial> int countHiddenSpatials(Class<T> spatialType) {
-        int count = MaudUtil.countHiddenSpatials(rootSpatial, spatialType);
+        int count = MaudUtil.countSpatials(rootSpatial, spatialType,
+                Spatial.CullHint.Always);
 
         assert count >= 0 : count;
         return count;
