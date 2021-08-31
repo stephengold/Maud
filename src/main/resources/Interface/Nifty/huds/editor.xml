@@ -802,21 +802,21 @@ Approximate minimum screen size: 640x480
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Controls:  "/>
-                        <control name="label" id="cgmSgcs"
-                                 backgroundColor="#ffff"
-                                 textHAlign="center"
-                                 width="40px"/>
+                        <control name="button" id="cgmSgcsButton"
+                                 width="40px">
+                            <interact onRelease="perform(select tool sgc)"/>
+                        </control>
                         <control name="label" text="    Materials:  "/>
-                        <control name="label" id="cgmMaterials"
-                                 backgroundColor="#ffff"
-                                 textHAlign="center"
-                                 width="40px"/>
+                        <control name="button" id="cgmMaterialsButton"
+                                 width="40px">
+                            <interact onRelease="perform(select tool material)"/>
+                        </control>
                         <control name="label" text="    Meshes:  "/>
-                        <control name="label" id="cgmMeshes"
-                                 backgroundColor="#ffff"
-                                 textHAlign="center"
-                                 width="40px"/>
-                        <control name="label" text="    Skeletons:  "/>
+                        <control name="button" id="cgmMeshesButton"
+                                 width="40px">
+                            <interact onRelease="perform(select tool mesh)"/>
+                        </control>
+                        <control name="label" text="    Armatures:  "/>
                         <control name="label" id="cgmSkeletons"
                                  backgroundColor="#ffff"
                                  textHAlign="center"

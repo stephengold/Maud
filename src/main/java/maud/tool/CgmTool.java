@@ -114,19 +114,19 @@ class CgmTool extends Tool {
          */
         int numSgcs = target.countSgcs(Control.class);
         String sgcsText = Integer.toString(numSgcs);
-        setStatusText("cgmSgcs", sgcsText);
+        setButtonText("cgmSgcs", sgcsText);
         /*
          * materials
          */
         int numMaterials = target.countMaterials();
         String materialsText = Integer.toString(numMaterials);
-        setStatusText("cgmMaterials", materialsText);
+        setButtonText("cgmMaterials", materialsText);
         /*
          * meshes
          */
         int numMeshes = target.countMeshes();
         String meshesText = Integer.toString(numMeshes);
-        setStatusText("cgmMeshes", meshesText);
+        setButtonText("cgmMeshes", meshesText);
         /*
          * skeletons
          */
