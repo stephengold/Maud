@@ -26,6 +26,7 @@
  */
 package maud.model.cgm;
 
+import com.jme3.anim.AnimComposer;
 import com.jme3.anim.Armature;
 import com.jme3.anim.Joint;
 import com.jme3.anim.SkinningControl;
@@ -60,9 +61,10 @@ import maud.view.scene.SceneView;
  * The MVC model of a selected Armature or Skeleton in the Maud application.
  *
  * If the selected S-G control is a AnimControl, SkeletonControl, or
- * SkinningControl, use that control's skeleton, otherwise use the skeleton of
- * the first AnimControl, SkeletonControl, or SkinningControl in the C-G model's
- * root spatial.
+ * SkinningControl, use that control's skeleton. If the control is an
+ * AnimComposer, use the Armature of the first SkinningControl in its controlled
+ * spatial. Otherwise, use the skeleton of the first AnimControl,
+ * SkeletonControl, or SkinningControl in the C-G model's root spatial.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -172,9 +174,9 @@ public class SelectedSkeleton implements JmeCloneable {
      * Find the selected Armature or Skeleton.
      *
      * @param storeSelectedSgcFlag if not null, set the first element to true if
-     * the skeleton came from the selected S-G control, false if it came from
-     * the C-G model root
-     * @return the pre-existing instance, or null if none
+     * the skeleton came from the selected S-G control or its controlled
+     * spatial, false if it came from the C-G model root
+     * @return a pre-existing Armature or Skeleton, or null if none selected
      */
     Object find(boolean[] storeSelectedSgcFlag) {
         boolean selectedSgcFlag;
@@ -193,14 +195,25 @@ public class SelectedSkeleton implements JmeCloneable {
         if (skeleton == null && selectedSgc instanceof SkinningControl) {
             skeleton = ((SkinningControl) selectedSgc).getArmature();
         }
+        /*
+         * If the selected S-G control is an AnimComposer, use the Armature
+         * of the first SkinningControl in its controlled spatial.
+         *
+         * This makes a skeleton available while editing animations.
+         */
+        if (skeleton == null && selectedSgc instanceof AnimComposer) {
+            Spatial controlled = ((AnimComposer) selectedSgc).getSpatial();
+            SkinningControl sc = controlled.getControl(SkinningControl.class);
+            skeleton = sc.getArmature();
+        }
         if (skeleton != null) {
             selectedSgcFlag = true;
         } else {
             selectedSgcFlag = false;
         }
         /*
-         * If not, use the skeleton from the first AnimControl, SkeletonControl,
-         * or SkinningControl in the C-G model's root spatial.
+         * Otherwise, use the skeleton from the first AnimControl,
+         * SkeletonControl, or SkinningControl in the C-G model's root spatial.
          */
         if (skeleton == null && cgm.isLoaded()) {
             Spatial cgmRoot = cgm.getRootSpatial();
