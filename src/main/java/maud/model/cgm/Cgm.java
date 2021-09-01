@@ -457,7 +457,7 @@ public class Cgm implements Cloneable {
     /**
      * Find a Spatial with the specified name.
      *
-     * @param name what name to search for (not null, not empty)
+     * @param name the name to search for (not null, not empty)
      * @return a new tree-position instance, or null if not found
      */
     List<Integer> findSpatialNamed(String name) {

@@ -332,7 +332,7 @@ public class ScenePov implements Cloneable, Pov {
 
         if (options.isOrbitMode() && !isPivoting) {
             /*
-             * Update the POV's location so it looks toward the center.
+             * Update the POV's location, so that it looks toward the center.
              */
             float range = range();
             Vector3f offset = lookDirection.mult(range);

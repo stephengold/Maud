@@ -662,7 +662,7 @@ public class MaudUtil {
      * {@link jme3utilities.MySpatial#findNamed(com.jme3.scene.Spatial, java.lang.String)}
      * instead.
      *
-     * @param name what name to search for (not null, not empty)
+     * @param name the name to search for (not null, not empty)
      * @param subtree which subtree to search (may be null, unaffected)
      * @param storePosition tree position of the spatial (modified if found and
      * not null)

@@ -226,7 +226,7 @@ public class HistoryTool extends Tool {
         };
         Element newLabel = builder.build(content);
         /*
-         * Mark label for removal before the next update.
+         * Mark the label for removal before the next update.
          */
         getNifty().removeElement(screen, newLabel);
 

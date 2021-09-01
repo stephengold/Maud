@@ -159,7 +159,7 @@ public class EditorViewPorts {
 
     /**
      * Initialization performed during the first invocation of
-     * {@link #update(float)}.
+     * {@link #update()}.
      */
     static void startup1() {
         /*

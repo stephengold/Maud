@@ -42,7 +42,7 @@ import maud.view.scene.SceneView;
 
 /**
  * Encapsulate an axis/bone/boundary/gnomon/keyframe/track/vertex selection by
- * the user. Never checkpointed because temporary.
+ * the user. Never checkpointed because it's temporary.
  *
  * @author Stephen Gold sgold@sonic.net
  */

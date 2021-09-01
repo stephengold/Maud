@@ -424,7 +424,7 @@ public class SceneViewCore implements EditorView, JmeCloneable {
     }
 
     /**
-     * Access the axes visualizer added to the scene.
+     * Access the AxesVisualizer added to the scene.
      *
      * @return the pre-existing instance (not null)
      */
@@ -434,7 +434,7 @@ public class SceneViewCore implements EditorView, JmeCloneable {
     }
 
     /**
-     * Access the bounds visualizer added to the overlay scene.
+     * Access the BoundsVisualizer added to the overlay scene.
      *
      * @return the pre-existing instance (not null)
      */
@@ -1212,7 +1212,7 @@ public class SceneViewCore implements EditorView, JmeCloneable {
     }
 
     /**
-     * Add an axes visualizer to the base scene graph.
+     * Add an AxesVisualizer to the base scene graph.
      */
     private void createAxes() {
         AssetManager assetManager = Locators.getAssetManager();
@@ -1223,7 +1223,7 @@ public class SceneViewCore implements EditorView, JmeCloneable {
     }
 
     /**
-     * Create a bounds visualizer and add it to the overlay scene graph.
+     * Create a BoundsVisualizer and add it to the overlay scene graph.
      */
     private void createBounds() {
         assert boundsVisualizer == null;

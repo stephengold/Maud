@@ -56,7 +56,7 @@ public class SceneOptions implements Cloneable {
      */
     private AxesOptions axesOptions = new AxesOptions();
     /**
-     * options for the bounds visualization(s)
+     * options for bounds visualization(s)
      */
     private BoundsOptions boundsOptions = new BoundsOptions();
     /**

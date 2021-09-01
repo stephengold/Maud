@@ -224,7 +224,7 @@ public class MatParamRef implements JmeCloneable {
     /**
      * Test whether the target is a material-parameter override in a spatial.
      *
-     * @return true if override, otherwise false
+     * @return true if it's an override, otherwise false
      */
     boolean isOverride() {
         if (overrideSpatial == null) {
