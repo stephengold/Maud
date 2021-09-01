@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019-2020, Stephen Gold
+ Copyright (c) 2019-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -78,8 +78,8 @@ public enum CgmOutputFormat {
     }
 
     /**
-     * Read the standard file extension for this format, excluding the separator
-     * dot.
+     * Determine the standard file extension for this format, excluding the
+     * separator dot.
      *
      * @return a text string (not null, not empty)
      */
