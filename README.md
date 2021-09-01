@@ -1,4 +1,4 @@
-<img height="150" src="https://i.imgur.com/beTKjwO.png">
+<img height="150" src="https://i.imgur.com/beTKjwO.png" alt="Maud logo">
 
 Maud is an editor for the animated 3-D models used with the
 [jMonkeyEngine (jME)][jme] game engine.
