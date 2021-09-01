@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -170,7 +170,7 @@ class SpatialRotationTool extends Tool {
         EditorModel model = Maud.getModel();
         RotationDisplayMode mode = model.getMisc().rotationDisplayMode();
         if (mode != RotationDisplayMode.QuatCoeff) {
-            xyzButton = "Snap";
+            xyzButton = "snap";
         }
 
         setButtonText("snapXSa", xyzButton);
