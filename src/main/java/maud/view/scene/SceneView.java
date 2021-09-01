@@ -743,14 +743,23 @@ public class SceneView extends SceneViewCore {
     }
 
     /**
-     * Alter the queue bucket of the selected spatial.
+     * Alter the queue bucket of the specified Spatial.
      *
-     * @param newBucket new value for queue bucket (not null)
+     * @param treePosition the tree position of the Spatial to modify (not null,
+     * unaffected)
+     * @param newBucket the new value for queue bucket (not null)
      */
-    public void setQueueBucket(RenderQueue.Bucket newBucket) {
+    public void setQueueBucket(List<Integer> treePosition,
+            RenderQueue.Bucket newBucket) {
+        Validate.nonNull(treePosition, "tree position");
         Validate.nonNull(newBucket, "new bucket");
 
-        Spatial spatial = selectedSpatial();
+        Spatial spatial = getCgmRoot();
+        for (int childPosition : treePosition) {
+            Node node = (Node) spatial;
+            spatial = node.getChild(childPosition);
+        }
+
         spatial.setQueueBucket(newBucket);
     }
 

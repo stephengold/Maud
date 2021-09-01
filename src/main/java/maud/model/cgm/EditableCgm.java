@@ -1293,10 +1293,15 @@ public class EditableCgm extends LoadedCgm {
         Spatial modelSpatial = getSpatial().find();
         RenderQueue.Bucket oldBucket = modelSpatial.getLocalQueueBucket();
         if (oldBucket != newBucket) {
+            List<Integer> treePosition = findSpatial(modelSpatial);
+            assert treePosition != null;
+
             History.autoAdd();
             modelSpatial.setQueueBucket(newBucket);
-            getSceneView().setQueueBucket(newBucket);
-            editState.setEdited("change render-queue bucket"); // TODO details
+            getSceneView().setQueueBucket(treePosition, newBucket);
+            String description = String.format(
+                    "set queue bucket of spatial to %s", newBucket);
+            editState.setEdited(description);
         }
     }
 
