@@ -57,6 +57,7 @@ import com.jme3.math.Triangle;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.math.Vector4f;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
@@ -151,30 +152,38 @@ public class MaudUtil {
     }
 
     /**
-     * Count the spatials of the specified type with the specified local cull
-     * hint in the specified subtree of a scene graph. Note: recursive!
+     * Count the spatials of the specified type with the specified enum value in
+     * the specified subtree of a scene graph. Note: recursive!
      *
      * @param <T> subclass of Spatial
-     * @param subtree the subtree to analyze (may be null, unaffected)
+     * @param subtree the root of the subtree to analyze (may be null,
+     * unaffected)
      * @param spatialType the subclass of Spatial to search for (not null)
-     * @param hint the enum value to search for (may be null)
+     * @param enumValue the enum value (cull hint or queue bucket) to search for
+     * (may be null)
      * @return the count (&ge;0)
      */
     public static <T extends Spatial> int countSpatials(Spatial subtree,
-            Class<T> spatialType, Spatial.CullHint hint) {
+            Class<T> spatialType, Enum enumValue) {
         int result = 0;
 
         if (subtree != null
-                && spatialType.isAssignableFrom(subtree.getClass())
-                && subtree.getLocalCullHint() == hint) {
-            ++result;
+                && spatialType.isAssignableFrom(subtree.getClass())) {
+
+            if (enumValue instanceof Spatial.CullHint
+                    && subtree.getLocalCullHint() == enumValue) {
+                ++result;
+            } else if (enumValue instanceof RenderQueue.Bucket
+                    && subtree.getLocalQueueBucket() == enumValue) {
+                ++result;
+            }
         }
 
         if (subtree instanceof Node) {
             Node node = (Node) subtree;
             List<Spatial> children = node.getChildren();
             for (Spatial child : children) {
-                result += countSpatials(child, spatialType, hint);
+                result += countSpatials(child, spatialType, enumValue);
             }
         }
 

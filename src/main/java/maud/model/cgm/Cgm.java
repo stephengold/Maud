@@ -374,18 +374,19 @@ public class Cgm implements Cloneable {
     }
 
     /**
-     * Count spatials of the specified type with the specified local cull hint
-     * in the C-G model.
+     * Count spatials of the specified type with the specified enum value in the
+     * C-G model.
      *
      * @param <T> subclass of Spatial
      * @param spatialType the subclass of Spatial to search for (not null)
-     * @param hint the enum value to search for (may be null)
+     * @param enumValue the enum value (cull hint or queue bucket) to search for
+     * (may be null)
      * @return the number found (&ge;0)
      */
     public <T extends Spatial> int countSpatials(Class<T> spatialType,
-            Spatial.CullHint hint) {
+            Enum enumValue) {
         int result
-                = MaudUtil.countSpatials(rootSpatial, spatialType, hint);
+                = MaudUtil.countSpatials(rootSpatial, spatialType, enumValue);
 
         assert result >= 0 : result;
         return result;
