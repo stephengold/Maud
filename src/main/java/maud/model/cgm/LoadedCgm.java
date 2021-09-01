@@ -312,7 +312,7 @@ public class LoadedCgm extends Cgm {
             String animationName = names.get(0);
             getAnimation().load(animationName);
         } else {
-            getAnimation().loadBindPose();
+            getAnimation().loadBindPose(true);
         }
         /*
          * Verify that the displayed pose has been initialized.

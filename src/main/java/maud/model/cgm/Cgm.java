@@ -113,7 +113,8 @@ public class Cgm implements Cloneable {
     private ScenePov scenePov = new ScenePov();
     /**
      * rendered 3-D visualization of the C-G model (set by
-     * {@link #setViews(maud.view.scene.SceneView, maud.view.ScoreView)} or {@link #clone()})
+     * {@link #setViews(maud.view.scene.SceneView, maud.view.ScoreView)} or
+     * {@link #clone()})
      */
     private SceneView sceneView = null;
     /**
@@ -1219,7 +1220,7 @@ public class Cgm implements Cloneable {
         selectedVertex.deselect();
 
         if (target.getAnimation().isRetargetedPose()) {
-            target.getAnimation().loadBindPose();
+            target.getAnimation().loadBindPose(true);
         }
     }
 

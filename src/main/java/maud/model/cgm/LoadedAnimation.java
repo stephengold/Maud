@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -357,7 +357,7 @@ public class LoadedAnimation implements Cloneable {
     public void delete() {
         if (isReal()) {
             editableCgm.deleteAnimation();
-            loadBindPose();
+            loadBindPose(true);
         } else if (isBindPose()) {
             logger.log(Level.WARNING, "cannot delete bind pose");
         } else {
@@ -905,7 +905,7 @@ public class LoadedAnimation implements Cloneable {
         Validate.nonNull(name, "animation name");
 
         if (name.equals(bindPoseName)) {
-            loadBindPose();
+            loadBindPose(true);
         } else if (name.equals(retargetedPoseName)) {
             loadRetargetedPose();
         } else { // a real animation
@@ -928,16 +928,20 @@ public class LoadedAnimation implements Cloneable {
 
     /**
      * Load the bind pose.
+     *
+     * @param resetDisplayedPose true to reset, false to leave unchanged
      */
-    public void loadBindPose() {
+    public void loadBindPose(boolean resetDisplayedPose) {
         loadedName = bindPoseName;
         cgm.getPlay().resetLimits();
         cgm.getPlay().setSpeed(0f);
         cgm.getPlay().setTime(0f);
         cgm.getTrack().select(null);
 
-        Object skeleton = cgm.getSkeleton().find();
-        cgm.getPose().resetToBind(skeleton);
+        if (resetDisplayedPose) {
+            Object skeleton = cgm.getSkeleton().find();
+            cgm.getPose().resetToBind(skeleton);
+        }
     }
 
     /**

@@ -649,7 +649,14 @@ public class SelectedAnimControl implements JmeCloneable {
     void postSelect() {
         AbstractControl found = find();
         if (found != last) {
-            cgm.getAnimation().loadBindPose();
+            /*
+             * Load bind pose, but don't reset the displayed pose.
+             * In case of a change of selected skeleton,
+             * SelectedSkeleton.postSelect() will reset the pose.
+             * Otherwise, preserve the pose so it can be used, for instance,
+             * to create a new animation.
+             */
+            cgm.getAnimation().loadBindPose(false);
             last = found;
         }
     }

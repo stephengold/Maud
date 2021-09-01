@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -293,7 +293,7 @@ public class AnimationMenus {
                     break;
 
                 case "Unload":
-                    target.getAnimation().loadBindPose();
+                    target.getAnimation().loadBindPose(true);
                     break;
 
                 default:
