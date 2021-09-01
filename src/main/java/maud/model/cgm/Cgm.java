@@ -379,8 +379,8 @@ public class Cgm implements Cloneable {
      *
      * @param <T> subclass of Spatial
      * @param spatialType the subclass of Spatial to search for (not null)
-     * @param enumValue the enum value (cull hint or queue bucket) to search for
-     * (may be null)
+     * @param enumValue the enum value (batch hint, queue bucket, cull hint, or
+     * shadow mode) to search for (may be null)
      * @return the number found (&ge;0)
      */
     public <T extends Spatial> int countSpatials(Class<T> spatialType,

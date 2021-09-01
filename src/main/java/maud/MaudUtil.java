@@ -138,7 +138,7 @@ public class MaudUtil {
      * Count the children of the specified Bone or Joint.
      *
      * @param bone the subject Bone or Joint (not null, unaffected)
-     * @return the count (&ge;0)
+     * @return the number found (&ge;0)
      */
     public static int countBoneChildren(Object bone) {
         int result;
@@ -161,7 +161,7 @@ public class MaudUtil {
      * @param spatialType the subclass of Spatial to search for (not null)
      * @param enumValue the enum value (batch hint, queue bucket, cull hint, or
      * shadow mode) to search for (may be null)
-     * @return the count (&ge;0)
+     * @return the number found (&ge;0)
      */
     public static <T extends Spatial> int countSpatials(Spatial subtree,
             Class<T> spatialType, Enum enumValue) {
