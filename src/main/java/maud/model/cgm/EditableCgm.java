@@ -1478,14 +1478,17 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Write the C-G model to the filesystem, in the specified format, at the
-     * specified base path.
+     * Write the specified subset of the C-G model to the filesystem, in the
+     * specified format, at the specified base path.
      *
-     * @param baseFilePath file path without any extension (not null, not empty)
+     * @param outputSet the CGM subset to write (not null)
      * @param format the output format (not null)
+     * @param baseFilePath file path without any extension (not null, not empty)
      * @return true if successful, otherwise false
      */
-    public boolean writeToFile(CgmOutputFormat format, String baseFilePath) {
+    public boolean writeToFile(CgmOutputSet outputSet, CgmOutputFormat format,
+            String baseFilePath) {
+        Validate.nonNull(outputSet, "output set");
         Validate.nonNull(format, "format");
         Validate.nonEmpty(baseFilePath, "base file path");
 
@@ -1499,11 +1502,23 @@ public class EditableCgm extends LoadedCgm {
             parent.mkdirs();
         }
 
+        Spatial subtree;
+        switch (outputSet) {
+            case All:
+                subtree = rootSpatial;
+                break;
+            case Subtree:
+                subtree = getSpatial().find();
+                break;
+            default:
+                throw new IllegalArgumentException("outputSet=" + outputSet);
+        }
+
         filePath = Heart.fixedPath(file);
         JmeExporter exporter = format.getExporter();
         boolean success = true;
         try {
-            exporter.save(rootSpatial, file);
+            exporter.save(subtree, file);
         } catch (IOException exception) {
             System.err.println(exception);
             success = false;
@@ -1519,13 +1534,15 @@ public class EditableCgm extends LoadedCgm {
         }
 
         if (success) {
+            boolean wroteEntireCgm = (subtree == rootSpatial);
             boolean maudCanLoadIt = (format == CgmOutputFormat.J3O);
             String af = assetFolderForWrite();
             String eventDescription = "write model to " + filePath;
-            if (maudCanLoadIt && baseFilePath.startsWith(af)) {
+            if (wroteEntireCgm && maudCanLoadIt
+                    && baseFilePath.startsWith(af)) {
                 /*
-                 * The CGM was successfully written to the "Written Assets"
-                 * folder in a format that Maud can load, so update the
+                 * The entire CGM was successfully written to "Written Assets"
+                 * in a format that Maud can load, so update the
                  * origin information and mark as pristine.
                  */
                 assetRootPath = af;
@@ -1539,11 +1556,12 @@ public class EditableCgm extends LoadedCgm {
                 extension = format.extension();
                 editState.setPristine(eventDescription);
 
-            } else if (maudCanLoadIt && baseFilePath.endsWith(baseAssetPath)
+            } else if (wroteEntireCgm && maudCanLoadIt
+                    && baseFilePath.endsWith(baseAssetPath)
                     && !baseAssetPath.isEmpty()) {
                 /*
-                 * The CGM was successfully written to another part of the
-                 * filesystem in a format that Maud can load, so update the
+                 * The entire CGM was successfully written to another part of
+                 * the filesystem in a format that Maud can load, so update the
                  * origin information and mark as pristine.
                  */
                 assetRootPath = MyString.removeSuffix(baseFilePath,

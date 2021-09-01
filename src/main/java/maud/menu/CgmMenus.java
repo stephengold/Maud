@@ -34,6 +34,7 @@ import maud.action.ActionPrefix;
 import maud.dialog.EditorDialogs;
 import maud.model.EditorModel;
 import maud.model.cgm.CgmOutputFormat;
+import maud.model.cgm.CgmOutputSet;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedSpatial;
 import maud.tool.EditorTools;
@@ -70,19 +71,24 @@ public class CgmMenus {
         builder.addTool("Tool");
         builder.addSubmenu("Load");
         builder.addDialog("Save");
+
+        EditorModel model = Maud.getModel();
+        EditableCgm target = model.getTarget();
+        SelectedSpatial ss = target.getSpatial();
+        if (!ss.isCgmRoot()) {
+            builder.addDialog("Save subtree");
+        }
+
         builder.addDialog("Export to XML");
 
         builder.addSubmenu("Load source model");
-        EditorModel model = Maud.getModel();
         if (model.getSource().isLoaded()) {
-            SelectedSpatial ss = model.getTarget().getSpatial();
             if (ss.isNode()) {
                 builder.addEdit("Merge source model");
             }
             builder.add("Unload source model");
         }
 
-        EditableCgm target = model.getTarget();
         int numSpatials = target.countSpatials(Spatial.class);
         int numInherits
                 = target.countSpatials(Spatial.class, Spatial.CullHint.Inherit);
@@ -132,7 +138,7 @@ public class CgmMenus {
         switch (remainder) {
             case "Export to XML":
                 actionPrefix = ActionPrefix.saveCgmUnconfirmed
-                        + CgmOutputFormat.XML.toString() + " ";
+                        + CgmOutputSet.All + " " + CgmOutputFormat.XML + " ";
                 EditorDialogs.saveCgm("Export", actionPrefix);
                 break;
 
@@ -162,7 +168,14 @@ public class CgmMenus {
 
             case "Save":
                 actionPrefix = ActionPrefix.saveCgmUnconfirmed
-                        + CgmOutputFormat.J3O.toString() + " ";
+                        + CgmOutputSet.All + " " + CgmOutputFormat.J3O + " ";
+                EditorDialogs.saveCgm("Save", actionPrefix);
+                break;
+
+            case "Save subtree":
+                actionPrefix = ActionPrefix.saveCgmUnconfirmed
+                        + CgmOutputSet.Subtree + " "
+                        + CgmOutputFormat.J3O + " ";
                 EditorDialogs.saveCgm("Save", actionPrefix);
                 break;
 

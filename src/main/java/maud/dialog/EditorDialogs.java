@@ -66,6 +66,7 @@ import maud.model.EditorModel;
 import maud.model.WhichCgm;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.CgmOutputFormat;
+import maud.model.cgm.CgmOutputSet;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.LoadedAnimation;
 import maud.model.cgm.LoadedCgm;
@@ -175,18 +176,28 @@ public class EditorDialogs {
     }
 
     /**
-     * Display a confirmation dialog for overwriting a CGM file.
+     * Display a confirmation dialog for overwriting a file.
      *
-     * @param actionPrefix action prefix before the format (not null, not empty)
+     * @param actionPrefix the prefix to use in constructing the new action (not
+     * null, not empty)
+     * @param outputSet the CGM subset to write, or null if writing a map
      * @param format the output format (not null)
      * @param baseFilePath base file path (not null, not empty)
      */
     public static void confirmOverwrite(String actionPrefix,
-            CgmOutputFormat format, String baseFilePath) {
+            CgmOutputSet outputSet, CgmOutputFormat format,
+            String baseFilePath) {
         Validate.nonEmpty(actionPrefix, "action prefix");
+        Validate.nonNull(format, "format");
         Validate.nonEmpty(baseFilePath, "base file path");
 
-        String action = actionPrefix + format.toString() + " " + baseFilePath;
+        String action;
+        if (outputSet == null) {
+            action = actionPrefix + format + " " + baseFilePath;
+        } else {
+            action = actionPrefix + outputSet + " " + format
+                    + " " + baseFilePath;
+        }
         String filePath = format.extend(baseFilePath);
         File file = new File(filePath);
         if (file.exists()) {

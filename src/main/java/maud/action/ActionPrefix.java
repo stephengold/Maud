@@ -233,11 +233,11 @@ public class ActionPrefix {
      */
     final public static String resampleTrack = "resample track ";
     /**
-     * arguments are an output-format type and a base file path
+     * arguments are an output set, an output format, and a base file path
      */
     final public static String saveCgm = "save cgm ";
     /**
-     * arguments are an output-format type and a base file path
+     * arguments are an output set, an output format, and a base file path
      */
     final public static String saveCgmUnconfirmed = "save cgmUnconfirmed ";
     /**
