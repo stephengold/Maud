@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -34,6 +34,7 @@ import jme3utilities.nifty.SliderTransform;
 import jme3utilities.nifty.Tool;
 import maud.Maud;
 import maud.MaudUtil;
+import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedBone;
 import maud.model.option.RotationDisplayMode;
@@ -125,12 +126,13 @@ class BoneRotationTool extends Tool {
     }
 
     /**
-     * Callback to update this tool prior to rendering. (Invoked once per frame
-     * while this tool is displayed.)
+     * Update this tool prior to rendering. (Invoked once per frame while this
+     * tool is displayed.)
      */
     @Override
     protected void toolUpdate() {
         updateSelected();
+        updateSnapButtons();
 
         RotationDisplayMode mode
                 = Maud.getModel().getMisc().rotationDisplayMode();
@@ -171,6 +173,26 @@ class BoneRotationTool extends Tool {
             float value = statusValues[iAxis];
             updateSliderStatus(sliderName, value, unitSuffix);
         }
+    }
+
+    /**
+     * Update the snap buttons.
+     */
+    private void updateSnapButtons() {
+        String xyzButton = "";
+
+        EditorModel model = Maud.getModel();
+        Cgm target = model.getTarget();
+        if (target.getBone().shouldEnableControls()) {
+            RotationDisplayMode mode = model.getMisc().rotationDisplayMode();
+            if (mode != RotationDisplayMode.QuatCoeff) {
+                xyzButton = "snap";
+            }
+        }
+
+        setButtonText("snapXAng", xyzButton);
+        setButtonText("snapYAng", xyzButton);
+        setButtonText("snapZAng", xyzButton);
     }
 
     /**

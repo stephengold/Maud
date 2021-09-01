@@ -492,23 +492,40 @@ Approximate minimum screen size: 640x480
 
             <control name="window" id="boneRotationTool" title="Bone-Rotation Tool"
                      hideOnClose="true"
-                     height="400px" width="195px" x="200" y="70">
+                     height="400px" width="205px" x="200" y="70">
                 <panel childLayout="vertical">
                     <panel childLayout="horizontal">
-                        <control name="verticalSlider" id="xAngSlider"
-                                 buttonStepSize="1.571"
-                                 height="360px"
-                                 max="3.142" min="-3.142" stepSize="0.001"/>
-                        <control name="verticalSlider" id="yAngSlider"
-                                 buttonStepSize="1.571"
-                                 height="360px"
-                                 max="3.142" min="-3.142" stepSize="0.001"/>
-                        <control name="verticalSlider" id="zAngSlider"
-                                 buttonStepSize="1.571"
-                                 height="360px"
-                                 max="1.571" min="-1.571" stepSize="0.001"/>
-                        <panel childLayout="vertical"
-                               height="340px" width="110px">
+                        <panel childLayout="vertical">
+                            <control name="verticalSlider" id="xAngSlider"
+                                     buttonStepSize="1.571"
+                                     height="345px"
+                                     max="3.142" min="-3.142" stepSize="0.001"/>
+                            <control name="button" id="snapXAngButton"
+                                     width="30px">
+                                <interact onRelease="perform(set boneAngle snapX)"/>
+                            </control>
+                        </panel>
+                        <panel childLayout="vertical">
+                            <control name="verticalSlider" id="yAngSlider"
+                                     buttonStepSize="1.571"
+                                     height="345px"
+                                     max="3.142" min="-3.142" stepSize="0.001"/>
+                            <control name="button" id="snapYAngButton"
+                                     width="30px">
+                                <interact onRelease="perform(set boneAngle snapY)"/>
+                            </control>
+                        </panel>
+                        <panel childLayout="vertical">
+                            <control name="verticalSlider" id="zAngSlider"
+                                     buttonStepSize="1.571"
+                                     height="345px"
+                                     max="1.571" min="-1.571" stepSize="0.001"/>
+                            <control name="button" id="snapZAngButton"
+                                     width="30px">
+                                <interact onRelease="perform(set boneAngle snapZ)"/>
+                            </control>
+                        </panel>
+                        <panel childLayout="vertical">
                             <control name="label" id="xAngSliderStatus"
                                      textHAlign="center"
                                      width="*"/>

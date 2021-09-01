@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -26,6 +26,7 @@
  */
 package maud.action;
 
+import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -82,6 +83,18 @@ class SetANAction {
         switch (actionString) {
             case Action.setAnisotropy:
                 EditorDialogs.setAnisotropy();
+                break;
+
+            case Action.setBoneAngleSnapX:
+                target.getBone().snapRotation(PhysicsSpace.AXIS_X);
+                break;
+
+            case Action.setBoneAngleSnapY:
+                target.getBone().snapRotation(PhysicsSpace.AXIS_Y);
+                break;
+
+            case Action.setBoneAngleSnapZ:
+                target.getBone().snapRotation(PhysicsSpace.AXIS_Z);
                 break;
 
             case Action.setBoneMirror:

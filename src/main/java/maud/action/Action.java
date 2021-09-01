@@ -266,6 +266,9 @@ public class Action {
     final static String selectVertex = "select vertex";
 
     final static String setAnisotropy = "set anisotropy";
+    final static String setBoneAngleSnapX = "set boneAngle snapX";
+    final static String setBoneAngleSnapY = "set boneAngle snapY";
+    final static String setBoneAngleSnapZ = "set boneAngle snapZ";
     final static String setBoneMirror = "set boneMirror";
     final static String setBufferInstanceSpan = "set bufferInstanceSpan";
     final static String setBufferLimit = "set bufferLimit";
