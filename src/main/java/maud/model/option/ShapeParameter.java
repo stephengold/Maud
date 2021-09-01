@@ -195,7 +195,7 @@ public enum ShapeParameter {
             }
         }
 
-        float result = Float.NaN;
+        float result;
         switch (this) {
             case HalfExtentX:
                 result = MyShape.halfExtents(shape, null).x;

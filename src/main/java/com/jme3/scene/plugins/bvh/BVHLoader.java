@@ -175,10 +175,8 @@ public class BVHLoader implements AssetLoader {
 
     /**
      * Parse a complete BVH file to construct a new animation.
-     *
-     * @throws java.io.IOException if an I/O error occurs while reading
      */
-    private void loadFromScanner() throws IOException {
+    private void loadFromScanner() {
         animation = new BVHAnimation();
         String token = scan.next();
         if (token.equals("HIERARCHY")) {

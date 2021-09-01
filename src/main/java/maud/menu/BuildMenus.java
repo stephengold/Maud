@@ -116,7 +116,7 @@ public class BuildMenus {
      */
     public static void loadCgmAsset(String args, LoadedCgm loadedCgm) {
         EditorModel model = Maud.getModel();
-        String menuPrefix = null;
+        String menuPrefix;
         if (loadedCgm == model.getSource()) {
             menuPrefix = ActionPrefix.loadSourceCgmAsset;
         } else if (loadedCgm == model.getTarget()) {
