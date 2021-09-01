@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -47,6 +47,8 @@ import java.util.logging.Logger;
 import jme3utilities.InfluenceUtil;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
+import jme3utilities.math.MyQuaternion;
+import jme3utilities.math.MyVector3f;
 import jme3utilities.wes.Pose;
 import maud.Maud;
 import maud.MaudUtil;
@@ -751,6 +753,23 @@ public class SelectedBone implements Cloneable {
             return false;
         } else {
             return true;
+        }
+    }
+
+    /**
+     * Snap one axis-angle of the bone's user/animation rotation.
+     *
+     * @param axisIndex which axis: 0&rarr;X, 1&rarr;Y, 2&rarr;Z
+     */
+    public void snapRotation(int axisIndex) {
+        Validate.inRange(axisIndex, "axis index", MyVector3f.firstAxis,
+                MyVector3f.lastAxis);
+
+        if (shouldEnableControls()) {
+            Quaternion userRotation = userRotation(null);
+            MyQuaternion.snapLocal(userRotation, axisIndex);
+            int boneIndex = index();
+            editableCgm.getPose().setRotation(boneIndex, userRotation);
         }
     }
 
