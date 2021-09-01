@@ -451,7 +451,7 @@ A bone with no children is a "leaf" bone.
 A bone with no parent is a "root" bone.
 
 Each bone has a "head" around which it pivots.
-However a jME bone need not have a well-defined "tail", a length,
+However, a jME bone need not have a well-defined "tail", a length,
 nor even a direction.
 
 In a scene view, Maud visualizes each bone as a round dot
@@ -924,7 +924,7 @@ Maud Project and many other open-source projects.
 
 I'm also grateful to my dear Holly, for keeping me sane.
 
-If I've misattributed anything or left anyone out, please let me know so I can
+If I've misattributed anything or left anyone out, please let me know, so I can
 correct the situation: sgold@sonic.net
 
 [Jump to table of contents](#toc)
