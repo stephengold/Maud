@@ -159,8 +159,8 @@ public class MaudUtil {
      * @param subtree the root of the subtree to analyze (may be null,
      * unaffected)
      * @param spatialType the subclass of Spatial to search for (not null)
-     * @param enumValue the enum value (cull hint or queue bucket) to search for
-     * (may be null)
+     * @param enumValue the enum value (batch hint, queue bucket, cull hint, or
+     * shadow mode) to search for (may be null)
      * @return the count (&ge;0)
      */
     public static <T extends Spatial> int countSpatials(Spatial subtree,
@@ -170,11 +170,17 @@ public class MaudUtil {
         if (subtree != null
                 && spatialType.isAssignableFrom(subtree.getClass())) {
 
-            if (enumValue instanceof Spatial.CullHint
-                    && subtree.getLocalCullHint() == enumValue) {
+            if (enumValue instanceof Spatial.BatchHint
+                    && subtree.getLocalBatchHint() == enumValue) {
                 ++result;
             } else if (enumValue instanceof RenderQueue.Bucket
                     && subtree.getLocalQueueBucket() == enumValue) {
+                ++result;
+            } else if (enumValue instanceof Spatial.CullHint
+                    && subtree.getLocalCullHint() == enumValue) {
+                ++result;
+            } else if (enumValue instanceof RenderQueue.ShadowMode
+                    && subtree.getLocalShadowMode() == enumValue) {
                 ++result;
             }
         }
