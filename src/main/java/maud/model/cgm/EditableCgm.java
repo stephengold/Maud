@@ -1306,6 +1306,24 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
+     * Alter the render-queue bucket of all spatials in the CGM.
+     *
+     * @param newBucket the desired value for queue bucket (not null)
+     */
+    public void setQueueBucketAll(RenderQueue.Bucket newBucket) {
+        Validate.nonNull(newBucket, "new bucket");
+
+        if (rootSpatial != null) {
+            History.autoAdd();
+            int numChanges = setQueueBucketRecursive(rootSpatial, newBucket);
+            String description = String.format(
+                    "set queue bucket of %d spatial%s to %s",
+                    numChanges, (numChanges == 1) ? "" : "s", newBucket);
+            editState.setEdited(description);
+        }
+    }
+
+    /**
      * Alter whether the selected S-G control is enabled.
      *
      * @param newSetting true&rarr;enable, false&rarr;disable
@@ -1756,6 +1774,40 @@ public class EditableCgm extends LoadedCgm {
             List<Spatial> children = node.getChildren();
             for (Spatial child : children) {
                 result += setCullHintRecursive(child, newHint);
+            }
+        }
+
+        assert result >= 0 : result;
+        return result;
+    }
+
+    /**
+     * Alter the queue buckets of all spatials in the specified subtree of the
+     * CGM. Note: recursive!
+     *
+     * @param subtree the subtree to modify not null)
+     * @param newBucket the desired value for queue bucket (not null)
+     * @return the number of spatials modified (&ge;0)
+     */
+    private int setQueueBucketRecursive(Spatial subtree,
+            RenderQueue.Bucket newBucket) {
+        int result;
+
+        RenderQueue.Bucket oldBucket = subtree.getLocalQueueBucket();
+        if (oldBucket == newBucket) {
+            result = 0;
+        } else {
+            subtree.setQueueBucket(newBucket);
+            List<Integer> treePosition = findSpatial(subtree);
+            getSceneView().setQueueBucket(treePosition, newBucket);
+            result = 1;
+        }
+
+        if (subtree instanceof Node) {
+            Node node = (Node) subtree;
+            List<Spatial> children = node.getChildren();
+            for (Spatial child : children) {
+                result += setQueueBucketRecursive(child, newBucket);
             }
         }
 

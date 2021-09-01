@@ -26,6 +26,7 @@
  */
 package maud.menu;
 
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Spatial;
 import java.util.logging.Logger;
 import maud.Maud;
@@ -90,6 +91,14 @@ public class CgmMenus {
         if (!allInherit) {
             builder.addEdit("Reset cull hints to Inherit");
         }
+
+        numInherits = target.countSpatials(Spatial.class,
+                RenderQueue.Bucket.Inherit);
+        assert numInherits <= numSpatials;
+        allInherit = (numInherits == numSpatials);
+        if (!allInherit) {
+            builder.addEdit("Reset queue buckets to Inherit");
+        }
     }
 
     /**
@@ -145,6 +154,10 @@ public class CgmMenus {
 
             case "Reset cull hints to Inherit":
                 target.setCullHintAll(Spatial.CullHint.Inherit);
+                break;
+
+            case "Reset queue buckets to Inherit":
+                target.setQueueBucketAll(RenderQueue.Bucket.Inherit);
                 break;
 
             case "Save":
