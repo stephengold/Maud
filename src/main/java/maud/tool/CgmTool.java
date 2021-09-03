@@ -26,6 +26,7 @@
  */
 package maud.tool;
 
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
 import java.util.logging.Logger;
@@ -34,6 +35,7 @@ import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.Tool;
 import maud.Maud;
 import maud.model.cgm.EditableCgm;
+import maud.model.cgm.SelectedTexture;
 
 /**
  * The controller for the "Model" tool in Maud's editor screen.
@@ -140,5 +142,24 @@ class CgmTool extends Tool {
                 = target.countSpatials(Spatial.class, Spatial.CullHint.Always);
         String hiddensText = Integer.toString(numHiddens);
         setStatusText("cgmHiddens", hiddensText);
+        /*
+         * nodes
+         */
+        int numNodes = target.countSpatials(Node.class);
+        String text = Integer.toString(numNodes);
+        setStatusText("cgmNodes", text);
+        /*
+         * textures
+         */
+        SelectedTexture texture = target.getTexture();
+        int numSelectableTextures = texture.countNonNulls();
+        text = Integer.toString(numSelectableTextures);
+        setButtonText("cgmTextures", text);
+        /*
+         * vertices
+         */
+        int numVertices = target.countVertices();
+        text = Integer.toString(numVertices);
+        setButtonText("cgmVertices", text);
     }
 }

@@ -760,9 +760,8 @@ Approximate minimum screen size: 640x480
 
             <control name="window" id="cgmTool" title="Model Tool"
                      hideOnClose="true"
-                     height="160px" width="540px" x="55" y="95">
+                     height="196px" width="540px" x="55" y="95">
                 <panel childLayout="vertical">
-                    <panel height="4px"/>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Name:  "
                                  textHAlign="right"
@@ -843,6 +842,23 @@ Approximate minimum screen size: 640x480
                                  backgroundColor="#ffff"
                                  textHAlign="center"
                                  width="40px"/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Nodes:  "/>
+                        <control name="label" id="cgmNodes"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="40px"/>
+                        <control name="label" text="    Textures:  "/>
+                        <control name="button" id="cgmTexturesButton"
+                                 width="40px">
+                            <interact onRelease="perform(select tool texture)"/>
+                        </control>
+                        <control name="label" text="    Vertices:  "/>
+                        <control name="button" id="cgmVerticesButton"
+                                 width="66px">
+                            <interact onRelease="perform(select tool vertex)"/>
+                        </control>
                     </panel>
                 </panel>
             </control>

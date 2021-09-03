@@ -393,6 +393,22 @@ public class Cgm implements Cloneable {
     }
 
     /**
+     * Count the vertices in the C-G model. TODO use MySpatial when it's fixed
+     *
+     * @return the number found (&ge;0)
+     */
+    public int countVertices() {
+        int result = 0;
+        List<Mesh> meshes = MyMesh.listMeshes(rootSpatial, null);
+        for (Mesh mesh : meshes) {
+            result += mesh.getVertexCount();
+        }
+
+        assert result >= 0 : result;
+        return result;
+    }
+
+    /**
      * Dump the C-G model using the specified Dumper.
      *
      * @param dumper the Dumper to use (not null)

@@ -136,6 +136,18 @@ public class SelectedTexture implements JmeCloneable {
     }
 
     /**
+     * Count how many distinct non-null textures are in the loaded C-G model.
+     *
+     * @return the count (&ge;0)
+     */
+    public int countNonNulls() {
+        List<Texture> nonNulls = listNonNullTextures();
+        int count = nonNulls.size();
+
+        return count;
+    }
+
+    /**
      * Count how many selectables (distinct non-null textures plus distinct
      * references to null textures) are in the loaded C-G model.
      *
