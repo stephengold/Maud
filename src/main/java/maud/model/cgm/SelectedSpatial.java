@@ -87,6 +87,7 @@ import jme3utilities.ui.Locators;
 import maud.Maud;
 import maud.MaudUtil;
 import maud.MeshNormals;
+import maud.MeshUtil;
 import maud.PhysicsUtil;
 import maud.ShapeType;
 import maud.model.History;
@@ -370,9 +371,9 @@ public class SelectedSpatial implements JmeCloneable {
             Transform gInWorld = geometry.getWorldTransform().clone();
             Transform gInParent = wip.clone().combineWithParent(gInWorld);
 
-            MaudUtil.transformBuffer(mesh, VertexBuffer.Type.BindPosePosition,
+            MeshUtil.transformBuffer(mesh, VertexBuffer.Type.BindPosePosition,
                     gInParent);
-            MaudUtil.transformBuffer(mesh, VertexBuffer.Type.Position,
+            MeshUtil.transformBuffer(mesh, VertexBuffer.Type.Position,
                     gInParent);
 
             Quaternion gInPRot = gInParent.getRotation();
@@ -779,7 +780,7 @@ public class SelectedSpatial implements JmeCloneable {
         Validate.nonNull(algorithm, "algorithm");
 
         Mesh oldMesh = getMesh();
-        Mesh newMesh = MaudUtil.generateNormals(oldMesh, algorithm);
+        Mesh newMesh = MeshUtil.generateNormals(oldMesh, algorithm);
         String message = "generate mesh normals for " + algorithm;
         editableCgm.setMesh(newMesh, message);
     }
