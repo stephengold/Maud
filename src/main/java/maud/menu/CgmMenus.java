@@ -89,6 +89,10 @@ public class CgmMenus {
             builder.add("Unload source model");
         }
 
+        if (target.hasExtraSpatials()) {
+            builder.addEdit("Delete extra spatials");
+        }
+
         int numSpatials = target.countSpatials(Spatial.class);
         int numInherits
                 = target.countSpatials(Spatial.class, Spatial.CullHint.Inherit);
@@ -136,6 +140,10 @@ public class CgmMenus {
         String actionPrefix;
         boolean handled = true;
         switch (remainder) {
+            case "Delete extra spatials":
+                target.deleteExtraSpatials();
+                break;
+
             case "Export to XML":
                 actionPrefix = ActionPrefix.saveCgmUnconfirmed
                         + CgmOutputSet.All + " " + CgmOutputFormat.XML + " ";

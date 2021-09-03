@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -84,13 +84,11 @@ public class SpatialMenus {
         builder.addTool("User-Data tool");
 
         Cgm target = Maud.getModel().getTarget();
-        if (!target.getSpatial().isCgmRoot()) {
+        SelectedSpatial ss = target.getSpatial();
+        if (!ss.isCgmRoot()) {
             builder.addEdit("Delete");
         }
-        if (target.hasExtraSpatials()) {
-            builder.addEdit("Delete extras");
-        }
-        if (target.getSpatial().hasMaterial()) {
+        if (ss.hasMaterial()) {
             builder.addSubmenu("Edit material");
         }
     }
@@ -145,10 +143,6 @@ public class SpatialMenus {
 
                 case "Delete":
                     Maud.getModel().getTarget().getSpatial().delete();
-                    break;
-
-                case "Delete extras":
-                    Maud.getModel().getTarget().deleteExtraSpatials();
                     break;
 
                 case "Details tool":
