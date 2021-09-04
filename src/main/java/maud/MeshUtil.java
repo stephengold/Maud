@@ -33,11 +33,18 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.mesh.IndexBuffer;
 import com.jme3.util.BufferUtils;
+import java.nio.Buffer;
 import java.nio.FloatBuffer;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Logger;
+import jme3utilities.Element;
 import jme3utilities.MyMesh;
 import jme3utilities.Validate;
+import jme3utilities.math.IntPair;
 import jme3utilities.math.MyBuffer;
+import jme3utilities.math.MyMath;
 import jme3utilities.math.MyVector3f;
 
 /**
@@ -68,6 +75,52 @@ public class MeshUtil {
     }
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Determine the maximum number of disjoint sub-meshes, based vertex
+     * positions compared using the specified tolerance.
+     *
+     * @param mesh the input mesh (not null)
+     * @param positionType the type of the VertexBuffer to analyze (not null,
+     * typically Position or BindPosition)
+     * @param tolerance the minimum distance for distinct vertex positions (in
+     * mesh units, &ge;0)
+     * @return the maximum number (&ge;0)
+     */
+    public static int countSubmeshes(Mesh mesh,
+            VertexBuffer.Type positionType, float tolerance) {
+        Validate.nonNull(positionType, "position type");
+        Validate.nonNegative(tolerance, "tolerance");
+
+        int numVertices = mesh.getVertexCount();
+        FloatBuffer buffer = mesh.getFloatBuffer(positionType);
+        /*
+         * Assign an ID to each distinct vertex position and
+         * enumerate all pairs of IDs that are adjacent (joined by edges).
+         */
+        int startPosition = 0;
+        int endPosition = numAxes * numVertices;
+        DistinctVectorValues distinctPositions;
+        if (tolerance == 0f) {
+            distinctPositions = new DistinctVectorValues(buffer, startPosition,
+                    endPosition);
+        } else {
+            distinctPositions = new DistinctVectorValues(buffer, startPosition,
+                    endPosition, tolerance);
+        }
+        Set<IntPair> adjacentPairs = listAdjacentPairs(mesh, distinctPositions);
+        /*
+         * Assign each distinct position to a sub-mesh,
+         * based on the adjacency data.
+         */
+        int[] vvid2Submesh = partitionIds(distinctPositions, adjacentPairs);
+        int result = maxInt(vvid2Submesh) + 1;
+        if (result < 0) {
+            result = 0;
+        }
+
+        return result;
+    }
 
     /**
      * Generate mesh normals from positions. TODO move to Heart library
@@ -116,9 +169,10 @@ public class MeshUtil {
             if (type != VertexBuffer.Type.Index) {
                 int numCperE = inVertexBuffer.getNumComponents();
                 if (numCperE == 0) {
-                    //??
+                    // TODO??
                 }
-                assert numCperE >= 1 && numCperE <= 4 : "numCperE = " + numCperE + " type = " + type;
+                assert numCperE >= 1 && numCperE <= 4 :
+                        "numCperE = " + numCperE + " type = " + type;
             }
         }
 
@@ -253,6 +307,127 @@ public class MeshUtil {
     }
 
     /**
+     * Maximally partition the specified Mesh into disjoint sub-meshes, based
+     * vertex positions compared using the specified tolerance.
+     *
+     * @param mesh the input mesh (not null)
+     * @param positionType the type of the VertexBuffer to analyze (not null,
+     * typically Position or BindPosition)
+     * @param tolerance the minimum distance for distinct vertex positions (in
+     * mesh units, &ge;0)
+     * @return a new array of new meshes without index buffers
+     */
+    public static Mesh[] partition(Mesh mesh, VertexBuffer.Type positionType,
+            float tolerance) {
+        Validate.nonNull(positionType, "position type");
+        Validate.nonNegative(tolerance, "tolerance");
+
+        int numVertices = mesh.getVertexCount();
+        FloatBuffer buffer = mesh.getFloatBuffer(positionType);
+        /*
+         * Assign an ID to each distinct vertex position and
+         * enumerate all pairs of IDs that are adjacent (joined by edges).
+         */
+        int startPosition = 0;
+        int endPosition = numAxes * numVertices;
+        DistinctVectorValues distinctPositions;
+        if (tolerance == 0f) {
+            distinctPositions = new DistinctVectorValues(buffer, startPosition,
+                    endPosition);
+        } else {
+            distinctPositions = new DistinctVectorValues(buffer, startPosition,
+                    endPosition, tolerance);
+        }
+        Set<IntPair> adjacentPairs = listAdjacentPairs(mesh, distinctPositions);
+        /*
+         * Assign each distinct position to a sub-mesh,
+         * based on the adjacency data.
+         */
+        int[] vvid2Submesh = partitionIds(distinctPositions, adjacentPairs);
+        int numSubmeshes = maxInt(vvid2Submesh) + 1;
+        if (numSubmeshes < 0) {
+            numSubmeshes = 0;
+        }
+        /*
+         * Construct the submeshes.
+         */
+        IndexBuffer indexList = mesh.getIndicesAsList();
+        int numIndices = indexList.size();
+        Mesh.Mode expandedMode = MyMesh.expandedMode(mesh);
+        Mesh[] result = new Mesh[numSubmeshes];
+        for (int submesh = 0; submesh < numSubmeshes; ++submesh) {
+            /*
+             * Determine the number of vertices for the submesh.
+             */
+            int numOutputVertices = 0;
+            for (int ii = 0; ii < numIndices; ++ii) {
+                int vertexIndex = indexList.get(ii);
+                int vvid = distinctPositions.findVvid(vertexIndex);
+                if (vvid2Submesh[vvid] == submesh) {
+                    ++numOutputVertices;
+                }
+            }
+            assert numOutputVertices > 0;
+            /*
+             * Instantiate the output mesh.
+             */
+            Mesh outputMesh = new Mesh();
+            result[submesh] = outputMesh;
+            outputMesh.setMode(expandedMode);
+
+            for (VertexBuffer.Type type : VertexBuffer.Type.values()) {
+                if (type == VertexBuffer.Type.Index
+                        || type == VertexBuffer.Type.HWBoneIndex
+                        || type == VertexBuffer.Type.HWBoneWeight) {
+                    continue;
+                }
+                VertexBuffer vb = mesh.getBuffer(type);
+                if (vb == null) {
+                    continue;
+                }
+                /*
+                 * Create the VertexBuffer for output.
+                 */
+                int numCperE = vb.getNumComponents();
+                numCperE = MyMath.clamp(numCperE, 1, 4); // to avoid an IAE
+                VertexBuffer.Format format = vb.getFormat();
+                if (format == null) {
+                    format = VertexBuffer.Format.Float; // to avoid an NPE
+                }
+                Buffer outputBuffer = VertexBuffer.createBuffer(format,
+                        numCperE, numOutputVertices);
+                outputMesh.setBuffer(type, numCperE, format, outputBuffer);
+                VertexBuffer outputVB = outputMesh.getBuffer(type);
+                /*
+                 * Perform an element-by-element copy from the input buffer
+                 * to the output buffer.
+                 */
+                int outVI = 0;
+                for (int ii = 0; ii < numIndices; ++ii) {
+                    int vertexIndex = indexList.get(ii);
+                    int vvid = distinctPositions.findVvid(vertexIndex);
+                    if (vvid2Submesh[vvid] == submesh) {
+                        Element.copy(vb, vertexIndex, outputVB, outVI);
+                        ++outVI;
+                    }
+                }
+                assert outVI == numOutputVertices;
+                int end = outputBuffer.capacity();
+                outputBuffer.position(end);
+                outputBuffer.flip();
+            }
+
+            outputMesh.updateBound();
+            outputMesh.updateCounts();
+
+            int mnw = mesh.getMaxNumWeights();
+            outputMesh.setMaxNumWeights(mnw);
+        }
+
+        return result;
+    }
+
+    /**
      * Apply the specified coordinate transform to all data in the specified
      * VertexBuffer.
      *
@@ -283,5 +458,166 @@ public class MeshUtil {
 
             vertexBuffer.setUpdateNeeded();
         }
+    }
+    // *************************************************************************
+    // private methods
+
+    /**
+     * Assign position IDs to existing sub-meshes based on adjacency to IDs that
+     * have previously been assigned.
+     *
+     * @param id2Submesh map from position IDs to submeshes (not null, modified)
+     * @param adjacentPairs list of adjacent ID pairs (not null, unaffected)
+     * @param oldNumUnassigned the count of unassigned IDs
+     * @return the new count of unassigned IDs
+     */
+    private static int assignIds(int[] id2Submesh, Set<IntPair> adjacentPairs,
+            int oldNumUnassigned) {
+        int result = oldNumUnassigned;
+        /*
+         * Iterate until further progress is impossible.
+         */
+        boolean progress;
+        do {
+            progress = false;
+            /*
+             * Assign position IDs to existing submeshes based on adjacency.
+             */
+            for (IntPair pair : adjacentPairs) {
+                int idA = pair.smaller();
+                int idB = pair.larger();
+
+                int submeshA = id2Submesh[idA];
+                int submeshB = id2Submesh[idB];
+                if (submeshA == -1 && submeshB != -1) { // B assigned but not A
+                    id2Submesh[idA] = submeshB;
+                    --result;
+                    progress = true;
+
+                } else if (submeshA != -1 && submeshB == -1) { // A assigned but not B
+                    id2Submesh[idB] = submeshA;
+                    --result;
+                    progress = true;
+                }
+            }
+        } while (progress && result > 0);
+
+        return result;
+    }
+
+    /**
+     * Enumerate all pairs of distinct vertex positions that are adjacent (part
+     * of the same edge or triangle) in the specified Mesh.
+     *
+     * @param mesh the Mesh to analyze (not null, unaffected)
+     * @param distinctPositions distinct positions in the Mesh (not null)
+     * @return a new set of ID pairs
+     */
+    private static Set<IntPair> listAdjacentPairs(Mesh mesh,
+            DistinctVectorValues distinctPositions) {
+        IndexBuffer indexList = mesh.getIndicesAsList();
+        int numIndices = indexList.size();
+        Mesh.Mode expandedMode = MyMesh.expandedMode(mesh);
+
+        Set<IntPair> result = new HashSet<>(numIndices);
+        if (MyMesh.hasTriangles(mesh)) {
+            int numTriangles = numIndices / MyMesh.vpt;
+            assert numTriangles * MyMesh.vpt == numIndices : numIndices;
+            for (int triangleI = 0; triangleI < numTriangles; ++triangleI) {
+                int startPosition = MyMesh.vpt * triangleI;
+                int vertexI0 = indexList.get(startPosition);
+                int vertexI1 = indexList.get(startPosition + 1);
+                int vertexI2 = indexList.get(startPosition + 2);
+                int vvid0 = distinctPositions.findVvid(vertexI0);
+                int vvid1 = distinctPositions.findVvid(vertexI1);
+                int vvid2 = distinctPositions.findVvid(vertexI2);
+                if (vvid0 != vvid1) {
+                    result.add(new IntPair(vvid0, vvid1));
+                }
+                if (vvid1 != vvid2) {
+                    result.add(new IntPair(vvid1, vvid2));
+                }
+                if (vvid2 != vvid0) {
+                    result.add(new IntPair(vvid2, vvid0));
+                }
+            }
+
+        } else if (expandedMode == Mesh.Mode.Lines) {
+            int numEdges = numIndices / MyMesh.vpe;
+            assert numEdges * MyMesh.vpe == numIndices : numIndices;
+            // assert fails on LineLoop meshes due to JME issue #1603
+            for (int edgeI = 0; edgeI < numEdges; ++edgeI) {
+                int startPosition = MyMesh.vpe * edgeI;
+                int vertexI0 = indexList.get(startPosition);
+                int vertexI1 = indexList.get(startPosition + 1); // IndexOutOfBoundsException on LineLoop meshes due to JME issue #1603
+                int vvid0 = distinctPositions.findVvid(vertexI0);
+                int vvid1 = distinctPositions.findVvid(vertexI1);
+                if (vvid0 != vvid1) {
+                    result.add(new IntPair(vvid0, vvid1));
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Find the maximum of some int values. TODO use MyMath
+     *
+     * @param iValues the input values
+     * @return the most positive value
+     * @see java.lang.Math#max(int, int)
+     */
+    private static int maxInt(int... iValues) {
+        int result = Integer.MIN_VALUE;
+        for (int value : iValues) {
+            if (value > result) {
+                result = value;
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Assign each distinct vertex position to a sub-mesh, based on the
+     * specified adjacency data.
+     *
+     * @param distinctPositions an analysis of distinct vertex positions (not
+     * null)
+     * @param adjacentPairs adjacency data for distinct vertex positions (not
+     * null, unaffected)
+     * @return a new array of sub-mesh indices, one for each distinct position
+     */
+    private static int[] partitionIds(DistinctVectorValues distinctPositions,
+            Set<IntPair> adjacentPairs) {
+        int numDistinctPositions = distinctPositions.countDistinct();
+        int[] result = new int[numDistinctPositions];
+        Arrays.fill(result, -1);
+
+        int numUnassigned = numDistinctPositions;
+        int numSubmeshes = 0;
+        while (numUnassigned > 0) {
+            /*
+             * Allocate a new submesh for the first unassigned position.
+             */
+            for (int idA = 0; idA < numDistinctPositions; ++idA) {
+                int submeshA = result[idA];
+                if (submeshA == -1) { // A isn't assigned yet
+                    submeshA = numSubmeshes;
+                    ++numSubmeshes;
+
+                    result[idA] = submeshA;
+                    --numUnassigned;
+                    break;
+                }
+            }
+            /*
+             * Assign IDs to the new submesh until closure is achieved.
+             */
+            numUnassigned = assignIds(result, adjacentPairs, numUnassigned);
+        }
+
+        return result;
     }
 }
