@@ -813,8 +813,9 @@ public class SceneView extends SceneViewCore {
     }
 
     /**
-     * Split the selected Geometry into subparts and attach them to the parent
-     * of the original.
+     * Copy the selected Geometry, split the copy into subparts and attach the
+     * parts to the parent of the original. (The original is unaffected.) TODO
+     * rename copyAndSplitGeometry
      *
      * @param tolerance the minimum distance for distinct vector values (in mesh
      * units, &ge;0)
@@ -826,7 +827,7 @@ public class SceneView extends SceneViewCore {
 
         Mesh[] submeshes
                 = MeshUtil.partition(mesh, VertexBuffer.Type.Position, tolerance);
-        MaudUtil.splitGeometry(geometry, submeshes);
+        MaudUtil.copyAndSplitGeometry(geometry, submeshes);
     }
 
     /**

@@ -92,7 +92,6 @@ import maud.MeshUtil;
 import maud.ParseUtil;
 import maud.PhysicsUtil;
 import maud.model.EditState;
-import maud.model.EditorModel;
 import maud.model.History;
 import maud.view.scene.SceneView;
 
@@ -1446,8 +1445,9 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * If possible, split the selected Geometry into subparts and attach the
-     * parts to the parent of the original.
+     * If possible, copy the selected Geometry, split the copy into subparts and
+     * attach the parts to the parent of the original. (The original is
+     * unaffected.) TODO rename copyAndSplitGeometry
      */
     public void splitGeometry() {
         Geometry geometry = (Geometry) getSpatial().find();
@@ -1458,7 +1458,7 @@ public class EditableCgm extends LoadedCgm {
         int numSubmeshes = submeshes.length;
         if (numSubmeshes > 1) {
             History.autoAdd();
-            MaudUtil.splitGeometry(geometry, submeshes);
+            MaudUtil.copyAndSplitGeometry(geometry, submeshes);
             getSceneView().splitGeometry(tolerance);
 
             String oldName = geometry.getName();

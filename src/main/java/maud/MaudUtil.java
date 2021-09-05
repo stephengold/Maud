@@ -129,6 +129,37 @@ public class MaudUtil {
     // new methods exposed
 
     /**
+     * Copy the selected Geometry, split the copy into subparts and attach the
+     * parts to the parent of the original Geometry. (The original Geometry is
+     * unaffected.)
+     *
+     * @param geometry the original Geometry (not null, not orphan, unaffected)
+     * @param submeshes meshes created by partitioning the original's Mesh (not
+     * null, at least 2 meshes, aliases created)
+     */
+    public static void copyAndSplitGeometry(Geometry geometry,
+            Mesh[] submeshes) {
+        Node parent = geometry.getParent();
+        Validate.nonNull(parent, "geometry's parent");
+        int numSubmeshes = submeshes.length;
+        Validate.inRange(numSubmeshes, "number of submeshes",
+                2, Integer.MAX_VALUE);
+
+        String name = geometry.getName();
+        for (int submeshI = 0; submeshI < numSubmeshes; ++submeshI) {
+            boolean cloneMaterial = false;
+            Geometry newGeometry = geometry.clone(cloneMaterial);
+            parent.attachChild(newGeometry);
+
+            Mesh submesh = submeshes[submeshI];
+            newGeometry.setMesh(submesh);
+
+            String newName = String.format("%s.split%03d", name, submeshI);
+            newGeometry.setName(newName);
+        }
+    }
+
+    /**
      * Count the children of the specified Bone or Joint.
      *
      * @param bone the subject Bone or Joint (not null, unaffected)
@@ -1222,44 +1253,6 @@ public class MaudUtil {
         }
 
         return result;
-    }
-
-    /**
-     * Split the specified Geometry into subparts and attach them to the parent
-     * of the original.
-     *
-     * @param geometry the original Geometry (not null, not orphan, unaffected)
-     * @param submeshes meshes created by partitioning the original's Mesh (not
-     * null, at least 2 elements, aliases created)
-     */
-    public static void splitGeometry(Geometry geometry, Mesh[] submeshes) {
-        Node parent = geometry.getParent();
-        Validate.nonNull(parent, "geometry's parent");
-        int numSubmeshes = submeshes.length;
-        Validate.inRange(numSubmeshes, "number of submeshes",
-                2, Integer.MAX_VALUE);
-
-        Spatial.BatchHint batchHint = geometry.getLocalBatchHint();
-        Spatial.CullHint cullHint = geometry.getLocalCullHint();
-        RenderQueue.Bucket queueBucket = geometry.getLocalQueueBucket();
-        RenderQueue.ShadowMode shadowMode = geometry.getLocalShadowMode();
-        Transform transform = geometry.getLocalTransform();
-        Material material = geometry.getMaterial();
-        String name = geometry.getName();
-
-        for (int submeshI = 0; submeshI < numSubmeshes; ++submeshI) {
-            String newName = String.format("%s.split%03d", name, submeshI);
-            Mesh submesh = submeshes[submeshI];
-            Geometry newGeometry = new Geometry(newName, submesh);
-            parent.attachChild(newGeometry);
-
-            newGeometry.setBatchHint(batchHint);
-            newGeometry.setCullHint(cullHint);
-            newGeometry.setQueueBucket(queueBucket);
-            newGeometry.setShadowMode(shadowMode);
-            newGeometry.setLocalTransform(transform);
-            newGeometry.setMaterial(material);
-        }
     }
 
     /**
