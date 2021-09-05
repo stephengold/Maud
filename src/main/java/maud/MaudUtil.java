@@ -85,7 +85,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.Heart;
 import jme3utilities.MyAnimation;
+import jme3utilities.MyMesh;
 import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
@@ -224,6 +226,43 @@ public class MaudUtil {
         }
 
         assert result >= 0 : result;
+        return result;
+    }
+
+    /**
+     * Merge the specified geometries into a new Geometry.
+     *
+     * @param name the desired name for the resulting Geometry
+     * @param geometries the geometries to merge (all non-null)
+     * @return a new, orphan Geometry with the specified name
+     */
+    public static Geometry createMergedGeometry(String name,
+            Geometry... geometries) {
+        Validate.nonNullArray(geometries, "geometries");
+        int numGeometries = geometries.length;
+        Validate.require(numGeometries > 1, "at least 2 geometries");
+
+        Geometry baseGeometry = geometries[0];
+        assert isBare(baseGeometry);
+
+        Mesh mesh = baseGeometry.getMesh();
+        int maxNumWeights = mesh.getMaxNumWeights();
+        for (int gIndex = 1; gIndex < numGeometries; ++gIndex) {
+            Geometry addGeometry = geometries[gIndex];
+            assert isBare(addGeometry);
+
+            Mesh addMesh = addGeometry.getMesh();
+            mesh = MyMesh.merge(mesh, addMesh);
+
+            int addNumWeights = addMesh.getMaxNumWeights();
+            maxNumWeights = Math.max(maxNumWeights, addNumWeights);
+        }
+        mesh.setMaxNumWeights(maxNumWeights); // TODO work around a bug in Heart v7.0.0
+
+        Geometry result = Heart.deepCopy(baseGeometry);
+        result.setMesh(mesh);
+        result.setName(name);
+
         return result;
     }
 

@@ -246,6 +246,47 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
+     * Merge the specified geometries into a new Geometry and attach it the
+     * selected Node.
+     *
+     * @param indices a comma-separated list of decimal child-geometry indices
+     * (not null, not empty, at least 2 indices)
+     * @param name the name for the new Geometry (not null, not in use)
+     */
+    public void addMergedGeometry(String indices, String name) {
+        Validate.nonEmpty(indices, "indices");
+        String[] selectedIndices = indices.split(",");
+        int numSelected = selectedIndices.length;
+        Validate.require(numSelected > 1, "at least 2 indices");
+        Validate.nonNull(name, "name");
+        Validate.require(!hasSpatial(name), "name not in use");
+
+        SelectedSpatial ss = getSpatial();
+        List<GeometryItem> allItems = ss.listGeometryItems();
+
+        Geometry[] geometryArray = new Geometry[numSelected];
+        for (int gIndex = 0; gIndex < numSelected; ++gIndex) {
+            String digits = selectedIndices[gIndex];
+            int itemIndex = Integer.parseInt(digits);
+            GeometryItem item = allItems.get(itemIndex);
+            geometryArray[gIndex] = item.getGeometry();
+        }
+
+        History.autoAdd();
+
+        Geometry geometry = MaudUtil.createMergedGeometry(name, geometryArray);
+        Node parent = (Node) ss.find();
+        parent.attachChild(geometry);
+
+        List<Integer> parentPosition = findSpatial(parent);
+        getSceneView().attachSpatial(parentPosition, geometry);
+
+        String description = String.format("merge %s geometries to %s",
+                numSelected, MyString.quote(name));
+        editState.setEdited(description);
+    }
+
+    /**
      * Add a new, null-valued material-parameter override to the selected
      * spatial.
      *

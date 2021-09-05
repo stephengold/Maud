@@ -757,7 +757,8 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Determine the index of the selected Geometry among all geometries.
+     * Determine the index of the selected Geometry among all geometries in the
+     * C-G model.
      *
      * @return the index, or -1 if the selected spatial is not a Geometry
      */
@@ -1242,6 +1243,30 @@ public class SelectedSpatial implements JmeCloneable {
                 VertexBuffer buffer = mesh.getLodLevel(iLevel);
                 if (desc.startsWith(descPrefix) && buffer.getData() != null) {
                     result.add(desc);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Enumerate all geometries among the children of the selected Node.
+     *
+     * @return a new list of new items
+     */
+    public List<GeometryItem> listGeometryItems() {
+        List<GeometryItem> result = new ArrayList<>(10);
+
+        Spatial parent = find();
+        if (parent instanceof Node) {
+            Node node = (Node) parent;
+            List<Spatial> children = node.getChildren();
+            for (Spatial child : children) {
+                if (child instanceof Geometry) {
+                    Geometry geometry = (Geometry) child;
+                    GeometryItem item = new GeometryItem(geometry);
+                    result.add(item);
                 }
             }
         }
