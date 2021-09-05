@@ -34,6 +34,7 @@ import maud.Maud;
 import maud.action.ActionPrefix;
 import maud.dialog.EditorDialogs;
 import maud.model.cgm.Cgm;
+import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedBone;
 import maud.model.cgm.SelectedSpatial;
 import maud.tool.EditorTools;
@@ -90,6 +91,9 @@ public class SpatialMenus {
         }
         if (ss.hasMaterial()) {
             builder.addSubmenu("Edit material");
+        }
+        if (ss.hasMesh() && !ss.isCgmRoot()) {
+            builder.addEdit("Split geometry");
         }
     }
 
@@ -179,6 +183,11 @@ public class SpatialMenus {
 
                 case "Select":
                     select();
+                    break;
+
+                case "Split geometry":
+                    EditableCgm target = Maud.getModel().getTarget();
+                    target.splitGeometry();
                     break;
 
                 case "Tool":

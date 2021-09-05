@@ -62,6 +62,7 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.UserData;
+import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 import com.jme3.shader.VarType;
@@ -87,9 +88,11 @@ import jme3utilities.minie.MyControlP;
 import jme3utilities.wes.AnimationEdit;
 import maud.Maud;
 import maud.MaudUtil;
+import maud.MeshUtil;
 import maud.ParseUtil;
 import maud.PhysicsUtil;
 import maud.model.EditState;
+import maud.model.EditorModel;
 import maud.model.History;
 import maud.view.scene.SceneView;
 
@@ -1439,6 +1442,30 @@ public class EditableCgm extends LoadedCgm {
                         "set wireframe flag of material to %s", newState);
                 editState.setEdited(description);
             }
+        }
+    }
+
+    /**
+     * If possible, split the selected Geometry into subparts and attach the
+     * parts to the parent of the original.
+     */
+    public void splitGeometry() {
+        Geometry geometry = (Geometry) getSpatial().find();
+        Mesh mesh = geometry.getMesh();
+        float tolerance = Maud.getModel().getMisc().vertexPositionTolerance();
+        Mesh[] submeshes = MeshUtil.partition(mesh, VertexBuffer.Type.Position,
+                tolerance);
+        int numSubmeshes = submeshes.length;
+        if (numSubmeshes > 1) {
+            History.autoAdd();
+            MaudUtil.splitGeometry(geometry, submeshes);
+            getSceneView().splitGeometry(tolerance);
+
+            String oldName = geometry.getName();
+            String description = String.format(
+                    "split %s into %d using tolerance=%f",
+                    MyString.quote(oldName), numSubmeshes, tolerance);
+            editState.setEdited(description);
         }
     }
 

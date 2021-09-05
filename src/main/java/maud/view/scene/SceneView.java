@@ -64,6 +64,8 @@ import jme3utilities.debug.AxesVisualizer;
 import jme3utilities.math.MyVector3f;
 import jme3utilities.minie.MyControlP;
 import maud.Maud;
+import maud.MaudUtil;
+import maud.MeshUtil;
 import maud.PhysicsUtil;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.SelectedRagdoll;
@@ -808,6 +810,23 @@ public class SceneView extends SceneViewCore {
         Material material = geometry.getMaterial();
         RenderState renderState = material.getAdditionalRenderState();
         renderState.setWireframe(newSetting);
+    }
+
+    /**
+     * Split the selected Geometry into subparts and attach them to the parent
+     * of the original.
+     *
+     * @param tolerance the minimum distance for distinct vector values (in mesh
+     * units, &ge;0)
+     */
+    public void splitGeometry(float tolerance) {
+        Spatial spatial = selectedSpatial();
+        Geometry geometry = (Geometry) spatial;
+        Mesh mesh = geometry.getMesh();
+
+        Mesh[] submeshes
+                = MeshUtil.partition(mesh, VertexBuffer.Type.Position, tolerance);
+        MaudUtil.splitGeometry(geometry, submeshes);
     }
 
     /**
