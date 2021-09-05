@@ -721,6 +721,11 @@ public class ActionPrefix {
      */
     final public static String setVertexPointSize = "set vertexPointSize ";
     /**
+     * argument is a decimal distance
+     */
+    final public static String setVertexPositionTolerance
+            = "set vertexPositionTolerance ";
+    /**
      * argument is a decimal fraction
      */
     final public static String setXBoundary = "set xBoundary ";

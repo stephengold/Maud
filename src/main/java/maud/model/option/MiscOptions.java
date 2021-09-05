@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -85,6 +85,11 @@ public class MiscOptions implements Cloneable {
      * hidden)
      */
     private boolean texturePreviewVisibility = false;
+    /**
+     * minimum distance to distinguish vertex positions in a Mesh (in mesh
+     * units, &ge;0)
+     */
+    private float vertexPositionTolerance = 0f;
     /**
      * submenu warp fraction for the X coordinates (&ge;0, &le;1)
      */
@@ -484,6 +489,16 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
+     * Alter the minimum separation to distinguish vertex positions in a Mesh.
+     *
+     * @param tolerance the desired distance (in mesh units, &ge;0, default=0)
+     */
+    public void setVertexPositionTolerance(float tolerance) {
+        Validate.nonNegative(tolerance, "tolerance");
+        vertexPositionTolerance = tolerance;
+    }
+
+    /**
      * Alter the location of the display's left-right boundary.
      *
      * @param newX display X-coordinate
@@ -532,6 +547,17 @@ public class MiscOptions implements Cloneable {
         assert warpY >= 0f : warpY;
         assert warpY <= 1f : warpY;
         return warpY;
+    }
+
+    /**
+     * Determine the minimum separation to distinguish vertex positions in a
+     * Mesh.
+     *
+     * @return the distance (in mesh units, &ge;0)
+     */
+    public float vertexPositionTolerance() {
+        assert vertexPositionTolerance >= 0f : vertexPositionTolerance;
+        return vertexPositionTolerance;
     }
 
     /**
@@ -618,6 +644,10 @@ public class MiscOptions implements Cloneable {
 
         action = String.format("%s%f %f", ActionPrefix.setSubmenuWarp,
                 warpX, warpY);
+        MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.setVertexPositionTolerance
+                + Float.toString(vertexPositionTolerance);
         MaudUtil.writePerformAction(writer, action);
 
         action = ActionPrefix.setXBoundary + Float.toString(xBoundary);

@@ -406,6 +406,13 @@ class SetOZAction {
             float size = Float.parseFloat(arg);
             model.getScene().getVertex().setPointSize(size);
 
+        } else if (actionString.startsWith(
+                ActionPrefix.setVertexPositionTolerance)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setVertexPositionTolerance);
+            float tolerance = Float.valueOf(arg);
+            model.getMisc().setVertexPositionTolerance(tolerance);
+
         } else if (actionString.startsWith(ActionPrefix.setXBoundary)) {
             arg = MyString.remainder(actionString, ActionPrefix.setXBoundary);
             float position = Float.valueOf(arg);
