@@ -308,7 +308,6 @@ public class SelectedAnimControl implements JmeCloneable {
             mix.setTracks(trackArray);
             editableCgm.addAnimation(mix);
         }
-
     }
 
     /**
@@ -491,7 +490,7 @@ public class SelectedAnimControl implements JmeCloneable {
     }
 
     /**
-     * Read the duration of the named animation.
+     * Determine the duration of the named animation.
      *
      * @param animationName (not null)
      * @return the duration (in seconds, &ge;0)
