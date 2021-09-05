@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -141,34 +141,6 @@ public class TrackItem {
     }
 
     /**
-     * Access the animation.
-     *
-     * @return the pre-existing instance (not null)
-     */
-    Object getAnimation() {
-        Object result;
-        if (animControl instanceof AnimControl) {
-            result = ((AnimControl) animControl).getAnim(animationName);
-            assert result != null;
-        } else {
-            result = ((AnimComposer) animControl).getAnimClip(animationName);
-            assert result != null;
-        }
-
-        return result;
-    }
-
-    /**
-     * Determine the name of the animation.
-     *
-     * @return text string (not null)
-     */
-    public String getAnimationName() {
-        assert animationName != null;
-        return animationName;
-    }
-
-    /**
      * Access the anim control.
      *
      * @return the pre-existing instance (not null)
@@ -176,16 +148,6 @@ public class TrackItem {
     AbstractControl getAnimControl() {
         assert animControl != null;
         return animControl;
-    }
-
-    /**
-     * Access the name of the anim control.
-     *
-     * @return text string (not null)
-     */
-    public String getAnimControlName() {
-        assert animControlName != null;
-        return animControlName;
     }
 
     /**
