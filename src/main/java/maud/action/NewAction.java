@@ -266,6 +266,18 @@ class NewAction {
             animControl.addRetarget(newAnimationName);
             target.getAnimation().load(newAnimationName);
 
+        } else if (actionString.startsWith(ActionPrefix.newGeometryFromMerge)) {
+            String args = MyString.remainder(actionString,
+                    ActionPrefix.newGeometryFromMerge);
+            if (args.contains(" ")) {
+                String indices = args.split(" ")[0];
+                String newGeometryName
+                        = MyString.remainder(args, indices + " ");
+                target.addMergedGeometry(indices, newGeometryName);
+            } else {
+                EditorDialogs.newGeometry(actionString + " ");
+            }
+
         } else if (actionString.startsWith(ActionPrefix.newGhostControl)) {
             String shapeName = MyString.remainder(actionString,
                     ActionPrefix.newGhostControl);

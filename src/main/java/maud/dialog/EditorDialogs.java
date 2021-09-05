@@ -68,6 +68,7 @@ import maud.model.cgm.Cgm;
 import maud.model.cgm.CgmOutputFormat;
 import maud.model.cgm.CgmOutputSet;
 import maud.model.cgm.EditableCgm;
+import maud.model.cgm.GeometryItem;
 import maud.model.cgm.LoadedAnimation;
 import maud.model.cgm.LoadedCgm;
 import maud.model.cgm.MatParamRef;
@@ -420,6 +421,45 @@ public class EditorDialogs {
     public static void newAnimationFromMix(String actionPrefix) {
         Validate.nonEmpty(actionPrefix, "action prefix");
         newAnimation(actionPrefix, "Create", "mix");
+    }
+
+    /**
+     * Display a "new geometry" dialog to name a new Geometry.
+     *
+     * @param actionPrefix (not null, not empty)
+     */
+    public static void newGeometry(String actionPrefix) {
+        Validate.nonEmpty(actionPrefix, "action prefix");
+
+        DialogController controller = new SpatialNameDialog("Add geometry");
+        String defaultName = "new geometry";
+
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter a name for the new geometry:",
+                defaultName, actionPrefix, controller);
+    }
+
+    /**
+     * Display a "new geometry fromMerge" dialog to select the geometries.
+     */
+    public static void newGeometryFromMerge() {
+        SelectedSpatial ss = Maud.getModel().getTarget().getSpatial();
+        List<GeometryItem> items = ss.listGeometryItems();
+        int numGeometries = items.size();
+        List<String> options = new ArrayList<>(numGeometries);
+        for (GeometryItem item : items) {
+            String description = item.toString();
+            options.add(description);
+        }
+
+        String prompt = "Select geometries to include in the merge:";
+        String commitLabel = "Next";
+        String prefix = ActionPrefix.newGeometryFromMerge;
+        MergeDialog controller = new MergeDialog(items);
+
+        Maud.gui.closeAllPopups();
+        Maud.gui.showMultiSelectDialog(prompt, options, commitLabel, prefix,
+                controller);
     }
 
     /**

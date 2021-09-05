@@ -277,6 +277,9 @@ public class SpatialMenus {
         if (spatial.isNode()) {
             builder.addDialog("Leaf node");
         }
+        if (spatial.countChildren() > 1) {
+            builder.addDialog("Merged geometry");
+        }
         builder.addDialog("Parent");
 
         builder.show("select menuItem Spatial -> Add new -> ");
@@ -327,6 +330,10 @@ public class SpatialMenus {
         switch (remainder) {
             case "Leaf node":
                 EditorDialogs.newNode(ActionPrefix.newLeafNode);
+                break;
+
+            case "Merged geometry":
+                EditorDialogs.newGeometryFromMerge();
                 break;
 
             case "Parent":

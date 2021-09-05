@@ -148,6 +148,11 @@ public class ActionPrefix {
      */
     final public static String newAssetLocationSpec = "new assetLocationSpec ";
     /**
+     * arguments are a comma-separated list of decimal geometry indices and an
+     * optional name for the new Geometry
+     */
+    final public static String newGeometryFromMerge = "new geometryFromMerge ";
+    /**
      * argument is the name of a ShapeType
      */
     final public static String newGhostControl = "new ghostControl ";
