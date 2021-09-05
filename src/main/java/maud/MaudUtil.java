@@ -46,6 +46,8 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.environment.EnvironmentCamera;
+import com.jme3.light.LightList;
+import com.jme3.material.MatParamOverride;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Matrix3f;
@@ -129,18 +131,20 @@ public class MaudUtil {
     // new methods exposed
 
     /**
-     * Copy the selected Geometry, split the copy into subparts and attach the
+     * Copy the specified Geometry, split the copy into subparts and attach the
      * parts to the parent of the original Geometry. (The original Geometry is
      * unaffected.)
      *
-     * @param geometry the original Geometry (not null, not orphan, unaffected)
-     * @param submeshes meshes created by partitioning the original's Mesh (not
+     * @param geometry the original Geometry (not null, not orphan, bare,
+     * unaffected)
+     * @param submeshes meshes created by partitioning the original Mesh (not
      * null, at least 2 meshes, aliases created)
      */
     public static void copyAndSplitGeometry(Geometry geometry,
-            Mesh[] submeshes) {
+            Mesh... submeshes) {
         Node parent = geometry.getParent();
         Validate.nonNull(parent, "geometry's parent");
+        Validate.require(isBare(geometry), "geometry must be bare");
         int numSubmeshes = submeshes.length;
         Validate.inRange(numSubmeshes, "number of submeshes",
                 2, Integer.MAX_VALUE);
@@ -156,6 +160,7 @@ public class MaudUtil {
 
             String newName = String.format("%s.split%03d", name, submeshI);
             newGeometry.setName(newName);
+            assert isBare(newGeometry);
         }
     }
 
@@ -953,6 +958,37 @@ public class MaudUtil {
         } else {
             return true;
         }
+    }
+
+    /**
+     * Determine whether the specified Spatial is ready for splitting: free of
+     * S-G controls, user data, local lights, and local M-P overrides.
+     *
+     * @param spatial the Spatial to test (not null, unaffected)
+     * @return true if ready, otherwise false
+     */
+    public static boolean isBare(Spatial spatial) {
+        int numSgcs = spatial.getNumControls();
+        if (numSgcs != 0) {
+            return false;
+        }
+
+        Collection<String> userDataKeys = spatial.getUserDataKeys();
+        if (!userDataKeys.isEmpty()) {
+            return false;
+        }
+
+        LightList lights = spatial.getLocalLightList();
+        if (lights.size() != 0) {
+            return false;
+        }
+
+        List<MatParamOverride> mpos = spatial.getLocalMatParamOverrides();
+        if (!mpos.isEmpty()) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
