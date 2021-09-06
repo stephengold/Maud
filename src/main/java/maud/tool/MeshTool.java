@@ -223,21 +223,30 @@ class MeshTool extends Tool {
      * Update the information on the selected mesh.
      */
     private void updateMeshInfo() {
-        String animatedText, btButton, calcButton, modeButton, elementsText;
+        String btButton, calcButton, describeStatus, modeButton, elementsText;
         String lodsText, verticesButton, weightsButton;
 
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         if (spatial.hasMesh()) {
             calcButton = "Calc normals";
 
+            String animatedPrefix;
             if (spatial.hasAnimatedMesh()) {
-                animatedText = "animated mesh";
+                animatedPrefix = "";
                 int mnwpv = spatial.getMaxNumWeights();
                 weightsButton = Integer.toString(mnwpv);
             } else {
-                animatedText = "non-animated mesh";
+                animatedPrefix = "non-";
                 weightsButton = "";
             }
+            String indexedPrefix;
+            if (spatial.hasIndexedMesh()) {
+                indexedPrefix = "";
+            } else {
+                indexedPrefix = "non-";
+            }
+            describeStatus = animatedPrefix + "animated, "
+                    + indexedPrefix + "indexed mesh";
 
             BoundingVolume.Type type = spatial.getWorldBoundType();
             if (type == null) {
@@ -260,9 +269,9 @@ class MeshTool extends Tool {
 
         } else {
             if (spatial.isNode()) {
-                animatedText = "no mesh (a node is selected)";
+                describeStatus = "no mesh (a node is selected)";
             } else {
-                animatedText = "no mesh";
+                describeStatus = "no mesh";
             }
             btButton = "";
             calcButton = "";
@@ -273,7 +282,7 @@ class MeshTool extends Tool {
             weightsButton = "";
         }
 
-        setStatusText("meshAnimated", animatedText);
+        setStatusText("meshAnimated", describeStatus);
         setButtonText("meshBoundType", btButton);
         setButtonText("meshCalculateNormals", calcButton);
         setStatusText("meshElements", elementsText);
