@@ -395,36 +395,6 @@ public class MaudUtil {
     }
 
     /**
-     * Describe an AnimClip. TODO move to MyAnimation
-     *
-     * @param clip the AnimClip to describe (not null, unaffected)
-     * @param composer the Control that contains the clip (not null, unaffected)
-     * @return textual description (not null, not empty)
-     */
-    public static String describe(AnimClip clip, AnimComposer composer) {
-        Validate.nonNull(composer, "composer");
-
-        String name = clip.getName();
-        AnimTrack[] tracks = clip.getTracks();
-
-        String result;
-        int numTracks = tracks.length;
-        if (numTracks > 2) {
-            result = String.format("%s[%d]", MyString.quote(name), numTracks);
-        } else {
-            String[] trackDescriptions = new String[numTracks];
-            for (int trackIndex = 0; trackIndex < numTracks; ++trackIndex) {
-                AnimTrack track = tracks[trackIndex];
-                trackDescriptions[trackIndex] = describe(track, composer);
-            }
-            String joined = MyString.join(trackDescriptions);
-            result = String.format("%s(%s)", name, joined);
-        }
-
-        return result;
-    }
-
-    /**
      * Describe an animation track in the context of its AnimClip. TODO move to
      * MyAnimation
      *

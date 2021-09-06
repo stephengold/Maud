@@ -589,25 +589,6 @@ public class SelectedTrack implements JmeCloneable {
     }
 
     /**
-     * Enumerate all keyframes of the selected track.
-     *
-     * @return a new list of names, or null if no keyframes
-     */
-    public List<String> listKeyframes() {
-        List<String> result = null;
-        if (selected != null) {
-            float[] keyframes = MaudUtil.getTrackTimes(selected);
-            result = new ArrayList<>(keyframes.length);
-            for (float keyframe : keyframes) {
-                String menuItem = String.format("%.3f", keyframe);
-                result.add(menuItem);
-            }
-        }
-
-        return result;
-    }
-
-    /**
      * Thin the track's keyframes by the specified factor.
      *
      * @param factor reduction factor (&ge;2)

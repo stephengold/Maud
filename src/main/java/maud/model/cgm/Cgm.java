@@ -1025,29 +1025,6 @@ public class Cgm implements Cloneable {
     }
 
     /**
-     * Enumerate all ragdolls in the model and assign them names.
-     *
-     * @return a new list of names
-     */
-    public List<String> listRagdollNames() {
-        List<DynamicAnimControl> controlList
-                = listSgcs(DynamicAnimControl.class);
-        int numControls = controlList.size();
-
-        List<String> nameList = new ArrayList<>(numControls);
-        for (int index = 0; index < numControls; index++) {
-            DynamicAnimControl control = controlList.get(index);
-            Spatial sp = control.getSpatial();
-            String spName = sp.getName();
-            spName = MyString.quote(spName);
-            nameList.add(spName);
-        }
-        MyString.dedup(nameList, " #");
-
-        return nameList;
-    }
-
-    /**
      * Name all S-G controls of the specified type in the same order as
      * {@link #listSgcs(java.lang.Class)}.
      *

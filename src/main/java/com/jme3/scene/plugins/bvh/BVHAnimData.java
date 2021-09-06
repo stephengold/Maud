@@ -99,40 +99,4 @@ public class BVHAnimData {
     public Skeleton getSkeleton() {
         return skeleton;
     }
-
-    /**
-     * Read the time per frame.
-     *
-     * @return (in seconds, &gt;0)
-     */
-    public float getTimePerFrame() {
-        return timePerFrame;
-    }
-
-    /**
-     * Alter the animation.
-     *
-     * @param animation (alias created)
-     */
-    public void setAnimation(Animation animation) {
-        this.animation = animation;
-    }
-
-    /**
-     * Alter the skeleton.
-     *
-     * @param skeleton (alias created)
-     */
-    public void setSkeleton(Skeleton skeleton) {
-        this.skeleton = skeleton;
-    }
-
-    /**
-     * Alter the time per frame.
-     *
-     * @param timePerFrame (in seconds, &gt;0)
-     */
-    public void setTimePerFrame(float timePerFrame) {
-        this.timePerFrame = timePerFrame;
-    }
 }

@@ -58,15 +58,6 @@ public class BVHChannel {
     }
 
     /**
-     * Alter the name of the channel.
-     *
-     * @param name (6 possible values)
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
      * Alter the list of samples.
      *
      * @param values (alias created)

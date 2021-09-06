@@ -610,13 +610,6 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Toggle the visibility of the texture preview.
-     */
-    public void toggleTexturePreviewVisibility() {
-        setTexturePreviewVisible(!texturePreviewVisibility);
-    }
-
-    /**
      * Write the options to a script using the specified writer.
      *
      * @param writer (not null)

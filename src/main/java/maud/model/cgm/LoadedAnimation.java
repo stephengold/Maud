@@ -1237,20 +1237,6 @@ public class LoadedAnimation implements Cloneable {
     }
 
     /**
-     * Select the named keyframe in the selected track.
-     *
-     * @param name name of the new selection (not null)
-     */
-    public void selectKeyframe(String name) {
-        Validate.nonNull(name, "keyframe name");
-        assert cgm.getTrack().isSelected();
-
-        float newTime = Float.valueOf(name);
-        // TODO validate
-        cgm.getPlay().setTime(newTime);
-    }
-
-    /**
      * Alter which C-G model contains the animation. (Invoked only during
      * initialization and cloning.)
      *

@@ -246,29 +246,6 @@ public class SelectedVertex implements Cloneable {
     }
 
     /**
-     * Count how many bones directly influence the selected vertex.
-     *
-     * @return count (&ge;0, &le;maxWeights)
-     */
-    public int influence() {
-        int result = 0;
-        if (selectedIndex != -1) {
-            FloatBuffer weightBuffer = weightBuffer();
-            int maxNumWeights = cgm.getSpatial().getMaxNumWeights();
-            for (int wIndex = 0; wIndex < maxNumWeights; wIndex++) {
-                float weight = weightBuffer.get();
-                if (weight != 0f) {
-                    ++result;
-                }
-            }
-        }
-
-        assert result >= 0 : result;
-        assert result <= maxWeights : result;
-        return result;
-    }
-
-    /**
      * Test whether a vertex is selected.
      *
      * @return true if selected, otherwise false
@@ -475,21 +452,5 @@ public class SelectedVertex implements Cloneable {
                 select(iVertex);
             }
         }
-    }
-
-    /**
-     * Access the weight data for the selected vertex.
-     *
-     * @return a positioned, read-only buffer instance
-     */
-    private FloatBuffer weightBuffer() {
-        assert selectedIndex >= 0 : selectedIndex;
-
-        Mesh mesh = cgm.getSpatial().getMesh();
-        VertexBuffer wBuf = mesh.getBuffer(VertexBuffer.Type.BoneWeight);
-        FloatBuffer weightBuffer = (FloatBuffer) wBuf.getDataReadOnly();
-        weightBuffer.position(maxWeights * selectedIndex);
-
-        return weightBuffer;
     }
 }

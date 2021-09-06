@@ -215,16 +215,6 @@ public class LoadedMap implements Cloneable {
     }
 
     /**
-     * Read the local filesystem path to the asset root used to load the map.
-     *
-     * @return absolute path, or "" if unknown/remote (not null)
-     */
-    public String getAssetRootPath() {
-        assert assetRootPath != null;
-        return assetRootPath;
-    }
-
-    /**
      * Test whether any of the bone mappings are invalid.
      *
      * @return true if invalid mappings found, otherwise false

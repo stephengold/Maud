@@ -392,22 +392,6 @@ public class SelectedPco implements JmeCloneable {
     }
 
     /**
-     * Read the type of the object.
-     *
-     * @return abbreviated name of the class
-     */
-    public String type() {
-        assert isSelected();
-
-        String type = selectedPco.getClass().getSimpleName();
-        if (type.startsWith("Physics")) {
-            type = MyString.remainder(type, "Physics");
-        }
-
-        return type;
-    }
-
-    /**
      * Test whether the selected collision object uses (directly or indirectly)
      * the identified shape.
      *

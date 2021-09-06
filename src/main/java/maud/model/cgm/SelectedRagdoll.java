@@ -113,26 +113,6 @@ public class SelectedRagdoll implements JmeCloneable {
     }
 
     /**
-     * Find the AttachmentLink for the named bone.
-     *
-     * @param boneName (not null)
-     * @return the pre-existing instance, or null if not found
-     */
-    AttachmentLink findAttachmentLink(String boneName) {
-        assert boneName != null;
-
-        AttachmentLink result;
-        DynamicAnimControl dac = find();
-        if (dac == null) {
-            result = null;
-        } else {
-            result = dac.findAttachmentLink(boneName);
-        }
-
-        return result;
-    }
-
-    /**
      * Find the BoneLink for the named bone.
      *
      * @param boneName (not null)
@@ -150,26 +130,6 @@ public class SelectedRagdoll implements JmeCloneable {
         }
 
         return result;
-    }
-
-    /**
-     * Find the index of the selected ragdoll, if any.
-     *
-     * @return index, or -1 if none selected
-     */
-    public int findIndex() {
-        int index;
-        DynamicAnimControl dac = find();
-        if (dac == null) {
-            index = -1;
-        } else {
-            List<DynamicAnimControl> list
-                    = cgm.listSgcs(DynamicAnimControl.class);
-            index = list.indexOf(dac);
-            assert index != -1;
-        }
-
-        return index;
     }
 
     /**
@@ -296,22 +256,6 @@ public class SelectedRagdoll implements JmeCloneable {
     }
 
     /**
-     * Determine the name of the selected ragdoll.
-     *
-     * @return the name, or null if no ragdoll is selected
-     */
-    public String name() {
-        int index = findIndex();
-        String name = null;
-        if (index != -1) {
-            List<String> names = cgm.listRagdollNames();
-            name = names.get(index);
-        }
-
-        return name;
-    }
-
-    /**
      * Calculate the position of the selected ragdoll among the physics controls
      * added to the controlled spatial.
      *
@@ -333,56 +277,6 @@ public class SelectedRagdoll implements JmeCloneable {
         if (dac != last) {
             cgm.getLink().selectNone();
             last = dac;
-        }
-    }
-
-    /**
-     * Select a ragdoll by name.
-     *
-     * @param name which ragdoll to select (not null, not empty)
-     */
-    public void select(String name) {
-        Validate.nonEmpty(name, "name");
-
-        List<String> names = cgm.listRagdollNames();
-        int index = names.indexOf(name);
-        assert index != -1;
-        List<DynamicAnimControl> dacs = cgm.listSgcs(DynamicAnimControl.class);
-        last = dacs.get(index);
-        cgm.getSgc().select(last);
-    }
-
-    /**
-     * Handle a "next ragdoll" action.
-     */
-    public void selectNext() {
-        if (isSelected()) {
-            List<DynamicAnimControl> dacs
-                    = cgm.listSgcs(DynamicAnimControl.class);
-            last = find();
-            int index = dacs.indexOf(last);
-            assert index != -1;
-            int numRagdolls = dacs.size();
-            int nextIndex = MyMath.modulo(index + 1, numRagdolls);
-            last = dacs.get(nextIndex);
-            cgm.getSgc().select(last);
-        }
-    }
-
-    /**
-     * Handle a "previous ragdoll" action.
-     */
-    public void selectPrevious() {
-        if (isSelected()) {
-            List<DynamicAnimControl> dacs
-                    = cgm.listSgcs(DynamicAnimControl.class);
-            last = find();
-            int index = dacs.indexOf(last);
-            assert index != -1;
-            int numRagdolls = dacs.size();
-            int prevIndex = MyMath.modulo(index - 1, numRagdolls);
-            last = dacs.get(prevIndex);
-            cgm.getSgc().select(last);
         }
     }
 

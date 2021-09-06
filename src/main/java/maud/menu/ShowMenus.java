@@ -131,19 +131,6 @@ public class ShowMenus {
     }
 
     /**
-     * Display an "Animation -> Edit -> Change duration" menu.
-     */
-    static void changeDuration() {
-        MenuBuilder builder = new MenuBuilder();
-
-        builder.addDialog("Proportional times");
-        builder.addDialog("Same times");
-
-        builder.show(
-                "select menuItem Animation -> Edit -> Change duration -> ");
-    }
-
-    /**
      * Display a "Settings -> Remove asset location" menu.
      */
     static void removeAssetLocation() {

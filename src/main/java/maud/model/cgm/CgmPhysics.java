@@ -275,22 +275,6 @@ public class CgmPhysics implements JmeCloneable {
     }
 
     /**
-     * Generate a map of all physics joints used in the C-G model.
-     *
-     * @return a new map from IDs to pre-existing joints (not null)
-     */
-    Map<Long, PhysicsJoint> jointMap() {
-        Map<Long, PhysicsJoint> result = new TreeMap<>();
-        for (PhysicsJoint joint : jointModelToView.keySet()) {
-            long jointId = joint.getObjectId();
-            PhysicsJoint oldJoint = result.put(jointId, joint);
-            assert oldJoint == null : oldJoint;
-        }
-
-        return result;
-    }
-
-    /**
      * Enumerate all physics joints whose names begin with the specified prefix.
      *
      * @param namePrefix the name prefix (not null, may be empty)

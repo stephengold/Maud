@@ -128,24 +128,6 @@ public class BVHBone {
     public void setChildren(List<BVHBone> children) {
         this.children = children;
     }
-
-    /**
-     * Alter the name of the bone.
-     *
-     * @param name new name for the bone
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * Alter the offset of the bone.
-     *
-     * @param offset (alias created)
-     */
-    public void setOffset(Vector3f offset) {
-        this.offset = offset;
-    }
     // *************************************************************************
     // Object methods
 

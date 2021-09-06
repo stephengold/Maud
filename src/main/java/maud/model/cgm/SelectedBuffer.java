@@ -304,21 +304,6 @@ public class SelectedBuffer implements Cloneable {
     }
 
     /**
-     * Read the position of the buffer: the index of the next element to be read
-     * or written sequentially.
-     *
-     * @return the position (&ge;0)
-     */
-    public int position() {
-        VertexBuffer buffer = find();
-        Buffer data = buffer.getData();
-        int result = data.position();
-
-        assert result >= 0 : result;
-        return result;
-    }
-
-    /**
      * Alter the indexed float in the selected FloatBuffer.
      *
      * @param floatIndex which float to modify (&ge;0)

@@ -713,17 +713,6 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Remove repetitious keyframes from an AnimClip.
-     *
-     * @param clip (not null, modified)
-     * @return the number of tracks edited (&ge;0)
-     */
-    public static int removeRepeats(AnimClip clip) {
-        int result = AnimationEdit.removeRepeats(clip);
-        return result;
-    }
-
-    /**
      * Rename the selected bone.
      *
      * @param newName new name (not null)

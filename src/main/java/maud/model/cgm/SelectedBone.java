@@ -331,61 +331,6 @@ public class SelectedBone implements Cloneable {
     }
 
     /**
-     * Enumerate the indices of the selected bone and all its ancestors.
-     *
-     * @return a new list
-     */
-    public List<Integer> listAncestorIndices() {
-        List<Integer> result = new ArrayList<>(6);
-        Object skeleton = cgm.getSkeleton().find();
-        Object bone = get();
-        while (bone != null) {
-            int index = findBoneIndex(skeleton, bone);
-            result.add(index);
-            bone = getBoneParent(bone);
-        }
-
-        return result;
-    }
-
-    /**
-     * Enumerate the indices of all children of the selected bone.
-     *
-     * @return a new list
-     */
-    public List<Integer> listChildIndices() {
-        List<Integer> result;
-        Object bone = get();
-        if (bone == null) {
-            result = new ArrayList<>(0);
-
-        } else if (bone instanceof Bone) {
-            Skeleton skeleton = (Skeleton) cgm.getSkeleton().find();
-
-            List<Bone> children = ((Bone) bone).getChildren();
-            int numChildren = children.size();
-            result = new ArrayList<>(numChildren);
-            for (Bone child : children) {
-                int index = skeleton.getBoneIndex(child);
-                result.add(index);
-            }
-
-        } else {
-            Armature skeleton = (Armature) cgm.getSkeleton().find();
-
-            List<Joint> children = ((Joint) bone).getChildren();
-            int numChildren = children.size();
-            result = new ArrayList<>(numChildren);
-            for (Joint child : children) {
-                int index = skeleton.getJointIndex(child);
-                result.add(index);
-            }
-        }
-
-        return result;
-    }
-
-    /**
      * Enumerate the names of all children of the selected bone.
      *
      * @return a new list
