@@ -84,6 +84,7 @@ import jme3utilities.Validate;
 import jme3utilities.debug.AxesVisualizer;
 import jme3utilities.debug.BoundsVisualizer;
 import jme3utilities.debug.SkeletonVisualizer;
+import jme3utilities.debug.SphereMeshes;
 import jme3utilities.math.MyMath;
 import jme3utilities.math.MyVector3f;
 import jme3utilities.minie.MyControlP;
@@ -1224,6 +1225,7 @@ public class SceneViewCore implements EditorView, JmeCloneable {
 
         AssetManager assetManager = Locators.getAssetManager();
         boundsVisualizer = new BoundsVisualizer(assetManager);
+        boundsVisualizer.setSphereType(SphereMeshes.PoleSphere); // TODO configure
         overlayRoot.addControl(boundsVisualizer);
     }
 
