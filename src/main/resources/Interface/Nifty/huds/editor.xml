@@ -1870,6 +1870,11 @@ Approximate minimum screen size: 640x480
                                  width="20px">
                             <interact onRelease="perform(set meshWeights)"/>
                         </control>
+                        <control name="label" text="    LODs:  "/>
+                        <control name="label" id="meshLods"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="70px"/>
                         <control name="label" text="    "/>
                         <control name="button" id="meshCalculateNormalsButton"
                                  width="100px">

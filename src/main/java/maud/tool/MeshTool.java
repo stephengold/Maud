@@ -224,7 +224,7 @@ class MeshTool extends Tool {
      */
     private void updateMeshInfo() {
         String animatedText, btButton, calcButton, modeButton, elementsText;
-        String verticesText, weightsButton;
+        String lodsText, verticesButton, weightsButton;
 
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         if (spatial.hasMesh()) {
@@ -249,11 +249,14 @@ class MeshTool extends Tool {
             int numElements = spatial.countElements();
             elementsText = Integer.toString(numElements);
 
+            int numLods = spatial.countLodLevels();
+            lodsText = Integer.toString(numLods);
+
             Mesh.Mode mode = spatial.getMeshMode();
             modeButton = mode.toString();
 
             int numVertices = spatial.countVertices();
-            verticesText = Integer.toString(numVertices);
+            verticesButton = Integer.toString(numVertices);
 
         } else {
             if (spatial.isNode()) {
@@ -264,8 +267,9 @@ class MeshTool extends Tool {
             btButton = "";
             calcButton = "";
             elementsText = "(no mesh)";
+            lodsText = "(no mesh)";
             modeButton = "";
-            verticesText = "(no mesh)";
+            verticesButton = "";
             weightsButton = "";
         }
 
@@ -273,8 +277,9 @@ class MeshTool extends Tool {
         setButtonText("meshBoundType", btButton);
         setButtonText("meshCalculateNormals", calcButton);
         setStatusText("meshElements", elementsText);
+        setStatusText("meshLods", lodsText);
         setButtonText("meshMode", modeButton);
-        setButtonText("meshVertices", verticesText);
+        setButtonText("meshVertices", verticesButton);
         setButtonText("meshWeights", weightsButton);
     }
 
