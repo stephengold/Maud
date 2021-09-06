@@ -310,7 +310,7 @@ public class MeshUtil {
      * Maximally partition the specified Mesh into disjoint sub-meshes, based
      * vertex positions compared using the specified tolerance.
      *
-     * @param mesh the input mesh (not null)
+     * @param mesh the input mesh (not null, no LODs)
      * @param positionType the type of the VertexBuffer to analyze (not null,
      * typically Position or BindPosition)
      * @param tolerance the minimum distance for distinct vertex positions (in
@@ -321,6 +321,7 @@ public class MeshUtil {
             float tolerance) {
         Validate.nonNull(positionType, "position type");
         Validate.nonNegative(tolerance, "tolerance");
+        Validate.require(mesh.getNumLodLevels() == 0, "no LODs");
 
         int numVertices = mesh.getVertexCount();
         FloatBuffer buffer = mesh.getFloatBuffer(positionType);

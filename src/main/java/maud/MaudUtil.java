@@ -970,7 +970,7 @@ public class MaudUtil {
 
     /**
      * Determine whether the specified Spatial is ready for splitting: free of
-     * S-G controls, user data, local lights, and local M-P overrides.
+     * S-G controls, user data, local lights, local M-P overrides, and LODs.
      *
      * @param spatial the Spatial to test (not null, unaffected)
      * @return true if ready, otherwise false
@@ -994,6 +994,14 @@ public class MaudUtil {
         List<MatParamOverride> mpos = spatial.getLocalMatParamOverrides();
         if (!mpos.isEmpty()) {
             return false;
+        }
+
+        if (spatial instanceof Geometry) {
+            Mesh mesh = ((Geometry) spatial).getMesh();
+            int numLevels = mesh.getNumLodLevels();
+            if (numLevels > 0) {
+                return false;
+            }
         }
 
         return true;

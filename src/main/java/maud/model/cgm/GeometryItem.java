@@ -100,7 +100,7 @@ public class GeometryItem {
 
     /**
      * Determine whether a GeometryItem is ready for merging: no S-G controls,
-     * no user data, no local lights, and no M-P overrides.
+     * no user data, no local lights, no M-P overrides, and no LODs.
      *
      * @return "" if compatible, otherwise a non-null, non-empty message
      */
@@ -126,6 +126,12 @@ public class GeometryItem {
         List<MatParamOverride> mpos = geometry.getLocalMatParamOverrides();
         if (!mpos.isEmpty()) {
             return quotedName + " has overrides";
+        }
+
+        Mesh mesh = geometry.getMesh();
+        int numLevels = mesh.getNumLodLevels();
+        if (numLevels > 0) {
+            return quotedName + " has LODs";
         }
 
         assert MaudUtil.isBare(geometry);
@@ -205,7 +211,7 @@ public class GeometryItem {
             if (vb == null || vb1 == null) {
                 return "different vertex buffers";
             }
-            
+
             int numCperE = vb.getNumComponents();
             int numCperE1 = vb1.getNumComponents();
             if (numCperE != numCperE1) {
