@@ -50,7 +50,6 @@ import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedTrack;
 import maud.view.EditorView;
 import maud.view.ViewType;
-import maud.view.scene.SceneDrag;
 import maud.view.scene.SceneView;
 
 /**
@@ -240,7 +239,7 @@ public class EditorInputMode extends InputMode {
                     break;
 
                 case "toggle":
-                    handled = toggleAction(actionString);
+                    handled = ToggleAction.toggleAction(actionString);
                     break;
 
                 case "view":
@@ -531,81 +530,6 @@ public class EditorInputMode extends InputMode {
 
         } else {
             handled = false;
-        }
-
-        return handled;
-    }
-
-    /**
-     * Process an ongoing action that starts with the word "toggle".
-     *
-     * @param actionString textual description of the action (not null)
-     * @return true if the action is handled, otherwise false
-     */
-    private static boolean toggleAction(String actionString) {
-        boolean handled = true;
-
-        EditorModel model = Maud.getModel();
-        switch (actionString) {
-            case Action.toggleBoundType:
-                model.getTarget().toggleBoundType();
-                break;
-
-            case Action.toggleCursorColorIndex:
-                model.getMisc().toggleColorIndex();
-                break;
-
-            case Action.toggleDragSide:
-                SceneDrag.toggleSide();
-                break;
-
-            case Action.toggleFreezeTarget:
-                model.getTarget().getPose().toggleFrozen();
-                break;
-
-            case Action.toggleIndexBase:
-                model.getMisc().toggleIndexBase();
-                break;
-
-            case Action.toggleLoadOrientation:
-                model.getMisc().toggleLoadOrientation();
-                break;
-
-            case Action.toggleMenuBar:
-                model.getMisc().toggleMenuBarVisibility();
-                break;
-
-            case Action.toggleMovement:
-                model.getScene().getCamera().toggleMovement();
-                break;
-
-            case Action.togglePause:
-                model.getSource().getPlay().togglePaused();
-                model.getTarget().getPlay().togglePaused();
-                break;
-
-            case Action.togglePauseSource:
-                model.getSource().getPlay().togglePaused();
-                break;
-
-            case Action.togglePauseTarget:
-                if (model.getTarget().getAnimation().isRetargetedPose()) {
-                    model.getSource().getPlay().togglePaused();
-                } else {
-                    model.getTarget().getPlay().togglePaused();
-                }
-                break;
-
-            case Action.togglePhysicsDebug:
-                model.getScene().getRender().togglePhysicsRendered();
-                break;
-
-            case Action.toggleProjection:
-                model.getScene().getCamera().toggleProjection();
-                break;
-
-            default:
-                handled = false;
         }
 
         return handled;
