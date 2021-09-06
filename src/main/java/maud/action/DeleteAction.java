@@ -149,7 +149,6 @@ class DeleteAction {
             String spec = MyString.remainder(actionString,
                     ActionPrefix.deleteAssetLocationSpec);
             Maud.getModel().getLocations().remove(spec);
-            handled = true;
 
         } else if (actionString.startsWith(ActionPrefix.deleteNextKeyframes)) {
             String arg = MyString.remainder(actionString,

@@ -192,7 +192,6 @@ public class SelectedTexture implements JmeCloneable {
                     typeHint = Texture.Type.CubeMap;
                     break;
                 default:
-                    typeHint = Texture.Type.TwoDimensional;
             }
         }
 
@@ -1100,7 +1099,7 @@ public class SelectedTexture implements JmeCloneable {
 
         List<Texture> nonNulls = listNonNullTextures();
         int numNonNulls = nonNulls.size();
-        if (index >= 0 && index < numNonNulls) {
+        if (index < numNonNulls) {
             Texture texture = nonNulls.get(index);
             selectAllRefs(texture);
         } else {

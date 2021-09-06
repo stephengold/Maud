@@ -424,9 +424,7 @@ public class SelectedTrack implements JmeCloneable {
             int previous
                     = MaudUtil.findPreviousKeyframeIndex(selected, time);
             int lastIndex = countKeyframes() - 1;
-            if (previous == lastIndex) {
-                nextIndex = -1;
-            } else {
+            if (previous != lastIndex) {
                 nextIndex = previous + 1;
             }
         }

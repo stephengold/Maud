@@ -193,8 +193,7 @@ public class Platform implements BulletDebugAppState.DebugAppStateFilter {
      */
     @Override
     public boolean displayObject(Object obj) {
-        boolean result = true;
-        return result;
+        return true;
     }
     // *************************************************************************
     // private methods

@@ -167,8 +167,6 @@ public class SelectedRagdoll implements JmeCloneable {
             int numChildren = link.countChildren();
             if (numChildren == 0) {
                 result = true;
-            } else {
-                result = false;
             }
         }
 

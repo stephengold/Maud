@@ -98,7 +98,7 @@ public class IQELoader implements AssetLoader {
         //System.out.println("Loading IQE: " + objName);
         String ext = key.getExtension();
         objName = objName.substring(0, objName.length() - ext.length() - 1);
-        if (folderName != null && folderName.length() > 0) {
+        if (folderName.length() > 0) {
             objName = objName.substring(folderName.length());
         }
 

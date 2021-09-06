@@ -116,7 +116,6 @@ public class ParseUtil {
                         result = assetManager.loadTexture(key);
                     } catch (RuntimeException exception) {
                         exception.printStackTrace();
-                        result = null;
                     }
                     break;
 

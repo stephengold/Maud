@@ -91,7 +91,6 @@ public class ViewMenus {
         if (remainder.startsWith(modePrefix)) {
             String arg = MyString.remainder(remainder, modePrefix);
             menuViewMode(arg);
-            handled = true;
 
         } else if (remainder.startsWith(scenesPrefix)) {
             String arg = MyString.remainder(remainder, scenesPrefix);
