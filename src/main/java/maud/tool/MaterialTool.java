@@ -136,22 +136,22 @@ class MaterialTool extends Tool {
         String nextButton = "", previousButton = "";
 
         Cgm target = Maud.getModel().getTarget();
-        int numMaterials = target.countSpatials(Geometry.class);
+        int numGeometries = target.countSpatials(Geometry.class);
         SelectedSpatial selected = target.getSpatial();
         int selectedIndex = selected.findGeometryIndex();
         if (selectedIndex >= 0) {
-            indexStatus = DescribeUtil.index(selectedIndex, numMaterials);
-            if (numMaterials > 1) {
+            indexStatus = DescribeUtil.index(selectedIndex, numGeometries);
+            if (numGeometries > 1) {
                 nextButton = "+";
                 previousButton = "-";
             }
         } else { // none selected
-            if (numMaterials == 0) {
-                indexStatus = "no materials";
-            } else if (numMaterials == 1) {
-                indexStatus = "one material";
+            if (numGeometries == 0) {
+                indexStatus = "no geometry";
+            } else if (numGeometries == 1) {
+                indexStatus = "one geometry";
             } else {
-                indexStatus = String.format("%d materials", numMaterials);
+                indexStatus = String.format("%d geometries", numGeometries);
             }
         }
 
