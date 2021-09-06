@@ -613,6 +613,26 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
+     * Count how many siblings the Spatial has, including itself.
+     *
+     * @return the count (&ge;1)
+     */
+    public int countSiblings() {
+        Spatial spatial = find();
+        Node parent = spatial.getParent();
+
+        int result;
+        if (parent == null) { // the C-G model root is selected
+            result = 1;
+        } else {
+            result = parent.getQuantity();
+        }
+
+        assert result >= 1 : result;
+        return result;
+    }
+
+    /**
      * Count how many scene-graph controls are contained in the spatial's
      * subtree.
      *
@@ -1610,6 +1630,22 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
+     * Select the indexed child of the spatial's parent.
+     *
+     * @param siblingIndex the position within the spatial's siblings (&ge;0)
+     */
+    public void selectSibling(int siblingIndex) {
+        Validate.nonNegative(siblingIndex, "sibling index");
+
+        Spatial spatial = find();
+        Node parent = spatial.getParent();
+        if (parent != null) { // not the C-G model root
+            Spatial sibling = parent.getChild(siblingIndex);
+            select(sibling);
+        }
+    }
+
+    /**
      * Alter which C-G model contains the spatial. (Invoked only during
      * initialization and cloning.)
      *
@@ -1625,6 +1661,26 @@ public class SelectedSpatial implements JmeCloneable {
         } else {
             editableCgm = null;
         }
+    }
+
+    /**
+     * Determine the index of the Spatial among its parent's children.
+     *
+     * @return the index (&ge;0)
+     */
+    public int siblingIndex() {
+        Spatial spatial = find();
+        Node parent = spatial.getParent();
+
+        int result;
+        if (parent == null) { // the C-G model root is selected
+            result = 0;
+        } else {
+            result = parent.getChildIndex(spatial);
+        }
+
+        assert result >= 0 : result;
+        return result;
     }
 
     /**

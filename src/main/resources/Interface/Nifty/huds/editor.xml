@@ -2790,9 +2790,8 @@ Approximate minimum screen size: 640x480
 
             <control name="window" id="spatialTool" title="Spatial Tool"
                      hideOnClose="true"
-                     height="250px" width="315px" x="60" y="210">
+                     height="284px" width="315px" x="60" y="210">
                 <panel childLayout="vertical">
-                    <panel height="4px"/>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Type:  "/>
                         <control name="label" id="spatialType"
@@ -2822,6 +2821,25 @@ Approximate minimum screen size: 640x480
                         <control name="button" id="spatialParentButton"
                                  width="*">
                             <interact onRelease="perform(select spatialParent)"/>
+                        </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Siblings:  "/>
+                        <control name="button" id="spatialFirstSiblingButton"
+                                 width="35px">
+                            <interact onRelease="perform(select spatialFirstSibling)"/>
+                        </control>
+                        <control name="button" id="spatialPreviousSiblingButton"
+                                 width="*">
+                            <interact onRelease="perform(select spatialPreviousSibling)"/>
+                        </control>
+                        <control name="button" id="spatialNextSiblingButton"
+                                 width="*">
+                            <interact onRelease="perform(select spatialNextSibling)"/>
+                        </control>
+                        <control name="button" id="spatialLastSiblingButton"
+                                 width="30px">
+                            <interact onRelease="perform(select spatialLastSibling)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">

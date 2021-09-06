@@ -92,6 +92,8 @@ class SelectOSAction {
 
         EditorModel model = Maud.getModel();
         Cgm target = model.getTarget();
+        SelectedSpatial spatial = target.getSpatial();
+
         ShowBones currentOption;
         switch (actionString) {
             case Action.selectOrbitCenter:
@@ -157,7 +159,7 @@ class SelectOSAction {
                 break;
 
             case Action.selectSgcSpatial:
-                target.getSpatial().selectControlled();
+                spatial.selectControlled();
                 EditorTools.select("spatial");
                 break;
 
@@ -201,8 +203,29 @@ class SelectOSAction {
                 SpatialMenus.selectSpatialChild("");
                 break;
 
+            case Action.selectSpatialFirstSibling:
+                spatial.selectSibling(0);
+                break;
+
+            case Action.selectSpatialLastSibling:
+                int numSiblings = spatial.countSiblings();
+                spatial.selectSibling(numSiblings - 1);
+                break;
+
+            case Action.selectSpatialNextSibling: {
+                int siblingIndex = spatial.siblingIndex();
+                spatial.selectSibling(siblingIndex + 1);
+            }
+            break;
+
+            case Action.selectSpatialPreviousSibling: {
+                int siblingIndex = spatial.siblingIndex();
+                spatial.selectSibling(siblingIndex - 1);
+            }
+            break;
+
             case Action.selectSpatialParent:
-                target.getSpatial().selectParent();
+                spatial.selectParent();
                 break;
 
             default:

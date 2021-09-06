@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -78,6 +78,7 @@ class SpatialTool extends Tool {
         updateMesh();
         updateName();
         updateParent();
+        updateSiblings();
         updateTransform();
         updateTreePosition();
         updateType();
@@ -193,6 +194,35 @@ class SpatialTool extends Tool {
         }
 
         setButtonText("spatialParent", " " + parentText);
+    }
+
+    /**
+     * Update the display of the spatial's siblings.
+     */
+    private void updateSiblings() {
+        String first = "";
+        String previous = "";
+        String next = "";
+        String last = "";
+
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        int numSiblings = spatial.countSiblings(); // count includes self
+        if (numSiblings > 1) {
+            int siblingIndex = spatial.siblingIndex();
+            if (siblingIndex > 0) {
+                first = "first";
+                previous = "previous";
+            }
+            if (siblingIndex < numSiblings - 1) {
+                next = "next";
+                last = "last";
+            }
+        }
+
+        setButtonText("spatialFirstSibling", first);
+        setButtonText("spatialPreviousSibling", previous);
+        setButtonText("spatialNextSibling", next);
+        setButtonText("spatialLastSibling", last);
     }
 
     /**
