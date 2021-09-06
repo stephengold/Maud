@@ -2790,21 +2790,9 @@ Approximate minimum screen size: 640x480
 
             <control name="window" id="spatialTool" title="Spatial Tool"
                      hideOnClose="true"
-                     height="284px" width="315px" x="60" y="210">
+                     height="287px" width="315px" x="60" y="210">
                 <panel childLayout="vertical">
-                    <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="Type:  "/>
-                        <control name="label" id="spatialType"
-                                 backgroundColor="#ffff"
-                                 textHAlign="center"
-                                 width="65px"/>
-                        <control name="label" text="  Tree position:  "
-                                 textHAlign="right"/>
-                        <control name="label" id="spatialTreePosition"
-                                 backgroundColor="#ffff"
-                                 textHAlign="center"
-                                 width="*"/>
-                    </panel>
+                    <panel height="3px"/>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Parent:  "/>
                         <control name="button" id="spatialParentButton"
@@ -2813,7 +2801,6 @@ Approximate minimum screen size: 640x480
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="Name:  "/>
                         <control name="label" id="spatialName"
                                  backgroundColor="#ffff"
                                  width="*"/>
@@ -2848,6 +2835,20 @@ Approximate minimum screen size: 640x480
                                  width="*">
                             <interact onRelease="perform(select spatialChild)"/>
                         </control>
+                    </panel>
+                    <panel height="7px"/>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Type:  "/>
+                        <control name="label" id="spatialType"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="65px"/>
+                        <control name="label" text="  Tree position:  "
+                                 textHAlign="right"/>
+                        <control name="label" id="spatialTreePosition"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="*"/>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Material:  "/>
