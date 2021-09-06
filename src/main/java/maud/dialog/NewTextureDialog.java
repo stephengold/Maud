@@ -283,7 +283,6 @@ class NewTextureDialog implements DialogController {
                 = dialogElement.findNiftyControl("#textfield", TextField.class);
         String text = textField.getRealText();
 
-        assert text != null;
         return text;
     }
 }

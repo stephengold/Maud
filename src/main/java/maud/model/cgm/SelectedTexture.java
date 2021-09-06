@@ -600,7 +600,6 @@ public class SelectedTexture implements JmeCloneable {
 
         Spatial cgmRoot = cgm.getRootSpatial();
         MatParamRef ref = new MatParamRef(desc, cgmRoot);
-        assert ref != null;
         select(ref);
     }
 

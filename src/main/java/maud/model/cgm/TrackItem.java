@@ -128,12 +128,10 @@ public class TrackItem {
         if (animControl instanceof AnimControl) {
             description = MyAnimation.describe((Track) track,
                     (AnimControl) animControl);
-            assert description != null;
             assert !description.isEmpty();
         } else {
             description = MaudUtil.describe((AnimTrack) track,
                     (AnimComposer) animControl);
-            assert description != null;
             assert !description.isEmpty();
         }
 
@@ -146,7 +144,6 @@ public class TrackItem {
      * @return the pre-existing instance (not null)
      */
     AbstractControl getAnimControl() {
-        assert animControl != null;
         return animControl;
     }
 
@@ -156,7 +153,6 @@ public class TrackItem {
      * @return the pre-existing instance (not null)
      */
     Object getTrack() {
-        assert track != null;
         return track;
     }
 

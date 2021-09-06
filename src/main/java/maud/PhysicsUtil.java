@@ -465,9 +465,6 @@ public class PhysicsUtil {
         }
 
         CollisionShape shape = new HullCollisionShape(buffer);
-
-        assert shape instanceof HullCollisionShape :
-                shape.getClass().getSimpleName();
         return shape;
     }
 

@@ -227,7 +227,6 @@ public class SelectedJoint implements JmeCloneable {
             }
         }
 
-        assert type != null;
         return type;
     }
     // *************************************************************************

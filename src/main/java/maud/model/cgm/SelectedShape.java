@@ -161,7 +161,6 @@ public class SelectedShape implements JmeCloneable {
             count = children.length;
         }
 
-        assert count >= 0 : count;
         return count;
     }
 

@@ -213,8 +213,6 @@ public class DescribeUtil {
             result += " t:" + tWrap.toString();
         }
 
-        assert result != null;
-        assert !result.isEmpty();
         return result;
     }
 

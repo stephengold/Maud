@@ -530,7 +530,6 @@ public class LoadedAnimation implements Cloneable {
             }
         }
 
-        assert result >= 0f : result;
         return result;
     }
 

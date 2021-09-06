@@ -415,7 +415,6 @@ public class SelectedAnimControl implements JmeCloneable {
             result = names.size();
         }
 
-        assert result >= 0 : result;
         return result;
     }
 

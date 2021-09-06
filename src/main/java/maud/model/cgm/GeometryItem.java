@@ -95,7 +95,6 @@ public class GeometryItem {
      * @return the pre-existing instance (not null)
      */
     Geometry getGeometry() {
-        assert geometry != null;
         return geometry;
     }
 

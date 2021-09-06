@@ -352,7 +352,6 @@ public class MaudUtil {
                 throw new IllegalArgumentException(varType.toString());
         }
 
-        assert result != null;
         return result;
     }
 

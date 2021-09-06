@@ -150,7 +150,6 @@ public class CgmPhysics implements JmeCloneable {
      */
     public int countJoints() {
         int count = jointModelToView.size();
-        assert count >= 0 : count;
         return count;
     }
 
@@ -161,7 +160,6 @@ public class CgmPhysics implements JmeCloneable {
      */
     public int countPcos() {
         int count = pcoModelToView.size();
-        assert count >= 0 : count;
         return count;
     }
 
@@ -174,7 +172,6 @@ public class CgmPhysics implements JmeCloneable {
         Map<Long, CollisionShape> map = shapeMap();
         int count = map.size();
 
-        assert count >= 0 : count;
         return count;
     }
 
@@ -402,7 +399,6 @@ public class CgmPhysics implements JmeCloneable {
                     break;
                 }
             }
-            assert childIndex < 0 : numChildren;
 
             CollisionShape viewParent = modelToView(modelParent);
             CompoundCollisionShape vccs = (CompoundCollisionShape) viewParent;

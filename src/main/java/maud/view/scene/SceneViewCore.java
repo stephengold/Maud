@@ -419,7 +419,6 @@ public class SceneViewCore implements EditorView, JmeCloneable {
      * @return the pre-existing instance (not null)
      */
     AmbientLight getAmbientLight() {
-        assert ambientLight != null;
         return ambientLight;
     }
 
@@ -459,7 +458,6 @@ public class SceneViewCore implements EditorView, JmeCloneable {
      * @return the pre-existing instance (not null)
      */
     public DddCursor getCursor() {
-        assert cursor != null;
         return cursor;
     }
 
@@ -469,7 +467,6 @@ public class SceneViewCore implements EditorView, JmeCloneable {
      * @return the pre-existing instance (not null)
      */
     public DirectionalLight getMainLight() {
-        assert mainLight != null;
         return mainLight;
     }
 
@@ -490,7 +487,6 @@ public class SceneViewCore implements EditorView, JmeCloneable {
      * @return the pre-existing instance (not null)
      */
     Platform getPlatform() {
-        assert platform != null;
         return platform;
     }
 
@@ -511,7 +507,6 @@ public class SceneViewCore implements EditorView, JmeCloneable {
      * @return the pre-existing instance (not null)
      */
     public Projectile getProjectile() {
-        assert projectile != null;
         return projectile;
     }
 
@@ -572,7 +567,6 @@ public class SceneViewCore implements EditorView, JmeCloneable {
      * @return the pre-existing instance (not null)
      */
     public VertexMarker getVertex() {
-        assert vertexMarker != null;
         return vertexMarker;
     }
 

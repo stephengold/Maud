@@ -310,7 +310,6 @@ public class Cgm implements Cloneable {
         List<Material> list = MySpatial.listMaterials(rootSpatial, null);
         int count = list.size();
 
-        assert count >= 0 : count;
         return count;
     }
 
@@ -323,7 +322,6 @@ public class Cgm implements Cloneable {
         List<Mesh> list = MyMesh.listMeshes(rootSpatial, null);
         int count = list.size();
 
-        assert count >= 0 : count;
         return count;
     }
 

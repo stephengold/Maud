@@ -948,7 +948,6 @@ public class SceneView extends SceneViewCore {
         PhysicsControl pc = findPhysicsControl(treePosition, pcPosition);
         DynamicAnimControl dac = (DynamicAnimControl) pc;
 
-        assert dac != null;
         return dac;
     }
 }

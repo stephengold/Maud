@@ -596,7 +596,6 @@ public class SelectedSpatial implements JmeCloneable {
         List<MatParamOverride> list = spatial.getLocalMatParamOverrides();
         int result = list.size();
 
-        assert result >= 0 : result;
         return result;
     }
 
