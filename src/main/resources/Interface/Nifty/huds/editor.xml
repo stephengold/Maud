@@ -1883,13 +1883,8 @@ Approximate minimum screen size: 640x480
                                  textHAlign="center"
                                  width="70px"/>
                         <control name="label" text="    Vertices:  "/>
-                        <control name="label" id="meshVertices"
-                                 backgroundColor="#ffff"
-                                 textHAlign="center"
-                                 width="70px"/>
-                        <control name="button" label="Tool"
-                                 id="id17ToAvoidNiftyWarning"
-                                 width="36px">
+                        <control name="button" id="meshVerticesButton"
+                                 width="70px">
                             <interact onRelease="perform(select tool vertex)"/>
                         </control>
                     </panel>
