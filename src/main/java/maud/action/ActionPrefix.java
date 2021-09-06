@@ -713,10 +713,6 @@ public class ActionPrefix {
      */
     final public static String setUserData = "set userData ";
     /**
-     * argument is a color
-     */
-    final public static String setVertexColor = "set vertexColor ";
-    /**
      * arguments are a zero-base component index (0-3) and an optional decimal
      * value
      */

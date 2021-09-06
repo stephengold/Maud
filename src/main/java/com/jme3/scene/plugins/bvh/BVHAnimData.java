@@ -57,10 +57,6 @@ public class BVHAnimData {
      */
     private Animation animation;
     /**
-     * the time per frame (in seconds, &gt;0)
-     */
-    private float timePerFrame;
-    /**
      * the skeleton
      */
     private Skeleton skeleton;
@@ -77,7 +73,6 @@ public class BVHAnimData {
     public BVHAnimData(Skeleton skeleton, Animation anim, float timePerFrame) {
         this.skeleton = skeleton;
         this.animation = anim;
-        this.timePerFrame = timePerFrame;
     }
     // *************************************************************************
     // new methods exposed
