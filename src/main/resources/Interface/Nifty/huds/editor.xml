@@ -817,43 +817,48 @@ Approximate minimum screen size: 640x480
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="Controls:  "/>
+                        <control name="label" text="Armatures:  "/>
+                        <control name="label" id="cgmSkeletons"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="30px"/>
+                        <control name="label" text="    Controls:  "/>
                         <control name="button" id="cgmSgcsButton"
-                                 width="40px">
+                                 width="30px">
                             <interact onRelease="perform(select tool sgc)"/>
                         </control>
                         <control name="label" text="    Materials:  "/>
                         <control name="button" id="cgmMaterialsButton"
-                                 width="40px">
+                                 width="35px">
                             <interact onRelease="perform(select tool material)"/>
                         </control>
                         <control name="label" text="    Meshes:  "/>
                         <control name="button" id="cgmMeshesButton"
-                                 width="40px">
+                                 width="35px">
                             <interact onRelease="perform(select tool mesh)"/>
                         </control>
-                        <control name="label" text="    Armatures:  "/>
-                        <control name="label" id="cgmSkeletons"
-                                 backgroundColor="#ffff"
-                                 textHAlign="center"
-                                 width="40px"/>
-                        <control name="label" text="    Hidden:  "/>
-                        <control name="label" id="cgmHiddens"
-                                 backgroundColor="#ffff"
-                                 textHAlign="center"
-                                 width="40px"/>
-                    </panel>
-                    <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="Nodes:  "/>
-                        <control name="label" id="cgmNodes"
-                                 backgroundColor="#ffff"
-                                 textHAlign="center"
-                                 width="40px"/>
                         <control name="label" text="    Textures:  "/>
                         <control name="button" id="cgmTexturesButton"
                                  width="40px">
                             <interact onRelease="perform(select tool texture)"/>
                         </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Hidden:  "/>
+                        <control name="label" id="cgmHiddens"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="30px"/>
+                        <control name="label" text="    Nodes:  "/>
+                        <control name="label" id="cgmNodes"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="30px"/>
+                        <control name="label" text="    Transforms:  "/>
+                        <control name="label" id="cgmTransforms"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="30px"/>
                         <control name="label" text="    Vertices:  "/>
                         <control name="button" id="cgmVerticesButton"
                                  width="66px">

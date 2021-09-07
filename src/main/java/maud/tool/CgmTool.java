@@ -156,6 +156,13 @@ class CgmTool extends Tool {
         text = Integer.toString(numSelectableTextures);
         setButtonText("cgmTextures", text);
         /*
+         * transforming spatials
+         */
+        int numTransforms
+                = target.countTransformSpatials(Spatial.class);
+        String transformsText = Integer.toString(numTransforms);
+        setStatusText("cgmTransforms", transformsText);
+        /*
          * vertices
          */
         int numVertices = target.countVertices();

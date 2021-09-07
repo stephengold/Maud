@@ -390,6 +390,23 @@ public class Cgm implements Cloneable {
     }
 
     /**
+     * Count spatials of the specified type with the specified enum value in the
+     * C-G model.
+     *
+     * @param <T> subclass of Spatial
+     * @param spatialType the subclass of Spatial to search for (not null)
+     * @return the number found (&ge;0)
+     */
+    public <T extends Spatial> int countTransformSpatials(
+            Class<T> spatialType) {
+        int result
+                = MaudUtil.countTransformSpatials(rootSpatial, spatialType);
+
+        assert result >= 0 : result;
+        return result;
+    }
+
+    /**
      * Count the vertices in the C-G model. TODO use MySpatial when it's fixed
      *
      * @return the number found (&ge;0)
