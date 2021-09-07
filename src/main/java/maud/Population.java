@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,8 @@ import jme3utilities.math.noise.Generator;
 
 /**
  * A container for elements, sorted based on a measure of fitness. Duplicate
- * fitness scores are possible, but duplicate elements are suppressed.
+ * fitness scores are possible, but duplicate elements are suppressed. TODO use
+ * the Heart library
  *
  * @param <Fitness> type of fitness score (such as Float or ScoreDoubles, must
  * implement Comparable interface
@@ -321,9 +322,7 @@ public class Population<Fitness extends Comparable<Fitness>, Element> {
                 currentIndex += list.size();
             } else {
                 Fitness score = entry.getKey();
-                Iterator<Element> it = list.iterator();
-                while (it.hasNext()) {
-                    Element element = it.next();
+                for (Element element : list) {
                     if (currentIndex == nextIndex) {
                         destination.add(element, score);
                         numMerged++;
