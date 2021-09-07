@@ -230,6 +230,41 @@ public class MaudUtil {
     }
 
     /**
+     * Count the spatials of the specified type with non-identity local
+     * transforms. Note: recursive!
+     *
+     * @param <T> subclass of Spatial
+     * @param subtree the root of the subtree to analyze (may be null,
+     * unaffected)
+     * @param spatialType the subclass of Spatial to search for (not null)
+     * @return the number found (&ge;0)
+     */
+    public static <T extends Spatial> int countTransformSpatials(
+            Spatial subtree, Class<T> spatialType) {
+        int result = 0;
+
+        if (subtree != null
+                && spatialType.isAssignableFrom(subtree.getClass())) {
+
+            Transform transform = subtree.getLocalTransform();
+            if (!MyMath.isIdentity(transform)) {
+                result = 1;
+            }
+        }
+
+        if (subtree instanceof Node) {
+            Node node = (Node) subtree;
+            List<Spatial> children = node.getChildren();
+            for (Spatial child : children) {
+                result += countTransformSpatials(child, spatialType);
+            }
+        }
+
+        assert result >= 0 : result;
+        return result;
+    }
+
+    /**
      * Merge the specified geometries into a new Geometry.
      *
      * @param name the desired name for the resulting Geometry
