@@ -387,11 +387,7 @@ public class SceneViewCore implements EditorView, JmeCloneable {
 
         List<Integer> treePosition = cgm.getSkeleton().findSpatialPosition();
         if (treePosition != null) {
-            result = cgmRoot;
-            for (int childPosition : treePosition) {
-                Node node = (Node) result;
-                result = node.getChild(childPosition);
-            }
+            result = findSpatial(treePosition);
         }
 
         return result;
@@ -406,10 +402,7 @@ public class SceneViewCore implements EditorView, JmeCloneable {
         Spatial result = cgmRoot;
         List<Integer> treePosition = cgm.getSkeleton().findAnimatedGeometry();
         if (treePosition != null) {
-            for (int childPosition : treePosition) {
-                Node node = (Node) result;
-                result = node.getChild(childPosition);
-            }
+            result = findSpatial(treePosition);
         }
 
         return result;
@@ -706,11 +699,7 @@ public class SceneViewCore implements EditorView, JmeCloneable {
             Spatial controlled;
             if (selectedSgcFlag) {
                 List<Integer> treePosition = cgm.getSgc().controlledPosition();
-                controlled = cgmRoot;
-                for (int childPosition : treePosition) {
-                    Node node = (Node) controlled;
-                    controlled = node.getChild(childPosition);
-                }
+                controlled = findSpatial(treePosition);
             } else {
                 controlled = cgmRoot;
             }
