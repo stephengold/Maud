@@ -354,22 +354,23 @@ public class SelectedSpatial implements JmeCloneable {
     public void applyTransform() {
         Spatial subtree = find();
         Node parent = subtree.getParent();
-        Transform parentInWorld;
+        Transform wip;
         if (parent == null) {
-            parentInWorld = new Transform();
+            wip = new Transform();
         } else {
-            parentInWorld = parent.getWorldTransform().clone();
+            Transform parentInWorld = parent.getWorldTransform();
+            wip = parentInWorld.invert();
         }
-        Transform wip = parentInWorld.invert();
         List<Geometry> geometries
                 = MySpatial.listSpatials(subtree, Geometry.class, null);
+        SceneView sceneView = cgm.getSceneView();
 
         History.autoAdd();
 
         for (Geometry geometry : geometries) {
             Mesh mesh = geometry.getMesh();
             Transform gInWorld = geometry.getWorldTransform().clone();
-            Transform gInParent = wip.clone().combineWithParent(gInWorld);
+            Transform gInParent = gInWorld.combineWithParent(wip);
 
             MeshUtil.transformBuffer(mesh, VertexBuffer.Type.BindPosePosition,
                     gInParent);
@@ -383,15 +384,19 @@ public class SelectedSpatial implements JmeCloneable {
             // TODO binormal?
 
             mesh.updateBound();
+
+            List<Integer> position = cgm.findSpatial(geometry);
+            sceneView.setMesh(position, mesh);
         }
 
         List<Spatial> spatials = MySpatial.listSpatials(subtree);
         for (Spatial spatial : spatials) {
             spatial.setLocalTransform(transformIdentity);
         }
-        cgm.getSceneView().applyTransform();
+        sceneView.applyTransform();
+
         editableCgm.getEditState().setEdited(
-                "apply spatial transform to meshes");
+                "apply spatial transforms to meshes");
     }
 
     /**

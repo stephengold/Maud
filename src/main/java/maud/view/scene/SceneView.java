@@ -615,6 +615,23 @@ public class SceneView extends SceneViewCore {
     }
 
     /**
+     * Apply the specified Mesh to the specified Geometry.
+     *
+     * @param treePosition the tree position of the Geometry (not null,
+     * unaffected)
+     * @param modelMesh the MVC model's Mesh (not null, unaffected)
+     */
+    public void setMesh(List<Integer> treePosition, Mesh modelMesh) {
+        Validate.nonNull(treePosition, "tree position");
+        Validate.nonNull(modelMesh, "model mesh");
+
+        Spatial spatial = findSpatial(treePosition);
+        Geometry geometry = (Geometry) spatial;
+        Mesh newMesh = modelMesh.deepClone();
+        geometry.setMesh(newMesh);
+    }
+
+    /**
      * Alter the mode of the selected mesh.
      *
      * @param newMode new value for mode (not null)
