@@ -101,6 +101,7 @@ import maud.model.cgm.Cgm;
 import maud.model.cgm.DisplayedPose;
 import maud.model.cgm.ScenePov;
 import maud.model.cgm.SelectedSkeleton;
+import maud.model.cgm.SelectedSpatial;
 import maud.model.option.MiscOptions;
 import maud.model.option.ShowBones;
 import maud.model.option.ViewMode;
@@ -338,7 +339,7 @@ public class SceneViewCore implements EditorView, JmeCloneable {
     /**
      * Count all light probes added using addLightProbe(), which may include one
      * that isn't yet ready.
-     * 
+     *
      * @return the count (&ge;0)
      */
     public int countAddedLightProbes() {
@@ -1061,7 +1062,7 @@ public class SceneViewCore implements EditorView, JmeCloneable {
     /**
      * Find the selected buffer in this view's copy of its C-G model.
      *
-     * @return the pre-existing instance (not null)
+     * @return the pre-existing instance, or null if none
      */
     protected VertexBuffer findBuffer() {
         Spatial spatial = selectedSpatial();
@@ -1073,12 +1074,13 @@ public class SceneViewCore implements EditorView, JmeCloneable {
             String lodText = MyString.removeSuffix(description, "LoD");
             int level = Integer.parseInt(lodText);
             result = mesh.getLodLevel(level);
+        } else if (description.equals(SelectedSpatial.noBuffer)) {
+            result = null;
         } else {
             VertexBuffer.Type type = VertexBuffer.Type.valueOf(description);
             result = mesh.getBuffer(type);
         }
 
-        assert result != null;
         return result;
     }
 
