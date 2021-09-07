@@ -155,7 +155,7 @@ public class MeshUtil {
      * Generate mesh normals from positions using the specified buffers. Any
      * pre-existing target buffer is discarded. TODO move to Heart library
      *
-     * @param mesh the input Mesh (not null, unaffected)
+     * @param mesh the input Mesh (not null, has triangles, unaffected)
      * @param normalBufferType (Normal or BindPoseNormal)
      * @param positionBufferType (Position or BindPosePosition)
      * @param algorithm which algorithm to use (not null)
@@ -164,17 +164,15 @@ public class MeshUtil {
     public static Mesh generateNormals(Mesh mesh,
             VertexBuffer.Type normalBufferType,
             VertexBuffer.Type positionBufferType, MeshNormals algorithm) {
-        for (VertexBuffer inVertexBuffer : mesh.getBufferList()) {
-            VertexBuffer.Type type = inVertexBuffer.getBufferType();
-            if (type != VertexBuffer.Type.Index) {
-                int numCperE = inVertexBuffer.getNumComponents();
-                if (numCperE == 0) {
-                    // TODO??
-                }
-                assert numCperE >= 1 && numCperE <= 4 :
-                        "numCperE = " + numCperE + " type = " + type;
-            }
-        }
+        Validate.nonNull(mesh, "mesh");
+        Validate.require(MyMesh.hasTriangles(mesh), "triangles in the mesh");
+        Validate.require(normalBufferType == VertexBuffer.Type.Normal
+                || normalBufferType == VertexBuffer.Type.BindPoseNormal,
+                "normalBufferType = Normal or BindPoseNormal");
+        Validate.require(positionBufferType == VertexBuffer.Type.Position
+                || positionBufferType == VertexBuffer.Type.BindPosePosition,
+                "positionBufferType = Position or BindPosePosition");
+        Validate.nonNull(algorithm, "algorithm");
 
         Mesh result = mesh.deepClone();
         switch (algorithm) {
@@ -376,14 +374,9 @@ public class MeshUtil {
             result[submesh] = outputMesh;
             outputMesh.setMode(expandedMode);
 
-            for (VertexBuffer.Type type : VertexBuffer.Type.values()) {
-                if (type == VertexBuffer.Type.Index
-                        || type == VertexBuffer.Type.HWBoneIndex
-                        || type == VertexBuffer.Type.HWBoneWeight) {
-                    continue;
-                }
-                VertexBuffer vb = mesh.getBuffer(type);
-                if (vb == null) {
+            for (VertexBuffer vb : mesh.getBufferList()) {
+                VertexBuffer.Type type = vb.getBufferType();
+                if (type == VertexBuffer.Type.Index) {
                     continue;
                 }
                 /*
@@ -408,7 +401,9 @@ public class MeshUtil {
                     int vertexIndex = indexList.get(ii);
                     int vvid = distinctPositions.findVvid(vertexIndex);
                     if (vvid2Submesh[vvid] == submesh) {
-                        Element.copy(vb, vertexIndex, outputVB, outVI);
+                        if (vb.getNumElements() > 0) {
+                            Element.copy(vb, vertexIndex, outputVB, outVI);
+                        }
                         ++outVI;
                     }
                 }
