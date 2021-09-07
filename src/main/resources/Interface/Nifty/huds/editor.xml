@@ -1838,30 +1838,66 @@ Approximate minimum screen size: 640x480
 
             <control name="window" id="meshTool" title="Mesh Tool"
                      hideOnClose="true"
-                     height="258px" width="345px" x="135" y="135">
+                     height="268px" width="390px" x="135" y="135">
                 <panel childLayout="vertical">
                     <panel height="4px"/>
                     <panel childLayout="horizontal" height="28px">
-                        <control name="label" id="meshAnimated"
+                        <control name="button" id="meshPreviousButton"
+                                 width="20px">
+                            <interact onRelease="perform(previous geometry)"/>
+                        </control>
+                        <control name="label" id="meshIndex"
                                  backgroundColor="#ffff"
                                  textHAlign="center"
-                                 width="*"/>
-                        <panel width="20px"/>
+                                 width="90px"/>
+                        <control name="button" id="meshNextButton"
+                                 width="20px">
+                            <interact onRelease="perform(next geometry)"/>
+                        </control>
+                        <control name="label" text="  "/>
+                        <control name="button" id="meshTreePositionButton"
+                                 width="*">
+                            <interact onRelease="perform(select tool spatial)"/>
+                        </control>
+                        <control name="label" text="  "/>
                         <control name="button" id="meshSelectButton"
-                                 width="50px">
+                                 width="110px">
                             <interact onRelease="perform(select spatial Geometries)"/>
                         </control>
                     </panel>
+                    <panel height="10px"/>
                     <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="Mode:  "/>
+                        <control name="label" text="Mesh:  "/>
+                        <control name="label" id="meshElements"
+                                 backgroundColor="#ffff"
+                                 textHAlign="right"
+                                 width="140px"/>
+                        <control name="label" text="  "/>
+                        <control name="button" id="meshIndexedButton"
+                                 width="80px">
+                            <interact onRelease="perform(toggle meshIndexed)"/>
+                        </control>
+                        <control name="label" text="  "/>
                         <control name="button" id="meshModeButton"
                                  width="90px">
                             <interact onRelease="perform(select meshMode)"/>
                         </control>
-                        <control name="label" text="    Bound type:  "/>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Bound:  "/>
                         <control name="button" id="meshBoundTypeButton"
                                  width="55px">
                             <interact onRelease="perform(toggle boundType)"/>
+                        </control>
+                        <control name="label" text="    LODs:  "/>
+                        <control name="label" id="meshLods"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="30px"/>
+                        <control name="label" text="    Vertices:  "/>
+                        <control name="button" id="meshVerticesButton"
+                                 width="70px">
+                            <interact onRelease="perform(select tool vertex)"/>
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
@@ -1870,32 +1906,15 @@ Approximate minimum screen size: 640x480
                                  width="20px">
                             <interact onRelease="perform(set meshWeights)"/>
                         </control>
-                        <control name="label" text="    LODs:  "/>
-                        <control name="label" id="meshLods"
-                                 backgroundColor="#ffff"
-                                 textHAlign="center"
-                                 width="70px"/>
-                        <control name="label" text="    "/>
+                        <panel/>
                         <control name="button" id="meshCalculateNormalsButton"
                                  width="100px">
                             <interact onRelease="perform(new normals)"/>
                         </control>
                     </panel>
-                    <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="Elements:  "/>
-                        <control name="label" id="meshElements"
-                                 backgroundColor="#ffff"
-                                 textHAlign="center"
-                                 width="70px"/>
-                        <control name="label" text="    Vertices:  "/>
-                        <control name="button" id="meshVerticesButton"
-                                 width="70px">
-                            <interact onRelease="perform(select tool vertex)"/>
-                        </control>
-                    </panel>
                     <panel height="10px"/>
                     <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="Buffers:  "/>
+                        <control name="label" text="Buffer:  "/>
                         <control name="button" id="vbPreviousButton"
                                  width="20px">
                             <interact onRelease="perform(previous buffer)"/>
@@ -1908,26 +1927,27 @@ Approximate minimum screen size: 640x480
                                  width="20px">
                             <interact onRelease="perform(next buffer)"/>
                         </control>
-                        <panel width="20px"/>
+                        <panel/>
+                        <control name="label" id="vbType"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="110px"/>
+                        <panel/>
                         <control name="button" id="vbSelectButton"
                                  width="90px">
                             <interact onRelease="perform(select buffer)"/>
                         </control>
+                    </panel>
+                    <panel childLayout="horizontal" height="28px">
+                        <control name="label" text="Format:  "/>
+                        <control name="label" id="vbFormat"
+                                 backgroundColor="#ffff"
+                                 width="120px"/>
                         <panel/>
                         <control name="button" id="vbDeleteButton"
                                  width="50px">
                             <interact onRelease="perform(delete buffer)"/>
                         </control>
-                    </panel>
-                    <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="Type:  "/>
-                        <control name="label" id="vbType"
-                                 backgroundColor="#ffff"
-                                 width="110px"/>
-                        <control name="label" text="    Format:  "/>
-                        <control name="label" id="vbFormat"
-                                 backgroundColor="#ffff"
-                                 width="120px"/>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
                         <control name="label" text="Limit:  "/>

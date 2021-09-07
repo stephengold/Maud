@@ -104,6 +104,10 @@ class ToggleAction {
                 miscOptions.toggleMenuBarVisibility();
                 break;
 
+            case Action.toggleMeshIndexed:
+                target.getSpatial().toggleIndexedMesh();
+                break;
+
             case Action.toggleMovement:
                 sceneOptions.getCamera().toggleMovement();
                 break;

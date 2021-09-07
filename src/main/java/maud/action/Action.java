@@ -316,6 +316,7 @@ public class Action {
     final static String toggleIndexBase = "toggle indexBase";
     final static String toggleLoadOrientation = "toggle loadOrientation";
     final static String toggleMenuBar = "toggle menuBar";
+    final static String toggleMeshIndexed = "toggle meshIndexed";
     final static String toggleMovement = "toggle movement";
     final static String togglePause = "toggle pause";
     final static String togglePauseSource = "toggle pause source";

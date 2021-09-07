@@ -27,6 +27,7 @@
 package maud.tool;
 
 import com.jme3.bounding.BoundingVolume;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer;
 import java.util.List;
@@ -111,8 +112,10 @@ class MeshTool extends Tool {
     protected void toolUpdate() {
         updateBufferInfo();
         updateBufferIndex();
+        updateGeometryIndex();
         updateMeshInfo();
         updateSelect();
+        updateTreePosition();
     }
     // *************************************************************************
     // private methods
@@ -220,33 +223,58 @@ class MeshTool extends Tool {
     }
 
     /**
+     * Update the geometry index status and next/previous buttons.
+     */
+    private void updateGeometryIndex() {
+        String indexStatus;
+        String nextButton = "", previousButton = "";
+
+        Cgm target = Maud.getModel().getTarget();
+        int numGeometries = target.countSpatials(Geometry.class);
+        SelectedSpatial selected = target.getSpatial();
+        int selectedIndex = selected.findGeometryIndex();
+        if (selectedIndex >= 0) {
+            indexStatus = DescribeUtil.index(selectedIndex, numGeometries);
+            if (numGeometries > 1) {
+                nextButton = "+";
+                previousButton = "-";
+            }
+        } else { // none selected
+            if (numGeometries == 0) {
+                indexStatus = "no geometry";
+            } else if (numGeometries == 1) {
+                indexStatus = "one geometry";
+            } else {
+                indexStatus = String.format("%d geometries", numGeometries);
+            }
+        }
+
+        setStatusText("meshIndex", indexStatus);
+        setButtonText("meshNext", nextButton);
+        setButtonText("meshPrevious", previousButton);
+    }
+
+    /**
      * Update the information on the selected mesh.
      */
     private void updateMeshInfo() {
-        String btButton, calcButton, describeStatus, modeButton, elementsText;
-        String lodsText, verticesButton, weightsButton;
+        String btButton, calcButton, describeStatus, modeButton;
+        String indexedButton, lodsText, verticesButton, weightsButton;
 
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         if (spatial.hasMesh()) {
-            calcButton = "Calc normals";
+            calcButton = "Recalc normals";
 
-            String animatedPrefix;
+            int numElements = spatial.countElements();
+            describeStatus = Integer.toString(numElements);
             if (spatial.hasAnimatedMesh()) {
-                animatedPrefix = "";
-                int mnwpv = spatial.getMaxNumWeights();
-                weightsButton = Integer.toString(mnwpv);
+                describeStatus += " animated ";
+                int maxWeights = spatial.getMaxNumWeights();
+                weightsButton = Integer.toString(maxWeights);
             } else {
-                animatedPrefix = "non-";
+                describeStatus += " non-animated ";
                 weightsButton = "";
             }
-            String indexedPrefix;
-            if (spatial.hasIndexedMesh()) {
-                indexedPrefix = "";
-            } else {
-                indexedPrefix = "non-";
-            }
-            describeStatus = animatedPrefix + "animated, "
-                    + indexedPrefix + "indexed mesh";
 
             BoundingVolume.Type type = spatial.getWorldBoundType();
             if (type == null) {
@@ -255,8 +283,11 @@ class MeshTool extends Tool {
                 btButton = type.toString();
             }
 
-            int numElements = spatial.countElements();
-            elementsText = Integer.toString(numElements);
+            if (spatial.hasIndexedMesh()) {
+                indexedButton = "indexed";
+            } else {
+                indexedButton = "non-indexed";
+            }
 
             int numLods = spatial.countLodLevels();
             lodsText = Integer.toString(numLods);
@@ -268,24 +299,20 @@ class MeshTool extends Tool {
             verticesButton = Integer.toString(numVertices);
 
         } else {
-            if (spatial.isNode()) {
-                describeStatus = "no mesh (a node is selected)";
-            } else {
-                describeStatus = "no mesh";
-            }
+            describeStatus = "no mesh";
             btButton = "";
             calcButton = "";
-            elementsText = "(no mesh)";
-            lodsText = "(no mesh)";
+            indexedButton = "";
+            lodsText = "";
             modeButton = "";
             verticesButton = "";
             weightsButton = "";
         }
 
-        setStatusText("meshAnimated", describeStatus);
         setButtonText("meshBoundType", btButton);
         setButtonText("meshCalculateNormals", calcButton);
-        setStatusText("meshElements", elementsText);
+        setStatusText("meshElements", describeStatus);
+        setButtonText("meshIndexed", indexedButton);
         setStatusText("meshLods", lodsText);
         setButtonText("meshMode", modeButton);
         setButtonText("meshVertices", verticesButton);
@@ -293,7 +320,7 @@ class MeshTool extends Tool {
     }
 
     /**
-     * Update the mesh-select button.
+     * Update the geometry-select button.
      */
     private void updateSelect() {
         String selectButton;
@@ -304,9 +331,25 @@ class MeshTool extends Tool {
         if (names.isEmpty()) {
             selectButton = "";
         } else {
-            selectButton = "Select";
+            selectButton = "Select geometry";
         }
 
         setButtonText("meshSelect", selectButton);
+    }
+
+    /**
+     * Update the display of the geometry's position in the model's scene graph.
+     */
+    private void updateTreePosition() {
+        String positionText;
+
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        if (spatial.isCgmRoot()) {
+            positionText = "model root";
+        } else {
+            positionText = spatial.toString();
+        }
+
+        setButtonText("meshTreePosition", positionText);
     }
 }
