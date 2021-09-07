@@ -380,10 +380,6 @@ public class SelectedSpatial implements JmeCloneable {
             MyMesh.rotateBuffer(mesh, VertexBuffer.Type.BindPoseNormal,
                     gInPRot);
             MyMesh.rotateBuffer(mesh, VertexBuffer.Type.Normal, gInPRot);
-            MyMesh.rotateTangentBuffer(mesh,
-                    VertexBuffer.Type.BindPoseTangent, gInPRot);
-            MyMesh.rotateTangentBuffer(mesh, VertexBuffer.Type.Tangent,
-                    gInPRot);
             // TODO binormal?
 
             mesh.updateBound();
