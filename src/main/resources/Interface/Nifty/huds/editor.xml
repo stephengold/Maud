@@ -2810,7 +2810,7 @@ Approximate minimum screen size: 640x480
 
             <control name="window" id="spatialTool" title="Spatial Tool"
                      hideOnClose="true"
-                     height="294px" width="315px" x="60" y="210">
+                     height="294px" width="328px" x="60" y="210">
                 <panel childLayout="vertical">
                     <panel height="3px"/>
                     <panel childLayout="horizontal" height="28px">

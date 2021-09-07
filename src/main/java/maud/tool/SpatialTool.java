@@ -134,24 +134,31 @@ class SpatialTool extends Tool {
     }
 
     /**
-     * Update the display of the spatial's mesh, if any.
+     * Update the description of the spatial's Mesh.
      */
     private void updateMesh() {
         String meshText;
 
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         if (spatial.hasMesh()) {
+            int numElements = spatial.countElements();
+            meshText = Integer.toString(numElements);
             if (spatial.hasAnimatedMesh()) {
-                meshText = "animated";
+                meshText += " animated,";
             } else {
-                meshText = "non-animated";
+                meshText += " non-animated,";
+            }
+            if (spatial.hasIndexedMesh()) {
+                meshText += " indexed ";
+            } else {
+                meshText += " non-indexed ";
             }
             Mesh.Mode mode = spatial.getMeshMode();
-            meshText += String.format(" %s", mode.toString());
-            int numVertices = spatial.countVertices();
-            meshText += String.format(", %d vertices", numVertices);
+            meshText += mode.toString();
+
         } else if (spatial.isNode()) {
             meshText = "no mesh (a node is selected)";
+
         } else {
             meshText = "no mesh";
         }
