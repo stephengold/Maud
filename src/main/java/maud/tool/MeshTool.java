@@ -164,7 +164,7 @@ class MeshTool extends Tool {
             instanceButton = "";
             limitButton = "";
             strideButton = "";
-            typeText = "";
+            typeText = "(none selected)";
             usageButton = "";
 
             disableCheckBox("vbNormalized");
