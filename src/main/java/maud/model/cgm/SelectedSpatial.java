@@ -145,7 +145,7 @@ public class SelectedSpatial implements JmeCloneable {
      */
     private Spatial last = null;
     // *************************************************************************
-    // new methods exposed
+    // new methods exposed TODO split off SelectedMesh, selectedNode, etcetera
 
     /**
      * Add an AnimComposer or AnimControl to the spatial and select the new
@@ -1030,6 +1030,20 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
+     * Test whether the Spatial has an indexed mesh.
+     *
+     * @return true if it has an indexed mesh, otherwise false
+     */
+    public boolean hasIndexedMesh() {
+        Mesh mesh = getMesh();
+        if (mesh == null) {
+            return false;
+        } else {
+            return MyMesh.hasIndices(mesh);
+        }
+    }
+
+    /**
      * Test whether the spatial has a material.
      *
      * @return true if it has a material, otherwise false
@@ -1745,6 +1759,25 @@ public class SelectedSpatial implements JmeCloneable {
 
         SceneView sceneView = cgm.getSceneView();
         sceneView.setModelBound(newBound);
+    }
+
+    /**
+     * If the selected Spatial has an indexed Mesh, expand it the Mesh ensure
+     * that no vertex data are re-used. If it has a non-indexed Mesh, compress
+     * the Mesh by introducing an index buffer.
+     */
+    public void toggleIndexedMesh() {
+        Mesh mesh = getMesh();
+        if (mesh != null) {
+            boolean isIndexed = MyMesh.hasIndices(mesh);
+            if (isIndexed) {
+                Mesh expandedMesh = MyMesh.expand(mesh);
+                editableCgm.setMesh(expandedMesh, "expand an indexed mesh");
+            } else {
+                Mesh indexedMesh = MyMesh.addIndices(mesh);
+                editableCgm.setMesh(indexedMesh, "add indices to a mesh");
+            }
+        }
     }
 
     /**
