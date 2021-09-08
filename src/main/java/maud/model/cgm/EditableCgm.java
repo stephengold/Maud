@@ -414,23 +414,27 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Attach the specified child subtree to the specified parent node.
+     * Attach the specified subtree (not already in the C-G model) to the
+     * specified target node. Caller is responsible for updating the selected
+     * spatial.
      *
-     * @param parent (not null)
-     * @param child (not null)
+     * @param targetNode where to attach the subtree (not null)
+     * @param subtree which subtree to attach (not null, orphan)
      * @param eventDescription description of causative event (not null)
      */
-    void attachSpatial(Node parent, Spatial child, String eventDescription) {
-        assert parent != null;
-        assert child != null;
+    void attachSpatial(Node targetNode, Spatial subtree,
+            String eventDescription) {
+        assert targetNode != null;
+        assert subtree != null;
+        assert MySpatial.isOrphan(subtree);
         assert eventDescription != null;
 
         SceneView sceneView = getSceneView();
-        List<Integer> parentPosition = findSpatial(parent);
+        List<Integer> parentPosition = findSpatial(targetNode);
 
         History.autoAdd();
-        sceneView.attachSpatial(parentPosition, child);
-        parent.attachChild(child);
+        sceneView.attachSpatial(parentPosition, subtree);
+        targetNode.attachChild(subtree);
         editState.setEdited(eventDescription);
     }
 
@@ -710,6 +714,37 @@ public class EditableCgm extends LoadedCgm {
         String description = "link bone " + MyString.quote(boneName);
         editState.setEdited(description);
         return true;
+    }
+
+    /**
+     * Move the specified spatials that are already in the C-G model, attaching
+     * them to the specified target node. Caller is responsible for updating the
+     * selected spatial.
+     *
+     * @param targetNode the desired parent node (not null)
+     * @param eventDescription a description of causative event (not null)
+     * @param spatials the spatials to move (not null, does not contain
+     * targetNode or any ancestor thereof)
+     */
+    void moveSpatials(Node targetNode, String eventDescription,
+            Spatial... spatials) {
+        assert targetNode != null;
+        assert spatials != null;
+
+        SceneView sceneView = getSceneView();
+        List<Integer> targetPosition = findSpatial(targetNode);
+
+        History.autoAdd();
+        for (Spatial spatial : spatials) {
+            if (spatial instanceof Node) {
+                assert spatial != targetNode;
+                assert !targetNode.hasAncestor((Node) spatial);
+            }
+            List<Integer> spatialPosition = findSpatial(spatial);
+            sceneView.moveSpatial(targetPosition, spatialPosition);
+            targetNode.attachChild(spatial);
+        }
+        editState.setEdited(eventDescription);
     }
 
     /**

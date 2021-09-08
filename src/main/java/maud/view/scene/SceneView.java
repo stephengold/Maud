@@ -350,6 +350,29 @@ public class SceneView extends SceneViewCore {
     }
 
     /**
+     * Move the specified spatial that is already in the C-G model, attaching it
+     * to the specified target node.
+     *
+     * @param targetPosition the tree position of the desired parent node (not
+     * null, unaffected)
+     * @param spatialPosition the tree position of the Spatial to move (not
+     * null, unaffected)
+     */
+    public void moveSpatial(List<Integer> targetPosition,
+            List<Integer> spatialPosition) {
+        Validate.nonNull(targetPosition, "parent position");
+        Validate.nonNull(spatialPosition, "spatial position");
+
+        Node targetNode = (Node) findSpatial(targetPosition);
+        Spatial spatial = findSpatial(spatialPosition);
+        if (spatial instanceof Node) {
+            assert spatial != targetNode;
+            assert !targetNode.hasAncestor((Node) spatial);
+        }
+        targetNode.attachChild(spatial);
+    }
+
+    /**
      * Remove an existing physics control from the scene graph and the physics
      * space.
      *

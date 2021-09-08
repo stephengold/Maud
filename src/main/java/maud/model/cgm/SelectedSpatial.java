@@ -443,6 +443,47 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
+     * Reattach the selected Spatial one level higher (closer to the root) in
+     * the scene graph.
+     */
+    public void boost() {
+        int treeLevel = treePosition.size();
+        assert treeLevel > 1 : treeLevel;
+        Spatial spatial = find();
+        String name = spatial.getName();
+        Node parent = spatial.getParent();
+        Node target = parent.getParent();
+
+        String eventDescription = "boost spatial " + MyString.quote(name);
+        editableCgm.moveSpatials(target, eventDescription, spatial);
+        /*
+         * Keep the same spatial selected.
+         */
+        treePosition = cgm.findSpatial(spatial);
+        assert treePosition != null;
+    }
+
+    /**
+     * Reattach all children of the selected Spatial one level higher (closer to
+     * the root) in the scene graph.
+     */
+    public void boostAllChildren() {
+        int treeLevel = treePosition.size();
+        assert treeLevel > 0 : treeLevel;
+
+        Node node = (Node) find();
+        String name = node.getName();
+        Node target = node.getParent();
+        List<Spatial> childList = node.getChildren();
+        int numChildren = childList.size();
+        Spatial[] children = childList.toArray(new Spatial[numChildren]);
+        String eventDescription = String.format("boost %d children of %s",
+                numChildren, MyString.quote(name));
+        editableCgm.moveSpatials(target, eventDescription, children);
+        assert find() == node;
+    }
+
+    /**
      * Cardinalize the local rotation.
      */
     public void cardinalizeRotation() {
@@ -1779,6 +1820,16 @@ public class SelectedSpatial implements JmeCloneable {
                 editableCgm.setMesh(indexedMesh, "add indices to a mesh");
             }
         }
+    }
+
+    /**
+     * Determine the depth of the selected spatial in the C-G model.
+     *
+     * @return the level (&ge;0, 0 &rarr; model root)
+     */
+    public int treeLevel() {
+        int result = treePosition.size();
+        return result;
     }
 
     /**

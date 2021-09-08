@@ -84,15 +84,22 @@ public class SpatialMenus {
         builder.addTool("Translate tool");
         builder.addTool("User-Data tool");
 
-        Cgm target = Maud.getModel().getTarget();
-        SelectedSpatial ss = target.getSpatial();
-        if (!ss.isCgmRoot()) {
+        SelectedSpatial ss = Maud.getModel().getTarget().getSpatial();
+        int treeLevel = ss.treeLevel();
+        boolean isCgmRoot = (treeLevel == 0);
+        if (treeLevel > 1) {
+            builder.addEdit("Boost");
+        }
+        if (ss.countChildren() > 0 && !isCgmRoot) {
+            builder.addEdit("Boost children");
+        }
+        if (!isCgmRoot) {
             builder.addEdit("Delete");
         }
         if (ss.hasMaterial()) {
             builder.addSubmenu("Edit material");
         }
-        if (ss.hasMesh() && !ss.isCgmRoot()) {
+        if (ss.hasMesh() && !isCgmRoot) {
             builder.addEdit("Split geometry");
         }
     }
@@ -140,13 +147,23 @@ public class SpatialMenus {
             handled = menuSpatialSelect(arg);
 
         } else {
+            EditableCgm target = Maud.getModel().getTarget();
+            SelectedSpatial ss = target.getSpatial();
             switch (remainder) {
                 case "Add new":
                     addNew();
                     break;
 
+                case "Boost":
+                    ss.boost();
+                    break;
+
+                case "Boost children":
+                    ss.boostAllChildren();
+                    break;
+
                 case "Delete":
-                    Maud.getModel().getTarget().getSpatial().delete();
+                    ss.delete();
                     break;
 
                 case "Details tool":
@@ -186,7 +203,6 @@ public class SpatialMenus {
                     break;
 
                 case "Split geometry":
-                    EditableCgm target = Maud.getModel().getTarget();
                     target.splitGeometry();
                     break;
 
