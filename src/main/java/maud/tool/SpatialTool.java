@@ -217,12 +217,12 @@ class SpatialTool extends Tool {
         if (numSiblings > 1) {
             int siblingIndex = spatial.siblingIndex();
             if (siblingIndex > 0) {
-                first = "first";
-                previous = "previous";
+                first = "First";
+                previous = "Previous";
             }
             if (siblingIndex < numSiblings - 1) {
-                next = "next";
-                last = "last";
+                next = "Next";
+                last = "Last";
             }
         }
 
