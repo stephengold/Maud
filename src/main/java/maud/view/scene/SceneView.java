@@ -222,11 +222,7 @@ public class SceneView extends SceneViewCore {
         /*
          * Attach the child to the scene.
          */
-        Node parentNode = (Node) getCgmRoot();
-        for (int childIndex : parentPosition) {
-            Spatial parentSpatial = parentNode.getChild(childIndex);
-            parentNode = (Node) parentSpatial;
-        }
+        Node parentNode = (Node) findSpatial(parentPosition);
         parentNode.attachChild(clone);
     }
 
@@ -304,12 +300,7 @@ public class SceneView extends SceneViewCore {
     public void deleteSubtree(List<Integer> treePosition) {
         Validate.nonNull(treePosition, "tree position");
 
-        Spatial spatial = getCgmRoot();
-        for (int childPosition : treePosition) {
-            Node node = (Node) spatial;
-            spatial = node.getChild(childPosition);
-        }
-
+        Spatial spatial = findSpatial(treePosition);
         MyControlP.disablePhysicsControls(spatial);
         boolean success = spatial.removeFromParent();
         assert success;
@@ -530,11 +521,7 @@ public class SceneView extends SceneViewCore {
         Validate.nonNull(treePosition, "tree position");
         Validate.nonNull(newHint, "cull hint");
 
-        Spatial spatial = getCgmRoot();
-        for (int childPosition : treePosition) {
-            Node node = (Node) spatial;
-            spatial = node.getChild(childPosition);
-        }
+        Spatial spatial = findSpatial(treePosition);
         spatial.setCullHint(newHint);
     }
 
@@ -697,11 +684,7 @@ public class SceneView extends SceneViewCore {
         Validate.nonEmpty(parameterName, "parameter name");
         Validate.nonNull(varType, "var type");
 
-        Spatial spatial = getCgmRoot();
-        for (int childPosition : treePosition) {
-            Node node = (Node) spatial;
-            spatial = node.getChild(childPosition);
-        }
+        Spatial spatial = findSpatial(treePosition);
 
         MatParamOverride oldMpo
                 = MySpatial.findOverride(spatial, parameterName);
@@ -732,13 +715,7 @@ public class SceneView extends SceneViewCore {
         Validate.nonNull(varType, "var type");
         Validate.nonNull(viewValue, "view value");
 
-        Spatial spatial = getCgmRoot();
-        for (int childPosition : treePosition) {
-            Node node = (Node) spatial;
-            spatial = node.getChild(childPosition);
-        }
-
-        Geometry geometry = (Geometry) spatial;
+        Geometry geometry = (Geometry) findSpatial(treePosition);
         Material material = geometry.getMaterial();
         material.setParam(parameterName, varType, viewValue);
     }
@@ -773,12 +750,7 @@ public class SceneView extends SceneViewCore {
         Validate.nonNull(treePosition, "tree position");
         Validate.nonNull(newBucket, "new bucket");
 
-        Spatial spatial = getCgmRoot();
-        for (int childPosition : treePosition) {
-            Node node = (Node) spatial;
-            spatial = node.getChild(childPosition);
-        }
-
+        Spatial spatial = findSpatial(treePosition);
         spatial.setQueueBucket(newBucket);
     }
 
@@ -818,12 +790,7 @@ public class SceneView extends SceneViewCore {
     public void setWireframe(List<Integer> treePosition, boolean newSetting) {
         Validate.nonNull(treePosition, "tree position");
 
-        Spatial spatial = getCgmRoot();
-        for (int childPosition : treePosition) {
-            Node node = (Node) spatial;
-            spatial = node.getChild(childPosition);
-        }
-        Geometry geometry = (Geometry) spatial;
+        Geometry geometry = (Geometry) findSpatial(treePosition);
         Material material = geometry.getMaterial();
         RenderState renderState = material.getAdditionalRenderState();
         renderState.setWireframe(newSetting);
