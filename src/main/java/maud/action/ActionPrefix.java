@@ -230,6 +230,10 @@ public class ActionPrefix {
      */
     final public static String renameUserKey = "rename userKey ";
     /**
+     * argument is a comma-separated list of decimal spatial indices
+     */
+    final public static String reparentSpatials = "reparent spatials ";
+    /**
      * arguments are a resample type and a decimal count/rate
      */
     final public static String resampleAnimation = "resample animation ";

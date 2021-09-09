@@ -196,6 +196,10 @@ public class EditorInputMode extends InputMode {
                     handled = RenameAction.process(actionString);
                     break;
 
+                case "reparent":
+                    handled = reparentAction(actionString);
+                    break;
+
                 case "resample":
                     handled = resampleAction(actionString);
                     break;
@@ -390,6 +394,26 @@ public class EditorInputMode extends InputMode {
             arg = MyString.remainder(actionString, ActionPrefix.reduceTrack);
             int factor = Integer.parseInt(arg);
             target.getTrack().reduce(factor);
+            handled = true;
+        }
+
+        return handled;
+    }
+
+    /**
+     * Process an ongoing action that starts with the word "reparent".
+     *
+     * @param actionString textual description of the action (not null)
+     * @return true if the action is handled, otherwise false
+     */
+    private static boolean reparentAction(String actionString) {
+        EditableCgm target = Maud.getModel().getTarget();
+        String arg;
+        boolean handled = false;
+        if (actionString.startsWith(ActionPrefix.reparentSpatials)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.reparentSpatials);
+            target.reparentSpatials(arg);
             handled = true;
         }
 

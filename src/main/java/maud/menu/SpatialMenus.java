@@ -99,6 +99,9 @@ public class SpatialMenus {
         if (ss.hasMaterial()) {
             builder.addSubmenu("Edit material");
         }
+        if (ss.isNode() && !ss.listReparentItems().isEmpty()) {
+            builder.addDialog("Reparent spatials");
+        }
         if (ss.hasMesh() && !isCgmRoot) {
             builder.addEdit("Split geometry");
         }
@@ -188,6 +191,10 @@ public class SpatialMenus {
 
                 case "Overrides tool":
                     EditorTools.select("overrides");
+                    break;
+
+                case "Reparent spatials":
+                    EditorDialogs.reparentSpatials();
                     break;
 
                 case "Rotate tool":

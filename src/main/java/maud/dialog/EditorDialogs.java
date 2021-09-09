@@ -40,6 +40,7 @@ import com.jme3.system.JmeVersion;
 import de.lessvoid.nifty.Nifty;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.Heart;
@@ -85,6 +86,7 @@ import maud.model.cgm.SelectedShape;
 import maud.model.cgm.SelectedSpatial;
 import maud.model.cgm.SelectedTexture;
 import maud.model.cgm.SelectedTrack;
+import maud.model.cgm.SpatialItem;
 import maud.model.cgm.TrackItem;
 import maud.model.option.RigidBodyParameter;
 import maud.model.option.RotationDisplayMode;
@@ -115,7 +117,7 @@ public class EditorDialogs {
     private EditorDialogs() {
     }
     // *************************************************************************
-    // new methods exposed
+    // new methods exposed TODO split off the text-entry dialog methods
 
     /**
      * Display an "About Maud" dialog.
@@ -672,6 +674,29 @@ public class EditorDialogs {
             Maud.gui.showTextEntryDialog("Enter a new key for the user data:",
                     oldName, ActionPrefix.renameUserKey, controller);
         }
+    }
+
+    /**
+     * Display a "reparent spatials" dialog to select the spatials.
+     */
+    public static void reparentSpatials() {
+        SelectedSpatial ss = Maud.getModel().getTarget().getSpatial();
+        List<SpatialItem> allItems = ss.listReparentItems();
+        Collections.sort(allItems);
+        int numSpatials = allItems.size();
+        List<String> options = new ArrayList<>(numSpatials);
+        for (SpatialItem item : allItems) {
+            String description = item.toString();
+            options.add(description);
+        }
+
+        String prompt = "Select spatials to reparent:";
+        String commitLabel = "Reparent";
+        String prefix = ActionPrefix.reparentSpatials;
+        ReparentDialog controller = new ReparentDialog(allItems);
+        Maud.gui.closeAllPopups();
+        Maud.gui.showMultiSelectDialog(prompt, options, commitLabel, prefix,
+                controller);
     }
 
     /**

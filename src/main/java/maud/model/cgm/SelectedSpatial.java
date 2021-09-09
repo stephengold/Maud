@@ -1350,6 +1350,36 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
+     * Enumerate all spatials that are not the selected Node, nor its ancestor,
+     * nor among its immediate children.
+     *
+     * @return a new list of new items
+     */
+    public List<SpatialItem> listReparentItems() {
+        List<SpatialItem> result = new ArrayList<>(50);
+
+        Spatial selectedSpatial = find();
+        if (selectedSpatial instanceof Node) {
+            Node parent = (Node) selectedSpatial;
+            Spatial rootCgm = cgm.getRootSpatial();
+            List<Spatial> spatials = MySpatial.listSpatials(rootCgm);
+            for (Spatial spatial : spatials) {
+                if (spatial != selectedSpatial
+                        && spatial.getParent() != selectedSpatial) {
+                    if (spatial instanceof Node
+                            && parent.hasAncestor((Node) spatial)) {
+                        continue;
+                    }
+                    SpatialItem item = new SpatialItem(spatial);
+                    result.add(item);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Enumerate all parameters in the material whose names have the specified
      * prefix.
      *

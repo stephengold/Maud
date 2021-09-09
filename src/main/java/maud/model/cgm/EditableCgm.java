@@ -70,6 +70,7 @@ import com.jme3.texture.Texture;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -246,7 +247,7 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Merge the specified geometries into a new Geometry and attach it the
+     * Merge the specified geometries into a new Geometry and attach it to the
      * selected Node.
      *
      * @param indices a comma-separated list of decimal child-geometry indices
@@ -717,9 +718,9 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Move the specified spatials that are already in the C-G model, attaching
-     * them to the specified target node. Caller is responsible for updating the
-     * selected spatial.
+     * Re-parent the specified spatials that are already in the C-G model,
+     * attaching them to the specified target node. Caller is responsible for
+     * updating the selected spatial.
      *
      * @param targetNode the desired parent node (not null)
      * @param eventDescription a description of causative event (not null)
@@ -845,6 +846,37 @@ public class EditableCgm extends LoadedCgm {
         }
 
         return success;
+    }
+
+    /**
+     * Re-parent the indexed spatials, attaching them to the selected Node.
+     *
+     * @param indices a comma-separated list of decimal Spatial indices (not
+     * null, not empty)
+     */
+    public void reparentSpatials(String indices) {
+        Validate.nonEmpty(indices, "indices");
+
+        String[] selectedIndices = indices.split(",");
+        int numSelected = selectedIndices.length;
+
+        SelectedSpatial ss = getSpatial();
+        List<SpatialItem> allItems = ss.listReparentItems();
+        Collections.sort(allItems);
+
+        Spatial[] spatials = new Spatial[numSelected];
+        for (int sIndex = 0; sIndex < numSelected; ++sIndex) {
+            String digits = selectedIndices[sIndex];
+            int itemIndex = Integer.parseInt(digits);
+            SpatialItem item = allItems.get(itemIndex);
+            spatials[sIndex] = item.getSpatial();
+        }
+
+        Node targetNode = (Node) ss.find();
+        String targetName = targetNode.getName();
+        String eventDescription = String.format("re-parent %s spatials to %s",
+                numSelected, MyString.quote(targetName));
+        moveSpatials(targetNode, eventDescription, spatials);
     }
 
     /**
