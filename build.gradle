@@ -49,7 +49,7 @@ dependencies {
     // from mavenCentral (or mavenLocal) repositories:
     implementation 'ch.qos.logback:logback-classic:1.2.5'
     runtimeOnly    'com.github.nifty-gui:nifty-style-black:1.4.3'
-    implementation 'com.github.stephengold:Heart:7.0.0'
+    implementation 'com.github.stephengold:Heart:7.1.0'
     implementation 'com.github.stephengold:jme3-utilities-ui:0.9.5'
     implementation 'com.github.stephengold:jme3-utilities-nifty:0.9.22'
     implementation 'com.github.stephengold:Minie:4.3.0+big3'

@@ -52,9 +52,7 @@ import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Logger;
 import jme3utilities.MyAnimation;
 import jme3utilities.MyMesh;
@@ -130,7 +128,7 @@ public class SelectedTrack implements JmeCloneable {
         if (selected != null) {
             Quaternion[] rotations = MaudUtil.getTrackRotations(selected);
             if (rotations != null) {
-                count = countNe(rotations);
+                count = MyQuaternion.countNe(rotations);
             }
         }
 
@@ -1173,28 +1171,6 @@ public class SelectedTrack implements JmeCloneable {
     }
     // *************************************************************************
     // private methods
-
-    /**
-     * Count the number of distinct quaternions, without distinguishing 0 from
-     * -0. TODO move to the Heart Library
-     *
-     * @param quaternions (unaffected)
-     * @return the count (&ge;0)
-     */
-    private static int countNe(Quaternion[] quaternions) {
-        if (quaternions == null) {
-            return 0;
-        }
-
-        Set<Quaternion> distinct = new HashSet<>(quaternions.length);
-        for (Quaternion rot : quaternions) {
-            Quaternion standard = MyQuaternion.standardize(rot, null);
-            distinct.add(standard);
-        }
-        int result = distinct.size();
-
-        return result;
-    }
 
     /**
      * Delete a range of keyframes in the selected track.

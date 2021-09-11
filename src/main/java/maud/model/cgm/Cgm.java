@@ -325,8 +325,7 @@ public class Cgm implements Cloneable {
     }
 
     /**
-     * Count scene-graph controls of the specified type in the C-G model. TODO
-     * re-order methods
+     * Count scene-graph controls of the specified type in the C-G model.
      *
      * @param <T> superclass of Control
      * @param controlType superclass of Control to search for
@@ -407,16 +406,12 @@ public class Cgm implements Cloneable {
     }
 
     /**
-     * Count the vertices in the C-G model. TODO use MySpatial when it's fixed
+     * Count the vertices in the C-G model.
      *
      * @return the number found (&ge;0)
      */
     public int countVertices() {
-        int result = 0;
-        List<Mesh> meshes = MyMesh.listMeshes(rootSpatial, null);
-        for (Mesh mesh : meshes) {
-            result += mesh.getVertexCount();
-        }
+        int result = MySpatial.countVertices(rootSpatial);
 
         assert result >= 0 : result;
         return result;

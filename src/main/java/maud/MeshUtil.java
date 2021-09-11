@@ -40,8 +40,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 import jme3utilities.Element;
+import jme3utilities.MeshNormals;
 import jme3utilities.MyMesh;
 import jme3utilities.Validate;
+import jme3utilities.math.DistinctVectorValues;
 import jme3utilities.math.IntPair;
 import jme3utilities.math.MyBuffer;
 import jme3utilities.math.MyMath;
@@ -114,7 +116,7 @@ public class MeshUtil {
          * based on the adjacency data.
          */
         int[] vvid2Submesh = partitionIds(distinctPositions, adjacentPairs);
-        int result = maxInt(vvid2Submesh) + 1;
+        int result = MyMath.maxInt(vvid2Submesh) + 1;
         if (result < 0) {
             result = 0;
         }
@@ -343,7 +345,7 @@ public class MeshUtil {
          * based on the adjacency data.
          */
         int[] vvid2Submesh = partitionIds(distinctPositions, adjacentPairs);
-        int numSubmeshes = maxInt(vvid2Submesh) + 1;
+        int numSubmeshes = MyMath.maxInt(vvid2Submesh) + 1;
         if (numSubmeshes < 0) {
             numSubmeshes = 0;
         }
@@ -551,24 +553,6 @@ public class MeshUtil {
                 if (vvid0 != vvid1) {
                     result.add(new IntPair(vvid0, vvid1));
                 }
-            }
-        }
-
-        return result;
-    }
-
-    /**
-     * Find the maximum of some int values. TODO use MyMath
-     *
-     * @param iValues the input values
-     * @return the most positive value
-     * @see java.lang.Math#max(int, int)
-     */
-    private static int maxInt(int... iValues) {
-        int result = Integer.MIN_VALUE;
-        for (int value : iValues) {
-            if (value > result) {
-                result = value;
             }
         }
 

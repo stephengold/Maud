@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyMesh;
 import jme3utilities.Validate;
+import jme3utilities.math.MyBuffer;
 import jme3utilities.math.MyVector3f;
 import jme3utilities.wes.Pose;
 
@@ -127,7 +128,7 @@ public class SupportUtil {
             meshLoc.zero();
             for (int wIndex = 0; wIndex < maxWeightsPerVertex; wIndex++) {
                 float weight = weightBuffer.get();
-                int boneIndex = MyMesh.readIndex(boneIndexBuffer);
+                int boneIndex = MyBuffer.readIndex(boneIndexBuffer);
                 if (weight != 0f) {
                     Matrix4f s = skinningMatrices[boneIndex];
                     float xOff = s.m00 * bx + s.m01 * by + s.m02 * bz + s.m03;
@@ -152,7 +153,7 @@ public class SupportUtil {
 
             for (int wIndex = maxWeightsPerVertex; wIndex < 4; wIndex++) {
                 weightBuffer.get();
-                MyMesh.readIndex(boneIndexBuffer);
+                MyBuffer.readIndex(boneIndexBuffer);
             }
         }
 

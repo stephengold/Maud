@@ -35,10 +35,8 @@ import com.jme3.anim.MorphTrack;
 import com.jme3.anim.TransformTrack;
 import com.jme3.anim.util.HasLocalTransform;
 import com.jme3.animation.Animation;
-import com.jme3.animation.AudioTrack;
 import com.jme3.animation.Bone;
 import com.jme3.animation.BoneTrack;
-import com.jme3.animation.EffectTrack;
 import com.jme3.animation.Skeleton;
 import com.jme3.animation.SpatialTrack;
 import com.jme3.animation.Track;
@@ -292,7 +290,6 @@ public class MaudUtil {
             int addNumWeights = addMesh.getMaxNumWeights();
             maxNumWeights = Math.max(maxNumWeights, addNumWeights);
         }
-        mesh.setMaxNumWeights(maxNumWeights); // TODO work around a bug in Heart v7.0.0
 
         Geometry result = Heart.deepCopy(baseGeometry);
         result.setMesh(mesh);
@@ -443,7 +440,7 @@ public class MaudUtil {
 
         StringBuilder builder = new StringBuilder(20);
 
-        char typeChar = describeTrackType(track);
+        char typeChar = MyAnimation.describeTrackType(track);
         builder.append(typeChar);
 
         if (track instanceof MorphTrack) {
@@ -475,29 +472,6 @@ public class MaudUtil {
 
         String result = builder.toString();
         return result;
-    }
-
-    /**
-     * Describe a track's type with a single character. TODO use MyAnimation
-     *
-     * @param track the track to describe (may be null, unaffected)
-     * @return a mnemonic character
-     */
-    public static char describeTrackType(Object track) {
-        if (track instanceof AudioTrack) {
-            return 'a';
-        } else if (track instanceof BoneTrack) {
-            return 'b';
-        } else if (track instanceof EffectTrack) {
-            return 'e';
-        } else if (track instanceof MorphTrack) {
-            return 'm';
-        } else if (track instanceof SpatialTrack) {
-            return 's';
-        } else if (track instanceof TransformTrack) {
-            return 't';
-        }
-        return '?';
     }
 
     /**
@@ -1097,48 +1071,6 @@ public class MaudUtil {
         } else {
             result = false;
         }
-
-        return result;
-    }
-
-    /**
-     * Mirror the specified Quaternion along the indexed axis. TODO use
-     * MyQuaternion
-     *
-     * @param input the Quaternion to mirror (not null, unaffected)
-     * @param axisIndex which axis to mirror: 0&rarr;X, 1&rarr;Y, 2&rarr;Z
-     * @param storeResult storage for the result (modified if not null, may be
-     * the same as input)
-     * @return a mirrored Quaternion (either storeResult or a new instance)
-     */
-    public static Quaternion mirrorAxis(Quaternion input, int axisIndex,
-            Quaternion storeResult) {
-        Quaternion result = (storeResult == null) ? new Quaternion()
-                : storeResult;
-
-        float x = input.getX();
-        float y = input.getY();
-        float z = input.getZ();
-        float w = input.getW();
-
-        switch (axisIndex) {
-            case MyVector3f.xAxis:
-                y = -y;
-                z = -z;
-                break;
-            case MyVector3f.yAxis:
-                x = -x;
-                z = -z;
-                break;
-            case MyVector3f.zAxis:
-                x = -x;
-                y = -y;
-                break;
-            default:
-                String message = "axisIndex = " + axisIndex;
-                throw new IllegalArgumentException(message);
-        }
-        result.set(x, y, z, w);
 
         return result;
     }

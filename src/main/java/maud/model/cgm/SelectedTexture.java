@@ -1003,27 +1003,13 @@ public class SelectedTexture implements JmeCloneable {
     }
 
     /**
-     * Enumerate all non-null texture instances in the C-G model. TODO use
-     * MySpatial
+     * Enumerate all non-null texture instances in the C-G model.
      *
      * @return a new list (not null)
      */
     private List<Texture> listNonNullTextures() {
         Spatial cgmRoot = cgm.getRootSpatial();
-        List<Material> matList = MySpatial.listMaterials(cgmRoot, null);
-        List<Spatial> spatList = MySpatial.listSpatials(cgmRoot);
-
-        List<Texture> result = new ArrayList<>(20);
-        for (Material mat : matList) {
-            for (MatParam param : mat.getParams()) {
-                addTexture(result, param);
-            }
-        }
-        for (Spatial spat : spatList) {
-            for (MatParamOverride mpo : spat.getLocalMatParamOverrides()) {
-                addTexture(result, mpo);
-            }
-        }
+        List<Texture> result = MySpatial.listTextures(cgmRoot, null);
 
         return result;
     }
