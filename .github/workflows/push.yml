@@ -5,13 +5,13 @@ name: CI at GitHub
 on: [push]
 
 jobs:
-  Java8-Linux:
+  Java11-Linux:
     if: contains(toJson(github.event.commits), '[ci skip] ') == false
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-java@v1
         with:
-          java-version: 8
+          java-version: 11
       - uses: gradle/wrapper-validation-action@v1
       - run: ./gradlew build --console=plain --no-daemon --stacktrace
