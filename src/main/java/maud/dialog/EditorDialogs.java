@@ -398,21 +398,12 @@ public class EditorDialogs {
     public static void newAnimationFromMix() {
         Cgm target = Maud.getModel().getTarget();
         List<TrackItem> items = target.listTrackItems();
-        int numTracks = items.size();
-        List<String> options = new ArrayList<>(numTracks);
-        for (TrackItem item : items) {
-            String description = item.toString();
-            options.add(description);
-        }
-
-        String prompt = "Select tracks to include in the mix:";
-        String commitLabel = "Next";
-        String prefix = ActionPrefix.newAnimationFromMix;
         MixDialog controller = new MixDialog(items);
 
+        String prompt = "Select tracks to include in the mix:";
+        String prefix = ActionPrefix.newAnimationFromMix;
         Maud.gui.closeAllPopups();
-        Maud.gui.showMultiSelectDialog(prompt, options, commitLabel, prefix,
-                controller);
+        Maud.gui.showMultiSelectDialog(prompt, prefix, controller);
     }
 
     /**
@@ -447,21 +438,12 @@ public class EditorDialogs {
     public static void newGeometryFromMerge() {
         SelectedSpatial ss = Maud.getModel().getTarget().getSpatial();
         List<GeometryItem> items = ss.listGeometryItems();
-        int numGeometries = items.size();
-        List<String> options = new ArrayList<>(numGeometries);
-        for (GeometryItem item : items) {
-            String description = item.toString();
-            options.add(description);
-        }
-
-        String prompt = "Select geometries to include in the merge:";
-        String commitLabel = "Next";
-        String prefix = ActionPrefix.newGeometryFromMerge;
         MergeDialog controller = new MergeDialog(items);
 
+        String prompt = "Select geometries to include in the merge:";
+        String prefix = ActionPrefix.newGeometryFromMerge;
         Maud.gui.closeAllPopups();
-        Maud.gui.showMultiSelectDialog(prompt, options, commitLabel, prefix,
-                controller);
+        Maud.gui.showMultiSelectDialog(prompt, prefix, controller);
     }
 
     /**
@@ -683,20 +665,12 @@ public class EditorDialogs {
         SelectedSpatial ss = Maud.getModel().getTarget().getSpatial();
         List<SpatialItem> allItems = ss.listReparentItems();
         Collections.sort(allItems);
-        int numSpatials = allItems.size();
-        List<String> options = new ArrayList<>(numSpatials);
-        for (SpatialItem item : allItems) {
-            String description = item.toString();
-            options.add(description);
-        }
+        ReparentDialog controller = new ReparentDialog(allItems);
 
         String prompt = "Select spatials to reparent:";
-        String commitLabel = "Reparent";
         String prefix = ActionPrefix.reparentSpatials;
-        ReparentDialog controller = new ReparentDialog(allItems);
         Maud.gui.closeAllPopups();
-        Maud.gui.showMultiSelectDialog(prompt, options, commitLabel, prefix,
-                controller);
+        Maud.gui.showMultiSelectDialog(prompt, prefix, controller);
     }
 
     /**

@@ -26,15 +26,9 @@
  */
 package maud.dialog;
 
-import de.lessvoid.nifty.controls.Button;
-import de.lessvoid.nifty.controls.ListBox;
-import de.lessvoid.nifty.elements.Element;
-import de.lessvoid.nifty.elements.render.TextRenderer;
 import java.util.List;
 import java.util.logging.Logger;
-import jme3utilities.MyString;
-import jme3utilities.Validate;
-import jme3utilities.nifty.dialog.DialogController;
+import jme3utilities.nifty.dialog.MultiSelectDialog;
 import maud.model.cgm.SpatialItem;
 
 /**
@@ -43,7 +37,7 @@ import maud.model.cgm.SpatialItem;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class ReparentDialog implements DialogController {
+class ReparentDialog extends MultiSelectDialog<SpatialItem> {
     // *************************************************************************
     // constants and loggers
 
@@ -53,104 +47,34 @@ class ReparentDialog implements DialogController {
     final private static Logger logger
             = Logger.getLogger(ReparentDialog.class.getName());
     // *************************************************************************
-    // fields
-
-    /**
-     * geometry items to select from
-     */
-    final private List<SpatialItem> allItems;
-    // *************************************************************************
     // constructors
 
     /**
      * Instantiate a controller with the specified list of items.
      *
-     * @param itemList (not null, not empty)
+     * @param itemList (not null, not empty, unaffected)
      */
     ReparentDialog(List<SpatialItem> itemList) {
-        assert itemList != null;
-        assert !itemList.isEmpty();
-
-        allItems = itemList;
+        super("Reparent", itemList);
     }
     // *************************************************************************
-    // DialogController methods
+    // MultiSelectDialog methods
 
     /**
-     * Test whether "commit" actions are allowed.
+     * Determine the feedback message for the specified list of indices.
      *
-     * @param dialogElement (not null)
-     * @return true if allowed, otherwise false
+     * @param indexList the indices of all selected items (not null, unaffected)
+     * @return the message (not null)
      */
     @Override
-    public boolean allowCommit(Element dialogElement) {
-        Validate.nonNull(dialogElement, "dialog element");
+    public String feedback(List<Integer> indexList) {
+        String result;
 
-        List<Integer> indices = getSelectedIndices(dialogElement);
-        if (indices.isEmpty()) {
-            return false;
+        if (indexList.isEmpty()) {
+            result = "no spatials selected";
         } else {
-            return true;
+            result = "";
         }
-    }
-
-    /**
-     * Construct the action-string suffix for a commit.
-     *
-     * @param dialogElement (not null)
-     * @return the suffix (not null)
-     */
-    @Override
-    public String commitSuffix(Element dialogElement) {
-        ListBox listBox = dialogElement.findNiftyControl("#box", ListBox.class);
-        List indices = listBox.getSelectedIndices();
-        String suffix = MyString.join(",", indices);
-
-        return suffix;
-    }
-
-    /**
-     * Update this dialog box prior to rendering. (Invoked once per frame.)
-     *
-     * @param dialogElement (not null)
-     * @param ignored time interval between frames (in seconds, &ge;0)
-     */
-    @Override
-    public void update(Element dialogElement, float ignored) {
-        String commitLabel, feedbackMessage;
-
-        List<Integer> indices = getSelectedIndices(dialogElement);
-        if (indices.isEmpty()) {
-            commitLabel = "";
-            feedbackMessage = "no spatials selected";
-        } else {
-            commitLabel = "Reparent";
-            feedbackMessage = "";
-        }
-
-        Button commitButton
-                = dialogElement.findNiftyControl("#commit", Button.class);
-        commitButton.setText(commitLabel);
-
-        Element feedbackElement = dialogElement.findElementById("#feedback");
-        TextRenderer renderer = feedbackElement.getRenderer(TextRenderer.class);
-        renderer.setText(feedbackMessage);
-    }
-    // *************************************************************************
-    // private methods
-
-    /**
-     * Read the selected indices.
-     *
-     * @param dialogElement (not null)
-     * @return a new list of indices
-     */
-    private static List<Integer> getSelectedIndices(Element dialogElement) {
-        assert dialogElement != null;
-
-        ListBox listBox = dialogElement.findNiftyControl("#box", ListBox.class);
-        @SuppressWarnings("unchecked")
-        List<Integer> result = listBox.getSelectedIndices();
 
         return result;
     }

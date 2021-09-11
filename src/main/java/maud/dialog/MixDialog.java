@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -26,14 +26,9 @@
  */
 package maud.dialog;
 
-import de.lessvoid.nifty.controls.Button;
-import de.lessvoid.nifty.controls.ListBox;
-import de.lessvoid.nifty.elements.Element;
-import de.lessvoid.nifty.elements.render.TextRenderer;
 import java.util.List;
 import java.util.logging.Logger;
-import jme3utilities.MyString;
-import jme3utilities.nifty.dialog.DialogController;
+import jme3utilities.nifty.dialog.MultiSelectDialog;
 import maud.model.cgm.TrackItem;
 
 /**
@@ -42,7 +37,7 @@ import maud.model.cgm.TrackItem;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class MixDialog implements DialogController {
+class MixDialog extends MultiSelectDialog<TrackItem> {
     // *************************************************************************
     // constants and loggers
 
@@ -52,89 +47,38 @@ class MixDialog implements DialogController {
     final private static Logger logger
             = Logger.getLogger(MixDialog.class.getName());
     // *************************************************************************
-    // fields
-
-    /**
-     * list of animation tracks to select from
-     */
-    final private List<TrackItem> items;
-    // *************************************************************************
     // constructors
 
     /**
      * Instantiate a controller with the specified list of items.
      *
-     * @param itemList (not null, not empty)
+     * @param itemList (not null, not empty, unaffected)
      */
     MixDialog(List<TrackItem> itemList) {
-        assert itemList != null;
-        assert !itemList.isEmpty();
-
-        items = itemList;
+        super("Next", itemList);
     }
     // *************************************************************************
-    // DialogController methods
+    // MultiSelectDialog methods
 
     /**
-     * Test whether "commit" actions are allowed.
+     * Determine the feedback message for the specified list of indices.
      *
-     * @param dialogElement (not null)
-     * @return true if allowed, otherwise false
+     * @param indexList the indices of all selected items (not null, unaffected)
+     * @return the message (not null)
      */
     @Override
-    public boolean allowCommit(Element dialogElement) {
-        boolean result;
-        if (anySelected(dialogElement) && !anyConflicts(dialogElement)) {
-            result = true;
+    public String feedback(List<Integer> indexList) {
+        String result;
+
+        if (indexList.isEmpty()) {
+            result = "no tracks selected";
+        } else if (anyConflicts(indexList)) {
+            result = "target conflict";
         } else {
-            result = false;
+            result = "";
         }
 
         return result;
-    }
-
-    /**
-     * Construct the action-string suffix for a commit.
-     *
-     * @param dialogElement (not null)
-     * @return the suffix (not null)
-     */
-    @Override
-    public String commitSuffix(Element dialogElement) {
-        ListBox listBox = dialogElement.findNiftyControl("#box", ListBox.class);
-        List indices = listBox.getSelectedIndices();
-        String suffix = MyString.join(",", indices);
-
-        return suffix;
-    }
-
-    /**
-     * Update this dialog box prior to rendering. (Invoked once per frame.)
-     *
-     * @param dialogElement (not null)
-     * @param ignored time interval between frames (in seconds, &ge;0)
-     */
-    @Override
-    public void update(Element dialogElement, float ignored) {
-        String commitLabel, feedbackMessage;
-        if (!anySelected(dialogElement)) {
-            commitLabel = "";
-            feedbackMessage = "no tracks selected";
-        } else if (anyConflicts(dialogElement)) {
-            commitLabel = "";
-            feedbackMessage = "target conflict";
-        } else {
-            commitLabel = "Mix tracks";
-            feedbackMessage = "";
-        }
-
-        Button commitButton
-                = dialogElement.findNiftyControl("#commit", Button.class);
-        commitButton.setText(commitLabel);
-
-        Element feedbackElement = dialogElement.findElementById("#feedback");
-        TextRenderer renderer = feedbackElement.getRenderer(TextRenderer.class);
-        renderer.setText(feedbackMessage);
     }
     // *************************************************************************
     // private methods
@@ -142,20 +86,17 @@ class MixDialog implements DialogController {
     /**
      * Test whether any selected tracks share the same target.
      *
-     * @param dialogElement (not null)
+     * @param indexList the indices of all selected items (not null, unaffected)
      * @return true if any share targets, otherwise false
      */
-    private boolean anyConflicts(Element dialogElement) {
-        assert dialogElement != null;
-
-        List<Integer> indices = getSelectedIndices(dialogElement);
-        int numSelected = indices.size();
+    private boolean anyConflicts(List<Integer> indexList) {
+        int numSelected = indexList.size();
         for (int i = 0; i < numSelected; i++) {
-            int iIndex = indices.get(i);
-            TrackItem iItem = items.get(iIndex);
+            int iIndex = indexList.get(i);
+            TrackItem iItem = getItem(iIndex);
             for (int j = i + 1; j < numSelected; j++) {
-                int jIndex = indices.get(j);
-                TrackItem jItem = items.get(jIndex);
+                int jIndex = indexList.get(j);
+                TrackItem jItem = getItem(jIndex);
                 if (iItem.hasSameTargetAs(jItem)) {
                     return true;
                 }
@@ -163,38 +104,5 @@ class MixDialog implements DialogController {
         }
 
         return false;
-    }
-
-    /**
-     * Test whether any tracks are selected.
-     *
-     * @param dialogElement (not null)
-     * @return true if any selected, otherwise false
-     */
-    private static boolean anySelected(Element dialogElement) {
-        assert dialogElement != null;
-
-        List<Integer> indices = getSelectedIndices(dialogElement);
-        if (indices.isEmpty()) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    /**
-     * Read the selected indices.
-     *
-     * @param dialogElement (not null)
-     * @return a text string (not null)
-     */
-    private static List<Integer> getSelectedIndices(Element dialogElement) {
-        assert dialogElement != null;
-
-        ListBox listBox = dialogElement.findNiftyControl("#box", ListBox.class);
-        @SuppressWarnings("unchecked")
-        List<Integer> result = listBox.getSelectedIndices();
-
-        return result;
     }
 }
