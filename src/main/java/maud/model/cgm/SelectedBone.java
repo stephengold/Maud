@@ -654,7 +654,8 @@ public class SelectedBone implements Cloneable {
 
             int axisIndex = Maud.getModel().getMisc().linkToolAxis();
             Transform model = new Transform();
-            MaudUtil.mirrorAxis(sourceRotation, axisIndex, model.getRotation());
+            MyQuaternion.mirrorAxis(sourceRotation, axisIndex,
+                    model.getRotation());
 
             int tbIndex = index();
             Quaternion user = editableCgm.getPose().get().userForModel(tbIndex, model.getRotation(), null);
