@@ -2897,8 +2897,7 @@ Approximate minimum screen size: 640x480
                         <control name="label" id="spatialTransform"
                                  backgroundColor="#ffff"
                                  width="*"/>
-                        <control name="button" label="Apply"
-                                 id="id24ToAvoidNiftyWarning"
+                        <control name="button" id="spatialApplyTransformButton"
                                  width="60px">
                             <interact onRelease="perform(apply spatialTransform)"/>
                         </control>

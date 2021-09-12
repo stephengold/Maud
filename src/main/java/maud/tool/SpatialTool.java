@@ -252,6 +252,7 @@ class SpatialTool extends Tool {
      * Update the display of the spatial's Transform.
      */
     private void updateTransform() {
+        String buttonText = "Apply";
         String transformText;
 
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
@@ -306,10 +307,12 @@ class SpatialTool extends Tool {
             }
             if (notes.length() == 0) {
                 notes.append("Identity");
+                buttonText = "";
             }
             transformText = notes.toString();
         }
 
+        setButtonText("spatialApplyTransform", buttonText);
         setStatusText("spatialTransform", " " + transformText);
     }
 
