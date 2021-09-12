@@ -427,7 +427,7 @@ public class MeshUtil {
 
     /**
      * Apply the specified coordinate transform to all data in the specified
-     * VertexBuffer.
+     * VertexBuffer. TODO use MyMesh
      *
      * @param mesh the subject mesh (not null)
      * @param bufferType which buffer to read (not null)
