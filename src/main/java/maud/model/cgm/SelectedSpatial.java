@@ -82,6 +82,7 @@ import jme3utilities.MyMesh;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
+import jme3utilities.math.MyMath;
 import jme3utilities.math.MyQuaternion;
 import jme3utilities.math.MyVector3f;
 import jme3utilities.ui.Locators;
@@ -1275,6 +1276,19 @@ public class SelectedSpatial implements JmeCloneable {
     public boolean isNode() {
         Spatial spatial = find();
         boolean result = spatial instanceof Node;
+
+        return result;
+    }
+
+    /**
+     * Test whether the spatial's local transform is an identity.
+     *
+     * @return true if identity transform, otherwise false
+     */
+    public boolean isTransformIdentity() {
+        Spatial spatial = find();
+        Transform localTransform = spatial.getLocalTransform();
+        boolean result = MyMath.isIdentity(localTransform);
 
         return result;
     }

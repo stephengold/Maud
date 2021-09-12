@@ -87,6 +87,9 @@ public class SpatialMenus {
         SelectedSpatial ss = Maud.getModel().getTarget().getSpatial();
         int treeLevel = ss.treeLevel();
         boolean isCgmRoot = (treeLevel == 0);
+        if (!ss.isTransformIdentity()) {
+            builder.addEdit("Apply transform to meshes");
+        }
         if (treeLevel > 1) {
             builder.addEdit("Boost");
         }
@@ -155,6 +158,10 @@ public class SpatialMenus {
             switch (remainder) {
                 case "Add new":
                     addNew();
+                    break;
+
+                case "Apply transform to meshes":
+                    ss.applyTransform();
                     break;
 
                 case "Boost":
