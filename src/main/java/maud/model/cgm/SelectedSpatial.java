@@ -389,6 +389,7 @@ public class SelectedSpatial implements JmeCloneable {
         }
         List<Geometry> geometries
                 = MySpatial.listSpatials(subtree, Geometry.class, null);
+        assert !geometries.isEmpty();
         SceneView sceneView = cgm.getSceneView();
 
         History.autoAdd();

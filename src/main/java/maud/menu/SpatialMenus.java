@@ -88,13 +88,11 @@ public class SpatialMenus {
         int treeLevel = ss.treeLevel();
         boolean isCgmRoot = (treeLevel == 0);
         int numChildren = ss.countChildren();
-        if (!ss.isTransformIdentity()) {
-            if (numChildren > 0) {
-                builder.addEdit("Apply transform to children");
-            }
-            if (ss.containsMeshes()) {
-                builder.addEdit("Apply transform to meshes");
-            }
+        if (!ss.isTransformIdentity() && numChildren > 0) {
+            builder.addEdit("Apply transform to children");
+        }
+        if (ss.containsMeshes()) {
+            builder.addEdit("Apply transform to meshes");
         }
         if (treeLevel > 1) {
             builder.addEdit("Boost");
