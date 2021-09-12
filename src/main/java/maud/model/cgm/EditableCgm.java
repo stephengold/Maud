@@ -733,7 +733,6 @@ public class EditableCgm extends LoadedCgm {
         assert spatials != null;
 
         SceneView sceneView = getSceneView();
-        List<Integer> targetPosition = findSpatial(targetNode);
 
         History.autoAdd();
         for (Spatial spatial : spatials) {
@@ -741,6 +740,7 @@ public class EditableCgm extends LoadedCgm {
                 assert spatial != targetNode;
                 assert !targetNode.hasAncestor((Node) spatial);
             }
+            List<Integer> targetPosition = findSpatial(targetNode);
             List<Integer> spatialPosition = findSpatial(spatial);
             sceneView.moveSpatial(targetPosition, spatialPosition);
             targetNode.attachChild(spatial);
@@ -877,6 +877,10 @@ public class EditableCgm extends LoadedCgm {
         String eventDescription = String.format("re-parent %s spatials to %s",
                 numSelected, MyString.quote(targetName));
         moveSpatials(targetNode, eventDescription, spatials);
+        /*
+         * Keep the same spatial selected.
+         */
+        ss.select(targetNode);
     }
 
     /**
