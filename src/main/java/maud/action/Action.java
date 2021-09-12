@@ -289,6 +289,7 @@ public class Action {
     final static String setOverrideValue = "set overrideValue";
     final static String setPcoParmValue = "set pcoParmValue";
     final static String setShapeParmValue = "set shapeParmValue";
+    final static String setSmartNodeTranslation = "set smartNode translation";
     final static String setSpatialAngleCardinal = "set spatialAngle cardinal";
     final static String setSpatialAngleSnapX = "set spatialAngle snapX";
     final static String setSpatialAngleSnapY = "set spatialAngle snapY";

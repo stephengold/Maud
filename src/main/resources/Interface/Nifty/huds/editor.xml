@@ -3316,6 +3316,11 @@ Approximate minimum screen size: 640x480
                                      width="70px">
                                 <interact onRelease="perform(set spatial translation)"/>
                             </control>
+                            <control name="button"
+                                     id="spatialTranslationSmartSetButton"
+                                     width="70px">
+                                <interact onRelease="perform(set smartNode translation)"/>
+                            </control>
                         </panel>
                     </panel>
                 </panel>

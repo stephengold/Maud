@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -126,6 +126,13 @@ class SpatialTranslationTool extends Tool {
     @Override
     protected void toolUpdate() {
         setSlidersToTransform();
+
+        String buttonText = "";
+        boolean isNode = Maud.getModel().getTarget().getSpatial().isNode();
+        if (isNode) {
+            buttonText = "Smart set";
+        }
+        setButtonText("spatialTranslationSmartSet", buttonText);
     }
     // *************************************************************************
     // private methods

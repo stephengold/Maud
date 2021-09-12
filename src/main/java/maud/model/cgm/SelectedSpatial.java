@@ -1809,6 +1809,34 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
+     * Translate the selected Node and compensate by translating all its
+     * children in the opposite direction.
+     *
+     * @param localOffset the displacement vector (in the parent's local
+     * coordinates, not null, unaffected)
+     */
+    public void translateSmartNode(Vector3f localOffset) {
+        Validate.nonNull(localOffset, "offset");
+
+        Node node = (Node) find();
+        List<Spatial> children = node.getChildren();
+        int numChildren = children.size();
+        Transform[] childTransforms = new Transform[numChildren];
+        for (int i = 0; i < numChildren; ++i) {
+            Spatial child = children.get(i);
+            childTransforms[i] = child.getWorldTransform();
+        }
+        node.setLocalTranslation(localOffset);
+        for (int i = 0; i < numChildren; ++i) {
+            Spatial child = children.get(i);
+            MySpatial.setWorldTransform(child, childTransforms[i]);
+        }
+
+        String positionString = node.toString();
+        editableCgm.getEditState().setEditedSmartNodeTransform(positionString);
+    }
+
+    /**
      * Toggle the type of the geometry's model bound.
      */
     void toggleBoundType() {

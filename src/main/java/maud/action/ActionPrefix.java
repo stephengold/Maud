@@ -688,6 +688,11 @@ public class ActionPrefix {
     /**
      * argument is a Vector3f
      */
+    final public static String setSmartNodeTranslation
+            = "set smartNode translation ";
+    /**
+     * argument is a Vector3f
+     */
     final public static String setSpatialRotation = "set spatial rotation ";
     /**
      * argument is a Vector3f

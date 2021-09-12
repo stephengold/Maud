@@ -159,6 +159,23 @@ public class EditState implements Cloneable {
     }
 
     /**
+     * If not a continuation of the previous smart node transform edit, create a
+     * checkpoint and update the edit count.
+     *
+     * @param subtreePositionString the tree position of the subtree being
+     * transformed (not null)
+     */
+    public void setEditedSmartNodeTransform(String subtreePositionString) {
+        String newState = "snt" + subtreePositionString;
+        if (!newState.equals(continuousEditState)) {
+            History.autoAdd();
+            ++editCount;
+            continuousEditState = newState;
+            History.addEvent("smart node transform " + subtreePositionString);
+        }
+    }
+
+    /**
      * If not a continuation of the previous range-of-motion edit, create a
      * checkpoint and update the edit count.
      *

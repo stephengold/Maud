@@ -1583,6 +1583,22 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
+     * Translate the selected Node and compensate by translating all its
+     * children in the opposite direction.
+     *
+     * @param localOffset the displacement vector (in the parent's local
+     * coordinates, not null, unaffected)
+     */
+    public void translateSmartNode(Vector3f localOffset) {
+        Validate.nonNull(localOffset, "local offset");
+
+        SelectedSpatial ss = getSpatial();
+        ss.translateSmartNode(localOffset);
+        String treePosition = ss.toString();
+        editState.setEditedSmartNodeTransform(treePosition);
+    }
+
+    /**
      * Delete the selected attachment/bone link. The invoker is responsible for
      * de-selecting the link, if it was selected.
      */

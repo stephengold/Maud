@@ -1217,7 +1217,7 @@ public class EditorDialogs {
     }
 
     /**
-     * Display a "set time" dialog to enter a time in seconds.
+     * Display a "set time" dialog to enter a time in seconds. TODO re-order methods
      *
      * @param whichCgm which CGM's options to modify (not null)
      * @param whichTime which time to modify in the options (not null)
@@ -1363,14 +1363,14 @@ public class EditorDialogs {
     /**
      * Display a "set spatial translation" dialog.
      */
-    public static void setSpatialTranslation() {
+    public static void setSpatialTranslation(String actionPrefix) {
         Maud.gui.closeAllPopups();
         EditableCgm target = Maud.getModel().getTarget();
         Vector3f oldValue = target.getSpatial().localTranslation(null);
         String defaultText = oldValue.toString();
         DialogController controller = new VectorDialog("Set", 3, false);
         Maud.gui.showTextEntryDialog("Enter new translation vector:",
-                defaultText, ActionPrefix.setSpatialTranslation, controller);
+                defaultText, actionPrefix, controller);
     }
 
     /**

@@ -112,6 +112,11 @@ class SetOZAction {
                 EditorDialogs.setShapeParameterValue(shapeParameter);
                 break;
 
+            case Action.setSmartNodeTranslation:
+                EditorDialogs.setSpatialTranslation(
+                        ActionPrefix.setSmartNodeTranslation);
+                break;
+
             case Action.setSpatialAngleCardinal:
                 target.getSpatial().cardinalizeRotation();
                 break;
@@ -137,7 +142,8 @@ class SetOZAction {
                 break;
 
             case Action.setSpatialTranslation:
-                EditorDialogs.setSpatialTranslation();
+                EditorDialogs.setSpatialTranslation(
+                        ActionPrefix.setSpatialTranslation);
                 break;
 
             case Action.setTextureClone:
@@ -289,6 +295,13 @@ class SetOZAction {
                     ActionPrefix.setSkeletonPointSize);
             float pointSize = Float.valueOf(arg);
             model.getScene().getSkeleton().setPointSize(pointSize);
+
+        } else if (actionString.startsWith(
+                ActionPrefix.setSmartNodeTranslation)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setSmartNodeTranslation);
+            Vector3f newValue = (Vector3f) VectorDialog.parseVector(arg);
+            target.translateSmartNode(newValue);
 
         } else if (actionString.startsWith(ActionPrefix.setSpatialRotation)) {
             arg = MyString.remainder(actionString,
