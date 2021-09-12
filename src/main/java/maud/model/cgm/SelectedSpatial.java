@@ -91,6 +91,7 @@ import maud.MaudUtil;
 import maud.MeshUtil;
 import maud.PhysicsUtil;
 import maud.ShapeType;
+import maud.model.EditState;
 import maud.model.History;
 import maud.tool.EditorTools;
 import maud.view.scene.SceneView;
@@ -349,10 +350,34 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Apply the local Transform of the selected Spatial (and those of its
-     * descendents) to each of its meshes.
+     * Apply the local Transform of the selected Node to each of its children.
      */
-    public void applyTransform() {
+    public void applyTransformToChildren() {
+        Node node = (Node) find();
+        Transform nodeTransform = node.getLocalTransform(); // alias
+        assert !MyMath.isIdentity(nodeTransform);
+        List<Spatial> children = node.getChildren();
+        assert !children.isEmpty();
+
+        History.autoAdd();
+
+        Transform tmpTransform = new Transform(); // TODO garbage
+        for (Spatial child : children) {
+            tmpTransform.set(child.getLocalTransform());
+            tmpTransform.combineWithParent(nodeTransform);
+            child.setLocalTransform(tmpTransform);
+        }
+        node.setLocalTransform(transformIdentity);
+
+        EditState editState = editableCgm.getEditState();
+        editState.setEdited("apply node transform to children");
+    }
+
+    /**
+     * Apply the local Transform of the selected Spatial (and those of its
+     * descendents) to all of their meshes.
+     */
+    public void applyTransformToMeshes() {
         Spatial subtree = find();
         Node parent = subtree.getParent();
         Transform wip;
@@ -369,7 +394,7 @@ public class SelectedSpatial implements JmeCloneable {
         History.autoAdd();
 
         for (Geometry geometry : geometries) {
-            Mesh mesh = geometry.getMesh();
+            Mesh mesh = geometry.getMesh(); // TODO check for instancing
             Transform gInWorld = geometry.getWorldTransform().clone();
             Transform gInParent = gInWorld.combineWithParent(wip);
 
@@ -502,6 +527,18 @@ public class SelectedSpatial implements JmeCloneable {
         Material clone = oldMaterial.clone();
         clone.setKey(null);
         editableCgm.setMaterial(clone, "clone material");
+    }
+
+    /**
+     * Test whether the spatial's subtree contains any meshes.
+     *
+     * @return true if it contains meshes, otherwise false
+     */
+    public boolean containsMeshes() {
+        Spatial subtree = find();
+        boolean result = MaudUtil.containsMeshes(subtree);
+
+        return result;
     }
 
     /**
@@ -1101,7 +1138,7 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Test whether the spatial has a mesh.
+     * Test whether the spatial is a Geometry with a mesh.
      *
      * @return true if it has a mesh, otherwise false
      */

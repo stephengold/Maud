@@ -87,13 +87,19 @@ public class SpatialMenus {
         SelectedSpatial ss = Maud.getModel().getTarget().getSpatial();
         int treeLevel = ss.treeLevel();
         boolean isCgmRoot = (treeLevel == 0);
+        int numChildren = ss.countChildren();
         if (!ss.isTransformIdentity()) {
-            builder.addEdit("Apply transform to meshes");
+            if (numChildren > 0) {
+                builder.addEdit("Apply transform to children");
+            }
+            if (ss.containsMeshes()) {
+                builder.addEdit("Apply transform to meshes");
+            }
         }
         if (treeLevel > 1) {
             builder.addEdit("Boost");
         }
-        if (ss.countChildren() > 0 && !isCgmRoot) {
+        if (numChildren > 0 && !isCgmRoot) {
             builder.addEdit("Boost children");
         }
         if (!isCgmRoot) {
@@ -160,8 +166,12 @@ public class SpatialMenus {
                     addNew();
                     break;
 
+                case "Apply transform to children":
+                    ss.applyTransformToChildren();
+                    break;
+
                 case "Apply transform to meshes":
-                    ss.applyTransform();
+                    ss.applyTransformToMeshes();
                     break;
 
                 case "Boost":

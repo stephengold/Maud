@@ -131,6 +131,37 @@ public class MaudUtil {
     // new methods exposed
 
     /**
+     * Test whether there are any meshes in the specified subtree. Note:
+     * recursive!
+     *
+     * @param subtree subtree to traverse (may be null, unaffected)
+     * @return true if any found, otherwise false
+     */
+    public static boolean containsMeshes(Spatial subtree) {
+        boolean result = false;
+
+        if (subtree instanceof Geometry) {
+            Mesh mesh = ((Geometry) subtree).getMesh();
+            if (mesh != null) {
+                result = true;
+            }
+
+        } else if (subtree instanceof Node) {
+            result = false;
+            Node node = (Node) subtree;
+            List<Spatial> children = node.getChildren();
+            for (Spatial child : children) {
+                result = containsMeshes(child);
+                if (result) {
+                    break;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Copy the specified Geometry, split the copy into subparts and attach the
      * parts to the parent of the original Geometry. (The original Geometry is
      * unaffected.)

@@ -286,7 +286,7 @@ public class EditorInputMode extends InputMode {
         boolean handled = true;
         switch (actionString) {
             case Action.applySpatialTransform:
-                target.getSpatial().applyTransform();
+                target.getSpatial().applyTransformToMeshes();
                 break;
             default:
                 handled = false;
