@@ -32,6 +32,7 @@ import maud.Maud;
 import maud.model.option.ViewMode;
 import maud.tool.EditorTools;
 import maud.view.ViewType;
+import maud.view.scene.SceneView;
 
 /**
  * View menus in Maud's editor screen.
@@ -141,6 +142,7 @@ public class ViewMenus {
         builder.addTool("Background");
         builder.addTool("Bounds");
         builder.addTool("Camera");
+        builder.add("Clear rotation");
         builder.addTool("Cursor");
         builder.addTool("Lighting");
         builder.addTool("Physics");
@@ -186,6 +188,10 @@ public class ViewMenus {
                 break;
             case "Camera":
                 EditorTools.select("camera");
+                break;
+            case "Clear rotation":
+                SceneView view = Maud.getModel().getTarget().getSceneView();
+                view.getTransform().setYAngle(0f);
                 break;
             case "Cursor":
                 EditorTools.select("cursor");

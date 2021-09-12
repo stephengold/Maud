@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -117,7 +117,7 @@ public class CgmTransform implements Cloneable {
      * @param angle (in radians)
      */
     public void rotateY(float angle) {
-        yAngle = MyMath.modulo(yAngle + angle, FastMath.TWO_PI);
+        yAngle = MyMath.standardizeAngle(yAngle + angle);
     }
 
     /**
@@ -138,6 +138,15 @@ public class CgmTransform implements Cloneable {
     public void setScale(float newScale) {
         Validate.positive(newScale, "new scale");
         scale = newScale;
+    }
+
+    /**
+     * Alter the Y-axis rotation angle.
+     *
+     * @param angle the desired angle (in radians)
+     */
+    public void setYAngle(float angle) {
+        yAngle = MyMath.standardizeAngle(angle);
     }
 
     /**
