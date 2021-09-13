@@ -77,19 +77,6 @@ public class GeometryItem {
     // new methods exposed
 
     /**
-     * Describe the Geometry.
-     *
-     * @return a descriptive string of text (not null, not empty)
-     */
-    public String describe() {
-        String description = geometry.getName();
-
-        assert description != null;
-        assert !description.isEmpty();
-        return description;
-    }
-
-    /**
      * Access the Geometry itself.
      *
      * @return the pre-existing instance (not null)
@@ -233,5 +220,22 @@ public class GeometryItem {
     public String toString() {
         String result = describe();
         return result;
+    }
+    // *************************************************************************
+    // private methods
+
+    /**
+     * Describe the Geometry.
+     *
+     * @return a descriptive string of text (not null, not empty)
+     */
+    private String describe() {
+        String name = geometry.getName();
+        int hash = geometry.getMaterial().hashCode() & 0xff;
+        String description = String.format("%s (mat=%04x)", name, hash);
+
+        assert description != null;
+        assert !description.isEmpty();
+        return description;
     }
 }
