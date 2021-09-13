@@ -149,6 +149,12 @@ class CgmTool extends Tool {
         String text = Integer.toString(numNodes);
         setStatusText("cgmNodes", text);
         /*
+         * meshes with collision data
+         */
+        int numTrees = target.countCollisionTrees();
+        String treesText = Integer.toString(numTrees);
+        setStatusText("cgmCollisionTrees", treesText);
+        /*
          * textures
          */
         SelectedTexture texture = target.getTexture();

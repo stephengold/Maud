@@ -844,7 +844,12 @@ Approximate minimum screen size: 640x480
                         </control>
                     </panel>
                     <panel childLayout="horizontal" height="28px">
-                        <control name="label" text="Hidden:  "/>
+                        <control name="label" text="Collides:  "/>
+                        <control name="label" id="cgmCollisionTrees"
+                                 backgroundColor="#ffff"
+                                 textHAlign="center"
+                                 width="30px"/>
+                        <control name="label" text="    Hidden:  "/>
                         <control name="label" id="cgmHiddens"
                                  backgroundColor="#ffff"
                                  textHAlign="center"

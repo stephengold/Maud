@@ -29,14 +29,18 @@ package maud;
 import com.jme3.math.Transform;
 import com.jme3.math.Triangle;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.CollisionData;
 import com.jme3.scene.Mesh;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.mesh.IndexBuffer;
 import com.jme3.util.BufferUtils;
+import java.lang.reflect.Field;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 import jme3utilities.Element;
@@ -77,6 +81,29 @@ public class MeshUtil {
     }
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Count how many meshes in the specified screen-graph subtree include
+     * collision data.
+     *
+     * @param subtree the root of the subtree to analyze (may be null,
+     * unaffected)
+     * @return the number found (&ge;0)
+     */
+    public static int countCollisionTrees(Spatial subtree) {
+        Validate.nonNull(subtree, "subtree");
+
+        int result = 0;
+        List<Mesh> meshes = MyMesh.listMeshes(subtree, null);
+        for (Mesh mesh : meshes) {
+            if (getCollisionTree(mesh) != null) {
+                ++result;
+            }
+        }
+
+        assert result >= 0 : result;
+        return result;
+    }
 
     /**
      * Determine the maximum number of disjoint sub-meshes, based vertex
@@ -304,6 +331,31 @@ public class MeshUtil {
 
         MyBuffer.normalize(normalBuffer, 0, numFloats);
         normalBuffer.limit(numFloats);
+    }
+
+    /**
+     * Access the collision tree of the specified Mesh.
+     *
+     * @param mesh the Mesh to access (not null, unaffected)
+     * @return the pre-existing instance, or null if none
+     */
+    public static CollisionData getCollisionTree(Mesh mesh) {
+        Field field;
+        try {
+            field = Mesh.class.getDeclaredField("collisionTree");
+        } catch (NoSuchFieldException exception) {
+            throw new RuntimeException(exception);
+        }
+        field.setAccessible(true);
+
+        CollisionData result;
+        try {
+            result = (CollisionData) field.get(mesh);
+        } catch (IllegalAccessException exception) {
+            throw new RuntimeException(exception);
+        }
+
+        return result;
     }
 
     /**

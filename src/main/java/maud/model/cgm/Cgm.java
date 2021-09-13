@@ -63,6 +63,7 @@ import jme3utilities.debug.Dumper;
 import jme3utilities.wes.TweenTransforms;
 import maud.Maud;
 import maud.MaudUtil;
+import maud.MeshUtil;
 import maud.menu.WhichSpatials;
 import maud.model.option.scene.RenderOptions;
 import maud.model.option.scene.TriangleMode;
@@ -284,26 +285,31 @@ public class Cgm implements Cloneable {
     }
 
     /**
-     * Count lights of the specified type in the C-G model.
+     * Count how many meshes in the C-G model include collision data.
+     *
+     * @return the number found (&ge;0)
+     */
+    public int countCollisionTrees() {
+        int result = MeshUtil.countCollisionTrees(rootSpatial);
+        return result;
+    }
+
+    /**
+     * Count how many lights of the specified type are in the C-G model.
      *
      * @param <T> superclass of Light
      * @param lightType superclass of Light to search for
-     * @return number found (&ge;0)
+     * @return the number of instances found (&ge;0)
      */
     public <T extends Light> int countLights(Class<T> lightType) {
-        int count = 0;
-        if (isLoaded()) {
-            count = MyLight.countLights(rootSpatial, lightType);
-        }
-
-        assert count >= 0 : count;
-        return count;
+        int result = MyLight.countLights(rootSpatial, lightType);
+        return result;
     }
 
     /**
      * Count material instances in the C-G model.
      *
-     * @return number found (&ge;0)
+     * @return the number of instances found (&ge;0)
      */
     public int countMaterials() {
         List<Material> list = MySpatial.listMaterials(rootSpatial, null);
