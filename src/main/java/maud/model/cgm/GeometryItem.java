@@ -231,7 +231,7 @@ public class GeometryItem {
      */
     private String describe() {
         String name = geometry.getName();
-        int hash = geometry.getMaterial().hashCode() & 0xff;
+        int hash = geometry.getMaterial().hashCode() & 0xffff;
         String description = String.format("%s (mat=%04x)", name, hash);
 
         assert description != null;
