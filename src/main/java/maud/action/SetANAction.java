@@ -145,6 +145,10 @@ class SetANAction {
                 }
                 break;
 
+            case Action.setMaxCheckpoints:
+                EditorDialogs.setMaxCheckpoints();
+                break;
+
             case Action.setMeshWeights:
                 MeshMenus.setMeshWeights();
                 break;
@@ -328,6 +332,12 @@ class SetANAction {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setMatParamValue);
             target.setMatParamValue(arg);
+
+        } else if (actionString.startsWith(ActionPrefix.setMaxCheckpoints)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.setMaxCheckpoints);
+            int maxCheckpoints = Integer.parseInt(arg);
+            model.getMisc().setMaxCheckpoints(maxCheckpoints);
 
         } else if (actionString.startsWith(ActionPrefix.setMeshWeights)) {
             arg = MyString.remainder(actionString, ActionPrefix.setMeshWeights);

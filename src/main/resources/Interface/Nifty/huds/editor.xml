@@ -1141,6 +1141,11 @@ Approximate minimum screen size: 640x480
                             <interact onRelease="perform(new checkpoint)"/>
                         </control>
                         <panel/>
+                        <control name="button" id="historyClearButton"
+                                 width="45px">
+                            <interact onRelease="perform(reset history)"/>
+                        </control>
+                        <panel/>
                         <control name="button" id="historyRedoButton"
                                  width="50px">
                             <interact onRelease="perform(next checkpoint)"/>
@@ -1150,6 +1155,11 @@ Approximate minimum screen size: 640x480
                         <control name="checkbox" id="autoCheckpointCheckBox"
                                  width="20px"/>
                         <control name="label" text="  automatic checkpoints"/>
+                        <control name="label" text="    Limit:  "/>
+                        <control name="button" id="historyLimitButton"
+                                 width="50px">
+                            <interact onRelease="perform(set maxCheckpoints)"/>
+                        </control>
                         <panel/>
                         <control name="button" id="historyRedoAllButton"
                                  width="80px">

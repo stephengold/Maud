@@ -31,6 +31,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import java.util.logging.Logger;
 import maud.Maud;
+import maud.model.History;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
 import maud.model.cgm.SelectedBone;
@@ -120,6 +121,10 @@ class ResetAction {
 
             case Action.resetBoneSelection:
                 mouseCgm.getBone().deselect();
+                break;
+
+            case Action.resetHistory:
+                History.clear();
                 break;
 
             case Action.resetLightColor:

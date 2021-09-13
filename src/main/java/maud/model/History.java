@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -63,7 +63,7 @@ public class History {
     /**
      * list of checkpoint slots
      */
-    final private static List<Checkpoint> checkpoints = new ArrayList<>(20);
+    final private static List<Checkpoint> checkpoints = new ArrayList<>(8);
     /**
      * list of events (C-G model edits, loads, and saves) since the last
      * checkpoint
@@ -103,10 +103,12 @@ public class History {
         message = "add new checkpoint" + id;
         logger.info(message);
 
+        enforceLimit();
+
         int result = nextIndex;
         ++nextIndex;
-
         assert checkpoints.size() == nextIndex;
+
         return result;
     }
 
@@ -151,6 +153,22 @@ public class History {
     }
 
     /**
+     * Enforce the configured limit on the number of checkpoints. This is
+     * invoked each time a checkpoint is added or the limit is reconfigured.
+     */
+    public static void enforceLimit() {
+        int maxCheckpoints = Maud.getModel().getMisc().maxCheckpoints();
+        while (countCheckpoints() > maxCheckpoints) {
+            checkpoints.remove(0);
+
+            String message = "discard checkpoint" + DescribeUtil.index(0);
+            logger.info(message);
+
+            --nextIndex;
+        }
+    }
+
+    /**
      * Access the indexed checkpoint.
      *
      * @param index (&ge;0)
@@ -171,7 +189,7 @@ public class History {
     }
 
     /**
-     * Test whether any checkpoints would be discarded by
+     * Test whether any recent checkpoints would be discarded by
      * {@link #addCheckpoint()}.
      *
      * @return true if any checkpoint is vulnerable, otherwise false
@@ -280,9 +298,11 @@ public class History {
                 Checkpoint newbie = new Checkpoint(eventDescriptions);
                 checkpoints.add(newbie);
 
-                message = "add precautionary checkpoint"
-                        + DescribeUtil.index(nextIndex);
+                String id = DescribeUtil.index(nextIndex);
+                message = "add precautionary checkpoint" + id;
                 logger.info(message);
+
+                enforceLimit();
 
             } else {
                 --nextIndex;

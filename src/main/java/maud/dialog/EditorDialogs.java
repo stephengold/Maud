@@ -837,7 +837,8 @@ public class EditorDialogs {
     }
 
     /**
-     * Display a "set linkMass " dialog to enter the new mass.
+     * Display a "set linkMass " dialog to enter the new mass. TODO re-order
+     * methods
      */
     public static void setLinkMass() {
         DialogController controller = new FloatDialog("Set", Float.MIN_VALUE,
@@ -1162,6 +1163,21 @@ public class EditorDialogs {
     }
 
     /**
+     * Display a "set maxCheckpoints " dialog to enter the new limit.
+     */
+    public static void setMaxCheckpoints() {
+        DialogController controller = new IntegerDialog("Set", 2,
+                Integer.MAX_VALUE, false);
+
+        int oldLimit = Maud.getModel().getMisc().maxCheckpoints();
+        String defaultText = Integer.toString(oldLimit);
+
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter the desired checkpoint limit:",
+                defaultText, ActionPrefix.setMaxCheckpoints, controller);
+    }
+
+    /**
      * Display a "set physicsRbpValue" dialog to enter the parameter value.
      *
      * @param parameter which rigid-body parameter to alter (not null)
@@ -1217,7 +1233,8 @@ public class EditorDialogs {
     }
 
     /**
-     * Display a "set time" dialog to enter a time in seconds. TODO re-order methods
+     * Display a "set time" dialog to enter a time in seconds. TODO re-order
+     * methods
      *
      * @param whichCgm which CGM's options to modify (not null)
      * @param whichTime which time to modify in the options (not null)

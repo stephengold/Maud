@@ -36,6 +36,7 @@ import jme3utilities.MyString;
 import jme3utilities.Validate;
 import maud.MaudUtil;
 import maud.action.ActionPrefix;
+import maud.model.History;
 
 /**
  * The MVC model of miscellaneous global options pertaining to Maud's editor
@@ -115,6 +116,10 @@ public class MiscOptions implements Cloneable {
      * bone axis to view/edit in LinkTool: 0&rarr;X, 1&rarr;Y, 2&rarr;Z
      */
     private int linkToolAxis = PhysicsSpace.AXIS_X;
+    /**
+     * maximum number of checkpoints retained (&ge;2)
+     */
+    private int maxCheckpoints = 8;
     /**
      * axis order for BVH loading (not null)
      */
@@ -233,6 +238,16 @@ public class MiscOptions implements Cloneable {
     public LoadBvhAxisOrder loadBvhAxisOrder() {
         assert axisOrder != null;
         return axisOrder;
+    }
+
+    /**
+     * Determine the maximum number of checkpoints retained.
+     *
+     * @return the limit (&ge;2)
+     */
+    public int maxCheckpoints() {
+        assert maxCheckpoints >= 2 : maxCheckpoints;
+        return maxCheckpoints;
     }
 
     /**
@@ -447,6 +462,18 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
+     * Alter the maximum number of checkpoints retained.
+     *
+     * @param max the desired limit (&ge;2)
+     */
+    public void setMaxCheckpoints(int max) {
+        Validate.inRange(max, "max", 2, Integer.MAX_VALUE);
+
+        maxCheckpoints = max;
+        History.enforceLimit();
+    }
+
+    /**
      * Alter the visibility of the menu bar.
      *
      * @param newSetting (true &rarr; visible, false &rarr; hidden)
@@ -633,6 +660,10 @@ public class MiscOptions implements Cloneable {
 
         action = ActionPrefix.sfTexturePreviewVisible
                 + Boolean.toString(texturePreviewVisibility);
+        MaudUtil.writePerformAction(writer, action);
+
+        action = ActionPrefix.setMaxCheckpoints
+                + Integer.toString(maxCheckpoints);
         MaudUtil.writePerformAction(writer, action);
 
         action = String.format("%s%f %f", ActionPrefix.setSubmenuWarp,

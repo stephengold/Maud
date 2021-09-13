@@ -650,6 +650,10 @@ public class ActionPrefix {
      */
     final static String setMatParamValue = "set matParamValue ";
     /**
+     * argument is a decimal number of checkpoints
+     */
+    final public static String setMaxCheckpoints = "set maxCheckpoints ";
+    /**
      * argument is a decimal number of weights
      */
     final public static String setMeshWeights = "set meshWeights ";

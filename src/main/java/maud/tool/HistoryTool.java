@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -140,6 +140,16 @@ public class HistoryTool extends Tool {
         setButtonText("historyRedoAll", aButton);
         setButtonText("historyRedo", rButton);
 
+        String clearButton = "";
+        if (numCheckpoints > 0) {
+            clearButton = "Clear";
+        }
+        setButtonText("historyClear", clearButton);
+        
+        int limit = Maud.getModel().getMisc().maxCheckpoints();
+        String limitButton = Integer.toString(limit);
+        setButtonText("historyLimit", limitButton);
+        
         String uButton = "";
         boolean noneVulnerable = !History.hasVulnerable();
         if (nextIndex > 1 || noneVulnerable && nextIndex > 0) {

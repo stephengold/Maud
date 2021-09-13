@@ -181,6 +181,7 @@ public class Action {
     final static String resetBoneScaleToAnimation = "reset bone sca anim";
     final static String resetBoneScaleToBind = "reset bone sca bind";
     final static String resetBoneSelection = "reset bone selection";
+    final static String resetHistory = "reset history";
     final static String resetLightColor = "reset light color";
     final static String resetLightDir = "reset light dir";
     final static String resetLightPos = "reset light pos";
@@ -284,6 +285,7 @@ public class Action {
     final static String setLightDirCardinal = "set lightDir cardinal";
     final static String setLightDirReverse = "set lightDir reverse";
     final static String setLinkMass = "set linkMass";
+    final static String setMaxCheckpoints = "set maxCheckpoints";
     final static String setMatParamValue = "set matParamValue";
     final static String setMeshWeights = "set meshWeights";
     final static String setOverrideValue = "set overrideValue";
