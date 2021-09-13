@@ -172,6 +172,10 @@ public class EditorInputMode extends InputMode {
                     handled = LoadAction.process(actionString);
                     break;
 
+                case "merge":
+                    handled = mergeAction(actionString);
+                    break;
+
                 case "new":
                     handled = NewAction.process(actionString);
                     break;
@@ -358,6 +362,35 @@ public class EditorInputMode extends InputMode {
             if (view instanceof SceneView) {
                 SceneView sceneView = (SceneView) view;
                 sceneView.getProjectile().launch();
+            }
+            handled = true;
+        }
+
+        return handled;
+    }
+
+    /**
+     * Process an ongoing action that starts with the word "merge".
+     *
+     * @param actionString textual description of the action (not null)
+     * @return true if the action has been handled, otherwise false
+     */
+    private static boolean mergeAction(String actionString) {
+        EditorModel model = Maud.getModel();
+        EditableCgm target = model.getTarget();
+
+        String args;
+        boolean handled = false;
+        if (actionString.startsWith(ActionPrefix.mergeGeometries)) {
+            args = MyString.remainder(actionString,
+                    ActionPrefix.mergeGeometries);
+            if (args.contains(" ")) {
+                String indices = args.split(" ")[0];
+                String newGeometryName
+                        = MyString.remainder(args, indices + " ");
+                target.mergeGeometries(indices, newGeometryName);
+            } else {
+                EditorDialogs.newGeometry(actionString + " ");
             }
             handled = true;
         }

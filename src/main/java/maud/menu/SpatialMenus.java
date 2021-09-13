@@ -109,6 +109,9 @@ public class SpatialMenus {
         if (ss.hasMaterial()) {
             builder.addSubmenu("Edit material");
         }
+        if (numChildren > 1) {
+            builder.addDialog("Merge geometries");
+        }
         if (ss.isNode() && !ss.listReparentItems().isEmpty()) {
             builder.addDialog("Reparent spatials");
         }
@@ -205,6 +208,10 @@ public class SpatialMenus {
 
                 case "Material tool":
                     EditorTools.select("material");
+                    break;
+
+                case "Merge geometries":
+                    EditorDialogs.mergeGeometries(ActionPrefix.mergeGeometries);
                     break;
 
                 case "Mesh tool":
@@ -378,7 +385,8 @@ public class SpatialMenus {
                 break;
 
             case "Merged geometry":
-                EditorDialogs.newGeometryFromMerge();
+                EditorDialogs.mergeGeometries(
+                        ActionPrefix.newGeometryFromMerge);
                 break;
 
             case "Parent":

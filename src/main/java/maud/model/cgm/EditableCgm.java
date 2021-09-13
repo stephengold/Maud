@@ -257,34 +257,21 @@ public class EditableCgm extends LoadedCgm {
      */
     public void addMergedGeometry(String indices, String name) {
         Validate.nonEmpty(indices, "indices");
-        String[] selectedIndices = indices.split(",");
-        int numSelected = selectedIndices.length;
-        Validate.require(numSelected > 1, "at least 2 indices");
         Validate.nonNull(name, "name");
         Validate.require(!hasSpatial(name), "name not in use");
 
-        SelectedSpatial ss = getSpatial();
-        List<GeometryItem> allItems = ss.listGeometryItems();
-
-        Geometry[] geometryArray = new Geometry[numSelected];
-        for (int gIndex = 0; gIndex < numSelected; ++gIndex) {
-            String digits = selectedIndices[gIndex];
-            int itemIndex = Integer.parseInt(digits);
-            GeometryItem item = allItems.get(itemIndex);
-            geometryArray[gIndex] = item.getGeometry();
-        }
-
+        Geometry[] geometries = listMergeGeometries(indices);
         History.autoAdd();
 
-        Geometry geometry = MaudUtil.createMergedGeometry(name, geometryArray);
-        Node parent = (Node) ss.find();
+        Geometry geometry = MaudUtil.createMergedGeometry(name, geometries);
+        Node parent = (Node) getSpatial().find();
         parent.attachChild(geometry);
 
         List<Integer> parentPosition = findSpatial(parent);
         getSceneView().attachSpatial(parentPosition, geometry);
 
         String description = String.format("merge %s geometries to %s",
-                numSelected, MyString.quote(name));
+                geometries.length, MyString.quote(name));
         editState.setEdited(description);
     }
 
@@ -723,6 +710,38 @@ public class EditableCgm extends LoadedCgm {
         String description = "link bone " + MyString.quote(boneName);
         editState.setEdited(description);
         return true;
+    }
+
+    /**
+     * Merge the specified geometries into a new Geometry, attach it to the
+     * selected Node, and delete the geometries that went into the merge.
+     *
+     * @param indices a comma-separated list of decimal child-geometry indices
+     * (not null, not empty, at least 2 indices)
+     * @param name the name for the new Geometry (not null, not in use)
+     */
+    public void mergeGeometries(String indices, String name) {
+        Validate.nonEmpty(indices, "indices");
+        Validate.nonNull(name, "name");
+        Validate.require(!hasSpatial(name), "name not in use");
+
+        Geometry[] geometries = listMergeGeometries(indices);
+        History.autoAdd();
+
+        Geometry geometry = MaudUtil.createMergedGeometry(name, geometries);
+        Node parent = (Node) getSpatial().find();
+        parent.attachChild(geometry);
+        List<Integer> parentPosition = findSpatial(parent);
+        getSceneView().attachSpatial(parentPosition, geometry);
+
+        for (Spatial child : geometries) {
+            deleteSubtree(child);
+        }
+
+        String description = String.format(
+                "merge %s geometries to %s and delete them",
+                geometries.length, MyString.quote(name));
+        editState.setEdited(description);
     }
 
     /**
@@ -1832,6 +1851,32 @@ public class EditableCgm extends LoadedCgm {
          */
         boolean success = subtree.removeFromParent();
         assert success;
+    }
+
+    /**
+     * Convert comma-separated child indices into an array of geometries to be
+     * merged.
+     *
+     * @param indices comma-separated decimal child indices (at least 2 indices)
+     * @return a new array of pre-existing instances
+     */
+    private Geometry[] listMergeGeometries(String indices) {
+        String[] selectedIndices = indices.split(",");
+        int numSelected = selectedIndices.length;
+        assert numSelected >= 2 : numSelected;
+
+        SelectedSpatial ss = getSpatial();
+        List<GeometryItem> allItems = ss.listGeometryItems();
+
+        Geometry[] geometryArray = new Geometry[numSelected];
+        for (int gIndex = 0; gIndex < numSelected; ++gIndex) {
+            String digits = selectedIndices[gIndex];
+            int itemIndex = Integer.parseInt(digits);
+            GeometryItem item = allItems.get(itemIndex);
+            geometryArray[gIndex] = item.getGeometry();
+        }
+
+        return geometryArray;
     }
 
     /**

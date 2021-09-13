@@ -433,17 +433,21 @@ public class EditorDialogs {
     }
 
     /**
-     * Display a "new geometry fromMerge" dialog to select the geometries.
+     * Display a dialog to select 2 or more geometries for a merge. TODO
+     * re-order methods
+     *
+     * @param actionPrefix (not null, not empty)
      */
-    public static void newGeometryFromMerge() {
+    public static void mergeGeometries(String actionPrefix) {
+        Validate.nonEmpty(actionPrefix, "action prefix");
+
         SelectedSpatial ss = Maud.getModel().getTarget().getSpatial();
         List<GeometryItem> items = ss.listGeometryItems();
         MergeDialog controller = new MergeDialog(items);
 
-        String prompt = "Select geometries to include in the merge:";
-        String prefix = ActionPrefix.newGeometryFromMerge;
+        String prompt = "Select 2 or more geometries to include in the merge:";
         Maud.gui.closeAllPopups();
-        Maud.gui.showMultiSelectDialog(prompt, prefix, controller);
+        Maud.gui.showMultiSelectDialog(prompt, actionPrefix, controller);
     }
 
     /**
