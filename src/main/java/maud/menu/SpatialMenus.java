@@ -103,6 +103,9 @@ public class SpatialMenus {
         if (!isCgmRoot) {
             builder.addEdit("Delete");
         }
+        if (numChildren > 0) {
+            builder.addEdit("Delete children");
+        }
         if (ss.hasMaterial()) {
             builder.addSubmenu("Edit material");
         }
@@ -182,6 +185,10 @@ public class SpatialMenus {
 
                 case "Delete":
                     ss.delete();
+                    break;
+
+                case "Delete children":
+                    target.deleteAllChildren();
                     break;
 
                 case "Details tool":

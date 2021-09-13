@@ -451,6 +451,27 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
+     * Delete all children of the selected Node.
+     */
+    public void deleteAllChildren() {
+        Node selectedNode = (Node) getSpatial().find();
+        List<Spatial> childList = selectedNode.getChildren();
+        int numChildren = childList.size();
+        if (numChildren > 0) {
+            Spatial[] children = new Spatial[numChildren];
+            childList.toArray(children);
+
+            History.autoAdd();
+            for (Spatial child : children) {
+                deleteSubtree(child);
+            }
+            String eventDescription
+                    = String.format("delete %d children", numChildren);
+            editState.setEdited(eventDescription);
+        }
+    }
+
+    /**
      * Delete the loaded animation. The invoker is responsible for loading a
      * different animation.
      */
@@ -615,31 +636,7 @@ public class EditableCgm extends LoadedCgm {
 
         History.autoAdd();
         Spatial subtree = ss.find();
-        /*
-         * Cancel all attachments nodes in the subtree.
-         */
-        if (subtree instanceof Node) {
-            Node subtreeNode = (Node) subtree;
-            Map<Bone, Spatial> map = mapAttachments();
-            for (Entry<Bone, Spatial> mapEntry : map.entrySet()) {
-                Spatial spatial = mapEntry.getValue();
-                if (spatial == subtree || spatial.hasAncestor(subtreeNode)) {
-                    Bone bone = mapEntry.getKey();
-                    MySkeleton.cancelAttachments(bone);
-                }
-            }
-        }
-        /*
-         * Detach the subtree from its parent.
-         */
-        boolean success = subtree.removeFromParent();
-        assert success;
-        /*
-         * Synchronize the scene view.
-         */
-        SceneView sceneView = getSceneView();
-        sceneView.deleteSubtree();
-
+        deleteSubtree(subtree);
         editState.setEdited("delete subtree");
     }
 
@@ -1801,6 +1798,40 @@ public class EditableCgm extends LoadedCgm {
                 deleteExtraSpatials((Node) child, attachmentsNodes);
             }
         }
+    }
+
+    /**
+     * Delete the specified Spatial and its descendents, if any.
+     *
+     * @param subtree the root of the scene-graph subtree to delete (not null)
+     */
+    private void deleteSubtree(Spatial subtree) {
+        assert !MySpatial.isOrphan(subtree);
+        /*
+         * Cancel all attachments nodes in the subtree.
+         */
+        if (subtree instanceof Node) {
+            Node subtreeNode = (Node) subtree;
+            Map<Bone, Spatial> map = mapAttachments(); // TODO new animation system
+            for (Entry<Bone, Spatial> mapEntry : map.entrySet()) {
+                Spatial spatial = mapEntry.getValue();
+                if (spatial == subtree || spatial.hasAncestor(subtreeNode)) {
+                    Bone bone = mapEntry.getKey();
+                    MySkeleton.cancelAttachments(bone);
+                }
+            }
+        }
+        /*
+         * Delete the corresponing Spatial in the scene view.
+         */
+        SceneView sceneView = getSceneView();
+        List<Integer> position = findSpatial(subtree);
+        sceneView.deleteSubtree(position);
+        /*
+         * Detach the subtree from its parent.
+         */
+        boolean success = subtree.removeFromParent();
+        assert success;
     }
 
     /**
