@@ -334,7 +334,7 @@ public class MeshUtil {
     }
 
     /**
-     * Access the collision tree of the specified Mesh.
+     * Access the collision tree of the specified Mesh. TODO use MyMesh
      *
      * @param mesh the Mesh to access (not null, unaffected)
      * @return the pre-existing instance, or null if none
