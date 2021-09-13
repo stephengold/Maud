@@ -80,6 +80,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Heart;
 import jme3utilities.MyControl;
+import jme3utilities.MyMesh;
 import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
@@ -437,6 +438,16 @@ public class EditableCgm extends LoadedCgm {
         sceneView.attachSpatial(parentPosition, subtree);
         targetNode.attachChild(subtree);
         editState.setEdited(eventDescription);
+    }
+
+    /**
+     * Clear the collision data of every Mesh in the C-G model.
+     */
+    public void clearCollisionTrees() {
+        List<Mesh> meshes = MyMesh.listMeshes(rootSpatial, null);
+        for (Mesh mesh : meshes) {
+            mesh.clearCollisionData();
+        }
     }
 
     /**

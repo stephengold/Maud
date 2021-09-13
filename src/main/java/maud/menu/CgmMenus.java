@@ -89,6 +89,10 @@ public class CgmMenus {
             builder.add("Unload source model");
         }
 
+        if (target.countCollisionTrees() > 0) {
+            builder.addEdit("Clear collision data");
+        }
+
         if (target.hasExtraSpatials()) {
             builder.addEdit("Delete extra spatials");
         }
@@ -140,6 +144,10 @@ public class CgmMenus {
         String actionPrefix;
         boolean handled = true;
         switch (remainder) {
+            case "Clear collision data":
+                target.clearCollisionTrees();
+                break;
+
             case "Delete extra spatials":
                 target.deleteExtraSpatials();
                 break;
