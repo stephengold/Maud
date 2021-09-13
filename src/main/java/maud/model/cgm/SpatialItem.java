@@ -27,9 +27,11 @@
 package maud.model.cgm;
 
 import com.jme3.scene.Spatial;
+import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
+import maud.Maud;
 
 /**
  * Information about a particular Spatial, for use in a DialogController.
@@ -148,7 +150,10 @@ public class SpatialItem implements Comparable<SpatialItem> {
     public String toString() {
         String typeText = spatial.getClass().getSimpleName();
         String quotedName = MyString.quote(spatial.getName());
-        String result = String.format("%s %s", quotedName, typeText);
+        Cgm cgm = Maud.getModel().getTarget();
+        List<Integer> treePosition = cgm.findSpatial(spatial);
+        String result
+                = String.format("%s %s %s", quotedName, typeText, treePosition);
 
         return result;
     }
