@@ -135,10 +135,8 @@ public class SpatialItem implements Comparable<SpatialItem> {
      */
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 79 * hash + Objects.hashCode(spatial);
-
-        return hash;
+        int result = Objects.hashCode(spatial);
+        return result;
     }
 
     /**
