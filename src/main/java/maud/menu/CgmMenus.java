@@ -97,6 +97,8 @@ public class CgmMenus {
             builder.addEdit("Delete extra spatials");
         }
 
+        builder.addDialog("Replace textures");
+
         int numSpatials = target.countSpatials(Spatial.class);
         int numInherits
                 = target.countSpatials(Spatial.class, Spatial.CullHint.Inherit);
@@ -172,6 +174,10 @@ public class CgmMenus {
 
             case "Merge source model":
                 target.getSpatial().attachClone();
+                break;
+
+            case "Replace textures":
+                EditorDialogs.replaceTextures();
                 break;
 
             case "Reset cull hints to Inherit":

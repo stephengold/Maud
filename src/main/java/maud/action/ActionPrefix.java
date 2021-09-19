@@ -219,6 +219,11 @@ public class ActionPrefix {
      */
     final public static String renameLight = "rename light ";
     /**
+     * argument is match sequence + ";" + replacement sequence
+     */
+    final public static String renameMatchingTextures
+            = "rename matchingTextures ";
+    /**
      * argument is the new name for the material
      */
     final public static String renameMaterial = "rename material ";

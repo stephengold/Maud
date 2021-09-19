@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018-2019, Stephen Gold
+ Copyright (c) 2018-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -129,6 +129,19 @@ class RenameAction {
             newName = MyString.remainder(actionString,
                     ActionPrefix.renameLight);
             target.getLight().rename(newName);
+
+        } else if (actionString.startsWith(
+                ActionPrefix.renameMatchingTextures)) {
+            String args = MyString.remainder(actionString,
+                    ActionPrefix.renameMatchingTextures);
+            String[] argArray = args.split(";");
+            if (argArray.length == 2) {
+                CharSequence match = argArray[0];
+                CharSequence replacement = argArray[1];
+                target.getTexture().replaceMatchingTextures(match, replacement);
+            } else {
+                handled = false;
+            }
 
         } else if (actionString.startsWith(ActionPrefix.renameMaterial)) {
             newName = MyString.remainder(actionString,

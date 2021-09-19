@@ -678,6 +678,19 @@ public class EditorDialogs {
     }
 
     /**
+     * Display a "rename matchingTextures" dialog.
+     */
+    public static void replaceTextures() {
+        String promptMessage = "Enter match;replacement for texture assets:";
+        String defaultPattern = "textures;textures";
+        DialogController controller = new TextEntryDialog("Replace");
+
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog(promptMessage, defaultPattern,
+                ActionPrefix.renameMatchingTextures, controller);
+    }
+
+    /**
      * Display a "resample animation/track" dialog.
      *
      * @param actionPrefix an action prefix (not null)

@@ -28,6 +28,7 @@ package maud.model.cgm;
 
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
+import com.jme3.asset.AssetNotFoundException;
 import com.jme3.asset.TextureKey;
 import com.jme3.material.MatParam;
 import com.jme3.material.MatParamOverride;
@@ -57,6 +58,7 @@ import jme3utilities.ui.Locators;
 import maud.DescribeUtil;
 import maud.Maud;
 import maud.MaudUtil;
+import maud.model.History;
 
 /**
  * The MVC model of the selected texture in a loaded C-G model.
@@ -523,6 +525,54 @@ public class SelectedTexture implements JmeCloneable {
             MatParamRef firstRef = selectedRefs.get(0);
             selectedTexture = (Texture) firstRef.getParameterValue();
         }
+    }
+
+    /**
+     * Replace textures whose asset paths match the specified search pattern.
+     *
+     * @param match the CharSequence to search for (not null)
+     * @param replacement the CharSequence to substitute for each match (not
+     * null)
+     */
+    public void replaceMatchingTextures(CharSequence match,
+            CharSequence replacement) {
+        int replacementCount = 0;
+        List<Texture> nonNullTextures = listNonNullTextures();
+
+        History.autoAdd();
+        for (Texture texture : nonNullTextures) {
+            AssetKey assetKey = texture.getKey();
+            if (assetKey instanceof TextureKey) {
+                String oldPath = texture.getName();
+                String newPath = oldPath.replace(match, replacement);
+                if (!oldPath.equals(newPath)) {
+                    TextureKey textureKey = (TextureKey) assetKey;
+                    int anisotropy = textureKey.getAnisotropy();
+                    boolean flipY = textureKey.isFlipY();
+                    boolean generateMips = textureKey.isGenerateMips();
+                    Texture.Type typeHint = textureKey.getTextureTypeHint();
+                    Texture newTexture = null;
+                    try {
+                        newTexture = load(newPath, anisotropy, flipY,
+                                generateMips, typeHint);
+                    } catch (AssetNotFoundException exception) {
+                        logger.log(Level.WARNING, "{0} not found, skipped.",
+                                MyString.quote(newPath));
+                    }
+                    if (newTexture != null) {
+                        List<MatParamRef> refs = listTextureRefs(texture);
+                        for (MatParamRef reference : refs) {
+                            reference.setValue(newTexture, cgm);
+                            ++replacementCount;
+                        }
+                    }
+                }
+            }
+        }
+
+        String eventDescription = String.format("replace %d texture%s",
+                replacementCount, (replacementCount == 1) ? "" : "s");
+        editableCgm.getEditState().setEdited(eventDescription);
     }
 
     /**
@@ -1050,6 +1100,45 @@ public class SelectedTexture implements JmeCloneable {
     }
 
     /**
+     * Load a new Texture from an asset.
+     *
+     * @param assetPath (not null)
+     * @param anisotropy (&ge;0)
+     * @param flipY true&rarr;flip, false&rarr;don't flip
+     * @param generateMips true&rarr;generate MIP maps, false&rarr;don't
+     * generate
+     * @param typeHint type hint (not null)
+     * @return the loaded Texture, or null if failure
+     */
+    private Texture load(String assetPath, int anisotropy, boolean flipY,
+            boolean generateMips, Texture.Type typeHint) {
+        assert assetPath != null;
+        assert anisotropy >= 0 : anisotropy;
+        assert typeHint != null;
+
+        TextureKey key = new TextureKey(assetPath, flipY);
+        key.setAnisotropy(anisotropy);
+        key.setGenerateMips(generateMips);
+        key.setTextureTypeHint(typeHint);
+
+        Locators.save();
+        Locators.registerDefault();
+        List<String> specList = Maud.getModel().getLocations().listAll();
+        Locators.register(specList);
+        AssetManager assetManager = Locators.getAssetManager();
+        Texture result = null;
+        try {
+            result = assetManager.loadTexture(key);
+        } catch (ClassCastException exception) {
+            logger.log(Level.WARNING, "Failed to load {0} as an image.",
+                    MyString.quote(assetPath));
+        }
+        Locators.restore();
+
+        return result;
+    }
+
+    /**
      * Test whether the specified parameter or override references the specified
      * texture.
      *
@@ -1111,29 +1200,12 @@ public class SelectedTexture implements JmeCloneable {
     private void set(String assetPath, int anisotropy, boolean flipY,
             boolean generateMips, Texture.Type typeHint,
             String eventDescription) {
+        assert anisotropy >= 0 : anisotropy;
         assert typeHint != null;
         assert eventDescription != null;
-        assert anisotropy >= 0 : anisotropy;
 
-        TextureKey key = new TextureKey(assetPath, flipY);
-        key.setAnisotropy(anisotropy);
-        key.setGenerateMips(generateMips);
-        key.setTextureTypeHint(typeHint);
-
-        Locators.save();
-        Locators.registerDefault();
-        List<String> specList = Maud.getModel().getLocations().listAll();
-        Locators.register(specList);
-        AssetManager assetManager = Locators.getAssetManager();
-        Texture loaded = null;
-        try {
-            loaded = assetManager.loadTexture(key);
-        } catch (ClassCastException exception) {
-            logger.log(Level.WARNING, "Failed to load {0} as an image.",
-                    MyString.quote(assetPath));
-        }
-        Locators.restore();
-
+        Texture loaded = load(assetPath, anisotropy, flipY, generateMips,
+                typeHint);
         if (loaded != null) {
             editableCgm.replaceSelectedTexture(loaded, eventDescription);
         }
