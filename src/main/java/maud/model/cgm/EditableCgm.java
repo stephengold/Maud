@@ -995,7 +995,7 @@ public class EditableCgm extends LoadedCgm {
 
     /**
      * Remove the selected light and replace it the specified light, which
-     * differs only in position and/or direction.
+     * differs only in position and/or direction. TODO move to SelectedLight
      *
      * @param newLight the light to add (not null, alias created)
      */
@@ -1015,7 +1015,8 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Replace the selected texture references with the specified texture.
+     * Replace the selected texture references with the specified texture. TODO
+     * move to SelectedTexture
      *
      * @param newTexture the replacement texture (not null, aliases created)
      * @param eventDescription for the edit history (not null)
