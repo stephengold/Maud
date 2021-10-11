@@ -31,8 +31,10 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
+import maud.Maud;
 import maud.MaudUtil;
 import maud.action.ActionPrefix;
+import maud.model.EditState;
 
 /**
  * Options for 3-D cursors in scene views.
@@ -91,9 +93,9 @@ public class DddCursorOptions implements Cloneable {
     }
 
     /**
-     * Read the cycle time of the cursor.
+     * Determine the cycle time of the cursor.
      *
-     * @return cycle time (in seconds, &gt;0)
+     * @return the cycle time (in seconds, &gt;0)
      */
     public float getCycleTime() {
         assert cycleTime > 0f : cycleTime;
@@ -101,7 +103,7 @@ public class DddCursorOptions implements Cloneable {
     }
 
     /**
-     * Read the size of the cursor.
+     * Determine the size of the cursor.
      *
      * @return size (in arbitrary units, &gt;0)
      */
@@ -120,16 +122,21 @@ public class DddCursorOptions implements Cloneable {
     }
 
     /**
-     * Alter one of the colors.
+     * Alter one of the cursor colors.
      *
-     * @param index which color to alter (0 or 1)
-     * @param newColor (not null, unaffected)
+     * @param phase which phase to alter (0 or 1)
+     * @param newColor the desired color (not null, unaffected)
      */
-    public void setColor(int index, ColorRGBA newColor) {
-        Validate.inRange(index, "index", 0, 1);
+    public void setColor(int phase, ColorRGBA newColor) {
+        Validate.inRange(phase, "phase", 0, 1);
         Validate.nonNull(newColor, "color");
 
-        colors[index].set(newColor);
+        if (!colors[phase].equals(newColor)) {
+            colors[phase].set(newColor);
+
+            EditState editState = Maud.getModel().getOptionsEditState();
+            editState.setEditedCursorColor(phase);
+        }
     }
 
     /**
@@ -139,7 +146,13 @@ public class DddCursorOptions implements Cloneable {
      */
     public void setCycleTime(float newCycleTime) {
         Validate.positive(newCycleTime, "new cycle time");
-        cycleTime = newCycleTime;
+
+        if (cycleTime != newCycleTime) {
+            cycleTime = newCycleTime;
+
+            EditState editState = Maud.getModel().getOptionsEditState();
+            editState.setEditedCursorCycleTime();
+        }
     }
 
     /**
@@ -149,7 +162,13 @@ public class DddCursorOptions implements Cloneable {
      */
     public void setSize(float newSize) {
         Validate.positive(newSize, "new size");
-        size = newSize;
+
+        if (size != newSize) {
+            size = newSize;
+
+            EditState editState = Maud.getModel().getOptionsEditState();
+            editState.setEditedCursorSize();
+        }
     }
 
     /**
@@ -158,7 +177,10 @@ public class DddCursorOptions implements Cloneable {
      * @param newState true &rarr; visible, false &rarr; hidden
      */
     public void setVisible(boolean newState) {
-        visible = newState;
+        if (visible != newState) {
+            visible = newState;
+            EditState.optionSetEdited("3-D cursor visible=" + newState);
+        }
     }
 
     /**

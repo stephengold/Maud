@@ -34,8 +34,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
+import maud.Maud;
 import maud.MaudUtil;
 import maud.action.ActionPrefix;
+import maud.model.EditState;
 import maud.model.History;
 
 /**
@@ -153,7 +155,7 @@ public class MiscOptions implements Cloneable {
     // new methods
 
     /**
-     * Read which background to view/edit in BackgroundTool.
+     * Determine which background to view/edit in BackgroundTool.
      *
      * @return an enum value (not null)
      */
@@ -163,7 +165,7 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Read which color to view/edit in CursorTool.
+     * Determine which color to view/edit in CursorTool.
      *
      * @return a color index (0 or 1)
      */
@@ -182,7 +184,7 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Read starting point for displayed indices.
+     * Determine starting point for displayed indices.
      *
      * @return base index (0 or 1)
      */
@@ -219,7 +221,7 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Read the bone axis to view/edit in LinkTool
+     * Determine the bone axis to view/edit in LinkTool
      *
      * @return axis index: 0&rarr;X, 1&rarr;Y, 2&rarr;Z
      */
@@ -231,7 +233,7 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Read the axis order for loading BVH assets.
+     * Determine the axis order for loading BVH assets.
      *
      * @return display X-coordinate (&gt;0, &lt;1)
      */
@@ -251,7 +253,7 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Read the performance-monitoring mode.
+     * Determine the performance-monitoring mode.
      *
      * @return an enum value (not null)
      */
@@ -261,7 +263,7 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Read which rigid-body parameter to view/edit in ObjectTool.
+     * Determine which rigid-body parameter to view/edit in ObjectTool.
      *
      * @return an enum value (not null)
      */
@@ -271,7 +273,7 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Read the display mode for rotations.
+     * Determine the display mode for rotations.
      *
      * @return an enum value (not null)
      */
@@ -281,17 +283,21 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Select which background to view/edit in BackgroundTool.
+     * Select a background to view/edit in BackgroundTool.
      *
-     * @param newBackground an enum value (not null)
+     * @param newBackground the desired enum value (not null)
      */
     public void selectBackground(Background newBackground) {
         Validate.nonNull(newBackground, "new background");
-        background = newBackground;
+
+        if (background != newBackground) {
+            background = newBackground;
+            EditState.optionSetEdited("BackgroundTool background=" + newBackground);
+        }
     }
 
     /**
-     * Alter the bone axis to view/edit in LinkTool
+     * Select a bone axis to view/edit in LinkTool
      *
      * @param axisIndex the index of the desired axis: 0&rarr;X, 1&rarr;Y,
      * 2&rarr;Z
@@ -299,17 +305,25 @@ public class MiscOptions implements Cloneable {
     public void selectLinkToolAxis(int axisIndex) {
         Validate.inRange(axisIndex, "axis index", PhysicsSpace.AXIS_X,
                 PhysicsSpace.AXIS_Z);
-        linkToolAxis = axisIndex;
+
+        if (linkToolAxis != axisIndex) {
+            linkToolAxis = axisIndex;
+            EditState.optionSetEdited("LinkTool axis=" + MyString.axisName(axisIndex));
+        }
     }
 
     /**
-     * Select the axis order for loading BVH assets.
+     * Select an axis order for loading BVH assets.
      *
-     * @param newOrder an enum value (not null)
+     * @param newOrder the desired enum value (not null)
      */
     public void selectLoadBvhAxisOrder(LoadBvhAxisOrder newOrder) {
         Validate.nonNull(newOrder, "new order");
-        axisOrder = newOrder;
+
+        if (axisOrder != newOrder) {
+            axisOrder = newOrder;
+            EditState.optionSetEdited("BVH axis order=" + newOrder);
+        }
     }
 
     /**
@@ -318,13 +332,13 @@ public class MiscOptions implements Cloneable {
     public void selectNextPerformanceMode() {
         switch (performanceMode) {
             case Off:
-                performanceMode = PerformanceMode.JmeStats;
+                selectPerformanceMode(PerformanceMode.JmeStats);
                 break;
             case JmeStats:
-                performanceMode = PerformanceMode.DebugPas;
+                selectPerformanceMode(PerformanceMode.DebugPas);
                 break;
             case DebugPas:
-                performanceMode = PerformanceMode.Off;
+                selectPerformanceMode(PerformanceMode.Off);
                 break;
             default:
                 logger.log(Level.SEVERE, "mode={0}", performanceMode);
@@ -359,13 +373,13 @@ public class MiscOptions implements Cloneable {
     public void selectNextViewMode() {
         switch (viewMode) {
             case Hybrid:
-                viewMode = ViewMode.Scene;
+                selectViewMode(ViewMode.Scene);
                 break;
             case Scene:
-                viewMode = ViewMode.Score;
+                selectViewMode(ViewMode.Score);
                 break;
             case Score:
-                viewMode = ViewMode.Hybrid;
+                selectViewMode(ViewMode.Hybrid);
                 break;
             default:
                 logger.log(Level.SEVERE, "view mode={0}", viewMode);
@@ -376,89 +390,123 @@ public class MiscOptions implements Cloneable {
     /**
      * Select a performance-monitoring mode.
      *
-     * @param newMode an enum value (not null)
+     * @param newMode the desired enum value (not null)
      */
     public void selectPerformanceMode(PerformanceMode newMode) {
         Validate.nonNull(newMode, "new mode");
-        performanceMode = newMode;
+
+        if (performanceMode != newMode) {
+            performanceMode = newMode;
+            EditState.optionSetEdited("perf mode=" + newMode);
+        }
     }
 
     /**
      * Select a rigid-body parameter to view/edit in ObjectTool.
      *
-     * @param newParameter an enum value (not null)
+     * @param newParameter the desired enum value (not null)
      */
     public void selectRbp(RigidBodyParameter newParameter) {
         Validate.nonNull(newParameter, "new parameter");
-        rbp = newParameter;
+
+        if (rbp != newParameter) {
+            rbp = newParameter;
+            EditState.optionSetEdited("ObjectTool rbp=" + newParameter);
+        }
     }
 
     /**
-     * Alter the display mode for rotations.
+     * Select a display mode for rotations.
      *
-     * @param newMode an enum value (not null)
+     * @param newMode the desired enum value (not null)
      */
     public void selectRotationDisplay(RotationDisplayMode newMode) {
         Validate.nonNull(newMode, "new mode");
-        rotationDisplayMode = newMode;
+
+        if (rotationDisplayMode != newMode) {
+            rotationDisplayMode = newMode;
+            EditState.optionSetEdited("rotation display=" + newMode);
+        }
     }
 
     /**
-     * Alter which shape parameter to display in ShapeTool.
+     * Select which shape parameter is displayed in ShapeTool.
      *
-     * @param newParameter an enum value (not null)
+     * @param newParameter the desired enum value (not null)
      */
     public void selectShapeParameter(ShapeParameter newParameter) {
         Validate.nonNull(newParameter, "new parameter");
-        shapeParameter = newParameter;
+
+        if (shapeParameter != newParameter) {
+            shapeParameter = newParameter;
+            EditState.optionSetEdited("ShapeTool parameter=" + newParameter);
+        }
     }
 
     /**
-     * Alter the view mode.
+     * Select a view mode.
      *
-     * @param newMode an enum value (not null)
+     * @param newMode the desired enum value (not null)
      */
     public void selectViewMode(ViewMode newMode) {
         Validate.nonNull(newMode, "new mode");
-        viewMode = newMode;
+
+        if (viewMode != newMode) {
+            viewMode = newMode;
+            EditState.optionSetEdited("view mode=" + newMode);
+        }
     }
 
     /**
-     * Alter which color to view/edit in CursorTool.
+     * Select a color to view/edit in CursorTool.
      *
-     * @param newIndex new index (0 or 1)
+     * @param newIndex the desired index (0 or 1)
      */
     public void setColorIndex(int newIndex) {
         Validate.inRange(newIndex, "new index", 0, 1);
-        colorIndex = newIndex;
+
+        if (colorIndex != newIndex) {
+            colorIndex = newIndex;
+            EditState.optionSetEdited("CursorTool index=" + newIndex);
+        }
     }
 
     /**
-     * Alter whether to print diagnostic messages to the console during loads.
+     * Select whether to print diagnostic messages to the console during loads.
      *
      * @param newSetting (true &rarr; print, false &rarr; suppress)
      */
     public void setDiagnoseLoads(boolean newSetting) {
-        diagnoseLoads = newSetting;
+        if (diagnoseLoads != newSetting) {
+            diagnoseLoads = newSetting;
+            EditState.optionSetEdited("diagnose loads=" + newSetting);
+        }
     }
 
     /**
-     * Alter the starting point for displayed indices.
+     * Select a starting point for displayed indices.
      *
-     * @param newSetting new setting (0 or 1)
+     * @param newSetting the desired starting point (0 or 1)
      */
     public void setIndexBase(int newSetting) {
         Validate.inRange(newSetting, "new setting", 0, 1);
-        indexBase = newSetting;
+
+        if (indexBase != newSetting) {
+            indexBase = newSetting;
+            EditState.optionSetEdited("index base=" + newSetting);
+        }
     }
 
     /**
-     * Alter the orientation for loading C-G models.
+     * Select an orientation for loading C-G models.
      *
      * @param newSetting (true &rarr; +Z upward, false &rarr; +Y upward)
      */
     public void setLoadZup(boolean newSetting) {
-        loadZup = newSetting;
+        if (loadZup != newSetting) {
+            loadZup = newSetting;
+            EditState.optionSetEdited("load Zup=" + newSetting);
+        }
     }
 
     /**
@@ -469,8 +517,11 @@ public class MiscOptions implements Cloneable {
     public void setMaxCheckpoints(int max) {
         Validate.inRange(max, "max", 2, Integer.MAX_VALUE);
 
-        maxCheckpoints = max;
-        History.enforceLimit();
+        if (maxCheckpoints != max) {
+            maxCheckpoints = max;
+            History.enforceLimit();
+            EditState.optionSetEdited("max checkpoints=" + max);
+        }
     }
 
     /**
@@ -479,7 +530,10 @@ public class MiscOptions implements Cloneable {
      * @param newSetting (true &rarr; visible, false &rarr; hidden)
      */
     public void setMenuBarVisible(boolean newSetting) {
-        menuBarVisibility = newSetting;
+        if (menuBarVisibility != newSetting) {
+            menuBarVisibility = newSetting;
+            EditState.optionSetEdited("show menubar=" + newSetting);
+        }
     }
 
     /**
@@ -488,17 +542,24 @@ public class MiscOptions implements Cloneable {
      * @param newSetting (true &rarr; visible, false &rarr; hidden)
      */
     public void setTexturePreviewVisible(boolean newSetting) {
-        texturePreviewVisibility = newSetting;
+        if (texturePreviewVisibility != newSetting) {
+            texturePreviewVisibility = newSetting;
+            EditState.optionSetEdited("preview texture=" + newSetting);
+        }
     }
 
     /**
      * Alter the message to display in the status bar.
      *
-     * @param newMessage what to display (not null)
+     * @param newMessage the text to display (not null)
      */
     public void setStatusMessage(String newMessage) {
         Validate.nonNull(newMessage, "new message");
-        statusMessage = newMessage;
+
+        if (!statusMessage.equals(newMessage)) {
+            statusMessage = newMessage;
+            EditState.optionSetEdited("status message=" + newMessage);
+        }
     }
 
     /**
@@ -511,8 +572,13 @@ public class MiscOptions implements Cloneable {
         Validate.fraction(newWarpX, "new warp X");
         Validate.fraction(newWarpY, "new warp Y");
 
-        warpX = newWarpX;
-        warpY = newWarpY;
+        if (warpX != newWarpX || warpY != newWarpY) {
+            warpX = newWarpX;
+            warpY = newWarpY;
+
+            EditState editState = Maud.getModel().getOptionsEditState();
+            editState.setEditedSubmenuWarp();
+        }
     }
 
     /**
@@ -522,20 +588,30 @@ public class MiscOptions implements Cloneable {
      */
     public void setVertexPositionTolerance(float tolerance) {
         Validate.nonNegative(tolerance, "tolerance");
-        vertexPositionTolerance = tolerance;
+
+        if (vertexPositionTolerance != tolerance) {
+            vertexPositionTolerance = tolerance;
+            EditState.optionSetEdited("vertex tolerance=" + tolerance);
+        }
     }
 
     /**
      * Alter the location of the display's left-right boundary.
      *
-     * @param newX display X-coordinate
+     * @param newX the desired display X-coordinate
      */
     public void setXBoundary(float newX) {
-        xBoundary = FastMath.clamp(newX, minXBoundary, maxXBoundary);
+        float newBoundary = FastMath.clamp(newX, minXBoundary, maxXBoundary);
+        if (xBoundary != newBoundary) {
+            xBoundary = newBoundary;
+
+            EditState editState = Maud.getModel().getOptionsEditState();
+            editState.setEditedXBoundary();
+        }
     }
 
     /**
-     * Read which shape parameter to view/edit in ShapeTool.
+     * Determine which shape parameter to view/edit in ShapeTool.
      *
      * @return an enum value (not null)
      */
@@ -545,7 +621,7 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Read the message to display in the status bar.
+     * Determine the message to display in the status bar.
      *
      * @return message to display (not null)
      */
@@ -555,7 +631,7 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Read the submenu warp fraction for the X coordinate.
+     * Determine the submenu warp fraction for the X coordinate.
      *
      * @return the fraction (&ge;0, &le;1)
      */
@@ -566,7 +642,7 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Read the submenu warp fraction for the Y coordinate.
+     * Determine the submenu warp fraction for the Y coordinate.
      *
      * @return the fraction (&ge;0, &le;1)
      */
@@ -588,7 +664,7 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Read the view mode.
+     * Determine the view mode.
      *
      * @return an enum value (not null)
      */
@@ -598,7 +674,7 @@ public class MiscOptions implements Cloneable {
     }
 
     /**
-     * Read the location of the display's left-right boundary.
+     * Determine the location of the display's left-right boundary.
      *
      * @return display X-coordinate (&gt;0, &lt;1)
      */

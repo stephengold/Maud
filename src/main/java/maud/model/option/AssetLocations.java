@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -36,6 +36,7 @@ import jme3utilities.Heart;
 import jme3utilities.Validate;
 import maud.MaudUtil;
 import maud.action.ActionPrefix;
+import maud.model.EditState;
 
 /**
  * The MVC model of asset locations known to Maud.
@@ -91,6 +92,7 @@ public class AssetLocations implements Cloneable {
 
         if (!knownSpecs.contains(spec)) {
             knownSpecs.add(spec);
+            EditState.optionSetEdited("add asset location " + spec);
         }
     }
 
@@ -168,8 +170,9 @@ public class AssetLocations implements Cloneable {
 
         if (knownSpecs.contains(spec)) {
             knownSpecs.remove(spec);
+            EditState.optionSetEdited("remove asset location " + spec);
         } else {
-            assert false;
+            throw new IllegalStateException();
         }
     }
 

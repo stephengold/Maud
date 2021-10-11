@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018-2020, Stephen Gold
+ Copyright (c) 2018-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,8 +31,10 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
+import maud.Maud;
 import maud.MaudUtil;
 import maud.action.ActionPrefix;
+import maud.model.EditState;
 
 /**
  * Options for lighting scene views with no sky simulation.
@@ -110,7 +112,13 @@ public class LightsOptions implements Cloneable {
      */
     public void setAmbientLevel(float newLevel) {
         Validate.nonNegative(newLevel, "new level");
-        ambientLevel = newLevel;
+
+        if (ambientLevel != newLevel) {
+            ambientLevel = newLevel;
+
+            EditState editState = Maud.getModel().getOptionsEditState();
+            editState.setEditedAmbientLevel();
+        }
     }
 
     /**
@@ -121,8 +129,13 @@ public class LightsOptions implements Cloneable {
     public void setDirection(Vector3f newDirection) {
         Validate.nonZero(newDirection, "new direction");
 
-        direction.set(newDirection);
-        direction.normalizeLocal();
+        Vector3f normalized = newDirection.normalize();
+        if (!direction.equals(normalized)) {
+            direction.set(normalized);
+
+            EditState editState = Maud.getModel().getOptionsEditState();
+            editState.setEditedMainDirection();
+        }
     }
 
     /**
@@ -132,7 +145,13 @@ public class LightsOptions implements Cloneable {
      */
     public void setMainLevel(float newLevel) {
         Validate.nonNegative(newLevel, "new level");
-        mainLevel = newLevel;
+
+        if (mainLevel != newLevel) {
+            mainLevel = newLevel;
+
+            EditState editState = Maud.getModel().getOptionsEditState();
+            editState.setEditedMainLevel();
+        }
     }
 
     /**

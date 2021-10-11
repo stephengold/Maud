@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -30,8 +30,10 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
+import maud.Maud;
 import maud.MaudUtil;
 import maud.action.ActionPrefix;
+import maud.model.EditState;
 import maud.model.WhichCgm;
 
 /**
@@ -234,7 +236,13 @@ public class SceneOptions implements Cloneable {
      */
     public void setNumPhysicsIterations(int newNumber) {
         Validate.positive(newNumber, "new number");
-        numPhysicsIterations = newNumber;
+
+        if (numPhysicsIterations != newNumber) {
+            numPhysicsIterations = newNumber;
+
+            EditState editState = Maud.getModel().getOptionsEditState();
+            editState.setEditedPhysicsIterations();
+        }
     }
 
     /**
@@ -245,13 +253,21 @@ public class SceneOptions implements Cloneable {
      */
     public void setPlatformDiameter(WhichCgm whichCgm, float newDiameter) {
         Validate.positive(newDiameter, "new diameter");
+
+        EditState editState = Maud.getModel().getOptionsEditState();
         switch (whichCgm) {
             case Source:
-                sourcePlatformDiameter = newDiameter;
+                if (sourcePlatformDiameter != newDiameter) {
+                    sourcePlatformDiameter = newDiameter;
+                    editState.setEditedPlatformDiameter(whichCgm);
+                }
                 break;
 
             case Target:
-                targetPlatformDiameter = newDiameter;
+                if (targetPlatformDiameter != newDiameter) {
+                    targetPlatformDiameter = newDiameter;
+                    editState.setEditedPlatformDiameter(whichCgm);
+                }
                 break;
 
             default:
@@ -266,7 +282,11 @@ public class SceneOptions implements Cloneable {
      */
     public void setPlatformType(PlatformType newType) {
         Validate.nonNull(newType, "new type");
-        platformType = newType;
+
+        if (platformType != newType) {
+            platformType = newType;
+            EditState.optionSetEdited("platform=" + newType);
+        }
     }
 
     /**

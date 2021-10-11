@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018-2020, Stephen Gold
+ Copyright (c) 2018-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -35,6 +35,7 @@ import jme3utilities.Validate;
 import maud.Maud;
 import maud.MaudUtil;
 import maud.action.ActionPrefix;
+import maud.model.EditState;
 import maud.model.cgm.Cgm;
 import maud.model.option.Background;
 
@@ -183,7 +184,13 @@ public class RenderOptions implements Cloneable {
      */
     public void setCloudiness(float newOpacity) {
         Validate.fraction(newOpacity, "new opacity");
-        cloudiness = newOpacity;
+
+        if (cloudiness != newOpacity) {
+            cloudiness = newOpacity;
+
+            EditState editState = Maud.getModel().getOptionsEditState();
+            editState.setEditedSkyCloudiness();
+        }
     }
 
     /**
@@ -193,7 +200,11 @@ public class RenderOptions implements Cloneable {
      */
     public void setEdgeFilter(EdgeFilteringMode newSetting) {
         Validate.nonNull(newSetting, "new setting");
-        edgeFilter = newSetting;
+
+        if (edgeFilter != newSetting) {
+            edgeFilter = newSetting;
+            EditState.optionSetEdited("edge filter=" + newSetting);
+        }
     }
 
     /**
@@ -203,7 +214,13 @@ public class RenderOptions implements Cloneable {
      */
     public void setHour(float newHour) {
         Validate.inRange(newHour, "new hour", 0f, 24f);
-        hour = newHour;
+
+        if (hour != newHour) {
+            hour = newHour;
+
+            EditState editState = Maud.getModel().getOptionsEditState();
+            editState.setEditedSkyHour();
+        }
     }
 
     /**
@@ -213,7 +230,11 @@ public class RenderOptions implements Cloneable {
      */
     public void setNumSplits(int newNumSplits) {
         Validate.inRange(newNumSplits, "new number of splits", 1, 4);
-        numSplits = newNumSplits;
+
+        if (numSplits != newNumSplits) {
+            numSplits = newNumSplits;
+            EditState.optionSetEdited("shadow splits=" + newNumSplits);
+        }
     }
 
     /**
@@ -222,7 +243,10 @@ public class RenderOptions implements Cloneable {
      * @param newSetting true to visualize, false to hide
      */
     public void setPhysicsRendered(boolean newSetting) {
-        physicsRendered = newSetting;
+        if (physicsRendered != newSetting) {
+            physicsRendered = newSetting;
+            EditState.optionSetEdited("physics debug=" + newSetting);
+        }
     }
 
     /**
@@ -232,7 +256,11 @@ public class RenderOptions implements Cloneable {
      */
     public void setShadowMapSize(int newSize) {
         Validate.inRange(newSize, "new size", 1, Integer.MAX_VALUE);
-        shadowMapSize = newSize;
+
+        if (shadowMapSize != newSize) {
+            shadowMapSize = newSize;
+            EditState.optionSetEdited("shadow map size=" + newSize);
+        }
     }
 
     /**
@@ -241,7 +269,10 @@ public class RenderOptions implements Cloneable {
      * @param newState true &rarr; rendered, false &rarr; not rendered
      */
     public void setShadowsRendered(boolean newState) {
-        shadowsRendered = newState;
+        if (shadowsRendered != newState) {
+            shadowsRendered = newState;
+            EditState.optionSetEdited("shadows=" + newState);
+        }
     }
 
     /**
@@ -250,7 +281,10 @@ public class RenderOptions implements Cloneable {
      * @param newState true &rarr; simulated, false &rarr; not simulated
      */
     public void setSkySimulated(boolean newState) {
-        skySimulated = newState;
+        if (skySimulated != newState) {
+            skySimulated = newState;
+            EditState.optionSetEdited("sky=" + newState);
+        }
     }
 
     /**
@@ -259,7 +293,15 @@ public class RenderOptions implements Cloneable {
      * @param newColor (not null, unaffected)
      */
     public void setSourceBackgroundColor(ColorRGBA newColor) {
-        sourceBackground.set(newColor);
+        Validate.nonNull(newColor, "new color");
+
+        if (!sourceBackground.equals(newColor)) {
+            sourceBackground.set(newColor);
+
+            EditState editState = Maud.getModel().getOptionsEditState();
+            Background background = Background.SourceScenesWithNoSky;
+            editState.setEditedBackgroundColor(background);
+        }
     }
 
     /**
@@ -268,7 +310,15 @@ public class RenderOptions implements Cloneable {
      * @param newColor (not null, unaffected)
      */
     public void setTargetBackgroundColor(ColorRGBA newColor) {
-        targetBackground.set(newColor);
+        Validate.nonNull(newColor, "new color");
+
+        if (!targetBackground.equals(newColor)) {
+            targetBackground.set(newColor);
+
+            EditState editState = Maud.getModel().getOptionsEditState();
+            Background background = Background.TargetScenesWithNoSky;
+            editState.setEditedBackgroundColor(background);
+        }
     }
 
     /**
@@ -279,14 +329,18 @@ public class RenderOptions implements Cloneable {
     public void setTriangleMode(TriangleMode newSetting) {
         Validate.nonNull(newSetting, "new setting");
 
-        triangleMode = newSetting; // TODO check for change
+        if (triangleMode != newSetting) {
+            triangleMode = newSetting;
 
-        Cgm target = Maud.getModel().getTarget();
-        target.updateSceneWireframe();
+            Cgm target = Maud.getModel().getTarget();
+            target.updateSceneWireframe();
 
-        Cgm source = Maud.getModel().getSource();
-        if (source.isLoaded()) {
-            source.updateSceneWireframe();
+            Cgm source = Maud.getModel().getSource();
+            if (source.isLoaded()) {
+                source.updateSceneWireframe();
+            }
+
+            EditState.optionSetEdited("triangle mode=" + newSetting);
         }
     }
 
@@ -334,7 +388,7 @@ public class RenderOptions implements Cloneable {
      * Toggle whether physics objects are visualized.
      */
     public void togglePhysicsRendered() {
-        physicsRendered = !physicsRendered;
+        setPhysicsRendered(!physicsRendered);
     }
 
     /**

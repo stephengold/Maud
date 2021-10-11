@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,8 +31,10 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
+import maud.Maud;
 import maud.MaudUtil;
 import maud.action.ActionPrefix;
+import maud.model.EditState;
 import maud.model.option.ShowBones;
 
 /**
@@ -167,15 +169,19 @@ public class SkeletonOptions implements Cloneable {
     /**
      * Select which color to view/edit in SkeletonTool.
      *
-     * @param newEditColor (not null)
+     * @param choice (not null)
      */
-    public void selectEditColor(SkeletonColors newEditColor) {
-        Validate.nonNull(newEditColor, "new edit color");
-        editColor = newEditColor;
+    public void selectEditColor(SkeletonColors choice) {
+        Validate.nonNull(choice, "new edit color");
+
+        if (editColor != choice) {
+            editColor = choice;
+            EditState.optionSetEdited("SkeletonTool choice=" + choice);
+        }
     }
 
     /**
-     * Alter the color for the specified use.
+     * Alter the color used for the specified purpose.
      *
      * @param use which color to alter (not null)
      * @param newColor (not null, unaffected)
@@ -183,21 +189,34 @@ public class SkeletonOptions implements Cloneable {
     public void setColor(SkeletonColors use, ColorRGBA newColor) {
         Validate.nonNull(newColor, "new color");
 
+        EditState editState = Maud.getModel().getOptionsEditState();
         switch (use) {
             case IdleBones:
-                defaultColor.set(newColor);
+                if (!defaultColor.equals(newColor)) {
+                    defaultColor.set(newColor);
+                    editState.setEditedSkeletonColor(use);
+                }
                 break;
 
             case Links:
-                linkColor.set(newColor);
+                if (!linkColor.equals(newColor)) {
+                    linkColor.set(newColor);
+                    editState.setEditedSkeletonColor(use);
+                }
                 break;
 
             case MappedBones:
-                mappedColor.set(newColor);
+                if (!mappedColor.equals(newColor)) {
+                    mappedColor.set(newColor);
+                    editState.setEditedSkeletonColor(use);
+                }
                 break;
 
             case TrackedBones:
-                trackedColor.set(newColor);
+                if (!trackedColor.equals(newColor)) {
+                    trackedColor.set(newColor);
+                    editState.setEditedSkeletonColor(use);
+                }
                 break;
 
             default:
@@ -212,7 +231,13 @@ public class SkeletonOptions implements Cloneable {
      */
     public void setLineWidth(float width) {
         Validate.inRange(width, "line width", 0f, Float.MAX_VALUE);
-        lineWidth = width;
+
+        if (lineWidth != width) {
+            lineWidth = width;
+
+            EditState editState = Maud.getModel().getOptionsEditState();
+            editState.setEditedSkeletonLineWidth();
+        }
     }
 
     /**
@@ -222,7 +247,13 @@ public class SkeletonOptions implements Cloneable {
      */
     public void setPointSize(float size) {
         Validate.inRange(size, "point size", 0f, Float.MAX_VALUE);
-        pointSize = size;
+
+        if (pointSize != size) {
+            pointSize = size;
+
+            EditState editState = Maud.getModel().getOptionsEditState();
+            editState.setEditedSkeletonPointSize();
+        }
     }
 
     /**
@@ -232,7 +263,11 @@ public class SkeletonOptions implements Cloneable {
      */
     public void setShowBones(ShowBones newSetting) {
         Validate.nonNull(newSetting, "new setting");
-        showBones = newSetting;
+
+        if (showBones != newSetting) {
+            showBones = newSetting;
+            EditState.optionSetEdited("skeleton show=" + newSetting);
+        }
     }
 
     /**

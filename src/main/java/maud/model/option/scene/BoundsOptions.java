@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,8 +31,10 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
+import maud.Maud;
 import maud.MaudUtil;
 import maud.action.ActionPrefix;
+import maud.model.EditState;
 
 /**
  * Options for bounds visualizations in scene views.
@@ -106,7 +108,13 @@ public class BoundsOptions implements Cloneable {
      */
     public void setColor(ColorRGBA newColor) {
         Validate.nonNull(newColor, "color");
-        color.set(newColor);
+
+        if (!color.equals(newColor)) {
+            color.set(newColor);
+
+            EditState editState = Maud.getModel().getOptionsEditState();
+            editState.setEditedBoundsColor();
+        }
     }
 
     /**
@@ -115,7 +123,10 @@ public class BoundsOptions implements Cloneable {
      * @param newState true &rarr; enable depth test, false &rarr; no depth test
      */
     public void setDepthTestFlag(boolean newState) {
-        depthTestFlag = newState;
+        if (depthTestFlag != newState) {
+            depthTestFlag = newState;
+            EditState.optionSetEdited("bounds depth test=" + newState);
+        }
     }
 
     /**
@@ -125,7 +136,13 @@ public class BoundsOptions implements Cloneable {
      */
     public void setLineWidth(float newWidth) {
         Validate.inRange(newWidth, "new width", 0f, Float.MAX_VALUE);
-        lineWidth = newWidth;
+
+        if (lineWidth != newWidth) {
+            lineWidth = newWidth;
+
+            EditState editState = Maud.getModel().getOptionsEditState();
+            editState.setEditedBoundsLineWidth();
+        }
     }
 
     /**

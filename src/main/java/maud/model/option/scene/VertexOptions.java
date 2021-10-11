@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -30,8 +30,10 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
+import maud.Maud;
 import maud.MaudUtil;
 import maud.action.ActionPrefix;
+import maud.model.EditState;
 
 /**
  * Options for vertex visualizations in scene views.
@@ -74,7 +76,12 @@ public class VertexOptions implements Cloneable {
      */
     public void setPointSize(float size) {
         Validate.nonNegative(size, "size");
-        pointSize = size;
+        if (pointSize != size) {
+            pointSize = size;
+
+            EditState editState = Maud.getModel().getOptionsEditState();
+            editState.setEditedVertexSize();
+        }
     }
 
     /**

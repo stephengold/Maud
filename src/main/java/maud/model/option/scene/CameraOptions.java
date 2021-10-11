@@ -35,6 +35,7 @@ import jme3utilities.math.MyMath;
 import maud.Maud;
 import maud.MaudUtil;
 import maud.action.ActionPrefix;
+import maud.model.EditState;
 
 /**
  * Options for cameras and POVs in scene views.
@@ -201,6 +202,8 @@ public class CameraOptions implements Cloneable {
                 Maud.getModel().getSource().getScenePov().setOrbitGoal();
                 Maud.getModel().getTarget().getScenePov().setOrbitGoal();
             }
+
+            EditState.optionSetEdited("camera movement=" + newMode);
         }
     }
 
@@ -211,7 +214,11 @@ public class CameraOptions implements Cloneable {
      */
     public void setMode(OrbitCenter newCenter) {
         Validate.nonNull(newCenter, "new center");
-        orbitCenter = newCenter;
+
+        if (orbitCenter != newCenter) {
+            orbitCenter = newCenter;
+            EditState.optionSetEdited("camera center=" + newCenter);
+        }
     }
 
     /**
@@ -221,7 +228,10 @@ public class CameraOptions implements Cloneable {
      */
     public void setMode(ProjectionMode newMode) {
         Validate.nonNull(newMode, "new mode");
-        projectionMode = newMode;
+        if (projectionMode != newMode) {
+            projectionMode = newMode;
+            EditState.optionSetEdited("camera projection=" + newMode);
+        }
     }
 
     /**
@@ -240,9 +250,9 @@ public class CameraOptions implements Cloneable {
      */
     public void toggleProjection() {
         if (projectionMode == ProjectionMode.Parallel) {
-            projectionMode = ProjectionMode.Perspective;
+            setMode(ProjectionMode.Perspective);
         } else {
-            projectionMode = ProjectionMode.Parallel;
+            setMode(ProjectionMode.Parallel);
         }
     }
 

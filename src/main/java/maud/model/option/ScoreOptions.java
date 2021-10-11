@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -31,8 +31,10 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
+import maud.Maud;
 import maud.MaudUtil;
 import maud.action.ActionPrefix;
+import maud.model.EditState;
 import maud.model.cgm.Cgm;
 
 /**
@@ -130,20 +132,28 @@ public class ScoreOptions implements Cloneable {
      */
     public void setShowNoneSelected(ShowBones newSetting) {
         Validate.nonNull(newSetting, "new setting");
-        showNoneSelected = newSetting;
+
+        if (showNoneSelected != newSetting) {
+            showNoneSelected = newSetting;
+            EditState.optionSetEdited("score show none=" + newSetting);
+        }
     }
 
     /**
      * Alter whether bone rotations are displayed. Hiding all bone-track
      * components is disallowed.
      *
-     * @param newSetting true &rarr; show rotations, false &rarr; hide them
+     * @param desiredSetting true &rarr; show rotations, false &rarr; hide them
      */
-    public void setShowRotations(boolean newSetting) {
+    public void setShowRotations(boolean desiredSetting) {
+        boolean newSetting = true;
         if (showScalesFlag || showTranslationsFlag) {
+            newSetting = desiredSetting;
+        }
+
+        if (showRotationsFlag != newSetting) {
             showRotationsFlag = newSetting;
-        } else {
-            showRotationsFlag = true;
+            EditState.optionSetEdited("score show rot=" + newSetting);
         }
     }
 
@@ -151,13 +161,17 @@ public class ScoreOptions implements Cloneable {
      * Alter whether bone scales are displayed. Hiding all bone-track components
      * is disallowed.
      *
-     * @param newSetting true &rarr; show scales, false &rarr; hide them
+     * @param desiredSetting true &rarr; show scales, false &rarr; hide them
      */
-    public void setShowScales(boolean newSetting) {
+    public void setShowScales(boolean desiredSetting) {
+        boolean newSetting = true;
         if (showRotationsFlag || showTranslationsFlag) {
+            newSetting = desiredSetting;
+        }
+
+        if (showScalesFlag != newSetting) {
             showScalesFlag = newSetting;
-        } else {
-            showScalesFlag = true;
+            EditState.optionSetEdited("score show sca=" + newSetting);
         }
     }
 
@@ -165,13 +179,18 @@ public class ScoreOptions implements Cloneable {
      * Alter whether bone translations are displayed. Hiding all bone-track
      * components is disallowed.
      *
-     * @param newSetting true &rarr; show translations, false &rarr; hide them
+     * @param desiredSetting true &rarr; show translations, false &rarr; hide
+     * them
      */
-    public void setShowTranslations(boolean newSetting) {
+    public void setShowTranslations(boolean desiredSetting) {
+        boolean newSetting = true;
         if (showRotationsFlag || showScalesFlag) {
+            newSetting = desiredSetting;
+        }
+
+        if (showTranslationsFlag != newSetting) {
             showTranslationsFlag = newSetting;
-        } else {
-            showTranslationsFlag = true;
+            EditState.optionSetEdited("score show tra=" + newSetting);
         }
     }
 
@@ -183,6 +202,11 @@ public class ScoreOptions implements Cloneable {
     public void setShowWhenSelected(ShowBones newSetting) {
         Validate.nonNull(newSetting, "new setting");
         showWhenSelected = newSetting;
+
+        if (showWhenSelected != newSetting) {
+            showWhenSelected = newSetting;
+            EditState.optionSetEdited("score show selected=" + newSetting);
+        }
     }
 
     /**
@@ -191,7 +215,15 @@ public class ScoreOptions implements Cloneable {
      * @param newColor (not null, unaffected)
      */
     public void setSourceBackgroundColor(ColorRGBA newColor) {
-        sourceBackground.set(newColor);
+        Validate.nonNull(newColor, "new color");
+
+        if (!sourceBackground.equals(newColor)) {
+            sourceBackground.set(newColor);
+
+            EditState editState = Maud.getModel().getOptionsEditState();
+            Background background = Background.SourceScores;
+            editState.setEditedBackgroundColor(background);
+        }
     }
 
     /**
@@ -200,7 +232,15 @@ public class ScoreOptions implements Cloneable {
      * @param newColor (not null, unaffected)
      */
     public void setTargetBackgroundColor(ColorRGBA newColor) {
-        targetBackground.set(newColor);
+        Validate.nonNull(newColor, "new color");
+
+        if (!targetBackground.equals(newColor)) {
+            targetBackground.set(newColor);
+
+            EditState editState = Maud.getModel().getOptionsEditState();
+            Background background = Background.TargetScores;
+            editState.setEditedBackgroundColor(background);
+        }
     }
 
     /**

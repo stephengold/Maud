@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -30,8 +30,10 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
+import maud.Maud;
 import maud.MaudUtil;
 import maud.action.ActionPrefix;
+import maud.model.EditState;
 
 /**
  * Options for visible coordinate axes in scene views.
@@ -133,7 +135,10 @@ public class AxesOptions implements Cloneable {
      * @param newState true &rarr; enable depth test, false &rarr; no depth test
      */
     public void setDepthTestFlag(boolean newState) {
-        depthTestFlag = newState;
+        if (depthTestFlag != newState) {
+            depthTestFlag = newState;
+            EditState.optionSetEdited("axes depth test=" + newState);
+        }
     }
 
     /**
@@ -143,7 +148,11 @@ public class AxesOptions implements Cloneable {
      */
     public void setDragEffect(AxesDragEffect newEffect) {
         Validate.nonNull(newEffect, "new effect");
-        dragEffect = newEffect;
+
+        if (dragEffect != newEffect) {
+            dragEffect = newEffect;
+            EditState.optionSetEdited("axes drag effect=" + newEffect);
+        }
     }
 
     /**
@@ -153,7 +162,12 @@ public class AxesOptions implements Cloneable {
      */
     public void setLineWidth(float width) {
         Validate.nonNegative(width, "width");
-        lineWidth = width;
+
+        if (lineWidth != width) {
+            lineWidth = width;
+            EditState editState = Maud.getModel().getOptionsEditState();
+            editState.setEditedAxesLineWidth();
+        }
     }
 
     /**
@@ -163,7 +177,11 @@ public class AxesOptions implements Cloneable {
      */
     public void setSubject(AxesSubject newSubject) {
         Validate.nonNull(newSubject, "new subject");
-        subject = newSubject;
+
+        if (subject != newSubject) {
+            subject = newSubject;
+            EditState.optionSetEdited("axes subject=" + newSubject);
+        }
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -75,7 +75,7 @@ public class EditorModel {
     final private static Logger logger
             = Logger.getLogger(EditorModel.class.getName());
     // *************************************************************************
-    // fields
+    // fields TODO combine all options in a separate object
 
     /**
      * global list of known asset locations
@@ -89,6 +89,10 @@ public class EditorModel {
      * load slot for the skeleton map
      */
     final private EditableMap mapLoadSlot;
+    /**
+     * count of unsaved edits to options
+     */
+    final private EditState optionsEditState;
     /**
      * load slot for the (read-only) source C-G model
      */
@@ -123,6 +127,7 @@ public class EditorModel {
         assetLocations = new AssetLocations();
         targetCgmLoadSlot = new EditableCgm();
         mapLoadSlot = new EditableMap();
+        optionsEditState = new EditState();
         sourceCgmLoadSlot = new LoadedCgm();
         miscOptions = new MiscOptions();
         dumper = new PhysicsDumper();
@@ -142,6 +147,7 @@ public class EditorModel {
             assetLocations = other.getLocations().clone();
             targetCgmLoadSlot = other.getTarget().clone();
             mapLoadSlot = other.getMap().clone();
+            optionsEditState = other.getOptionsEditState().clone();
             sourceCgmLoadSlot = other.getSource().clone();
             miscOptions = other.getMisc().clone();
             dumper = other.getDumper().clone();
@@ -222,6 +228,16 @@ public class EditorModel {
     }
 
     /**
+     * Access the EditState for options.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public EditState getOptionsEditState() {
+        assert optionsEditState != null;
+        return optionsEditState;
+    }
+
+    /**
      * Access the options for "scene" views.
      *
      * @return the pre-existing instance (not null)
@@ -295,6 +311,7 @@ public class EditorModel {
         targetCgmLoadSlot.getSceneView().preCheckpoint();
         mapLoadSlot.getEditState().preCheckpoint();
         targetCgmLoadSlot.getEditState().preCheckpoint();
+        optionsEditState.preCheckpoint();
     }
 
     /**
@@ -329,8 +346,9 @@ public class EditorModel {
                 techniques.setTweenScales(TweenVectors.CentripetalSpline);
                 break;
             default:
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("preset = " + preset);
         }
+        optionsEditState.setEdited("preset tweening to " + preset);
     }
 
     /**
@@ -342,14 +360,14 @@ public class EditorModel {
     public void setBackgroundColor(Background which, ColorRGBA newColor) {
         Validate.nonNull(newColor, "new color");
 
-        RenderOptions scene = getScene().getRender();
+        RenderOptions scene = sceneOptions.getRender();
         switch (which) {
             case SourceScenesWithNoSky:
                 scene.setSourceBackgroundColor(newColor);
                 break;
 
             case SourceScores:
-                getScore().setSourceBackgroundColor(newColor);
+                scoreOptions.setSourceBackgroundColor(newColor);
                 break;
 
             case TargetScenesWithNoSky:
@@ -357,11 +375,11 @@ public class EditorModel {
                 break;
 
             case TargetScores:
-                getScore().setTargetBackgroundColor(newColor);
+                scoreOptions.setTargetBackgroundColor(newColor);
                 break;
 
             default:
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("which = " + which);
         }
     }
 
@@ -371,6 +389,7 @@ public class EditorModel {
     public void updateStartupScript() {
         try {
             writeStartupScript(Maud.startupScriptAssetPath);
+            optionsEditState.setPristine("write startup script");
         } catch (IOException exception) {
             logger.log(Level.SEVERE,
                     "Output exception while writing startup script to {0}!",
