@@ -286,6 +286,9 @@ public class Maud extends GuiApplication {
              */
             UncachedKey key = new UncachedKey(startupScriptAssetPath);
             assetManager.loadAsset(key);
+
+            String eventDescription = "load the startup script";
+            editorModel.getOptionsEditState().setPristine(eventDescription);
         } else {
             logger.info("loadStartupScript=false");
         }
@@ -404,30 +407,57 @@ public class Maud extends GuiApplication {
         EditState mapEditState = editorModel.getMap().getEditState();
         int mapEdits = mapEditState.countUnsavedEdits();
 
-        String message;
-        if (cgmEdits + mapEdits == 0) {
-            message = "Quit Maud?";
+        EditState optionsEditState = editorModel.getOptionsEditState();
+        int optionChanges = optionsEditState.countUnsavedEdits();
+
+        StringBuilder message = new StringBuilder(150);
+        if (cgmEdits + mapEdits + optionChanges == 0) {
+            message.append("Quit Maud?");
         } else {
-            message = "You've made ";
+            message.append("You've made ");
             if (cgmEdits > 0) {
-                message += String.format(
-                        "%d unsaved edit%s to the target model", cgmEdits,
-                        cgmEdits == 1 ? "" : "s");
-            }
-            if (cgmEdits > 0 && mapEdits > 0) {
-                message += " and ";
+                message.append(cgmEdits);
+                message.append(" unsaved edit");
+                if (cgmEdits != 1) {
+                    message.append('s');
+                }
+                message.append(" to the target model");
             }
             if (mapEdits > 0) {
-                message += String.format(
-                        "%d unsaved edit%s to the skeleton map", mapEdits,
-                        mapEdits == 1 ? "" : "s");
+                if (cgmEdits > 0) {
+                    if (optionChanges > 0) {
+                        message.append(", ");
+                    } else {
+                        message.append(" and ");
+                    }
+                }
+                message.append(mapEdits);
+                message.append(" unsaved edit");
+                if (mapEdits != 1) {
+                    message.append('s');
+                }
+                message.append(" to the skeleton map");
             }
-            message += ".\nReally quit Maud?";
+            if (optionChanges > 0) {
+                if (cgmEdits + mapEdits > 0) {
+                    if (cgmEdits > 0 && mapEdits > 0) {
+                        message.append(", "); // Oxford comma
+                    }
+                    message.append(" and ");
+                }
+                message.append(optionChanges);
+                message.append(" unsaved change");
+                if (optionChanges != 1) {
+                    message.append('s');
+                }
+                message.append(" to options");
+            }
+            message.append(".\nReally quit Maud?");
         }
 
         QuitDialog controller = new QuitDialog();
-        gui.showConfirmDialog(message, "", SimpleApplication.INPUT_MAPPING_EXIT,
-                controller);
+        gui.showConfirmDialog(message.toString(), "",
+                SimpleApplication.INPUT_MAPPING_EXIT, controller);
     }
 
     /**
