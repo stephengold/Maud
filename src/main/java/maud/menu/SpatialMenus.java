@@ -316,6 +316,39 @@ public class SpatialMenus {
             builder.show(ActionPrefix.selectSpatialChild);
         }
     }
+
+    /**
+     * Handle a "select spatialSibling" action.
+     *
+     * @param itemPrefix prefix for filtering menu items (not null)
+     */
+    public static void selectSpatialSibling(String itemPrefix) {
+        SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
+        int numSiblings = spatial.countSiblings(); // count includes self
+        assert numSiblings > 1 : numSiblings;
+
+        List<String> siblings = spatial.listNumberedSiblings();
+        List<String> choices
+                = MyString.addMatchPrefix(siblings, itemPrefix, null);
+        MyString.reduce(choices, ShowMenus.maxItems);
+        Collections.sort(choices);
+
+        MenuBuilder builder = new MenuBuilder();
+        for (String choice : choices) {
+            int siblingIndex = siblings.indexOf(choice);
+            if (siblingIndex >= 0) {
+                boolean isANode = spatial.isSiblingANode(siblingIndex);
+                if (isANode) {
+                    builder.addNode(choice);
+                } else {
+                    builder.addGeometry(choice);
+                }
+            } else {
+                builder.addEllipsis(choice);
+            }
+        }
+        builder.show(ActionPrefix.selectSpatialSibling);
+    }
     // *************************************************************************
     // private methods
 

@@ -487,6 +487,10 @@ public class ActionPrefix {
      */
     final public static String selectSpatialChild = "select spatialChild ";
     /**
+     * argument is a quoted name plus bracketed index, or a prefix thereof
+     */
+    final public static String selectSpatialSibling = "select spatialSibling ";
+    /**
      * argument is the description of either a non-null texture or a
      * null-texture reference
      */

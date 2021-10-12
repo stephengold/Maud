@@ -209,6 +209,7 @@ class SpatialTool extends Tool {
     private void updateSiblings() {
         String first = "";
         String previous = "";
+        String select = "";
         String next = "";
         String last = "";
 
@@ -224,10 +225,12 @@ class SpatialTool extends Tool {
                 next = "Next";
                 last = "Last";
             }
+            select = "Select";
         }
 
         setButtonText("spatialFirstSibling", first);
         setButtonText("spatialPreviousSibling", previous);
+        setButtonText("spatialSelectSibling", select);
         setButtonText("spatialNextSibling", next);
         setButtonText("spatialLastSibling", last);
     }

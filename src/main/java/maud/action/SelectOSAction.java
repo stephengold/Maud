@@ -218,14 +218,18 @@ class SelectOSAction {
             }
             break;
 
+            case Action.selectSpatialParent:
+                spatial.selectParent();
+                break;
+
             case Action.selectSpatialPreviousSibling: {
                 int siblingIndex = spatial.siblingIndex();
                 spatial.selectSibling(siblingIndex - 1);
             }
             break;
 
-            case Action.selectSpatialParent:
-                spatial.selectParent();
+            case Action.selectSpatialSibling:
+                SpatialMenus.selectSpatialSibling("");
                 break;
 
             default:
@@ -379,6 +383,16 @@ class SelectOSAction {
                     ActionPrefix.selectSourceBone);
             BoneMenus.selectSourceBone(arg);
 
+        } else if (actionString.startsWith(ActionPrefix.selectSpatial)) {
+            arg = MyString.remainder(actionString, ActionPrefix.selectSpatial);
+            String whichName = arg.split(" ")[0];
+            WhichSpatials which = WhichSpatials.valueOf(whichName);
+            String name = "";
+            if (arg.contains(" ")) {
+                name = MyString.remainder(arg, whichName + " ");
+            }
+            SpatialMenus.selectSpatial(name, which);
+
         } else if (actionString.startsWith(ActionPrefix.selectSpatialChild)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.selectSpatialChild);
@@ -391,15 +405,17 @@ class SelectOSAction {
                 SpatialMenus.selectSpatialChild(arg);
             }
 
-        } else if (actionString.startsWith(ActionPrefix.selectSpatial)) {
-            arg = MyString.remainder(actionString, ActionPrefix.selectSpatial);
-            String whichName = arg.split(" ")[0];
-            WhichSpatials which = WhichSpatials.valueOf(whichName);
-            String name = "";
-            if (arg.contains(" ")) {
-                name = MyString.remainder(arg, whichName + " ");
+        } else if (actionString.startsWith(ActionPrefix.selectSpatialSibling)) {
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectSpatialSibling);
+            SelectedSpatial spatial = target.getSpatial();
+            List<String> siblings = spatial.listNumberedSiblings();
+            int siblingIndex = siblings.indexOf(arg);
+            if (siblingIndex >= 0) { // complete name+index
+                spatial.selectSibling(siblingIndex);
+            } else { // prefix of name+index
+                SpatialMenus.selectSpatialSibling(arg);
             }
-            SpatialMenus.selectSpatial(name, which);
 
         } else {
             handled = false;

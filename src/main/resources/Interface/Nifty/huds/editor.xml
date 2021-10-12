@@ -2874,6 +2874,10 @@ Approximate minimum screen size: 640x480
                                  width="*">
                             <interact onRelease="perform(select spatialPreviousSibling)"/>
                         </control>
+                        <control name="button" id="spatialSelectSiblingButton"
+                                 width="60px">
+                            <interact onRelease="perform(select spatialSibling)"/>
+                        </control>
                         <control name="button" id="spatialNextSiblingButton"
                                  width="*">
                             <interact onRelease="perform(select spatialNextSibling)"/>
@@ -2913,7 +2917,7 @@ Approximate minimum screen size: 640x480
                                  backgroundColor="#ffff"
                                  width="*"/>
                         <control name="button" id="spatialApplyTransformButton"
-                                 width="60px">
+                                 width="50px">
                             <interact onRelease="perform(apply spatialTransform)"/>
                         </control>
                     </panel>

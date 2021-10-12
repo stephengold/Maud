@@ -436,7 +436,7 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Attach a clone of the source C-G model to the selected scene-graph node.
+     * Attach a clone of the source C-G model to the selected Node.
      */
     public void attachClone() {
         assert cgm == Maud.getModel().getTarget();
@@ -454,9 +454,9 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Attach a leaf (empty) node to the selected scene-graph node.
+     * Attach a new leaf (empty) node to the selected Node.
      *
-     * @param leafNodeName a name for the new node (not null, not empty)
+     * @param leafNodeName a name for the new Node (not null, not empty)
      */
     public void attachLeafNode(String leafNodeName) {
         Validate.nonEmpty(leafNodeName, "leaf-node name");
@@ -585,7 +585,7 @@ public class SelectedSpatial implements JmeCloneable {
     /**
      * Count how many children are attached to the spatial.
      *
-     * @return count (&ge;0) or 0 if the spatial is not a scene-graph node
+     * @return count (&ge;0) or 0 if the spatial is not a Node
      */
     public int countChildren() {
         Spatial parent = find();
@@ -1081,6 +1081,24 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
+     * Read the name of an indexed child of the selected spatial's parent.
+     *
+     * @param siblingIndex which sibling (&ge;0)
+     * @return name, or null if none
+     */
+    public String getSiblingName(int siblingIndex) {
+        assert siblingIndex >= 0 : siblingIndex;
+
+        String result = null;
+        Spatial sibling = modelSibling(siblingIndex);
+        if (sibling != null) {
+            result = sibling.getName();
+        }
+
+        return result;
+    }
+
+    /**
      * Determine the type of the spatial's world bound.
      *
      * @return an enum value, or null if bound not set
@@ -1275,10 +1293,10 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Test whether the indexed child of the selected spatial is a node.
+     * Test whether the indexed child of the selected Spatial is a Node.
      *
      * @param childIndex which child (&ge;0)
-     * @return true if it's a node, otherwise false
+     * @return true if it's a Node, otherwise false
      */
     public boolean isChildANode(int childIndex) {
         Validate.nonNegative(childIndex, "child index");
@@ -1295,9 +1313,9 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Test whether the spatial is a geometry.
+     * Test whether the selected Spatial is a Geometry.
      *
-     * @return true if it's a geometry, otherwise false
+     * @return true if it's a Geometry, otherwise false
      */
     public boolean isGeometry() {
         Spatial spatial = find();
@@ -1307,13 +1325,37 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Test whether the spatial is a node.
+     * Test whether the selected Spatial is a Node.
      *
-     * @return true if it's a node, otherwise false
+     * @return true if it's a Node, otherwise false
      */
     public boolean isNode() {
         Spatial spatial = find();
         boolean result = spatial instanceof Node;
+
+        return result;
+    }
+
+    /**
+     * Test whether the indexed sibling of the selected spatial is a Node.
+     *
+     * @param siblingIndex which sibling (&ge;0)
+     * @return true if it's a Node, otherwise false
+     */
+    public boolean isSiblingANode(int siblingIndex) {
+        Validate.nonNegative(siblingIndex, "sibling index");
+
+        Spatial spatial = find();
+        Node parent = spatial.getParent();
+
+        Spatial sibling;
+        if (parent == null) { // spatial is the model root
+            assert siblingIndex == 0 : siblingIndex;
+            sibling = spatial;
+        } else {
+            sibling = parent.getChild(siblingIndex);
+        }
+        boolean result = sibling instanceof Node;
 
         return result;
     }
@@ -1495,6 +1537,25 @@ public class SelectedSpatial implements JmeCloneable {
             String name = getChildName(childIndex);
             String choice = String.format("%s [%d]", MyString.quote(name),
                     childIndex);
+            result.add(choice);
+        }
+
+        return result;
+    }
+
+    /**
+     * Enumerate all siblings of the spatial (including itself), numbering them
+     * to prevent duplication.
+     *
+     * @return a new list of numbered names ordered by index
+     */
+    public List<String> listNumberedSiblings() {
+        int numSiblings = countSiblings(); // count includes self
+        List<String> result = new ArrayList<>(numSiblings);
+        for (int siblingIndex = 0; siblingIndex < numSiblings; ++siblingIndex) {
+            String name = getSiblingName(siblingIndex);
+            String choice = String.format("%s [%d]", MyString.quote(name),
+                    siblingIndex);
             result.add(choice);
         }
 
@@ -1733,7 +1794,7 @@ public class SelectedSpatial implements JmeCloneable {
     }
 
     /**
-     * Select the parent of the selected spatial.
+     * Select the parent of the selected Spatial.
      */
     public void selectParent() {
         Spatial selectedSpatial = find();
@@ -2082,6 +2143,29 @@ public class SelectedSpatial implements JmeCloneable {
         }
 
         return child;
+    }
+
+    /**
+     * Access (by index) a child of the selected spatial's parent in the MVC
+     * model.
+     *
+     * @param siblingIndex which sibling (&ge;0)
+     * @return the pre-existing instance, or null if none
+     */
+    private Spatial modelSibling(int siblingIndex) {
+        assert siblingIndex >= 0 : siblingIndex;
+
+        Spatial spatial = find();
+        Spatial parent = spatial.getParent();
+
+        Spatial result;
+        if (parent == null) {
+            result = null;
+        } else {
+            result = ((Node) parent).getChild(siblingIndex);
+        }
+
+        return result;
     }
 
     /**
