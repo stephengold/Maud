@@ -140,16 +140,12 @@ public class HistoryTool extends Tool {
         setButtonText("historyRedoAll", aButton);
         setButtonText("historyRedo", rButton);
 
-        String clearButton = "";
-        if (numCheckpoints > 0) {
-            clearButton = "Clear";
-        }
-        setButtonText("historyClear", clearButton);
-        
+        setButtonText("historyClear", "Clear");
+
         int limit = Maud.getModel().getMisc().maxCheckpoints();
         String limitButton = Integer.toString(limit);
         setButtonText("historyLimit", limitButton);
-        
+
         String uButton = "";
         boolean noneVulnerable = !History.hasVulnerable();
         if (nextIndex > 1 || noneVulnerable && nextIndex > 0) {
