@@ -5,6 +5,7 @@ Maud is an editor for the animated 3-D models used with the
 
 Anticipated uses:
 
+ + customize of models created by others
  + develop animations from motion-capture data
  + copy/retarget animations between models
  + convert models in other formats to native J3O format
@@ -13,11 +14,13 @@ Anticipated uses:
 Summary of features:
 
  + load models from local filesystems, JAR/ZIP archives, or HTTP servers
- + merge models
  + import models from [Blender][]/[glTF][]/[IQE][]/[Ogre][]/[Wavefront][obj]/[Xbuf][] and save to native J3O format
  + import animations from [Biovision Hierarchy (BVH)](#bvh) files
  + visualize animations, axes, bones, bounding boxes, lights,
    mesh vertices, physics objects, and skeletons
+ + merge models or geometries
+ + split geometries
+ + apply transforms to meshes or child spatials
  + browse animations, bones, keyframes, lights, material parameters,
    material-parameter overrides, mesh vertices, physics objects,
    physics shapes, scene-graph controls, spatials, tracks, and user data
@@ -38,7 +41,7 @@ Summary of features:
  + modify bone/spatial transforms (translation, rotation, and scale)
  + modify batch hints, cull hints, lights, material parameters,
    material-parameter overrides, render-queue buckets, shadow modes, and user data
- + review an unlimited edit history and undo/redo edits
+ + review the edit history and undo/redo edits
  + customizable mouse-button assignments and keyboard shortcuts
  + complete Java source code provided under a [BSD 3-Clause License][bsd3]
 
@@ -55,7 +58,7 @@ Java source code is provided under
 ## Contents of this document
 
  + [How to download and run a pre-built release of Maud](#prebuilt)
- + [How to build Maud from source](#build)
+ + [How to build and run Maud from source](#build)
  + [Using Maud](#use)
  + [3-D Models](#cgms)
  + [Bones](#bones)
@@ -75,94 +78,64 @@ Java source code is provided under
 
 ## How to download and run a pre-built release of Maud
 
-1. Find the desired release in the webpage at
-   https://github.com/stephengold/Maud/releases
-2. Download the ZIP file for your platform.
-   (For a 64-bit Windows platform, download "Maud-Windows-x64.zip".)
-3. Extract the contents of the ZIP file.
-4. Open/run the Maud executable/application in the extracted folder/directory.
-   (In Windows, open "Maud.exe" in the "Maud" folder.)
+1. Install a 64-bit Java, if you don't already have one.
+   (Maud no longer supports 32-bit Java.)
+2. Point the `JAVA_HOME` environment variable to your Java installation.
+   (In other words, set it to the path of a directory/folder
+   containing a "bin" that contains a Java executable.
+   The path might be something like "C:\Program Files\Java\jre1.8.0_301"
+   or "/usr/lib/jvm/java-11-openjdk-amd64/" .)
+  + using Bash:  `export JAVA_HOME="` *path to installation* `"`
+  + using Windows Command Prompt:  `set JAVA_HOME="` *path to installation* `"`
+  + using PowerShell: `$env:JAVA_HOME = '` *path to installation* `'`
+3. Install the latest Maud release from GitHub:
+  + browse to [the latest release](https://github.com/stephengold/Maud/releases/latest)
+  + follow the "Maud.zip" link
+  + save the ZIP file
+  + extract the contents of the saved ZIP file
+4. `cd` to the extracted "Maud" directory/folder that contains "bin" and "lib" .
+5. Run the Maud startup script:
+  + using Bash: `./bin/Maud`
+  + using Windows Command Prompt: `./bin/Maud.bat`
+  + using PowerShell: `.\bin\Maud.bat`
 
 [Jump to table of contents](#toc)
 
 <a name="build"/>
 
-## How to build Maud from source
+## How to build and run Maud from source
 
-You are welcome to use the Engine
-without installing its Integrated Development Environment (IDE),
-but I use the IDE, so I tend to assume you will too.
+1. Install a 64-bit Java Development Kit (JDK),
+   if you don't already have one.
+2. Point the `JAVA_HOME` environment variable to your JDK installation.
+  + using Bash:  `export JAVA_HOME="` *path to installation* `"`
+  + using Windows Command Prompt:  `set JAVA_HOME="` *path to installation* `"`
+  + using PowerShell: `$env:JAVA_HOME = '` *path to installation* `'`
+3. Download and extract the Maud source code from GitHub:
+  + using Git:
+    + `git clone https://github.com/stephengold/Maud.git`
+    + `cd Maud`
+    + `git checkout -b latest 1.0.0-beta1`
+  + using a web browser:
+    + browse to [the latest release](https://github.com/stephengold/Maud/releases/latest)
+    + follow the "Source code (zip)" link
+    + save the ZIP file
+    + extract the contents of the saved ZIP file
+    + `cd` to the extracted directory/folder
+4. Run the [Gradle] wrapper:
+  + using Bash or PowerShell: `./gradlew build`
+  + using Windows Command Prompt: `.\gradlew build`
 
-### IDE setup
+After a successful build,
+archives for distribution will be found in `build/distributions`.
 
-If you already have the IDE installed, skip to step 6.
+You can run the local build using the Gradle wrapper:
+  + using Bash or PowerShell: `./gradlew run`
+  + using Windows Command Prompt: `.\gradlew run`
 
-The hardware and software requirements of the IDE are documented at
-[the JME wiki](https://jmonkeyengine.github.io/wiki/jme3/requirements.html).
-
- 1. Download a jMonkeyEngine 3.2 Software Development Kit (SDK) from
-    [GitHub](https://github.com/jMonkeyEngine/sdk/releases).
- 2. Install the SDK, which includes:
-    + the engine itself,
-    + an IDE based on [NetBeans][],
-    + various IDE plugins, and
-    + the [Blender 3D][blender] application.
- 3. Open the IDE.
- 4. The first time you open the IDE, it prompts you to
-    specify a folder for storing projects:
-    + Fill in the "Folder name" text box.
-    + Click on the "Set Project Folder" button.
- 5. The first time you open the IDE, you should update
-    all the pre-installed plugins:
-    + Menu bar -> "Tools" -> "Plugins" to open the "Plugins" dialog.
-    + Click on the "Update" button to open the "Plugin Installer" wizard.
-    + Click on the "Next >" button.
-    + After the plugins have downloaded, click "Finish".
-    + The IDE will restart.
- 6. In order to open the Maud Project in the IDE (or NetBeans),
-    you will need to install the `Gradle Support` plugin:
-    + Menu bar -> "Tools" -> "Plugins" to open the "Plugins" dialog.
-    + Click on the "Available Plugins" tab.
-    + Check the box next to "Gradle Support" in the "Gradle" category.
-     If this plugin isn't shown in the IDE's "Plugins" tool,
-     you can download it from
-     [GitHub](https://github.com/kelemen/netbeans-gradle-project/releases).
-    + Click on the "Install" button to open the "Plugin Installer" wizard.
-    + Click on the "Next >" button.
-    + Check the box next to
-     "I accept the terms in all the license agreements."
-    + Click on the "Install" button.
-    + When the "Verify Certificate" dialog appears,
-     click on the "Continue" button.
-    + Click on the "Finish" button.
-    + The IDE will restart.
-
-### Source files
-
-Clone the Maud repository using Git:
-
- 1. Open the "Clone Repository" wizard in the IDE, either:
-     + Menu bar -> "Team" -> "Git" -> "Clone..." or
-     + Menu bar -> "Team" -> "Remote" -> "Clone..."
- 2. For "Repository URL:" specify
-    `https://github.com/stephengold/Maud.git`
- 3. Clear the "User:" and "Password:" text boxes.
- 4. For "Clone into:" specify a writable folder (on a local filesystem)
-    that doesn't already contain "Maud".
- 5. Click on the "Next >" button.
- 6. Make sure the "master" remote branch is checked.
- 7. Click on the "Next >" button again.
- 8. Make sure the Checkout Branch is set to "master".
- 9. Make sure the "Scan for NetBeans Projects after Clone" box is checked.
-10. Click on the "Finish" button.
-11. When the "Clone Completed" dialog appears, click on the "Open Project..."
-    button.
-
-### Build the project
-
- 1. In the "Projects" window of the IDE,
-    right-click on the "Maud" project to select it.
- 2. Select "Build".
+You can restore the project to a pristine state:
+ + using Bash or PowerShell: `./gradlew clean`
+ + using Windows Command Prompt: `.\gradlew clean`
 
 [Jump to table of contents](#toc)
 
