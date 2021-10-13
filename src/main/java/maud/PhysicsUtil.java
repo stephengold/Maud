@@ -99,7 +99,7 @@ public class PhysicsUtil {
         CollisionShape shape;
         switch (shapeType) {
             case Hull:
-                shape = PhysicsUtil.makeShapeHull(subtree);
+                shape = makeShapeHull(subtree);
                 break;
 
             case CompoundOfBoxes:
@@ -116,7 +116,7 @@ public class PhysicsUtil {
 
             case MsSphere:
             case Sphere:
-                shape = PhysicsUtil.makeShapeSphere(shapeType, subtree);
+                shape = makeShapeSphere(shapeType, subtree);
                 break;
 
             case Box:
@@ -131,7 +131,7 @@ public class PhysicsUtil {
             case MsCapsule:
             case Simplex:
                 Vector3f halfExtents = MaudUtil.halfExtents(subtree);
-                shape = PhysicsUtil.makeShape(shapeType, halfExtents);
+                shape = makeShape(shapeType, halfExtents);
                 break;
 
             case TransBox:
@@ -143,7 +143,7 @@ public class PhysicsUtil {
             case TransCylinderY:
             case TransCylinderZ:
             case TransSimplex:
-                shape = PhysicsUtil.makeShapeTranslated(shapeType, subtree);
+                shape = makeShapeTranslated(shapeType, subtree);
                 break;
 
             default:
@@ -536,31 +536,31 @@ public class PhysicsUtil {
         CollisionShape child;
         switch (shapeType) {
             case TransBox:
-                child = PhysicsUtil.makeShape(ShapeType.Box, halfExtents);
+                child = makeShape(ShapeType.Box, halfExtents);
                 break;
             case TransCapsule:
-                child = PhysicsUtil.makeShape(ShapeType.Capsule, halfExtents);
+                child = makeShape(ShapeType.Capsule, halfExtents);
                 break;
             case TransConeX:
-                child = PhysicsUtil.makeShape(ShapeType.ConeX, halfExtents);
+                child = makeShape(ShapeType.ConeX, halfExtents);
                 break;
             case TransConeY:
-                child = PhysicsUtil.makeShape(ShapeType.ConeY, halfExtents);
+                child = makeShape(ShapeType.ConeY, halfExtents);
                 break;
             case TransConeZ:
-                child = PhysicsUtil.makeShape(ShapeType.ConeZ, halfExtents);
+                child = makeShape(ShapeType.ConeZ, halfExtents);
                 break;
             case TransCylinderX:
-                child = PhysicsUtil.makeShape(ShapeType.CylinderX, halfExtents);
+                child = makeShape(ShapeType.CylinderX, halfExtents);
                 break;
             case TransCylinderY:
-                child = PhysicsUtil.makeShape(ShapeType.CylinderY, halfExtents);
+                child = makeShape(ShapeType.CylinderY, halfExtents);
                 break;
             case TransCylinderZ:
-                child = PhysicsUtil.makeShape(ShapeType.CylinderZ, halfExtents);
+                child = makeShape(ShapeType.CylinderZ, halfExtents);
                 break;
             case TransSimplex:
-                child = PhysicsUtil.makeShape(ShapeType.Simplex, halfExtents);
+                child = makeShape(ShapeType.Simplex, halfExtents);
                 break;
             default:
                 throw new IllegalArgumentException(shapeType.toString());

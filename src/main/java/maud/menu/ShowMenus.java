@@ -96,7 +96,7 @@ public class ShowMenus {
          * Build a reduced menu.
          */
         List<String> reducedList = new ArrayList<>(matParamNames);
-        MyString.reduce(reducedList, ShowMenus.maxItems);
+        MyString.reduce(reducedList, maxItems);
         Collections.sort(reducedList);
         MenuBuilder builder = new MenuBuilder();
         for (String listItem : reducedList) {
@@ -200,7 +200,7 @@ public class ShowMenus {
          * Build a reduced menu.
          */
         List<String> reducedList = new ArrayList<>(matParamNames);
-        MyString.reduce(reducedList, ShowMenus.maxItems);
+        MyString.reduce(reducedList, maxItems);
         Collections.sort(reducedList);
         MenuBuilder builder = new MenuBuilder();
         for (String listItem : reducedList) {

@@ -325,7 +325,7 @@ public class AnimationMenus {
                 break;
 
             case "Load animation":
-                AnimationMenus.loadAnimation(target);
+                loadAnimation(target);
                 break;
 
             case "Reduce":
@@ -343,7 +343,7 @@ public class AnimationMenus {
                 break;
 
             case "Select track":
-                AnimationMenus.selectTrack();
+                selectTrack();
                 break;
 
             case "Smooth":

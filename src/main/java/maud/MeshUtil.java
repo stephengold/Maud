@@ -119,14 +119,14 @@ public class MeshUtil {
         VertexBuffer position
                 = result.getBuffer(VertexBuffer.Type.Position);
         if (position != null) {
-            result = MeshUtil.generateNormals(result, VertexBuffer.Type.Normal,
+            result = generateNormals(result, VertexBuffer.Type.Normal,
                     VertexBuffer.Type.Position, algorithm);
         }
 
         VertexBuffer bindPosition
                 = result.getBuffer(VertexBuffer.Type.BindPosePosition);
         if (bindPosition != null) {
-            result = MeshUtil.generateNormals(result,
+            result = generateNormals(result,
                     VertexBuffer.Type.BindPoseNormal,
                     VertexBuffer.Type.BindPosePosition, algorithm);
         }

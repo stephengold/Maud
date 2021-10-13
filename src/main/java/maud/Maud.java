@@ -149,7 +149,7 @@ public class Maud extends GuiApplication {
      * @return true if customized, otherwise false
      */
     public static boolean isStartupScriptCustomized() {
-        String assetPath = Maud.startupScriptAssetPath;
+        String assetPath = startupScriptAssetPath;
         String filePath = ActionApplication.filePath(assetPath);
         File file = new File(filePath);
         boolean result = file.exists();
@@ -227,7 +227,7 @@ public class Maud extends GuiApplication {
      * script (if any) in the "Written Assets" folder.
      */
     public static void revertStartupScript() {
-        String assetPath = Maud.startupScriptAssetPath;
+        String assetPath = startupScriptAssetPath;
         String filePath = ActionApplication.filePath(assetPath);
         File file = new File(filePath);
         file.delete();
@@ -295,7 +295,7 @@ public class Maud extends GuiApplication {
         /*
          * If no target model is loaded, load Jaime as a fallback.
          */
-        EditableCgm target = Maud.getModel().getTarget();
+        EditableCgm target = getModel().getTarget();
         if (!target.isLoaded()) {
             logger.info("loading Jaime");
             boolean success = target.loadNamed("Jaime");
@@ -362,7 +362,7 @@ public class Maud extends GuiApplication {
             handled = true;
             switch (actionString) {
                 case "edit bindings":
-                    Maud.gui.goBindScreen();
+                    gui.goBindScreen();
                     break;
                 case "quit":
                     quitUnconfirmed();
