@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -49,5 +49,5 @@ public enum ViewMode {
      * if a source model is loaded: split screen with a score views of both CGMs
      * otherwise: full-width score view of the target CGM
      */
-    Score;
+    Score
 }

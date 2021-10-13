@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -52,7 +52,7 @@ public class Selection {
 
     private enum Type {
         None, Bone, Boundary, Gnomon, Keyframe,
-        PoseTransformAxis, SceneAxis, Track, Vertex;
+        PoseTransformAxis, SceneAxis, Track, Vertex
     }
     // *************************************************************************
     // constants and loggers

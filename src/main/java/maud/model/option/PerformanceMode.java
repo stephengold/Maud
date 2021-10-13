@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018, Stephen Gold
+ Copyright (c) 2018-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -48,5 +48,5 @@ public enum PerformanceMode {
      * display maximum latency using the PerformanceAppState from the
      * Jme3-utilities project
      */
-    DebugPas;
+    DebugPas
 }

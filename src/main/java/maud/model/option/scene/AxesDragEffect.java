@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2021, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -54,5 +54,5 @@ public enum AxesDragEffect {
     /**
      * drag to translate the subject along the dragged axis only
      */
-    Translate;
+    Translate
 }
