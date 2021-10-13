@@ -48,7 +48,7 @@ repositories {
 
 dependencies {
     // from mavenCentral (or mavenLocal) repositories:
-    implementation 'ch.qos.logback:logback-classic:1.2.5'
+    implementation 'ch.qos.logback:logback-classic:1.2.6'
     runtimeOnly    'com.github.nifty-gui:nifty-style-black:1.4.3'
     implementation 'com.github.stephengold:Heart:7.1.0'
     implementation 'com.github.stephengold:jme3-utilities-ui:0.9.5'
