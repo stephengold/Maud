@@ -153,7 +153,7 @@ Screen after a few seconds.
 
 The Editor Screen is Maud's main screen, where 3-D models are visualized, browsed,
 and edited.  There's a menu bar across the top and a message bar across the bottom.
-The rest of its user interface
+Most of its user interface
 is split into overlapping sub-windows called "tools".
 
 ![screenshot](https://i.imgur.com/1GRhpOB.png "Editor Screen with 3 tools visible and a menu active")
@@ -174,18 +174,20 @@ Hiding a tool won't affect anything else, so it's always a safe move.
 
 #### Menus
 
-Clicking on the menu bar with the LMB activates the corresponding menu.
+Clicking a button in the menu bar with the LMB activates the corresponding menu.
+Menus are modal: activating a menu disables all other user interfaces in Maud.
 When a menu is active, the remainder of the screen darkens,
 and the mouse cursor becomes a right-pointing magenta arrow.
 You can then select a menu item by clicking on it with the LMB or RMB.
 
-Some menu items activate submenus.  Others display icons to help describe
-what they do:
+Many menu items display icons to help indicate what they do:
 
+ + a right-pointing black arrow to activate a submenu
  + a wrench icon to select a tool
- + a dialog-box icon to open a modal dialog box
+ + a dialog-box icon to open a dialog box or go to a different screen
+ + a pencil icon to immediately edit the loaded skeleton map or target model
  + a bone icon to select a bone
- + a pencil icon to immediately edit the loaded map or target model
+ + an ogre's head to immediately load an [Ogre] model
  + and so forth.
 
 Menus are context-sensitive, so for instance you'll see many more options
