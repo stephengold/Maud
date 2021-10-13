@@ -1010,7 +1010,7 @@ public class ScoreView implements EditorView {
         assert yHeight > 0f : yHeight;
 
         String nameSuffix = String.format("%d", staffIndex);
-        Spatial label = r.makeLabel(labelText, nameSuffix, sizeFactor,
+        Spatial label = r.makeLabel(labelText, sizeFactor,
                 textColor, bgMaterial, xWidth, yHeight);
         visuals.attachChild(label);
         float compression = cgm.getScorePov().compression();
@@ -1042,7 +1042,7 @@ public class ScoreView implements EditorView {
         assert yWidth > 0f : yWidth;
 
         String nameSuffix = String.format("%d", staffIndex);
-        Spatial label = r.makeLabel(labelText, nameSuffix, sizeFactor,
+        Spatial label = r.makeLabel(labelText, sizeFactor,
                 textColor, bgMaterial, yWidth, xHeight); // swap X and Y
         visuals.attachChild(label);
         label.setLocalRotation(ScoreResources.quarterZ);

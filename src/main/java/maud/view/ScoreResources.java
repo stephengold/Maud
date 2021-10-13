@@ -247,7 +247,7 @@ public class ScoreResources {
      * @return a new orphan spatial with its local origin at its upper left
      * corner
      */
-    Spatial makeLabel(String labelText, String nameSuffix,
+    Spatial makeLabel(String labelText,
             float sizeFactor, ColorRGBA textColor, Material bgMaterial,
             float width, float height) {
         assert labelText != null;
