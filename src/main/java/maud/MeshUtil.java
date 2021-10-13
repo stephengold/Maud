@@ -106,52 +106,6 @@ public class MeshUtil {
     }
 
     /**
-     * Determine the maximum number of disjoint sub-meshes, based vertex
-     * positions compared using the specified tolerance.
-     *
-     * @param mesh the input mesh (not null)
-     * @param positionType the type of the VertexBuffer to analyze (not null,
-     * typically Position or BindPosition)
-     * @param tolerance the minimum distance for distinct vertex positions (in
-     * mesh units, &ge;0)
-     * @return the maximum number (&ge;0)
-     */
-    public static int countSubmeshes(Mesh mesh,
-            VertexBuffer.Type positionType, float tolerance) {
-        Validate.nonNull(positionType, "position type");
-        Validate.nonNegative(tolerance, "tolerance");
-
-        int numVertices = mesh.getVertexCount();
-        FloatBuffer buffer = mesh.getFloatBuffer(positionType);
-        /*
-         * Assign an ID to each distinct vertex position and
-         * enumerate all pairs of IDs that are adjacent (joined by edges).
-         */
-        int startPosition = 0;
-        int endPosition = numAxes * numVertices;
-        DistinctVectorValues distinctPositions;
-        if (tolerance == 0f) {
-            distinctPositions = new DistinctVectorValues(buffer, startPosition,
-                    endPosition);
-        } else {
-            distinctPositions = new DistinctVectorValues(buffer, startPosition,
-                    endPosition, tolerance);
-        }
-        Set<IntPair> adjacentPairs = listAdjacentPairs(mesh, distinctPositions);
-        /*
-         * Assign each distinct position to a sub-mesh,
-         * based on the adjacency data.
-         */
-        int[] vvid2Submesh = partitionIds(distinctPositions, adjacentPairs);
-        int result = MyMath.maxInt(vvid2Submesh) + 1;
-        if (result < 0) {
-            result = 0;
-        }
-
-        return result;
-    }
-
-    /**
      * Generate mesh normals from positions. TODO move to Heart library
      *
      * @param mesh the input Mesh (not null)

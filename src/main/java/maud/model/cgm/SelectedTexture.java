@@ -1032,27 +1032,6 @@ public class SelectedTexture implements JmeCloneable {
     // private methods
 
     /**
-     * If the specified parameter has a non-null texture value that's not
-     * already in the specified collection, add it.
-     *
-     * @param collection (not null, modified)
-     * @param param (not null, unaffected)
-     */
-    private static void addTexture(Collection<Texture> collection, MatParam param) {
-        VarType varType = param.getVarType();
-        switch (varType) {
-            case Texture2D:
-            case Texture3D:
-            case TextureArray:
-            case TextureCubeMap:
-                Texture texture = (Texture) param.getValue();
-                if (texture != null && !collection.contains(texture)) {
-                    collection.add(texture);
-                }
-        }
-    }
-
-    /**
      * Enumerate all non-null texture instances in the C-G model.
      *
      * @return a new list (not null)

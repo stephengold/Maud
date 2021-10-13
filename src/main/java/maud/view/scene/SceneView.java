@@ -283,16 +283,6 @@ public class SceneView extends SceneViewCore {
     }
 
     /**
-     * Delete the selected spatial and its descendents, if any.
-     */
-    public void deleteSubtree() {
-        Spatial spatial = selectedSpatial();
-        MyControlP.disablePhysicsControls(spatial);
-        boolean success = spatial.removeFromParent();
-        assert success;
-    }
-
-    /**
      * Delete the specified spatial and its descendents, if any.
      *
      * @param treePosition tree position of spatial to delete (not null)
