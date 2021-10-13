@@ -33,7 +33,7 @@ import jme3utilities.MyString;
 import maud.Maud;
 import maud.action.ActionPrefix;
 import maud.dialog.EditorDialogs;
-import static maud.menu.ShowMenus.maxItems;
+import maud.menu.ShowMenus;
 import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
 import maud.model.cgm.EditableCgm;
@@ -539,7 +539,7 @@ public class BoneMenus {
     private static void showBoneSubmenu(List<String> nameList) {
         assert nameList != null;
 
-        MyString.reduce(nameList, maxItems);
+        MyString.reduce(nameList, ShowMenus.maxItems);
         Collections.sort(nameList);
 
         MenuBuilder builder = new MenuBuilder();
@@ -562,7 +562,7 @@ public class BoneMenus {
     private static void showSourceBoneSubmenu(List<String> nameList) {
         assert nameList != null;
 
-        MyString.reduce(nameList, maxItems);
+        MyString.reduce(nameList, ShowMenus.maxItems);
         Collections.sort(nameList);
 
         MenuBuilder builder = new MenuBuilder();

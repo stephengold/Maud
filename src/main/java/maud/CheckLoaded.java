@@ -48,8 +48,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyLight;
 import jme3utilities.MyMesh;
-import static jme3utilities.MyMesh.isAnimated;
-import static jme3utilities.MyMesh.vertexVector3f;
 import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
@@ -392,11 +390,11 @@ public class CheckLoaded {
             Vector3f tmpVector = new Vector3f();
             int numVertices = mesh.getVertexCount();
             for (int vertexI = 0; vertexI < numVertices; ++vertexI) {
-                if (isAnimated(mesh)) {
-                    vertexVector3f(mesh, VertexBuffer.Type.BindPoseNormal,
+                if (MyMesh.isAnimated(mesh)) {
+                    MyMesh.vertexVector3f(mesh, VertexBuffer.Type.BindPoseNormal,
                             vertexI, tmpVector);
                 } else {
-                    vertexVector3f(mesh, VertexBuffer.Type.Normal, vertexI,
+                    MyMesh.vertexVector3f(mesh, VertexBuffer.Type.Normal, vertexI,
                             tmpVector);
                 }
                 if (!tmpVector.isUnitVector()) {
