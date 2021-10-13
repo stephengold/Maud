@@ -69,7 +69,7 @@ class TmpTracks {
     /**
      * Add an AnimTrack or Track to the list.
      *
-     * @param track
+     * @param track the track to add (not null)
      */
     static void add(Object track) {
         assert track != null;

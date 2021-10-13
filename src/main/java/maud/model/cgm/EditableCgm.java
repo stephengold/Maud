@@ -1842,7 +1842,7 @@ public class EditableCgm extends LoadedCgm {
             }
         }
         /*
-         * Delete the corresponing Spatial in the scene view.
+         * Delete the corresponding Spatial in the scene view.
          */
         SceneView sceneView = getSceneView();
         List<Integer> position = findSpatial(subtree);
