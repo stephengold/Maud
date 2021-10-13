@@ -26,7 +26,6 @@
  */
 package maud.model.cgm;
 
-import com.jme3.bullet.animation.AttachmentLink;
 import com.jme3.bullet.animation.BoneLink;
 import com.jme3.bullet.animation.DynamicAnimControl;
 import com.jme3.bullet.animation.PhysicsLink;
@@ -39,7 +38,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
-import jme3utilities.math.MyMath;
 import maud.PhysicsUtil;
 
 /**
