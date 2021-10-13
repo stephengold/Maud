@@ -2156,13 +2156,13 @@ public class SelectedSpatial implements JmeCloneable {
         assert siblingIndex >= 0 : siblingIndex;
 
         Spatial spatial = find();
-        Spatial parent = spatial.getParent();
+        Node parent = spatial.getParent();
 
         Spatial result;
         if (parent == null) {
             result = null;
         } else {
-            result = ((Node) parent).getChild(siblingIndex);
+            result = parent.getChild(siblingIndex);
         }
 
         return result;
