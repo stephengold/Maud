@@ -352,6 +352,23 @@ public class EditorDialogs {
     }
 
     /**
+     * Display a dialog to select 2 or more geometries for a merge.
+     *
+     * @param actionPrefix (not null, not empty)
+     */
+    public static void mergeGeometries(String actionPrefix) {
+        Validate.nonEmpty(actionPrefix, "action prefix");
+
+        SelectedSpatial ss = Maud.getModel().getTarget().getSpatial();
+        List<GeometryItem> items = ss.listGeometryItems();
+        MergeDialog controller = new MergeDialog(items);
+
+        String prompt = "Select 2 or more geometries to include in the merge:";
+        Maud.gui.closeAllPopups();
+        Maud.gui.showMultiSelectDialog(prompt, actionPrefix, controller);
+    }
+
+    /**
      * Display a "new animation" dialog to enter a new animation name.
      *
      * @param actionPrefix action prefix (not null, not empty)
@@ -430,24 +447,6 @@ public class EditorDialogs {
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter a name for the new geometry:",
                 defaultName, actionPrefix, controller);
-    }
-
-    /**
-     * Display a dialog to select 2 or more geometries for a merge. TODO
-     * re-order methods
-     *
-     * @param actionPrefix (not null, not empty)
-     */
-    public static void mergeGeometries(String actionPrefix) {
-        Validate.nonEmpty(actionPrefix, "action prefix");
-
-        SelectedSpatial ss = Maud.getModel().getTarget().getSpatial();
-        List<GeometryItem> items = ss.listGeometryItems();
-        MergeDialog controller = new MergeDialog(items);
-
-        String prompt = "Select 2 or more geometries to include in the merge:";
-        Maud.gui.closeAllPopups();
-        Maud.gui.showMultiSelectDialog(prompt, actionPrefix, controller);
     }
 
     /**
@@ -854,23 +853,6 @@ public class EditorDialogs {
     }
 
     /**
-     * Display a "set linkMass " dialog to enter the new mass. TODO re-order
-     * methods
-     */
-    public static void setLinkMass() {
-        DialogController controller = new FloatDialog("Set", Float.MIN_VALUE,
-                Float.MAX_VALUE, false);
-
-        SelectedLink boneLink = Maud.getModel().getTarget().getLink();
-        float oldMass = boneLink.mass();
-        String defaultText = Float.toString(oldMass);
-
-        Maud.gui.closeAllPopups();
-        Maud.gui.showTextEntryDialog("Enter the mass:", defaultText,
-                ActionPrefix.setLinkMass, controller);
-    }
-
-    /**
      * Display a "set bufferInstanceSpan " dialog to enter the new span.
      */
     public static void setBufferInstanceSpan() {
@@ -1034,6 +1016,22 @@ public class EditorDialogs {
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter new time for the frame in seconds:",
                 defaultValue, ActionPrefix.setFrameTime, controller);
+    }
+
+    /**
+     * Display a "set linkMass " dialog to enter the new mass.
+     */
+    public static void setLinkMass() {
+        DialogController controller = new FloatDialog("Set", Float.MIN_VALUE,
+                Float.MAX_VALUE, false);
+
+        SelectedLink boneLink = Maud.getModel().getTarget().getLink();
+        float oldMass = boneLink.mass();
+        String defaultText = Float.toString(oldMass);
+
+        Maud.gui.closeAllPopups();
+        Maud.gui.showTextEntryDialog("Enter the mass:", defaultText,
+                ActionPrefix.setLinkMass, controller);
     }
 
     /**
@@ -1250,8 +1248,67 @@ public class EditorDialogs {
     }
 
     /**
-     * Display a "set time" dialog to enter a time in seconds. TODO re-order
-     * methods
+     * Display a "set spatial rotation" dialog.
+     */
+    public static void setSpatialRotation() {
+        Maud.gui.closeAllPopups();
+        EditorModel model = Maud.getModel();
+        EditableCgm target = model.getTarget();
+
+        Quaternion q = target.getSpatial().localRotation(null);
+        float[] tmpArray = new float[3];
+        Vector3f oldValue = new Vector3f();
+        RotationDisplayMode mode = model.getMisc().rotationDisplayMode();
+        switch (mode) {
+            case Degrees:
+                q.toAngles(tmpArray);
+                oldValue.set(tmpArray[0], tmpArray[1], tmpArray[2]);
+                oldValue.multLocal(FastMath.RAD_TO_DEG);
+                break;
+            case Radians:
+                q.toAngles(tmpArray);
+                oldValue.set(tmpArray[0], tmpArray[1], tmpArray[2]);
+                break;
+            case QuatCoeff:
+                oldValue.set(q.getX(), q.getY(), q.getZ());
+                break;
+            default:
+                throw new IllegalStateException("mode = " + mode);
+        }
+        String defaultText = oldValue.toString();
+        DialogController controller = new VectorDialog("Set", 3, false);
+        Maud.gui.showTextEntryDialog("Enter new rotation vector:",
+                defaultText, ActionPrefix.setSpatialRotation, controller);
+    }
+
+    /**
+     * Display a "set spatial scale" dialog.
+     */
+    public static void setSpatialScale() {
+        Maud.gui.closeAllPopups();
+        EditableCgm target = Maud.getModel().getTarget();
+        Vector3f oldValue = target.getSpatial().localScale(null);
+        String defaultText = oldValue.toString();
+        DialogController controller = new VectorDialog("Set", 3, false);
+        Maud.gui.showTextEntryDialog("Enter new scale vector:",
+                defaultText, ActionPrefix.setSpatialScale, controller);
+    }
+
+    /**
+     * Display a "set spatial translation" dialog.
+     */
+    public static void setSpatialTranslation(String actionPrefix) {
+        Maud.gui.closeAllPopups();
+        EditableCgm target = Maud.getModel().getTarget();
+        Vector3f oldValue = target.getSpatial().localTranslation(null);
+        String defaultText = oldValue.toString();
+        DialogController controller = new VectorDialog("Set", 3, false);
+        Maud.gui.showTextEntryDialog("Enter new translation vector:",
+                defaultText, actionPrefix, controller);
+    }
+
+    /**
+     * Display a "set time" dialog to enter a time in seconds.
      *
      * @param whichCgm which CGM's options to modify (not null)
      * @param whichTime which time to modify in the options (not null)
@@ -1345,66 +1402,6 @@ public class EditorDialogs {
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter a keyframe index:", defaultText,
                 actionPrefix, controller);
-    }
-
-    /**
-     * Display a "set spatial rotation" dialog.
-     */
-    public static void setSpatialRotation() {
-        Maud.gui.closeAllPopups();
-        EditorModel model = Maud.getModel();
-        EditableCgm target = model.getTarget();
-
-        Quaternion q = target.getSpatial().localRotation(null);
-        float[] tmpArray = new float[3];
-        Vector3f oldValue = new Vector3f();
-        RotationDisplayMode mode = model.getMisc().rotationDisplayMode();
-        switch (mode) {
-            case Degrees:
-                q.toAngles(tmpArray);
-                oldValue.set(tmpArray[0], tmpArray[1], tmpArray[2]);
-                oldValue.multLocal(FastMath.RAD_TO_DEG);
-                break;
-            case Radians:
-                q.toAngles(tmpArray);
-                oldValue.set(tmpArray[0], tmpArray[1], tmpArray[2]);
-                break;
-            case QuatCoeff:
-                oldValue.set(q.getX(), q.getY(), q.getZ());
-                break;
-            default:
-                throw new IllegalStateException("mode = " + mode);
-        }
-        String defaultText = oldValue.toString();
-        DialogController controller = new VectorDialog("Set", 3, false);
-        Maud.gui.showTextEntryDialog("Enter new rotation vector:",
-                defaultText, ActionPrefix.setSpatialRotation, controller);
-    }
-
-    /**
-     * Display a "set spatial scale" dialog.
-     */
-    public static void setSpatialScale() {
-        Maud.gui.closeAllPopups();
-        EditableCgm target = Maud.getModel().getTarget();
-        Vector3f oldValue = target.getSpatial().localScale(null);
-        String defaultText = oldValue.toString();
-        DialogController controller = new VectorDialog("Set", 3, false);
-        Maud.gui.showTextEntryDialog("Enter new scale vector:",
-                defaultText, ActionPrefix.setSpatialScale, controller);
-    }
-
-    /**
-     * Display a "set spatial translation" dialog.
-     */
-    public static void setSpatialTranslation(String actionPrefix) {
-        Maud.gui.closeAllPopups();
-        EditableCgm target = Maud.getModel().getTarget();
-        Vector3f oldValue = target.getSpatial().localTranslation(null);
-        String defaultText = oldValue.toString();
-        DialogController controller = new VectorDialog("Set", 3, false);
-        Maud.gui.showTextEntryDialog("Enter new translation vector:",
-                defaultText, actionPrefix, controller);
     }
 
     /**
