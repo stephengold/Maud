@@ -397,7 +397,7 @@ public class BuildMenus {
      * @param menuName name of the menu to open (not null)
      * @return true if handled, otherwise false
      */
-    boolean menuBar(String menuName) {
+    static boolean menuBar(String menuName) {
         assert menuName != null;
         /*
          * Dynamically generate the menu's list of items.
