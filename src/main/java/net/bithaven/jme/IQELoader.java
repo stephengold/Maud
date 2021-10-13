@@ -172,7 +172,7 @@ public class IQELoader implements AssetLoader {
         return out;
     }
 
-    private void finalizeGeometry(Geometry g, AssetManager assetManager, String folderName) {
+    private static void finalizeGeometry(Geometry g, AssetManager assetManager, String folderName) {
         String texture = g.getUserData("IQEMaterial");
 
         if (texture != null) {

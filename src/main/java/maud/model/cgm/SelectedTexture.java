@@ -1110,7 +1110,7 @@ public class SelectedTexture implements JmeCloneable {
      * @param typeHint type hint (not null)
      * @return the loaded Texture, or null if failure
      */
-    private Texture load(String assetPath, int anisotropy, boolean flipY,
+    private static Texture load(String assetPath, int anisotropy, boolean flipY,
             boolean generateMips, Texture.Type typeHint) {
         assert assetPath != null;
         assert anisotropy >= 0 : anisotropy;

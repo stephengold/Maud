@@ -691,7 +691,7 @@ public class BuildMenus {
     /**
      * Build a History menu.
      */
-    private void buildHistoryMenu() {
+    private static void buildHistoryMenu() {
         builder.addTool("Tool");
         builder.add("Clear");
     }
