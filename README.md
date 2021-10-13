@@ -5,7 +5,7 @@ Maud is an editor for the animated 3-D models used with the
 
 Anticipated uses:
 
- + customize of models created by others
+ + customize models created by others
  + develop animations from motion-capture data
  + copy/retarget animations between models
  + convert models in other formats to native J3O format
