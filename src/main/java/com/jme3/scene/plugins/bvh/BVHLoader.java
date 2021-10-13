@@ -94,7 +94,7 @@ public class BVHLoader implements AssetLoader {
         float animLength = animation.getFrameTime() * animation.getNbFrames();
         Animation boneAnimation = new Animation(animName, animLength);
         boneAnimation.setTracks(tracks);
-        data = new BVHAnimData(skeleton, boneAnimation, animation.getFrameTime());
+        data = new BVHAnimData(skeleton, boneAnimation);
     }
 
     /**

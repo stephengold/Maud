@@ -68,9 +68,8 @@ public class BVHAnimData {
      *
      * @param skeleton the skeleton
      * @param anim the animation
-     * @param timePerFrame (in seconds, &gt;0)
      */
-    public BVHAnimData(Skeleton skeleton, Animation anim, float timePerFrame) {
+    public BVHAnimData(Skeleton skeleton, Animation anim) {
         this.skeleton = skeleton;
         this.animation = anim;
     }
