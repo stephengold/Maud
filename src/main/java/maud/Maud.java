@@ -87,7 +87,7 @@ public class Maud extends GuiApplication {
      */
     private boolean didStartup1 = false;
     /**
-     * true IFF the EnvironmentCamera is busy (TODO JME issue #1446)
+     * true IFF the EnvironmentCamera is busy
      */
     public static volatile boolean envCamIsBusy = false;
     /**
