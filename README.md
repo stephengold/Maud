@@ -14,7 +14,7 @@ Anticipated uses:
 Summary of features:
 
  + load models from local filesystems, JAR/ZIP archives, or HTTP servers
- + import models from [Blender][]/[glTF][]/[IQE][]/[Ogre][]/[Wavefront][obj]/[Xbuf][] and save to native J3O format
+ + import models from [Blender]/[glTF]/[IQE]/[Ogre]/[Wavefront][obj]/[Xbuf] and save to native J3O format
  + import animations from [Biovision Hierarchy (BVH)](#bvh) files
  + visualize animations, axes, bones, bounding boxes, lights,
    mesh vertices, physics objects, and skeletons
@@ -388,12 +388,12 @@ To be recognized, such models must have filenames ending in ".j3o".
 Maud can also import models in other formats:
 
  + [Blender 3D][blender] (filename must end in ".blend")
- + [glTF][] (filename must end in ".glb" or ".gltf")
+ + [glTF] (filename must end in ".glb" or ".gltf")
  + [Inter-Quake Export][iqe] (filename must end in ".iqe")
- + [Ogre][] DotScene (filename must end in ".scene")
- + [Ogre][] XML (filename must end in ".mesh.xml")
+ + [Ogre] DotScene (filename must end in ".scene")
+ + [Ogre] XML (filename must end in ".mesh.xml")
  + [Wavefront OBJ][obj] (filename must end in ".obj")
- + [Xbuf][] (filename must end in ".xbuf")
+ + [Xbuf] (filename must end in ".xbuf")
 
 In addition, Biovision Hierarchy animations can be imported as models.
 To be recognized, such animations must have filenames ending in ".bvh".
@@ -672,7 +672,7 @@ To release this memory, you can delete the history using "History -> Clear".
 ## Scripting
 
 Maud has a built-in JavaScript scripting capability based
-on the [Nashorn][] engine.
+on the [Nashorn] engine.
 
 During startup, Maud looks for a "/Scripts/startup.js" asset.
 The built-in startup script (on the classpath) simply loads the Jaime model.
@@ -771,7 +771,7 @@ The following features are on my "to do" list, in no particular order:
  + better support for physics controls/joints/objects/shapes
  + smoother camera motion in score views
  + select bone mappings that don't correspond to the loaded models
- + export a model to [OBJ][] format
+ + export a model to [OBJ] format
  + export an animation to [BVH](#bvh) format
  + localization
  + more scene-view options for platform
@@ -821,9 +821,9 @@ artists and software developers:
 + Rémy Bouquet (aka "nehon") for creating the Jaime model and the [BVH Retarget
   Project][retarget] and also for many helpful insights
 + Paul Speed (aka "pspeed") for many helpful insights
-+ David Bernard (aka "david_bernard_31") for creating [Xbuf][]
-+ Adam T. Ryder (aka "tryder") for creating [jME-TTF][]
-+ Tobias Jung for creating [ProFont][]
++ David Bernard (aka "david_bernard_31") for creating [Xbuf]
++ Adam T. Ryder (aka "tryder") for creating [jME-TTF]
++ Tobias Jung for creating [ProFont]
 + [Nathan Vegdahl][vegdahl], for creating the Puppet model
 + [Can Bican][bican], for creating the Jprefctl preferences editor
 + Zi Ye, for creating the Sinbad model
@@ -840,25 +840,25 @@ artists and software developers:
     + "Toboi"
 + plus the creators of (and contributors to) the following software:
     + [Adobe Photoshop Elements][elements]
-    + the [Blender][] 3-D animation suite
-    + the [Bullet][] real-time physics library
-    + the [FindBugs][] source-code analyzer
-    + the [Git][] revision-control system and GitK commit viewer
+    + the [Blender] 3-D animation suite
+    + the [Bullet] real-time physics library
+    + the [FindBugs] source-code analyzer
+    + the [Git] revision-control system and GitK commit viewer
     + the [Google Chrome web browser][chrome]
-    + the [Gradle][] build tool
+    + the [Gradle] build tool
     + the Java compiler, standard doclet, and runtime environment
     + [jMonkeyEngine][jme] and the jME3 Software Development Kit
     + the [Linux Mint][mint] operating system
     + LWJGL, the Lightweight Java Game Library
-    + the [MakeHuman][] 3-D character creation tool
-    + the [Markdown][] document conversion tool
+    + the [MakeHuman] 3-D character creation tool
+    + the [Markdown] document conversion tool
     + Microsoft Windows 7 Professional
-    + the [NetBeans][] integrated development environment
-    + the [Nifty][] graphical user interface library
+    + the [NetBeans] integrated development environment
+    + the [Nifty] graphical user interface library
     + [Open Broadcaster Software Studio][obs]
     + the PMD source-code analyzer
     + the [RealWorld Cursor Editor][rwce]
-    + the [WinMerge][] differencing and merging tool
+    + the [WinMerge] differencing and merging tool
 
 I am grateful to [GitHub], [JFrog], and [Imgur]
 for providing free hosting for this project
