@@ -1,7 +1,7 @@
 <img height="150" src="https://i.imgur.com/beTKjwO.png" alt="Maud logo">
 
-Maud is an editor for the animated 3-D models used with the
-[jMonkeyEngine (jME)][jme] game engine.
+Maud is an editor for the animated 3-D models used with
+[the jMonkeyEngine (JME) game engine][jme].
 
 Anticipated uses:
 
@@ -43,15 +43,14 @@ Summary of features:
    material-parameter overrides, render-queue buckets, shadow modes, and user data
  + review the edit history and undo/redo edits
  + customizable mouse-button assignments and keyboard shortcuts
- + complete Java source code provided under a [BSD 3-Clause License][bsd3]
+
+Java source code is provided under
+[a 3-clause BSD license][license].
 
 Maud was designed for a desktop environment with:
 
  + a wheel mouse and
  + a display at least 640 pixels wide and 720 pixels tall.
-
-Java source code is provided under
-[a FreeBSD license](https://github.com/stephengold/Maud/blob/master/LICENSE).
 
 <a name="toc"/>
 
@@ -211,7 +210,7 @@ Keyboard shortcuts in the Editor Screen include:
  + "X" to create a checkpoint
  + "Z" to undo to the previous checkpoint
  + "Y" to redo to the next checkpoint
- + "F1" to switch to the Bind screen
+ + "F1" to switch to the Bind Screen
 
 Mouse-button assignments and keyboard shortcuts can be customized using the
 Bind Screen (or by editing the "Interface/bindings/editor.properties" asset
@@ -760,7 +759,6 @@ BVH resources:
 
 [bican]: https://github.com/canbican "Can Bican"
 [blender]: https://docs.blender.org "Blender Project"
-[bsd3]: https://opensource.org/licenses/BSD-3-Clause "3-Clause BSD License"
 [bullet]: https://pybullet.org/wordpress "Bullet Real-Time Physics Simulation"
 [bvhretarget]: https://github.com/Nehon/bvhretarget "BVH Retarget Project"
 [chrome]: https://www.google.com/chrome "Chrome"
@@ -774,6 +772,7 @@ BVH resources:
 [jfrog]: https://www.jfrog.com "JFrog"
 [jme]: http://jmonkeyengine.org  "jMonkeyEngine Project"
 [jme-ttf]: http://1337atr.weebly.com/jttf.html "jME-TTF Rendering System"
+[license]: https://github.com/stephengold/Maud/blob/master/LICENSE "Maud license"
 [makehuman]: http://www.makehumancommunity.org/ "MakeHuman Community"
 [markdown]: https://daringfireball.net/projects/markdown "Markdown Project"
 [minie]: https://github.com/stephengold/Minie "Minie Project"
