@@ -860,8 +860,9 @@ artists and software developers:
     + the [RealWorld Cursor Editor][rwce]
     + the [WinMerge][] differencing and merging tool
 
-I am grateful to [JFrog][] and [Github][] for providing free hosting for the
-Maud Project and many other open-source projects.
+I am grateful to [GitHub], [JFrog], and [Imgur]
+for providing free hosting for this project
+and many other open-source projects.
 
 I'm also grateful to my dear Holly, for keeping me sane.
 
