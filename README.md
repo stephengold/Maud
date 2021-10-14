@@ -56,22 +56,22 @@ Maud was designed for a desktop environment with:
 
 ## Contents of this document
 
- + [How to download and run a pre-built release of Maud](#prebuilt)
- + [How to build and run Maud from source](#build)
- + [Using Maud](#use)
- + [3-D Models](#cgms)
- + [Bones](#bones)
- + [Animations](#animations)
- + [The displayed pose](#pose)
- + [The skeleton map](#map)
- + [The edit history](#edithistory)
- + [Scripting](#scripting)
- + [Command-line arguments](#args)
- + [External links](#links)
- + [Wish list](#wishlist)
- + [Conventions](#conventions)
- + [History](#history)
- + [Acknowledgments](#acks)
++ [How to download and run a pre-built release of Maud](#prebuilt)
++ [How to build and run Maud from source](#build)
++ [Using Maud](#use)
++ [3-D Models](#cgms)
++ [Bones](#bones)
++ [Animations](#animations)
++ [The displayed pose](#pose)
++ [The skeleton map](#map)
++ [The edit history](#edithistory)
++ [Scripting](#scripting)
++ [Command-line arguments](#args)
++ [External links](#links)
++ [Wish list](#wishlist)
++ [Conventions](#conventions)
++ [History](#history)
++ [Acknowledgments](#acks)
 
 <a name="prebuilt"/>
 
@@ -731,34 +731,34 @@ build script) to configure Maud prior to executing its startup script:
 
 YouTube videos about Maud:
 
-  + January 2018 demo (pick-and-drag editing):
-    https://www.youtube.com/watch?v=OLLl7xiuCw0 (8:43)
-  + December 2017 demo (importing animated models via glTF):
-    https://www.youtube.com/watch?v=tv7QgAtwDCA (7:47)
-  + September 2017 spatial animation clip:
-    https://www.youtube.com/watch?v=EDtiYu-u_Ls (0:12)
-  + September 2017 demo part 2:
-    https://www.youtube.com/watch?v=2kmxOzDCl_8 (28:22)
-  + September 2017 demo part 1:
-    https://www.youtube.com/watch?v=4UwxbsOewow (15:02)
-  + June 2017 retargeted animation clip:
-    https://www.youtube.com/watch?v=yRjh1rAsipI (0:09)
-  + May 2017 demo (out-of-date!):
-    https://www.youtube.com/watch?v=fSjsbyBWlPk (9:13)
++ January 2018 demo (pick-and-drag editing):
+  https://www.youtube.com/watch?v=OLLl7xiuCw0 (8:43)
++ December 2017 demo (importing animated models via glTF):
+  https://www.youtube.com/watch?v=tv7QgAtwDCA (7:47)
++ September 2017 spatial animation clip:
+  https://www.youtube.com/watch?v=EDtiYu-u_Ls (0:12)
++ September 2017 demo part 2:
+  https://www.youtube.com/watch?v=2kmxOzDCl_8 (28:22)
++ September 2017 demo part 1:
+  https://www.youtube.com/watch?v=4UwxbsOewow (15:02)
++ June 2017 retargeted animation clip:
+  https://www.youtube.com/watch?v=yRjh1rAsipI (0:09)
++ May 2017 demo (out-of-date!):
+  https://www.youtube.com/watch?v=fSjsbyBWlPk (9:13)
 
 <a name="bvh"/>
 
 BVH resources:
 
-  + BVH format description:
-    http://research.cs.wisc.edu/graphics/Courses/cs-838-1999/Jeff/BVH.html
-  + motion-capture data from CMU's Graphics Lab, converted to BVH by Bruce Hahn:
-    https://sites.google.com/a/cgspeed.com/cgspeed/motion-capture
-  + free motion-capture data from Ohio State University's ACCAD:
-    https://accad.osu.edu/research/motion-lab/system-data
-
++ BVH format description:
+  http://research.cs.wisc.edu/graphics/Courses/cs-838-1999/Jeff/BVH.html
++ motion-capture data from CMU's Graphics Lab, converted to BVH by Bruce Hahn:
+  https://sites.google.com/a/cgspeed.com/cgspeed/motion-capture
++ free motion-capture data from Ohio State University's ACCAD:
+  https://accad.osu.edu/research/motion-lab/system-data
 
 [Jump to table of contents](#toc)
+
 
 <a name="wishlist"/>
 
@@ -795,6 +795,7 @@ The first keyframe in each track must be at time=0.
 
 [Jump to table of contents](#toc)
 
+
 <a name="history"/>
 
 ## History
@@ -809,6 +810,7 @@ https://github.com/stephengold/jme3-utilities
 Maud incorporates code from [jMonkeyEngine][jme] and the [BVH Retarget Project][bvhretarget].
 
 [Jump to table of contents](#toc)
+
 
 <a name="acks"/>
 
