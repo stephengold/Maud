@@ -77,7 +77,7 @@ Maud was designed for a desktop environment with:
 
 ## How to download and run a pre-built release of Maud
 
-1. Install a 64-bit Java, if you don't already have one.
+1. Install a 64-bit [Java], if you don't already have one.
    (Maud no longer supports 32-bit Java.)
 2. Point the `JAVA_HOME` environment variable to your Java installation.
    (In other words, set it to the path of a directory/folder
@@ -88,11 +88,11 @@ Maud was designed for a desktop environment with:
   + using Windows Command Prompt:  `set JAVA_HOME="` *path to installation* `"`
   + using PowerShell: `$env:JAVA_HOME = '` *path to installation* `'`
 3. Install the latest Maud release from GitHub:
-  + browse to [the latest release](https://github.com/stephengold/Maud/releases/latest)
-  + follow the "Maud.zip" link
-  + save the ZIP file
-  + extract the contents of the saved ZIP file
-4. `cd` to the extracted "Maud" directory/folder that contains "bin" and "lib" .
+  + Browse to [the latest release](https://github.com/stephengold/Maud/releases/latest)
+  + Follow the "Maud.zip" link.
+  + Save the ZIP file.
+  + Extract the contents of the saved ZIP file.
+4. `cd` to the extracted "Maud" directory/folder that contains "bin" and "lib".
 5. Run the Maud startup script:
   + using Bash: `./bin/Maud`
   + using Windows Command Prompt: `./bin/Maud.bat`
