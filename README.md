@@ -843,20 +843,21 @@ artists and software developers:
     + the [Blender] 3-D animation suite
     + the [Bullet] real-time physics library
     + the [FindBugs] source-code analyzer
+    + the [Firefox] and [Chrome] web browsers
     + the [Git] revision-control system and GitK commit viewer
-    + the [Google Chrome web browser][chrome]
     + the [Gradle] build tool
-    + the Java compiler, standard doclet, and runtime environment
+    + the [IntelliJ IDEA][idea] and [NetBeans] integrated development environments
+    + the [Java] compiler, standard doclet, and virtual machine
     + [jMonkeyEngine][jme] and the jME3 Software Development Kit
     + the [Linux Mint][mint] operating system
     + LWJGL, the Lightweight Java Game Library
     + the [MakeHuman] 3-D character creation tool
-    + the [Markdown] document conversion tool
-    + Microsoft Windows 7 Professional
-    + the [NetBeans] integrated development environment
-    + the [Nifty] graphical user interface library
+    + the [Markdown] document-conversion tool
+    + Microsoft Windows
+    + the [Nifty] graphical user-interface library
     + [Open Broadcaster Software Studio][obs]
     + the PMD source-code analyzer
+    + [ProFont], the programmers' font
     + the [RealWorld Cursor Editor][rwce]
     + the [WinMerge] differencing and merging tool
 
@@ -886,8 +887,10 @@ correct the situation: sgold@sonic.net
 [gltf]: https://www.khronos.org/gltf "glTF Project"
 [gradle]: https://gradle.org "Gradle Project"
 [heart]: https://github.com/stephengold/Heart "Heart Project"
+[idea]: https://www.jetbrains.com/idea/ "IntelliJ IDEA"
 [imgur]: https://imgur.com/ "Imgur"
 [iqe]: http://sauerbraten.org/iqm "Inter-Quake Model Formats"
+[java]: https://java.com "Java"
 [jfrog]: https://www.jfrog.com "JFrog"
 [jme]: https://jmonkeyengine.org  "jMonkeyEngine Project"
 [jme-ttf]: http://1337atr.weebly.com/jttf.html "jME-TTF Rendering System"
@@ -902,6 +905,7 @@ correct the situation: sgold@sonic.net
 [obj]: http://www.fileformat.info/format/wavefrontobj/egff.htm "Wavefront OBJ File Format"
 [obs]: https://obsproject.com "Open Broadcaster Software Project"
 [ogre]: http://www.ogre3d.org "Ogre Project"
+[openJDK]: https://openjdk.java.net "OpenJDK Project"
 [profont]: http://tobiasjung.name/profont "ProFont Project"
 [retarget]: https://github.com/Nehon/bvhretarget "BVH Retarget Project"
 [rwce]: http://www.rw-designer.com/cursor-maker "RealWorld Cursor Editor"
@@ -911,3 +915,4 @@ correct the situation: sgold@sonic.net
 [wes]: https://github.com/stephengold/Wes "Wes Project"
 [winmerge]: http://winmerge.org "WinMerge Project"
 [xbuf]: https://github.com/xbuf/xbuf "Xbuf Project"
+[youtube]: https://www.youtube.com/ "YouTube"
