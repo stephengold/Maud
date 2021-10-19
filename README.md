@@ -658,12 +658,15 @@ To safeguard work since the last checkpoint,
 the "Z" key often creates a new checkpoint as well.
 To redo each change you've undone, use the "Y" keyboard shortcut.
 
-Maud places no limit on the number of checkpoints you can create/undo/redo.
 To help you visualize and navigate your edit history,
 Maud provides a "History Tool" (selected using "History -> Tool").
 
 The edit history occupies heap memory.
 To release this memory, you can delete the history using "History -> Clear".
+
+Maud places a limit on the number of checkpoints you can have at any one time.
+The default limit is 8.
+You can alter this limit using the History Tool.
 
 [Jump to table of contents](#toc)
 
