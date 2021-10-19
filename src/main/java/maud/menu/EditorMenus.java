@@ -107,6 +107,9 @@ public class EditorMenus {
         }
 
         File[] files = file.listFiles();
+        if (files == null) { // see issue #7
+            files = new File[0];
+        }
         for (File f : files) {
             String name = f.getName();
             if (name.startsWith(namePrefix)) {
