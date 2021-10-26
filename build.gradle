@@ -53,7 +53,7 @@ dependencies {
     implementation 'com.github.stephengold:Heart:7.1.0'
     implementation 'com.github.stephengold:jme3-utilities-ui:0.9.5'
     implementation 'com.github.stephengold:jme3-utilities-nifty:0.9.23'
-    implementation 'com.github.stephengold:Minie:4.4.0+big3'
+    implementation 'com.github.stephengold:Minie:4.5.0-test1'
     implementation 'com.github.stephengold:SkyControl:1.0.0'
     implementation 'com.github.stephengold:Wes:0.6.7'
     implementation 'org.jmonkeyengine:jme3-blender:3.3.2-stable'
