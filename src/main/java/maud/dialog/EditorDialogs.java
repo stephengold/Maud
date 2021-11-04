@@ -1296,6 +1296,8 @@ public class EditorDialogs {
 
     /**
      * Display a "set spatial translation" dialog.
+     *
+     * @param actionPrefix the action prefix for the dialog (not null)
      */
     public static void setSpatialTranslation(String actionPrefix) {
         Maud.gui.closeAllPopups();

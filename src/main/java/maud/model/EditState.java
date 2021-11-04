@@ -425,6 +425,8 @@ public class EditState implements Cloneable {
     /**
      * If not a continuation of the previous skeleton-color edit, update the
      * edit count.
+     *
+     * @param use which skeleton color is about to be edited (not null)
      */
     public void setEditedSkeletonColor(SkeletonColors use) {
         String newState = "sc" + use;
