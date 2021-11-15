@@ -13,5 +13,5 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: 11
-      - uses: gradle/wrapper-validation-action@v1
+      - uses: gradle/wrapper-validation-action@v1.0.4
       - run: ./gradlew build --console=plain --no-daemon --stacktrace
