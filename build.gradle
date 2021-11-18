@@ -1,3 +1,5 @@
+// Gradle build  script for the Maud project
+
 plugins {
     id 'application'
 }
@@ -28,7 +30,6 @@ tasks.withType(JavaExec) { // Java runtime options:
     //jvmArgs '-Xbatch'
     jvmArgs '-Xms4g', '-Xmx4g'
     //jvmArgs '-XX:+PrintCompilation'
-    //jvmArgs '-XX:+UseConcMarkSweepGC'
     jvmArgs '-XX:+UseG1GC', '-XX:MaxGCPauseMillis=10'
 }
 
@@ -73,6 +74,7 @@ task runForceDialog(type: JavaExec) {
 }
 
 // cleanup tasks
+
 clean.dependsOn('cleanDLLs', 'cleanDyLibs', 'cleanLogs', 'cleanSOs')
 task cleanDLLs(type: Delete) {
     delete fileTree(dir: '.', include: '*.dll')
