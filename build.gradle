@@ -48,21 +48,20 @@ repositories {
 
 dependencies {
     // from mavenCentral (or mavenLocal) repositories:
-    implementation 'ch.qos.logback:logback-classic:1.2.6'
+    implementation 'ch.qos.logback:logback-classic:1.2.7'
     runtimeOnly    'com.github.nifty-gui:nifty-style-black:1.4.3'
     implementation 'com.github.stephengold:Heart:7.1.0'
     implementation 'com.github.stephengold:jme3-utilities-ui:0.9.5'
     implementation 'com.github.stephengold:jme3-utilities-nifty:0.9.23'
-    implementation 'com.github.stephengold:Minie:4.5.0-test1'
+    implementation 'com.github.stephengold:Minie:4.5.0'
     implementation 'com.github.stephengold:SkyControl:1.0.0'
+    implementation 'com.github.stephengold:jme-ttf:2.2.4'
     implementation 'com.github.stephengold:Wes:0.6.7'
     implementation 'org.jmonkeyengine:jme3-blender:3.3.2-stable'
     implementation 'org.jmonkeyengine:jme3-desktop:' + jme3Version
     implementation 'org.jmonkeyengine:jme3-lwjgl:' + jme3Version
     implementation 'org.jmonkeyengine:jme3-plugins:' + jme3Version
     //runtimeOnly 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
-
-    implementation 'com.github.stephengold:jme-ttf:2.2.4'
 
     // from jitpack repositories:
     implementation 'com.github.xbuf.jme3_xbuf:jme3_xbuf_loader:0.9.1'
