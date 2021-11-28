@@ -469,8 +469,7 @@ public class LoadedAnimation implements Cloneable {
             TransformTrack transformTrack = MyAnimation.findJointTrack(
                     (AnimClip) realAnim, boneIndex);
             if (transformTrack != null) {
-                result = MaudUtil.describe(transformTrack,
-                        (AnimComposer) control);
+                result = MaudUtil.describe(transformTrack);
             }
         }
 

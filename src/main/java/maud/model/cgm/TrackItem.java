@@ -130,8 +130,7 @@ public class TrackItem {
                     (AnimControl) animControl);
             assert !description.isEmpty();
         } else {
-            description = MaudUtil.describe((AnimTrack) track,
-                    (AnimComposer) animControl);
+            description = MaudUtil.describe((AnimTrack) track);
             assert !description.isEmpty();
         }
 

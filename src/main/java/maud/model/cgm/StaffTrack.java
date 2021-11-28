@@ -26,7 +26,6 @@
  */
 package maud.model.cgm;
 
-import com.jme3.anim.AnimComposer;
 import com.jme3.anim.AnimTrack;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.BoneTrack;
@@ -209,8 +208,7 @@ public class StaffTrack {
             AnimControl animControl = (AnimControl) control;
             labelText = MyAnimation.describe((Track) track, animControl);
         } else {
-            AnimComposer composer = (AnimComposer) control;
-            labelText = MaudUtil.describe((AnimTrack) track, composer);
+            labelText = MaudUtil.describe((AnimTrack) track);
         }
 
         loadTrack();

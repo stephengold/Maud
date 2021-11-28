@@ -27,7 +27,6 @@
 package maud;
 
 import com.jme3.anim.AnimClip;
-import com.jme3.anim.AnimComposer;
 import com.jme3.anim.AnimTrack;
 import com.jme3.anim.Armature;
 import com.jme3.anim.Joint;
@@ -457,19 +456,15 @@ public class MaudUtil {
     }
 
     /**
-     * Describe an animation track in the context of its AnimClip. TODO move to
-     * MyAnimation
+     * Describe an AnimTrack. TODO use MyAnimation
      *
      * @param track the AnimTrack to describe (not null, unaffected)
-     * @param composer an AnimComposer that contains the AnimTrack (not null,
-     * unaffected)
      * @return a textual description (not null, not empty)
      */
-    public static String describe(AnimTrack track, AnimComposer composer) {
+    public static String describe(AnimTrack track) {
         Validate.nonNull(track, "track");
-        Validate.nonNull(composer, "composer");
 
-        StringBuilder builder = new StringBuilder(20);
+        StringBuilder builder = new StringBuilder(32);
 
         char typeChar = MyAnimation.describeTrackType(track);
         builder.append(typeChar);
@@ -478,31 +473,29 @@ public class MaudUtil {
             Geometry target = ((MorphTrack) track).getTarget();
             builder.append(target.getClass().getSimpleName());
             String targetName = target.getName();
-            builder.append(MyString.quote(targetName));
+            targetName = MyString.quote(targetName);
+            builder.append(targetName);
 
         } else if (track instanceof TransformTrack) {
             TransformTrack transformTrack = (TransformTrack) track;
             HasLocalTransform target = transformTrack.getTarget();
             builder.append(target.getClass().getSimpleName());
+            String targetName = getTargetName(target);
+            targetName = MyString.quote(targetName);
+            builder.append(targetName);
 
-            String targetName;
-            if (target instanceof Joint) {
-                targetName = ((Joint) target).getName();
-                builder.append(MyString.quote(targetName));
-            } else if (target instanceof Spatial) {
-                targetName = ((Spatial) target).getName();
-                builder.append(MyString.quote(targetName));
+            if (transformTrack.getTranslations() != null) {
+                builder.append("T");
             }
-
-            builder.append("T");
-            builder.append("R");
+            if (transformTrack.getRotations() != null) {
+                builder.append("R");
+            }
             if (transformTrack.getScales() != null) {
                 builder.append("S");
             }
         }
 
-        String result = builder.toString();
-        return result;
+        return builder.toString();
     }
 
     /**
@@ -834,6 +827,31 @@ public class MaudUtil {
             result = MySkeleton.getAttachments((Bone) bone);
         } else {
             result = MySkeleton.getAttachments((Joint) bone);
+        }
+
+        return result;
+    }
+
+    /**
+     * Determine the name of the specified animation target. TODO use
+     * MyAnimation
+     *
+     * @param target the target to analyze (not null, unaffected)
+     * @return the name of target joint/spatial
+     */
+    public static String getTargetName(HasLocalTransform target) {
+        Validate.nonNull(target, "target");
+
+        String result;
+        if (target instanceof Joint) {
+            result = ((Joint) target).getName();
+
+        } else if (target instanceof Spatial) {
+            result = ((Spatial) target).getName();
+
+        } else {
+            String className = target.getClass().getSimpleName();
+            throw new IllegalArgumentException("className = " + className);
         }
 
         return result;
