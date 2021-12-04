@@ -8,7 +8,7 @@ description = 'An editor for animated 3-D models.'
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
-ext.jme3Version = '3.5.0-alpha1' // from mavenCentral
+ext.jme3Version = '3.4.1-stable' // from mavenCentral
 
 tasks.withType(JavaCompile) { // Java compile-time options:
     options.compilerArgs << '-Xdiags:verbose'
@@ -53,7 +53,7 @@ dependencies {
     implementation 'com.github.stephengold:Heart:7.1.0'
     implementation 'com.github.stephengold:jme3-utilities-ui:0.9.5'
     implementation 'com.github.stephengold:jme3-utilities-nifty:0.9.23'
-    implementation 'com.github.stephengold:Minie:4.5.0'
+    implementation 'com.github.stephengold:Minie:4.6.0'
     implementation 'com.github.stephengold:SkyControl:1.0.0'
     implementation 'com.github.stephengold:jme-ttf:2.2.4'
     implementation 'com.github.stephengold:Wes:0.6.7'
