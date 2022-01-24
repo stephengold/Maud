@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2021, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -27,7 +27,6 @@
 package maud;
 
 import com.jme3.anim.AnimClip;
-import com.jme3.anim.AnimTrack;
 import com.jme3.anim.Armature;
 import com.jme3.anim.Joint;
 import com.jme3.anim.MorphTrack;
@@ -87,7 +86,6 @@ import jme3utilities.MyAnimation;
 import jme3utilities.MyMesh;
 import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
-import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyArray;
 import jme3utilities.math.MyMath;
@@ -456,49 +454,6 @@ public class MaudUtil {
     }
 
     /**
-     * Describe an AnimTrack. TODO use MyAnimation
-     *
-     * @param track the AnimTrack to describe (not null, unaffected)
-     * @return a textual description (not null, not empty)
-     */
-    public static String describe(AnimTrack track) {
-        Validate.nonNull(track, "track");
-
-        StringBuilder builder = new StringBuilder(32);
-
-        char typeChar = MyAnimation.describeTrackType(track);
-        builder.append(typeChar);
-
-        if (track instanceof MorphTrack) {
-            Geometry target = ((MorphTrack) track).getTarget();
-            builder.append(target.getClass().getSimpleName());
-            String targetName = target.getName();
-            targetName = MyString.quote(targetName);
-            builder.append(targetName);
-
-        } else if (track instanceof TransformTrack) {
-            TransformTrack transformTrack = (TransformTrack) track;
-            HasLocalTransform target = transformTrack.getTarget();
-            builder.append(target.getClass().getSimpleName());
-            String targetName = getTargetName(target);
-            targetName = MyString.quote(targetName);
-            builder.append(targetName);
-
-            if (transformTrack.getTranslations() != null) {
-                builder.append("T");
-            }
-            if (transformTrack.getRotations() != null) {
-                builder.append("R");
-            }
-            if (transformTrack.getScales() != null) {
-                builder.append("S");
-            }
-        }
-
-        return builder.toString();
-    }
-
-    /**
      * Calculate the slider positions and status values to display the specified
      * rotation in the specified display mode.
      *
@@ -827,31 +782,6 @@ public class MaudUtil {
             result = MySkeleton.getAttachments((Bone) bone);
         } else {
             result = MySkeleton.getAttachments((Joint) bone);
-        }
-
-        return result;
-    }
-
-    /**
-     * Determine the name of the specified animation target. TODO use
-     * MyAnimation
-     *
-     * @param target the target to analyze (not null, unaffected)
-     * @return the name of target joint/spatial
-     */
-    public static String getTargetName(HasLocalTransform target) {
-        Validate.nonNull(target, "target");
-
-        String result;
-        if (target instanceof Joint) {
-            result = ((Joint) target).getName();
-
-        } else if (target instanceof Spatial) {
-            result = ((Spatial) target).getName();
-
-        } else {
-            String className = target.getClass().getSimpleName();
-            throw new IllegalArgumentException("className = " + className);
         }
 
         return result;

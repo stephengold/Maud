@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2021, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -469,7 +469,7 @@ public class LoadedAnimation implements Cloneable {
             TransformTrack transformTrack = MyAnimation.findJointTrack(
                     (AnimClip) realAnim, boneIndex);
             if (transformTrack != null) {
-                result = MaudUtil.describe(transformTrack);
+                result = MyAnimation.describe(transformTrack);
             }
         }
 

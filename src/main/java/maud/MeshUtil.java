@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2021, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -29,13 +29,11 @@ package maud;
 import com.jme3.math.Transform;
 import com.jme3.math.Triangle;
 import com.jme3.math.Vector3f;
-import com.jme3.scene.CollisionData;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.mesh.IndexBuffer;
 import com.jme3.util.BufferUtils;
-import java.lang.reflect.Field;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.util.Arrays;
@@ -96,7 +94,7 @@ public class MeshUtil {
         int result = 0;
         List<Mesh> meshes = MyMesh.listMeshes(subtree, null);
         for (Mesh mesh : meshes) {
-            if (getCollisionTree(mesh) != null) {
+            if (MyMesh.getCollisionTree(mesh) != null) {
                 ++result;
             }
         }
@@ -285,31 +283,6 @@ public class MeshUtil {
 
         MyBuffer.normalize(normalBuffer, 0, numFloats);
         normalBuffer.limit(numFloats);
-    }
-
-    /**
-     * Access the collision tree of the specified Mesh. TODO use MyMesh
-     *
-     * @param mesh the Mesh to access (not null, unaffected)
-     * @return the pre-existing instance, or null if none
-     */
-    public static CollisionData getCollisionTree(Mesh mesh) {
-        Field field;
-        try {
-            field = Mesh.class.getDeclaredField("collisionTree");
-        } catch (NoSuchFieldException exception) {
-            throw new RuntimeException(exception);
-        }
-        field.setAccessible(true);
-
-        CollisionData result;
-        try {
-            result = (CollisionData) field.get(mesh);
-        } catch (IllegalAccessException exception) {
-            throw new RuntimeException(exception);
-        }
-
-        return result;
     }
 
     /**
