@@ -52,7 +52,7 @@ Maud was designed for a desktop environment with:
  + a wheel mouse and
  + a display at least 640 pixels wide and 720 pixels tall.
 
-<a name="toc"/>
+<a name="toc"></a>
 
 ## Contents of this document
 
@@ -73,7 +73,7 @@ Maud was designed for a desktop environment with:
 + [History](#history)
 + [Acknowledgments](#acks)
 
-<a name="prebuilt"/>
+<a name="prebuilt"></a>
 
 ## How to download and run a pre-built release of Maud
 
@@ -100,7 +100,7 @@ Maud was designed for a desktop environment with:
 
 [Jump to table of contents](#toc)
 
-<a name="build"/>
+<a name="build"></a>
 
 ## How to build and run Maud from source
 
@@ -138,7 +138,7 @@ You can restore the project to a pristine state:
 
 [Jump to table of contents](#toc)
 
-<a name="use"/>
+<a name="use"></a>
 
 ## Using Maud
 
@@ -354,7 +354,7 @@ move the score-view camera up/down by clicking LMB where you want it to look.
 
 [Jump to table of contents](#toc)
 
-<a name="cgms"/>
+<a name="cgms"></a>
 
 ## 3-D models
 
@@ -413,7 +413,7 @@ When loading assets, Maud treats this folder as if it overrides the classpath.
 
 [Jump to table of contents](#toc)
 
-<a name="bones"/>
+<a name="bones"></a>
 
 ## Bones
 
@@ -478,7 +478,7 @@ use this technique with caution.
 
 [Jump to table of contents](#toc)
 
-<a name="animations"/>
+<a name="animations"></a>
 
 ## Animations
 
@@ -533,7 +533,7 @@ for display (scene-view) purposes.
 
 [Jump to table of contents](#toc)
 
-<a name="pose"/>
+<a name="pose"></a>
 
 ## The displayed pose
 
@@ -585,7 +585,7 @@ Remember to unfreeze the pose afterward!
 
 [Jump to table of contents](#toc)
 
-<a name="map"/>
+<a name="map"></a>
 
 ## The skeleton map
 
@@ -639,7 +639,7 @@ use the "Retarget Tool" ("Animations -> Add new -> Retarget source animation").
 
 [Jump to table of contents](#toc)
 
-<a name="edithistory"/>
+<a name="edithistory"></a>
 
 ## The edit history
 
@@ -670,7 +670,7 @@ You can alter this limit using the History Tool.
 
 [Jump to table of contents](#toc)
 
-<a name="scripting"/>
+<a name="scripting"></a>
 
 ## Scripting
 
@@ -701,7 +701,7 @@ select "Settings -> Revert startup script to default".
 
 [Jump to table of contents](#toc)
 
-<a name="args"/>
+<a name="args"></a>
 
 ## Command-line arguments
 
@@ -728,7 +728,7 @@ build script) to configure Maud prior to executing its startup script:
 
 [Jump to table of contents](#toc)
 
-<a name="links"/>
+<a name="links"></a>
 
 ## External links
 
@@ -749,7 +749,7 @@ YouTube videos about Maud:
 + May 2017 demo (out-of-date!):
   https://www.youtube.com/watch?v=fSjsbyBWlPk (9:13)
 
-<a name="bvh"/>
+<a name="bvh"></a>
 
 BVH resources:
 
@@ -763,7 +763,7 @@ BVH resources:
 [Jump to table of contents](#toc)
 
 
-<a name="wishlist"/>
+<a name="wishlist"></a>
 
 ## Wish list
 
@@ -784,7 +784,7 @@ The following features are on my "to do" list, in no particular order:
 
 [Jump to table of contents](#toc)
 
-<a name="conventions"/>
+<a name="conventions"></a>
 
 ## Conventions
 
@@ -799,7 +799,7 @@ The first keyframe in each track must be at time=0.
 [Jump to table of contents](#toc)
 
 
-<a name="history"/>
+<a name="history"></a>
 
 ## History
 
@@ -815,7 +815,7 @@ Maud incorporates code from [jMonkeyEngine][jme] and the [BVH Retarget Project][
 [Jump to table of contents](#toc)
 
 
-<a name="acks"/>
+<a name="acks"></a>
 
 ## Acknowledgments
 
