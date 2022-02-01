@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -496,10 +496,10 @@ public class EditorScreen extends GuiScreenController {
             if (cgmToRotate != null) {
                 CgmTransform cgmTransform
                         = cgmToRotate.getSceneView().getTransform();
-                if (signals.test(modelCCWSignalName)) {
+                if (getSignals().test(modelCCWSignalName)) {
                     cgmTransform.rotateY(tpf);
                 }
-                if (signals.test(modelCWSignalName)) {
+                if (getSignals().test(modelCWSignalName)) {
                     cgmTransform.rotateY(-tpf);
                 }
             }
@@ -624,7 +624,7 @@ public class EditorScreen extends GuiScreenController {
      * If a POV is being dragged, update it.
      */
     private void updateDragPov() {
-        if (signals.test(povSignalName)) { // dragging a POV
+        if (getSignals().test(povSignalName)) { // dragging a POV
             if (dragPov == null) { // a brand-new drag
                 dragPov = mousePov();
             } else {

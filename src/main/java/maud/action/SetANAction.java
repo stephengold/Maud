@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2021, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -35,6 +35,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.math.MyColor;
 import jme3utilities.math.MyVector3f;
+import jme3utilities.nifty.dialog.AllowNull;
 import maud.Maud;
 import maud.dialog.EditorDialogs;
 import maud.menu.MeshMenus;
@@ -139,9 +140,9 @@ class SetANAction {
                     String parameterName = matParam.getName();
                     VarType varType = matParam.getVarType();
                     Object oldValue = matParam.getValue();
-                    boolean allowNull = false;
                     EditorDialogs.setMatParamValue(parameterName, varType,
-                            oldValue, allowNull, ActionPrefix.setMatParamValue);
+                            oldValue, AllowNull.No,
+                            ActionPrefix.setMatParamValue);
                 }
                 break;
 

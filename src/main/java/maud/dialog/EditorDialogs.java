@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2021, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -48,6 +48,7 @@ import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.minie.MinieVersion;
 import jme3utilities.nifty.LibraryVersion;
+import jme3utilities.nifty.dialog.AllowNull;
 import jme3utilities.nifty.dialog.BooleanDialog;
 import jme3utilities.nifty.dialog.DialogController;
 import jme3utilities.nifty.dialog.FloatDialog;
@@ -135,6 +136,8 @@ public class EditorDialogs {
                 JmeVersion.GIT_SHORT_HASH);
         text += String.format("%n   nifty version=%s (BSD license)",
                 MyString.quote(niftyVersion));
+        text += String.format("%n   Acorus version=%s (BSD license)",
+                MyString.quote(UiVersion.versionShort()));
         text += String.format("%n   Heart version=%s (BSD license)",
                 MyString.quote(Heart.versionShort()));
         text += String.format("%n   Minie version=%s (BSD license)",
@@ -143,8 +146,6 @@ public class EditorDialogs {
                 MyString.quote(Constants.versionShort()));
         text += String.format("%n   Wes version=%s (BSD license)",
                 MyString.quote(WesVersion.versionShort()));
-        text += String.format("%n   jme3-utilities-ui version=%s (BSD license)",
-                MyString.quote(UiVersion.versionShort()));
         text += String.format(
                 "%n   jme3-utilities-nifty version=%s (BSD license)",
                 MyString.quote(LibraryVersion.versionShort()));
@@ -234,7 +235,8 @@ public class EditorDialogs {
         int numFrames = target.getTrack().countKeyframes();
         int frameIndex = target.getFrame().findIndex();
         int max = numFrames - frameIndex - 2;
-        IntegerDialog controller = new IntegerDialog("Delete", 1, max, false);
+        IntegerDialog controller
+                = new IntegerDialog("Delete", 1, max, AllowNull.No);
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter the number of frames to delete:",
                 "1", ActionPrefix.deleteNextKeyframes, controller);
@@ -247,7 +249,8 @@ public class EditorDialogs {
         SelectedFrame frame = Maud.getModel().getTarget().getFrame();
         int frameIndex = frame.findIndex();
         int max = frameIndex - 1;
-        IntegerDialog controller = new IntegerDialog("Delete", 1, max, false);
+        IntegerDialog controller
+                = new IntegerDialog("Delete", 1, max, AllowNull.No);
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter the number of frames to delete:",
                 "1", ActionPrefix.deletePreviousKeyframes, controller);
@@ -521,7 +524,7 @@ public class EditorDialogs {
     public static void reduceAnimation() {
         if (Maud.getModel().getTarget().getAnimation().isReal()) {
             IntegerDialog controller = new IntegerDialog("Reduce", 2,
-                    Integer.MAX_VALUE, false);
+                    Integer.MAX_VALUE, AllowNull.No);
 
             Maud.gui.closeAllPopups();
             Maud.gui.showTextEntryDialog("Enter reduction factor:", "2",
@@ -535,8 +538,8 @@ public class EditorDialogs {
     public static void reduceTrack() {
         SelectedTrack track = Maud.getModel().getTarget().getTrack();
         if (track.isSelected()) {
-            IntegerDialog controller
-                    = new IntegerDialog("Reduce", 2, Integer.MAX_VALUE, false);
+            IntegerDialog controller = new IntegerDialog("Reduce", 2,
+                    Integer.MAX_VALUE, AllowNull.No);
 
             Maud.gui.closeAllPopups();
             Maud.gui.showTextEntryDialog("Enter reduction factor:", "2",
@@ -781,7 +784,7 @@ public class EditorDialogs {
         int numBones = target.getSkeleton().countBones();
         int indexBase = model.getMisc().indexBase();
         DialogController controller = new IntegerDialog("Select", indexBase,
-                numBones + indexBase - 1, false);
+                numBones + indexBase - 1, AllowNull.No);
 
         int oldIndex = target.getBone().index();
         int defaultIndex = (oldIndex == -1) ? indexBase : oldIndex;
@@ -801,7 +804,7 @@ public class EditorDialogs {
         int numKeyframes = target.getTrack().countKeyframes();
         int indexBase = model.getMisc().indexBase();
         DialogController controller = new IntegerDialog("Select", indexBase,
-                numKeyframes + indexBase - 1, false);
+                numKeyframes + indexBase - 1, AllowNull.No);
 
         int oldIndex = target.getVertex().getIndex();
         int defaultIndex = (oldIndex == -1) ? indexBase : oldIndex;
@@ -821,7 +824,7 @@ public class EditorDialogs {
         int numVertices = target.getSpatial().countVertices();
         int indexBase = model.getMisc().indexBase();
         DialogController controller = new IntegerDialog("Select", indexBase,
-                numVertices + indexBase - 1, false);
+                numVertices + indexBase - 1, AllowNull.No);
 
         int oldIndex = target.getVertex().getIndex();
         int defaultIndex = (oldIndex == -1) ? indexBase : oldIndex;
@@ -846,7 +849,7 @@ public class EditorDialogs {
         String defaultText = Integer.toString(oldValue);
 
         DialogController controller = new IntegerDialog("Select", 0,
-                Integer.MAX_VALUE, false);
+                Integer.MAX_VALUE, AllowNull.No);
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter the anisotropy:", defaultText,
                 ActionPrefix.setAnisotropy, controller);
@@ -857,7 +860,7 @@ public class EditorDialogs {
      */
     public static void setBufferInstanceSpan() {
         DialogController controller = new IntegerDialog("Set", 0,
-                Integer.MAX_VALUE, false);
+                Integer.MAX_VALUE, AllowNull.No);
 
         SelectedBuffer buffer = Maud.getModel().getTarget().getBuffer();
         int oldSpan = buffer.instanceSpan();
@@ -875,7 +878,7 @@ public class EditorDialogs {
         SelectedBuffer buffer = Maud.getModel().getTarget().getBuffer();
         int capacity = buffer.capacity();
         DialogController controller
-                = new IntegerDialog("Set", 1, capacity, false);
+                = new IntegerDialog("Set", 1, capacity, AllowNull.No);
 
         int oldLimit = buffer.limit();
         String defaultText = Integer.toString(oldLimit);
@@ -889,7 +892,8 @@ public class EditorDialogs {
      * Display a "set bufferStride " dialog to enter the new buffer stride.
      */
     public static void setBufferStride() {
-        DialogController controller = new IntegerDialog("Set", 0, 999, false);
+        DialogController controller
+                = new IntegerDialog("Set", 0, 999, AllowNull.No);
 
         SelectedBuffer buffer = Maud.getModel().getTarget().getBuffer();
         int oldStride = buffer.stride();
@@ -907,7 +911,8 @@ public class EditorDialogs {
         String indentIncrement = Maud.getModel().getDumper().indentIncrement();
         String defaultText = Integer.toString(indentIncrement.length());
 
-        DialogController controller = new IntegerDialog("Set", 0, 40, false);
+        DialogController controller
+                = new IntegerDialog("Set", 0, 40, AllowNull.No);
 
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter indent in spaces:",
@@ -922,7 +927,7 @@ public class EditorDialogs {
         String defaultText = Integer.toString(maxChildren);
 
         DialogController controller
-                = new IntegerDialog("Set", 0, Integer.MAX_VALUE, false);
+                = new IntegerDialog("Set", 0, Integer.MAX_VALUE, AllowNull.No);
 
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter max number of children:",
@@ -945,7 +950,7 @@ public class EditorDialogs {
             min = 0f;
         }
         DialogController controller
-                = new FloatDialog("Set", min, Float.MAX_VALUE, false);
+                = new FloatDialog("Set", min, Float.MAX_VALUE, AllowNull.No);
 
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter new duration in seconds:",
@@ -961,8 +966,8 @@ public class EditorDialogs {
         String defaultText = Float.toString(oldDuration);
 
         float finalTime = animation.findLatestKeyframe();
-        DialogController controller
-                = new FloatDialog("Extend", finalTime, Float.MAX_VALUE, false);
+        DialogController controller = new FloatDialog("Extend", finalTime,
+                Float.MAX_VALUE, AllowNull.No);
 
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter new duration in seconds:",
@@ -977,7 +982,7 @@ public class EditorDialogs {
         String defaultValue = Float.toString(oldValue);
 
         FloatDialog controller = new FloatDialog("Set", Float.MIN_VALUE,
-                Float.MAX_VALUE, false);
+                Float.MAX_VALUE, AllowNull.No);
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter margin for new physics shapes:",
                 defaultValue, ActionPrefix.setDefaultMargin, controller);
@@ -1012,7 +1017,7 @@ public class EditorDialogs {
         String defaultValue = Float.toString(oldTime);
 
         FloatDialog controller
-                = new FloatDialog("Adjust", minTime, maxTime, false);
+                = new FloatDialog("Adjust", minTime, maxTime, AllowNull.No);
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter new time for the frame in seconds:",
                 defaultValue, ActionPrefix.setFrameTime, controller);
@@ -1023,7 +1028,7 @@ public class EditorDialogs {
      */
     public static void setLinkMass() {
         DialogController controller = new FloatDialog("Set", Float.MIN_VALUE,
-                Float.MAX_VALUE, false);
+                Float.MAX_VALUE, AllowNull.No);
 
         SelectedLink boneLink = Maud.getModel().getTarget().getLink();
         float oldMass = boneLink.mass();
@@ -1041,11 +1046,11 @@ public class EditorDialogs {
      * @param parameterName name of the parameter to alter (not null)
      * @param varType (not null)
      * @param oldValue (unaffected)
-     * @param allowNull if true, "null" will be an allowed value
+     * @param allowNull should "null" be an allowed value?
      * @param actionPrefix (not null, not empty)
      */
     public static void setMatParamValue(String parameterName, VarType varType,
-            Object oldValue, boolean allowNull, String actionPrefix) {
+            Object oldValue, AllowNull allowNull, String actionPrefix) {
         Validate.nonEmpty(actionPrefix, "action prefix");
         Validate.nonNull(parameterName, "parameter name");
         Validate.nonNull(varType, "var type");
@@ -1054,7 +1059,7 @@ public class EditorDialogs {
         String defaultValue, promptMessage;
         switch (varType) {
             case Boolean:
-                if (allowNull) {
+                if (allowNull.equals(AllowNull.Yes)) {
                     if (oldValue == null) {
                         defaultValue = "null";
                     } else {
@@ -1117,7 +1122,7 @@ public class EditorDialogs {
                  */
                 Cgm target = Maud.getModel().getTarget();
                 MatParamRef ref;
-                if (allowNull) {
+                if (allowNull.equals(AllowNull.Yes)) {
                     ref = target.getOverride().makeRef();
                 } else {
                     ref = target.getMatParam().makeRef();
@@ -1182,7 +1187,7 @@ public class EditorDialogs {
      */
     public static void setMaxCheckpoints() {
         DialogController controller = new IntegerDialog("Set", 2,
-                Integer.MAX_VALUE, false);
+                Integer.MAX_VALUE, AllowNull.No);
 
         int oldLimit = Maud.getModel().getMisc().maxCheckpoints();
         String defaultText = Integer.toString(oldLimit);
@@ -1206,7 +1211,7 @@ public class EditorDialogs {
             float minValue = parameter.minValue();
             float maxValue = parameter.maxValue();
             DialogController controller
-                    = new FloatDialog("Set", minValue, maxValue, false);
+                    = new FloatDialog("Set", minValue, maxValue, AllowNull.No);
 
             String prompt = String.format("Enter new %s:", parameterName);
             String defaultText = object.value(parameter);
@@ -1231,7 +1236,7 @@ public class EditorDialogs {
             float minValue = parameter.minValue();
             float maxValue = parameter.maxValue();
             DialogController controller
-                    = new FloatDialog("Set", minValue, maxValue, false);
+                    = new FloatDialog("Set", minValue, maxValue, AllowNull.No);
 
             String prompt = String.format("Enter new %s:", parameter);
             float defaultValue = shape.value(parameter);
@@ -1276,7 +1281,7 @@ public class EditorDialogs {
                 throw new IllegalStateException("mode = " + mode);
         }
         String defaultText = oldValue.toString();
-        DialogController controller = new VectorDialog("Set", 3, false);
+        DialogController controller = new VectorDialog("Set", 3, AllowNull.No);
         Maud.gui.showTextEntryDialog("Enter new rotation vector:",
                 defaultText, ActionPrefix.setSpatialRotation, controller);
     }
@@ -1289,7 +1294,7 @@ public class EditorDialogs {
         EditableCgm target = Maud.getModel().getTarget();
         Vector3f oldValue = target.getSpatial().localScale(null);
         String defaultText = oldValue.toString();
-        DialogController controller = new VectorDialog("Set", 3, false);
+        DialogController controller = new VectorDialog("Set", 3, AllowNull.No);
         Maud.gui.showTextEntryDialog("Enter new scale vector:",
                 defaultText, ActionPrefix.setSpatialScale, controller);
     }
@@ -1304,7 +1309,7 @@ public class EditorDialogs {
         EditableCgm target = Maud.getModel().getTarget();
         Vector3f oldValue = target.getSpatial().localTranslation(null);
         String defaultText = oldValue.toString();
-        DialogController controller = new VectorDialog("Set", 3, false);
+        DialogController controller = new VectorDialog("Set", 3, AllowNull.No);
         Maud.gui.showTextEntryDialog("Enter new translation vector:",
                 defaultText, actionPrefix, controller);
     }
@@ -1347,7 +1352,7 @@ public class EditorDialogs {
         String actionPrefix = String.format("%s%s %s ", ActionPrefix.setTime,
                 whichCgm, whichTime);
         FloatDialog controller
-                = new FloatDialog("Set", minValue, maxValue, false);
+                = new FloatDialog("Set", minValue, maxValue, AllowNull.No);
 
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter new time in seconds:", defaultText,
@@ -1399,7 +1404,7 @@ public class EditorDialogs {
         String actionPrefix = String.format("%s%s %s ",
                 ActionPrefix.setTimeToFrame, whichCgm, whichTime);
         IntegerDialog controller = new IntegerDialog("Set",
-                indexBase + minIndex, indexBase + maxIndex, false);
+                indexBase + minIndex, indexBase + maxIndex, AllowNull.No);
 
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter a keyframe index:", defaultText,
@@ -1423,7 +1428,7 @@ public class EditorDialogs {
         } else if (value instanceof Float) {
             float oldValue = (float) value;
             controller = new FloatDialog("Set", Float.NEGATIVE_INFINITY,
-                    Float.POSITIVE_INFINITY, false);
+                    Float.POSITIVE_INFINITY, AllowNull.No);
             defaultText = Float.toString(oldValue);
             Maud.gui.showTextEntryDialog("Enter new float value:", defaultText,
                     ActionPrefix.setUserData, controller);
@@ -1431,7 +1436,7 @@ public class EditorDialogs {
         } else if (value instanceof Integer) {
             int oldValue = (int) value;
             controller = new IntegerDialog("Set", Integer.MIN_VALUE,
-                    Integer.MAX_VALUE, false);
+                    Integer.MAX_VALUE, AllowNull.No);
             defaultText = Integer.toString(oldValue);
             Maud.gui.showTextEntryDialog("Enter new integer value:",
                     defaultText, ActionPrefix.setUserData, controller);
@@ -1439,7 +1444,7 @@ public class EditorDialogs {
         } else if (value instanceof Long) {
             long oldValue = (long) value;
             controller = new LongDialog("Set", Long.MIN_VALUE, Long.MAX_VALUE,
-                    false);
+                    AllowNull.No);
             defaultText = Long.toString(oldValue);
             Maud.gui.showTextEntryDialog("Enter new long integer value:",
                     defaultText, ActionPrefix.setUserData, controller);
@@ -1452,21 +1457,21 @@ public class EditorDialogs {
 
         } else if (value instanceof Vector2f) {
             Vector2f oldValue = (Vector2f) value;
-            controller = new VectorDialog("Set", 2, false);
+            controller = new VectorDialog("Set", 2, AllowNull.No);
             defaultText = oldValue.toString();
             Maud.gui.showTextEntryDialog("Enter new Vector2f value:",
                     defaultText, ActionPrefix.setUserData, controller);
 
         } else if (value instanceof Vector3f) {
             Vector3f oldValue = (Vector3f) value;
-            controller = new VectorDialog("Set", 3, false);
+            controller = new VectorDialog("Set", 3, AllowNull.No);
             defaultText = oldValue.toString();
             Maud.gui.showTextEntryDialog("Enter new Vector3f value:",
                     defaultText, ActionPrefix.setUserData, controller);
 
         } else if (value instanceof Vector4f) {
             Vector4f oldValue = (Vector4f) value;
-            controller = new VectorDialog("Set", 4, false);
+            controller = new VectorDialog("Set", 4, AllowNull.No);
             defaultText = oldValue.toString();
             Maud.gui.showTextEntryDialog("Enter new Vector4f value:",
                     defaultText, ActionPrefix.setUserData, controller);
@@ -1486,7 +1491,7 @@ public class EditorDialogs {
         EditableCgm target = Maud.getModel().getTarget();
         float oldValue = target.getVertex().floatComponent(componentIndex);
         DialogController controller = new FloatDialog("Set",
-                Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY, false);
+                Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY, AllowNull.No);
         String defaultText = Float.toString(oldValue);
         String actionPrefix = ActionPrefix.setVertexData
                 + Integer.toString(componentIndex) + " ";
@@ -1499,7 +1504,7 @@ public class EditorDialogs {
      */
     public static void wrapAnimation() {
         FloatDialog controller
-                = new FloatDialog("Wrap animation", 0f, 1f, false);
+                = new FloatDialog("Wrap animation", 0f, 1f, AllowNull.No);
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter weight for end-time keyframes:",
                 "0", ActionPrefix.wrapAnimation, controller);
@@ -1509,7 +1514,8 @@ public class EditorDialogs {
      * Display a "wrap track" dialog.
      */
     public static void wrapTrack() {
-        FloatDialog controller = new FloatDialog("Wrap track", 0f, 1f, false);
+        FloatDialog controller
+                = new FloatDialog("Wrap track", 0f, 1f, AllowNull.No);
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter weight for end-time keyframe:", "0",
                 ActionPrefix.wrapTrack, controller);
@@ -1526,7 +1532,7 @@ public class EditorDialogs {
         assert actionPrefix != null;
 
         FloatDialog controller
-                = new FloatDialog("Resample", 0.1f, 1000f, false);
+                = new FloatDialog("Resample", 0.1f, 1000f, AllowNull.No);
         String prefix = actionPrefix + ResampleType.AtRate + " ";
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter samples per second:", "10", prefix,
@@ -1541,7 +1547,8 @@ public class EditorDialogs {
     private static void resampleToNumber(String actionPrefix) {
         assert actionPrefix != null;
 
-        IntegerDialog controller = new IntegerDialog("Resample", 2, 999, false);
+        IntegerDialog controller
+                = new IntegerDialog("Resample", 2, 999, AllowNull.No);
         String prefix = actionPrefix + ResampleType.ToNumber + " ";
         Maud.gui.closeAllPopups();
         Maud.gui.showTextEntryDialog("Enter number of samples:", "17", prefix,

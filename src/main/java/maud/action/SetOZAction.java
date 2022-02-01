@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2021, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -36,6 +36,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.math.MyColor;
 import jme3utilities.math.MyVector3f;
+import jme3utilities.nifty.dialog.AllowNull;
 import jme3utilities.nifty.dialog.VectorDialog;
 import maud.Maud;
 import maud.dialog.EditorDialogs;
@@ -95,9 +96,9 @@ class SetOZAction {
                     String parameterName = override.parameterName();
                     VarType varType = override.varType();
                     Object oldValue = override.getValue();
-                    boolean allowNull = true;
                     EditorDialogs.setMatParamValue(parameterName, varType,
-                            oldValue, allowNull, ActionPrefix.setOverrideValue);
+                            oldValue, AllowNull.Yes,
+                            ActionPrefix.setOverrideValue);
                 }
                 break;
 
