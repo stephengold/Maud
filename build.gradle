@@ -44,7 +44,7 @@ repositories {
     maven { url 'https://jitpack.io' } // for jme3_xbuf_loader
 }
 
-ext.jme3Version = '3.5.0-beta5' // from mavenCentral
+ext.jme3Version = '3.5.0-stable' // from mavenCentral
 
 dependencies {
     // from mavenCentral (or mavenLocal) repositories:
