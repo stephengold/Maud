@@ -403,39 +403,6 @@ public class MeshUtil {
 
         return result;
     }
-
-    /**
-     * Apply the specified coordinate transform to all data in the specified
-     * VertexBuffer. TODO use MyMesh
-     *
-     * @param mesh the subject mesh (not null)
-     * @param bufferType which buffer to read (not null)
-     * @param transform the Transform to apply (not null, unaffected)
-     */
-    public static void transformBuffer(Mesh mesh, VertexBuffer.Type bufferType,
-            Transform transform) {
-        Validate.nonNull(bufferType, "buffer type");
-        Validate.nonNull(transform, "transform");
-
-        VertexBuffer vertexBuffer = mesh.getBuffer(bufferType);
-        if (vertexBuffer != null) {
-            int count = mesh.getVertexCount();
-            FloatBuffer floatBuffer = (FloatBuffer) vertexBuffer.getData();
-
-            Vector3f tmpVector = new Vector3f();
-            for (int vertexIndex = 0; vertexIndex < count; ++vertexIndex) {
-                MyMesh.vertexVector3f(mesh, bufferType, vertexIndex, tmpVector);
-                transform.transformVector(tmpVector, tmpVector);
-
-                int floatIndex = MyVector3f.numAxes * vertexIndex;
-                floatBuffer.put(floatIndex, tmpVector.x);
-                floatBuffer.put(floatIndex + 1, tmpVector.y);
-                floatBuffer.put(floatIndex + 2, tmpVector.z);
-            }
-
-            vertexBuffer.setUpdateNeeded();
-        }
-    }
     // *************************************************************************
     // private methods
 
