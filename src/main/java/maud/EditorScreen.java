@@ -125,10 +125,6 @@ public class EditorScreen extends GuiScreenController {
     // fields
 
     /**
-     * build menus for this screen
-     */
-    final public BuildMenus buildMenus = new BuildMenus();
-    /**
      * input mode for this screen
      */
     final EditorInputMode inputMode = new EditorInputMode();
