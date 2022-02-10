@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2021, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -34,6 +34,7 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer;
+import com.jme3.util.clone.Cloner;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.util.List;
@@ -227,12 +228,20 @@ public class SupportUtil {
             int vertexIndex, Pose pose, Matrix3f storeResult) {
         Validate.nonNull(geometry, "geometry");
         Matrix3f result = (storeResult == null) ? new Matrix3f() : storeResult;
+        /*
+         * Create a clone of the Pose for temporary modifications.
+         */
+        Cloner cloner = new Cloner();
+        Object skeleton = pose.findSkeleton();
+        if (skeleton != null) {  // Don't clone the skeleton!
+            cloner.setClonedValue(skeleton, skeleton);
+        }
+        Pose testPose = cloner.clone(pose);
 
         Vector3f testWorld = new Vector3f();
         Vector3f baseWorld = new Vector3f();
         int numBones = pose.countBones();
         Matrix4f[] matrices = new Matrix4f[numBones];
-        Pose testPose = pose.clone();
 
         pose.userTranslation(boneIndex, testWorld);
         testPose.skin(matrices);
