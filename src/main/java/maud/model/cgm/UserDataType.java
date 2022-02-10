@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018, Stephen Gold
+ Copyright (c) 2018-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -77,7 +77,7 @@ public enum UserDataType {
                 object = new Vector4f();
                 break;
             default:
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("this = " + this);
         }
 
         return object;

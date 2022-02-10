@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -143,7 +143,7 @@ public class ParseUtil {
                     /* TODO handle FloatArray, IntArray, Matrix3, Matrix3Array,
                      * Matrix4, Matrix4Array, TextureBuffer,
                      * Vector2Array, Vector3Array, Vector4Array */
-                    throw new IllegalArgumentException();
+                    throw new IllegalArgumentException("varType = " + varType);
             }
         }
 

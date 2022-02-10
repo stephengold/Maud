@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -260,7 +260,7 @@ public class SceneDrag {
                 break;
 
             default:
-                throw new IllegalStateException();
+                throw new IllegalStateException("effect = " + effect);
         }
     }
     // *************************************************************************
@@ -429,7 +429,7 @@ public class SceneDrag {
                 break;
 
             default:
-                throw new IllegalStateException();
+                throw new IllegalStateException("subject = " + subject);
         }
     }
 
@@ -509,7 +509,7 @@ public class SceneDrag {
                 break;
 
             default:
-                throw new IllegalStateException();
+                throw new IllegalStateException("subject = " + subject);
         }
     }
 
@@ -563,7 +563,7 @@ public class SceneDrag {
                 break;
 
             default:
-                throw new IllegalStateException();
+                throw new IllegalStateException("subject = " + subject);
         }
     }
 
@@ -681,7 +681,7 @@ public class SceneDrag {
                 break;
 
             default:
-                throw new IllegalStateException();
+                throw new IllegalStateException("subject = " + subject);
         }
     }
 }

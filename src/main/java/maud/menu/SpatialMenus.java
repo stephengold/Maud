@@ -571,7 +571,7 @@ public class SpatialMenus {
                     break;
 
                 default:
-                    throw new IllegalArgumentException();
+                    throw new IllegalArgumentException("subset = " + subset);
             }
 
             if (target.hasGeometry(name)) {

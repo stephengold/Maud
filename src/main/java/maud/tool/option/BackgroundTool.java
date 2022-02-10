@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -117,7 +117,7 @@ public class BackgroundTool extends Tool {
                 break;
 
             default:
-                throw new IllegalStateException();
+                throw new IllegalStateException("background = " + background);
         }
     }
 
@@ -151,7 +151,7 @@ public class BackgroundTool extends Tool {
                 break;
 
             default:
-                throw new IllegalStateException();
+                throw new IllegalStateException("background = " + background);
         }
         setColorBank("bg", colorSt, color);
 

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -173,7 +173,7 @@ public class PhysicsUtil {
             PhysicsGhostObject ghost = (PhysicsGhostObject) pco;
             ghost.getPhysicsRotation(result);
         } else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(pco.getClass().getSimpleName());
         }
 
         return result;
@@ -248,7 +248,7 @@ public class PhysicsUtil {
             PhysicsCharacter character = (PhysicsCharacter) pco;
             character.setPhysicsLocation(newLocation);
         } else {
-            throw new IllegalStateException();
+            throw new IllegalStateException(pco.getClass().getSimpleName());
         }
     }
 
@@ -271,7 +271,7 @@ public class PhysicsUtil {
             PhysicsGhostObject ghost = (PhysicsGhostObject) pco;
             ghost.setPhysicsRotation(newOrientation);
         } else {
-            throw new IllegalStateException();
+            throw new IllegalStateException(pco.getClass().getSimpleName());
         }
     }
 

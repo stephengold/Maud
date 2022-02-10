@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2021, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -1353,7 +1353,7 @@ public class Cgm implements Cloneable {
                         break;
 
                     default:
-                        throw new IllegalArgumentException();
+                        throw new IllegalArgumentException("subset = " + subset);
                 }
             }
 
@@ -1396,7 +1396,7 @@ public class Cgm implements Cloneable {
                     setting = true;
                     break;
                 default:
-                    throw new RuntimeException(mode.toString());
+                    throw new IllegalStateException(mode.toString());
             }
             List<Integer> treePosition = findSpatial(subtree);
             sceneView.setWireframe(treePosition, setting);

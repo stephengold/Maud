@@ -711,7 +711,7 @@ public class EditorDialogs {
                 break;
 
             default:
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("resample type = " + type);
         }
     }
 
@@ -1167,7 +1167,7 @@ public class EditorDialogs {
                     defaultValue = vector.x + " " + vector.y + " " + vector.z
                             + " " + vector.w;
                 } else {
-                    throw new IllegalArgumentException();
+                    throw new IllegalArgumentException(oldValue.getClass().getSimpleName());
                 }
                 controller = new VectorDialog("Set", 4, allowNull);
                 promptMessage = "Enter new vector4 value:";
@@ -1345,7 +1345,7 @@ public class EditorDialogs {
                 break;
 
             default:
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("whichTime = " + whichTime);
         }
 
         String defaultText = Float.toString(defaultValue);
@@ -1392,7 +1392,7 @@ public class EditorDialogs {
                 break;
 
             default:
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("whichTime = " + whichTime);
         }
 
         int indexBase = model.getMisc().indexBase();

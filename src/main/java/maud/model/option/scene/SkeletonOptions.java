@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2021, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -120,7 +120,7 @@ public class SkeletonOptions implements Cloneable {
                 break;
 
             default:
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("use = " + use);
         }
 
         return result;
@@ -220,7 +220,7 @@ public class SkeletonOptions implements Cloneable {
                 break;
 
             default:
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("use = " + use);
         }
     }
 

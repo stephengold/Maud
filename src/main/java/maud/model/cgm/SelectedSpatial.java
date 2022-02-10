@@ -247,7 +247,7 @@ public class SelectedSpatial implements JmeCloneable {
 
             case Probe: // TODO
             default:
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("type = " + type);
         }
 
         newLight.setName(name);

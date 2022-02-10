@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018-2019, Stephen Gold
+ Copyright (c) 2018-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -80,7 +80,7 @@ public class DescribeUtil {
         } else if (indexBase == 1) {
             result = String.format("#%d", index + 1);
         } else {
-            throw new IllegalStateException();
+            throw new IllegalStateException("indexBase = " + indexBase);
         }
 
         assert result != null;
@@ -239,7 +239,7 @@ public class DescribeUtil {
                 description = "Cube";
                 break;
             default:
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("type = " + type);
         }
 
         return description;
