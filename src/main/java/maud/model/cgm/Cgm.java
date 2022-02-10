@@ -386,7 +386,7 @@ public class Cgm implements Cloneable {
      * @return the number found (&ge;0)
      */
     public <T extends Spatial> int countSpatials(Class<T> spatialType,
-            Enum enumValue) {
+            Enum<?> enumValue) {
         int result
                 = MaudUtil.countSpatials(rootSpatial, spatialType, enumValue);
 
@@ -1156,8 +1156,8 @@ public class Cgm implements Cloneable {
                 Collection<String> clipNames = animComposer.getAnimClipsNames();
                 for (String clipName : clipNames) {
                     AnimClip clip = animComposer.getAnimClip(clipName);
-                    AnimTrack[] tracks = clip.getTracks();
-                    for (AnimTrack track : tracks) {
+                    AnimTrack<?>[] tracks = clip.getTracks();
+                    for (AnimTrack<?> track : tracks) {
                         TrackItem item = new TrackItem(clipName,
                                 controlName, animComposer, track);
                         result.add(item);

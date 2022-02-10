@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018-2021, Stephen Gold
+ Copyright (c) 2018-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -314,7 +314,7 @@ public class SelectedTexture implements JmeCloneable {
     TextureKey getKey() {
         TextureKey textureKey = null;
         if (selectedTexture != null) {
-            AssetKey assetKey = selectedTexture.getKey();
+            AssetKey<?> assetKey = selectedTexture.getKey();
             if (assetKey instanceof TextureKey) {
                 textureKey = (TextureKey) assetKey;
             }
@@ -540,7 +540,7 @@ public class SelectedTexture implements JmeCloneable {
 
         History.autoAdd();
         for (Texture texture : nonNullTextures) {
-            AssetKey assetKey = texture.getKey();
+            AssetKey<?> assetKey = texture.getKey();
             if (assetKey instanceof TextureKey) {
                 String oldPath = texture.getName();
                 String newPath = oldPath.replace(match, replacement);
@@ -623,7 +623,7 @@ public class SelectedTexture implements JmeCloneable {
         selectedTexture = (Texture) value;
 
         if (selectedTexture != null) {
-            AssetKey key = selectedTexture.getKey();
+            AssetKey<?> key = selectedTexture.getKey();
             if (key instanceof TextureKey) {
                 lastAssetPath = key.getName();
             }
@@ -662,7 +662,7 @@ public class SelectedTexture implements JmeCloneable {
         selectedRefs = listTextureRefs(texture);
         selectedTexture = texture;
 
-        AssetKey key = selectedTexture.getKey();
+        AssetKey<?> key = selectedTexture.getKey();
         if (key instanceof TextureKey) {
             lastAssetPath = key.getName();
         }

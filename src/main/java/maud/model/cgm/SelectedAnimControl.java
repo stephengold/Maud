@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2021, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -180,12 +180,12 @@ public class SelectedAnimControl implements JmeCloneable {
         Object copy;
         if (oldAnim instanceof AnimClip) {
             AnimClip copyClip = new AnimClip(newAnimName);
-            AnimTrack[] oldTracks = ((AnimClip) oldAnim).getTracks();
+            AnimTrack<?>[] oldTracks = ((AnimClip) oldAnim).getTracks();
             int numTracks = oldTracks.length;
-            AnimTrack[] newTracks = new AnimTrack[numTracks];
+            AnimTrack<?>[] newTracks = new AnimTrack[numTracks];
             for (int i = 0; i < numTracks; ++i) {
-                AnimTrack clone
-                        = (AnimTrack) TrackEdit.cloneTrack(oldTracks[i]);
+                AnimTrack<?> clone
+                        = (AnimTrack<?>) TrackEdit.cloneTrack(oldTracks[i]);
                 newTracks[i] = clone;
             }
             copyClip.setTracks(newTracks);
@@ -297,11 +297,11 @@ public class SelectedAnimControl implements JmeCloneable {
              */
             AnimClip mix = new AnimClip(animationName);
             int numSelected = selectedTracks.size();
-            AnimTrack[] trackArray = new AnimTrack[numSelected];
+            AnimTrack<?>[] trackArray = new AnimTrack[numSelected];
             int outIndex = 0;
             for (TrackItem item : selectedTracks) {
-                AnimTrack track = (AnimTrack) item.getTrack();
-                AnimTrack clone = (AnimTrack) TrackEdit.cloneTrack(track);
+                AnimTrack<?> track = (AnimTrack<?>) item.getTrack();
+                AnimTrack<?> clone = (AnimTrack<?>) TrackEdit.cloneTrack(track);
                 trackArray[outIndex] = clone;
                 ++outIndex;
             }

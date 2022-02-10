@@ -222,7 +222,7 @@ public class MaudUtil {
      * @return the number found (&ge;0)
      */
     public static <T extends Spatial> int countSpatials(Spatial subtree,
-            Class<T> spatialType, Enum enumValue) {
+            Class<T> spatialType, Enum<?> enumValue) {
         int result = 0;
 
         if (subtree != null

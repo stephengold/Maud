@@ -166,10 +166,10 @@ public class LoadedAnimation implements Cloneable {
 
         } else {
             int numTracks = oldTracks.length;
-            AnimTrack[] newTracks = new AnimTrack[numTracks];
+            AnimTrack<?>[] newTracks = new AnimTrack<?>[numTracks];
             AnimClip newClip = new AnimClip(loadedName);
             for (int i = 0; i < numTracks; ++i) {
-                AnimTrack trk = (AnimTrack) oldTracks[i];
+                AnimTrack<?> trk = (AnimTrack<?>) oldTracks[i];
                 if (trk instanceof TransformTrack) {
                     TransformTrack oldTrack = (TransformTrack) trk;
                     Transform neckTransform = new Transform();
@@ -177,7 +177,7 @@ public class LoadedAnimation implements Cloneable {
                     newTracks[i] = TrackEdit.behead(oldTrack, neckTime,
                             neckTransform);
                 } else {
-                    newTracks[i] = (AnimTrack) TrackEdit.cloneTrack(trk);
+                    newTracks[i] = (AnimTrack<?>) TrackEdit.cloneTrack(trk);
                 }
                 if (trk == oldSelectedTrack) {
                     newSelectedTrack = newTracks[i];
@@ -258,8 +258,8 @@ public class LoadedAnimation implements Cloneable {
                     BoneTrack.class);
 
         } else if (realAnim instanceof AnimClip) {
-            AnimTrack[] tracks = ((AnimClip) realAnim).getTracks();
-            for (AnimTrack track : tracks) {
+            AnimTrack<?>[] tracks = ((AnimClip) realAnim).getTracks();
+            for (AnimTrack<?> track : tracks) {
                 if (MyAnimation.isJointTrack(track)) {
                     ++result;
                 }
@@ -283,8 +283,8 @@ public class LoadedAnimation implements Cloneable {
                     SpatialTrack.class);
 
         } else if (realAnim instanceof AnimClip) {
-            AnimTrack[] tracks = ((AnimClip) realAnim).getTracks();
-            for (AnimTrack track : tracks) {
+            AnimTrack<?>[] tracks = ((AnimClip) realAnim).getTracks();
+            for (AnimTrack<?> track : tracks) {
                 if (track instanceof TransformTrack) {
                     HasLocalTransform target
                             = ((TransformTrack) track).getTarget();
@@ -591,8 +591,8 @@ public class LoadedAnimation implements Cloneable {
 
         } else if (control instanceof AnimComposer
                 && realAnim instanceof AnimClip) {
-            AnimTrack[] tracks = ((AnimClip) realAnim).getTracks();
-            for (AnimTrack track : tracks) {
+            AnimTrack<?>[] tracks = ((AnimClip) realAnim).getTracks();
+            for (AnimTrack<?> track : tracks) {
                 if (track instanceof MorphTrack) {
                     Geometry target = ((MorphTrack) track).getTarget();
                     if (target == spat) {
@@ -1118,7 +1118,7 @@ public class LoadedAnimation implements Cloneable {
                     || oldTrack instanceof SpatialTrack) {
                 newTrack = TrackEdit.reverse((Track) oldTrack);
             } else if (oldTrack instanceof AnimTrack) {
-                newTrack = TrackEdit.reverse((AnimTrack) oldTrack);
+                newTrack = TrackEdit.reverse((AnimTrack<?>) oldTrack);
             } else { // TODO other track types
                 newTrack = TrackEdit.cloneTrack(oldTrack);
             }

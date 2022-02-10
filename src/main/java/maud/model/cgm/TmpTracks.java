@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020-2021, Stephen Gold
+ Copyright (c) 2020-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -93,9 +93,9 @@ class TmpTracks {
 
         } else {
             int numTracks = trackList.size();
-            AnimTrack[] tracks = new AnimTrack[numTracks];
+            AnimTrack<?>[] tracks = new AnimTrack[numTracks];
             for (int i = 0; i < numTracks; ++i) {
-                tracks[i] = (AnimTrack) trackList.get(i);
+                tracks[i] = (AnimTrack<?>) trackList.get(i);
             }
             ((AnimClip) anim).setTracks(tracks);
         }

@@ -328,7 +328,7 @@ public class SelectedTrack implements JmeCloneable {
             AbstractControl control = cgm.getAnimControl().find();
             assert control != null;
             if (control instanceof AnimComposer) {
-                AnimTrack animTrack = (AnimTrack) selected;
+                AnimTrack<?> animTrack = (AnimTrack<?>) selected;
                 result = MyAnimation.describe(animTrack);
             } else {
                 Track track = (Track) selected;

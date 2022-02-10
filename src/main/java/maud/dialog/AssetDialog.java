@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2021, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -126,7 +126,7 @@ class AssetDialog extends TextEntryDialog {
             return pathCache.get(assetPath);
         }
 
-        AssetKey key = new AssetKey(assetPath);
+        AssetKey<?> key = new AssetKey<>(assetPath);
         AssetManager manager = Locators.getAssetManager();
 
         Locators.save();

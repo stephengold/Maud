@@ -343,11 +343,11 @@ public class EditableCgm extends LoadedCgm {
         History.autoAdd();
         if (animation instanceof AnimClip) {
             AnimClip clip = (AnimClip) animation;
-            AnimTrack[] oldTracks = clip.getTracks();
+            AnimTrack<?>[] oldTracks = clip.getTracks();
             int oldNumTracks = oldTracks.length;
-            AnimTrack[] newTracks = new AnimTrack[oldNumTracks + 1];
+            AnimTrack<?>[] newTracks = new AnimTrack[oldNumTracks + 1];
             System.arraycopy(oldTracks, 0, newTracks, 0, oldNumTracks);
-            newTracks[oldNumTracks] = (AnimTrack) newTrack;
+            newTracks[oldNumTracks] = (AnimTrack<?>) newTrack;
             clip.setTracks(newTracks);
         } else {
             Track track = (Track) newTrack;

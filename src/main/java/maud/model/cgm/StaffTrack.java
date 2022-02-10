@@ -208,7 +208,7 @@ public class StaffTrack {
             AnimControl animControl = (AnimControl) control;
             labelText = MyAnimation.describe((Track) track, animControl);
         } else {
-            labelText = MyAnimation.describe((AnimTrack) track);
+            labelText = MyAnimation.describe((AnimTrack<?>) track);
         }
 
         loadTrack();

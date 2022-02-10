@@ -129,7 +129,7 @@ public class TrackItem {
                     (AnimControl) animControl);
             assert !description.isEmpty();
         } else {
-            description = MyAnimation.describe((AnimTrack) track);
+            description = MyAnimation.describe((AnimTrack<?>) track);
             assert !description.isEmpty();
         }
 

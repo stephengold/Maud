@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -165,7 +165,7 @@ public class ScoreResources {
     /**
      * font for labels
      */
-    final TrueTypeFont labelFont;
+    final TrueTypeFont<?,?> labelFont;
     // *************************************************************************
     // constructors
 
@@ -273,7 +273,7 @@ public class ScoreResources {
          * Create a text node, centered on, and slightly in front of, the
          * background.
          */
-        TrueTypeNode textNode = labelFont.getText(labelText, 0,
+        TrueTypeNode<?> textNode = labelFont.getText(labelText, 0,
                 textColor.clone());
         textNode.setLocalScale(sizeFactor);
         float dx = width - textNode.getWidth() * sizeFactor;
