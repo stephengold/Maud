@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2021, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -192,7 +192,7 @@ public class EditorMenus {
         boolean handled;
         int separatorBegin = menuPath.indexOf(menuPathSeparator);
         if (separatorBegin == -1) {
-            handled = Maud.gui.buildMenus.menuBar(menuPath);
+            handled = BuildMenus.menuBar(menuPath);
         } else {
             int separatorEnd = separatorBegin + menuPathSeparator.length();
             String menuName = menuPath.substring(0, separatorBegin);
