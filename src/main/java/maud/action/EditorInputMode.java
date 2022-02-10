@@ -578,7 +578,7 @@ public class EditorInputMode extends InputMode {
                     ActionPrefix.saveTexture);
             if (argList.contains(" ")) {
                 args = argList.split(" ");
-                boolean flipY = Boolean.valueOf(args[0]);
+                boolean flipY = Boolean.parseBoolean(args[0]);
                 String assetPath = MyString.remainder(argList, args[0] + " ");
                 target.getTexture().writeImageToAsset(assetPath, flipY);
             } else {

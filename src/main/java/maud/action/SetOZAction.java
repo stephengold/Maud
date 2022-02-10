@@ -288,13 +288,13 @@ class SetOZAction {
         } else if (actionString.startsWith(ActionPrefix.setSkeletonLineWidth)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setSkeletonLineWidth);
-            float width = Float.valueOf(arg);
+            float width = Float.parseFloat(arg);
             model.getScene().getSkeleton().setLineWidth(width);
 
         } else if (actionString.startsWith(ActionPrefix.setSkeletonPointSize)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setSkeletonPointSize);
-            float pointSize = Float.valueOf(arg);
+            float pointSize = Float.parseFloat(arg);
             model.getScene().getSkeleton().setPointSize(pointSize);
 
         } else if (actionString.startsWith(
@@ -424,12 +424,12 @@ class SetOZAction {
                 ActionPrefix.setVertexPositionTolerance)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setVertexPositionTolerance);
-            float tolerance = Float.valueOf(arg);
+            float tolerance = Float.parseFloat(arg);
             model.getMisc().setVertexPositionTolerance(tolerance);
 
         } else if (actionString.startsWith(ActionPrefix.setXBoundary)) {
             arg = MyString.remainder(actionString, ActionPrefix.setXBoundary);
-            float position = Float.valueOf(arg);
+            float position = Float.parseFloat(arg);
             model.getMisc().setXBoundary(position);
 
         } else {

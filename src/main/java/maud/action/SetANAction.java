@@ -192,19 +192,19 @@ class SetANAction {
         } else if (actionString.startsWith(ActionPrefix.set3DCursorCycleTime)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.set3DCursorCycleTime);
-            float cycleTime = Float.valueOf(arg);
+            float cycleTime = Float.parseFloat(arg);
             model.getScene().getCursor().setCycleTime(cycleTime);
 
         } else if (actionString.startsWith(ActionPrefix.set3DCursorSize)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.set3DCursorSize);
-            float size = Float.valueOf(arg);
+            float size = Float.parseFloat(arg);
             model.getScene().getCursor().setSize(size);
 
         } else if (actionString.startsWith(ActionPrefix.setAmbientLevel)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setAmbientLevel);
-            float level = Float.valueOf(arg);
+            float level = Float.parseFloat(arg);
             model.getScene().getLights().setAmbientLevel(level);
 
         } else if (actionString.startsWith(ActionPrefix.setAnisotropy)) {
@@ -216,7 +216,7 @@ class SetANAction {
         } else if (actionString.startsWith(ActionPrefix.setAxesLineWidth)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setAxesLineWidth);
-            float width = Float.valueOf(arg);
+            float width = Float.parseFloat(arg);
             model.getScene().getAxes().setLineWidth(width);
 
         } else if (actionString.startsWith(ActionPrefix.setBackgroundColor)) {
@@ -240,7 +240,7 @@ class SetANAction {
         } else if (actionString.startsWith(ActionPrefix.setBoundsLineWidth)) {
             arg = MyString.remainder(actionString,
                     ActionPrefix.setBoundsLineWidth);
-            float width = Float.valueOf(arg);
+            float width = Float.parseFloat(arg);
             model.getScene().getBounds().setLineWidth(width);
 
         } else if (actionString.startsWith(
@@ -305,12 +305,12 @@ class SetANAction {
 
         } else if (actionString.startsWith(ActionPrefix.setHour)) {
             arg = MyString.remainder(actionString, ActionPrefix.setHour);
-            float hour = Float.valueOf(arg);
+            float hour = Float.parseFloat(arg);
             model.getScene().getRender().setHour(hour);
 
         } else if (actionString.startsWith(ActionPrefix.setLinkMass)) {
             arg = MyString.remainder(actionString, ActionPrefix.setLinkMass);
-            float mass = Float.valueOf(arg);
+            float mass = Float.parseFloat(arg);
             target.setLinkMass(mass);
 
         } else if (actionString.startsWith(ActionPrefix.setMainDirection)) {
@@ -321,7 +321,7 @@ class SetANAction {
 
         } else if (actionString.startsWith(ActionPrefix.setMainLevel)) {
             arg = MyString.remainder(actionString, ActionPrefix.setMainLevel);
-            float level = Float.valueOf(arg);
+            float level = Float.parseFloat(arg);
             model.getScene().getLights().setMainLevel(level);
 
         } else if (actionString.startsWith(ActionPrefix.setMapSize)) {
