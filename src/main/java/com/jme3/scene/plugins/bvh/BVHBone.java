@@ -36,7 +36,7 @@ public class BVHBone {
     /**
      * offset of the bone
      */
-    private Vector3f offset = new Vector3f();
+    final private Vector3f offset = new Vector3f();
     // *************************************************************************
     // constructors
 

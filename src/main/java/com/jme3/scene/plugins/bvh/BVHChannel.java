@@ -24,7 +24,7 @@ public class BVHChannel {
     /**
      * name of this channel (6 possible values)
      */
-    private String name;
+    final private String name;
     // *************************************************************************
     // constructors
 
