@@ -204,7 +204,9 @@ public class SelectedSkeleton implements JmeCloneable {
         if (skeleton == null && selectedSgc instanceof AnimComposer) {
             Spatial controlled = ((AnimComposer) selectedSgc).getSpatial();
             SkinningControl sc = controlled.getControl(SkinningControl.class);
-            skeleton = sc.getArmature();
+            if (sc != null) {
+                skeleton = sc.getArmature();
+            }
         }
         if (skeleton != null) {
             selectedSgcFlag = true;
