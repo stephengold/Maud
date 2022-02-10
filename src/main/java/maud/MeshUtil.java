@@ -26,7 +26,6 @@
  */
 package maud;
 
-import com.jme3.math.Transform;
 import com.jme3.math.Triangle;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
@@ -49,7 +48,6 @@ import jme3utilities.math.DistinctVectorValues;
 import jme3utilities.math.IntPair;
 import jme3utilities.math.MyBuffer;
 import jme3utilities.math.MyMath;
-import jme3utilities.math.MyVector3f;
 
 /**
  * Utility methods for mesh manipulation. All methods should be static.
