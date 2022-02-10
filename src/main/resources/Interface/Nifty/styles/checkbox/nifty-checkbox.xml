@@ -17,6 +17,6 @@
         <effect>
             <onEnabled name="fade" start="#4" end="#f" length="150" />
             <onDisabled name="fade" start="#f" end="#4" length="150" />
-         </effect>
+        </effect>
     </style>
 </nifty-styles>

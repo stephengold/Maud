@@ -755,7 +755,7 @@ public class CgmPhysics implements JmeCloneable {
      * @param newChild the replacement shape (not null, not a compound shape)
      */
     private static void replaceInCompound(CollisionShape parent,
-                                          CollisionShape oldChild, CollisionShape newChild) {
+            CollisionShape oldChild, CollisionShape newChild) {
         assert parent != null;
         assert oldChild != null;
         assert !(oldChild instanceof CompoundCollisionShape);

@@ -311,7 +311,7 @@ public class SelectedBuffer implements Cloneable {
      */
     public void putFloat(int floatIndex, float newValue) {
         Validate.nonNegative(floatIndex, "float index");
-        
+
         VertexBuffer vertexBuffer = find();
         FloatBuffer floatBuffer = (FloatBuffer) vertexBuffer.getData();
         float oldValue = floatBuffer.get(floatIndex);
