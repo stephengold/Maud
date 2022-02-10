@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018-2020, Stephen Gold
+ Copyright (c) 2018-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -464,8 +464,7 @@ public class CgmPhysics implements JmeCloneable {
             List<PhysicsLink> links = modelDac.listLinks(PhysicsLink.class);
             int numLinks = links.size();
 
-            for (int i = 0; i < numLinks; i++) {
-                PhysicsLink modelLink = links.get(i);
+            for (PhysicsLink modelLink : links) {
                 PhysicsJoint modelJoint = modelLink.getJoint();
                 if (modelJoint != null) {
                     disassociate(modelJoint);

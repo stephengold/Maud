@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2021, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -267,8 +267,7 @@ public class SelectedShape implements JmeCloneable {
             ChildCollisionShape[] children = compound.listChildren();
             int count = children.length;
             result = new ArrayList<>(count);
-            for (int childIndex = 0; childIndex < count; childIndex++) {
-                ChildCollisionShape child = children[childIndex];
+            for (ChildCollisionShape child : children) {
                 String description = child.getShape().toString();
                 if (description.startsWith(prefix)) {
                     result.add(description);

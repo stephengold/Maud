@@ -992,8 +992,7 @@ public class Cgm implements Cloneable {
         int count = controlList.size();
         List<String> result = new ArrayList<>(count);
 
-        for (int listIndex = 0; listIndex < count; ++listIndex) {
-            AbstractControl control = controlList.get(listIndex);
+        for (AbstractControl control : controlList) {
             Spatial sp = control.getSpatial();
             String spName = sp.getName();
             spName = MyString.quote(spName);
@@ -1107,8 +1106,7 @@ public class Cgm implements Cloneable {
         int count = list.size();
         List<String> result = new ArrayList<>(count);
 
-        for (int listIndex = 0; listIndex < count; ++listIndex) {
-            Object skeleton = list.get(listIndex);
+        for (Object skeleton : list) {
             String description;
             if (skeleton instanceof Armature) {
                 int numJoints = ((Armature) skeleton).getJointCount();

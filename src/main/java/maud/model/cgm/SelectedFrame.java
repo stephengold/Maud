@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -305,9 +305,9 @@ public class SelectedFrame implements Cloneable {
         float time = cgm.getPlay().getTime();
         Object selectedTrack = cgm.getTrack().get();
         float[] times = MaudUtil.getTrackTimes(selectedTrack);
-        for (int iFrame = 0; iFrame < times.length; iFrame++) {
-            if (times[iFrame] > time) {
-                result = times[iFrame];
+        for (float v : times) {
+            if (v > time) {
+                result = v;
                 break;
             }
         }

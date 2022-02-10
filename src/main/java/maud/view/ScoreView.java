@@ -776,11 +776,11 @@ public class ScoreView implements EditorView {
      */
     private void attachBoneStaves(List<Integer> indices) {
         int numShown = indices.size();
-        for (int listIndex = 0; listIndex < numShown; listIndex++) {
+        for (Integer index : indices) {
             if (staffIndex > 0) {
                 height += yGap;
             }
-            int boneIndex = indices.get(listIndex);
+            int boneIndex = index;
             attachBoneStaff(boneIndex);
         }
     }
