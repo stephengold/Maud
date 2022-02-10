@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2021, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -434,6 +434,31 @@ public class EditableCgm extends LoadedCgm {
         List<Mesh> meshes = MyMesh.listMeshes(rootSpatial, null);
         for (Mesh mesh : meshes) {
             mesh.clearCollisionData();
+        }
+    }
+
+    /**
+     * If possible, copy the selected Geometry, split the copy into subparts and
+     * attach the parts to the parent of the original. (The original is
+     * unaffected.)
+     */
+    public void copyAndSplitGeometry() {
+        Geometry geometry = (Geometry) getSpatial().find();
+        Mesh mesh = geometry.getMesh();
+        float tolerance = Maud.getModel().getMisc().vertexPositionTolerance();
+        Mesh[] submeshes = MeshUtil.partition(mesh, VertexBuffer.Type.Position,
+                tolerance);
+        int numSubmeshes = submeshes.length;
+        if (numSubmeshes > 1) {
+            History.autoAdd();
+            MaudUtil.copyAndSplitGeometry(geometry, submeshes);
+            getSceneView().copyAndSplitGeometry(tolerance);
+
+            String oldName = geometry.getName();
+            String description = String.format(
+                    "split %s into %d using tolerance=%f",
+                    MyString.quote(oldName), numSubmeshes, tolerance);
+            editState.setEdited(description);
         }
     }
 
@@ -1570,31 +1595,6 @@ public class EditableCgm extends LoadedCgm {
                         "set wireframe flag of material to %s", newState);
                 editState.setEdited(description);
             }
-        }
-    }
-
-    /**
-     * If possible, copy the selected Geometry, split the copy into subparts and
-     * attach the parts to the parent of the original. (The original is
-     * unaffected.) TODO rename copyAndSplitGeometry
-     */
-    public void splitGeometry() {
-        Geometry geometry = (Geometry) getSpatial().find();
-        Mesh mesh = geometry.getMesh();
-        float tolerance = Maud.getModel().getMisc().vertexPositionTolerance();
-        Mesh[] submeshes = MeshUtil.partition(mesh, VertexBuffer.Type.Position,
-                tolerance);
-        int numSubmeshes = submeshes.length;
-        if (numSubmeshes > 1) {
-            History.autoAdd();
-            MaudUtil.copyAndSplitGeometry(geometry, submeshes);
-            getSceneView().splitGeometry(tolerance);
-
-            String oldName = geometry.getName();
-            String description = String.format(
-                    "split %s into %d using tolerance=%f",
-                    MyString.quote(oldName), numSubmeshes, tolerance);
-            editState.setEdited(description);
         }
     }
 

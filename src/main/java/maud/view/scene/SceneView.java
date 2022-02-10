@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2021, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -245,6 +245,23 @@ public class SceneView extends SceneViewCore {
 
         assert length >= 0f : length;
         return length;
+    }
+
+    /**
+     * Copy the selected Geometry, split the copy into subparts and attach the
+     * parts to the parent of the original. (The original is unaffected.)
+     *
+     * @param tolerance the minimum distance for distinct vector values (in mesh
+     * units, &ge;0)
+     */
+    public void copyAndSplitGeometry(float tolerance) {
+        Spatial spatial = selectedSpatial();
+        Geometry geometry = (Geometry) spatial;
+        Mesh mesh = geometry.getMesh();
+
+        Mesh[] submeshes = MeshUtil.partition(mesh, VertexBuffer.Type.Position,
+                tolerance);
+        MaudUtil.copyAndSplitGeometry(geometry, submeshes);
     }
 
     /**
@@ -807,24 +824,6 @@ public class SceneView extends SceneViewCore {
         Material material = geometry.getMaterial();
         RenderState renderState = material.getAdditionalRenderState();
         renderState.setWireframe(newSetting);
-    }
-
-    /**
-     * Copy the selected Geometry, split the copy into subparts and attach the
-     * parts to the parent of the original. (The original is unaffected.) TODO
-     * rename copyAndSplitGeometry
-     *
-     * @param tolerance the minimum distance for distinct vector values (in mesh
-     * units, &ge;0)
-     */
-    public void splitGeometry(float tolerance) {
-        Spatial spatial = selectedSpatial();
-        Geometry geometry = (Geometry) spatial;
-        Mesh mesh = geometry.getMesh();
-
-        Mesh[] submeshes
-                = MeshUtil.partition(mesh, VertexBuffer.Type.Position, tolerance);
-        MaudUtil.copyAndSplitGeometry(geometry, submeshes);
     }
 
     /**
