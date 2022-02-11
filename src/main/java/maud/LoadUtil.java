@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -41,6 +41,7 @@ import com.jme3.scene.plugins.blender.meshes.Face;
 import com.jme3.scene.plugins.bvh.BVHAnimData;
 import com.jme3.scene.plugins.bvh.SkeletonMapping;
 import com.jme3.scene.plugins.gltf.CustomContentManager;
+import com.jme3.scene.plugins.gltf.GltfLoader;
 import com.jme3.scene.plugins.ogre.MaterialLoader;
 import com.jme3.scene.plugins.ogre.MeshLoader;
 import java.util.logging.Level;
@@ -132,6 +133,10 @@ public class LoadUtil {
         Logger faceLogger = Logger.getLogger(Face.class.getName());
         Level faceLevel = faceLogger.getLevel();
 
+        Logger gltfLoaderLogger
+                = Logger.getLogger(GltfLoader.class.getName());
+        Level gltfLoaderLevel = gltfLoaderLogger.getLevel();
+
         Logger meshLoaderLogger = Logger.getLogger(MeshLoader.class.getName());
         Level meshLoaderLevel = meshLoaderLogger.getLevel();
 
@@ -147,12 +152,12 @@ public class LoadUtil {
         Level compoundCollisionShapeLevel
                 = compoundCollisionShapeLogger.getLevel();
 
-        org.slf4j.Logger slfLogger;
-        slfLogger = LoggerFactory.getLogger("jme3_ext_xbuf.XbufLoader");
-        ch.qos.logback.classic.Logger xbufLoaderLogger;
-        xbufLoaderLogger = (ch.qos.logback.classic.Logger) slfLogger;
-        ch.qos.logback.classic.Level xbufLoaderLevel;
-        xbufLoaderLevel = xbufLoaderLogger.getLevel();
+        org.slf4j.Logger slfLogger
+                = LoggerFactory.getLogger("jme3_ext_xbuf.XbufLoader");
+        ch.qos.logback.classic.Logger xbufLoaderLogger
+                = (ch.qos.logback.classic.Logger) slfLogger;
+        ch.qos.logback.classic.Level xbufLoaderLevel
+                = xbufLoaderLogger.getLevel();
 
         if (!diagnose) {
             /*
@@ -162,6 +167,7 @@ public class LoadUtil {
              */
             customLogger.setLevel(Level.SEVERE);
             faceLogger.setLevel(Level.SEVERE);
+            gltfLoaderLogger.setLevel(Level.SEVERE);
             meshLoaderLogger.setLevel(Level.SEVERE);
             materialLogger.setLevel(Level.SEVERE);
             materialLoaderLogger.setLevel(Level.SEVERE);
@@ -186,6 +192,7 @@ public class LoadUtil {
              */
             customLogger.setLevel(customLevel);
             faceLogger.setLevel(faceLevel);
+            gltfLoaderLogger.setLevel(gltfLoaderLevel);
             meshLoaderLogger.setLevel(meshLoaderLevel);
             materialLogger.setLevel(materialLevel);
             materialLoaderLogger.setLevel(materialLoaderLevel);
