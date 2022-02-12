@@ -4,7 +4,6 @@ plugins {
     id 'application'
 }
 
-description = 'An editor for animated 3-D models.'
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
