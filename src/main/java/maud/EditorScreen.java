@@ -46,6 +46,7 @@ import de.lessvoid.nifty.screen.Screen;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.InitialState;
 import jme3utilities.MyAsset;
 import jme3utilities.MyCamera;
 import jme3utilities.MySpatial;
@@ -148,7 +149,8 @@ public class EditorScreen extends GuiScreenController {
      * during initialization.
      */
     EditorScreen() {
-        super("editor", "Interface/Nifty/huds/editor.xml", false);
+        super("editor", "Interface/Nifty/huds/editor.xml",
+                InitialState.Disabled);
     }
     // *************************************************************************
     // new methods exposed

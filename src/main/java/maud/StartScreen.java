@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -29,6 +29,7 @@ package maud;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import java.util.logging.Logger;
+import jme3utilities.InitialState;
 import jme3utilities.nifty.BasicScreenController;
 import jme3utilities.ui.InputMode;
 
@@ -63,7 +64,7 @@ class StartScreen extends BasicScreenController {
      * initialization.
      */
     StartScreen() {
-        super(screenId, xmlAssetPath, true);
+        super(screenId, xmlAssetPath, InitialState.Enabled);
     }
     // *************************************************************************
     // AppState methods
