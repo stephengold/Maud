@@ -603,13 +603,14 @@ public class Cgm implements Cloneable {
         TweenTransforms technique = Maud.getModel().getTweenTransforms();
         float time = playOptions.getTime();
         Object track = loadedAnimation.findTrackForSpatial(spatial);
+        float duration = loadedAnimation.duration();
         if (track instanceof Track) {
-            float duration = loadedAnimation.duration();
             Transform fallback = spatial.getLocalTransform();
             result = technique.interpolate(time, (Track) track, duration,
                     fallback, null);
         } else if (track instanceof TransformTrack) {
-            result = technique.interpolate(time, (TransformTrack) track, null);
+            result = technique.interpolate(time, (TransformTrack) track,
+                    duration, null);
         }
 
         return result;
