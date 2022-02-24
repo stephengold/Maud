@@ -57,7 +57,6 @@ import jme3utilities.nifty.GuiScreenController;
 import jme3utilities.nifty.Tool;
 import jme3utilities.ui.InputMode;
 import maud.action.EditorInputMode;
-import maud.menu.BuildMenus;
 import maud.mesh.Lozenge;
 import maud.model.EditorModel;
 import maud.model.cgm.Cgm;
