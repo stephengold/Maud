@@ -1,5 +1,5 @@
 ---
-# GitHub workflow for commits pushed to the Maud repo - all branches
+# GitHub Actions workflow for commits pushed to the Maud repo - all branches
 
 name: CI at GitHub
 on: [push]
@@ -7,7 +7,7 @@ on: [push]
 jobs:
   Java11-Linux:
     if: contains(toJson(github.event.commits), '[ci skip] ') == false
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-java@v1
