@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2021, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -51,6 +51,7 @@ import jme3utilities.nifty.displaysettings.DsScreen;
 import jme3utilities.ui.ActionApplication;
 import jme3utilities.ui.DisplaySettings;
 import jme3utilities.ui.DisplaySizeLimits;
+import jme3utilities.ui.ShowDialog;
 import maud.dialog.QuitDialog;
 import maud.model.EditState;
 import maud.model.EditorModel;
@@ -173,7 +174,7 @@ public class Maud extends GuiApplication {
                 .setLevel(Level.SEVERE);
 
         String renderer = AppSettings.LWJGL_OPENGL2;
-        boolean forceDialog = false;
+        ShowDialog showDialog = ShowDialog.FirstTime;
         /*
          * Process any command-line arguments.
          */
@@ -190,7 +191,7 @@ public class Maud extends GuiApplication {
 
                 case "-f":
                 case "--forceDialog":
-                    forceDialog = true;
+                    showDialog = ShowDialog.Always;
                     break;
 
                 case "-s":
@@ -209,7 +210,7 @@ public class Maud extends GuiApplication {
                             MyString.quote(arg));
             }
         }
-        startup0(forceDialog, renderer);
+        startup0(showDialog, renderer);
     }
 
     /**
@@ -464,16 +465,14 @@ public class Maud extends GuiApplication {
      * Initialization performed immediately after parsing the command-line
      * arguments.
      *
-     * @param forceDialog true&rarr;force startup to show the JME settings
-     * dialog, false&rarr; show the dialog only if persistent settings are
-     * missing
+     * @param showDialog when to show the JME settings dialog
      * @param renderer the value passed to
      * {@link com.jme3.system.AppSettings#setRenderer(java.lang.String)}
      */
-    private static void startup0(final boolean forceDialog,
+    private static void startup0(final ShowDialog showDialog,
             final String renderer) {
-        logger.log(Level.INFO, "forceDialog={0} renderer={1}",
-                new Object[]{forceDialog, MyString.quote(renderer)});
+        logger.log(Level.INFO, "showDialog={0} renderer={1}",
+                new Object[]{showDialog, MyString.quote(renderer)});
         /*
          * Instantiate the application.
          */
@@ -492,7 +491,7 @@ public class Maud extends GuiApplication {
             protected void applyOverrides(AppSettings settings) {
                 super.applyOverrides(settings);
 
-                setForceDialog(forceDialog);
+                setShowDialog(showDialog);
                 settings.setAudioRenderer(null);
                 settings.setRenderer(renderer);
                 String logoAssetPath = "Textures/icons/Maud-settings.png";
