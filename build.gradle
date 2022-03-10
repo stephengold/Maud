@@ -17,8 +17,15 @@ tasks.withType(JavaCompile) { // Java compile-time options:
     options.encoding = 'UTF-8'
 }
 
+import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform;
+Boolean isMacOS = DefaultNativePlatform.currentOperatingSystem.isMacOsX();
+
 tasks.withType(JavaExec) { // Java runtime options:
-    //args '--forceDialog'
+    if (isMacOS) {
+        jvmArgs '-XstartOnFirstThread'
+    } else {
+        //args '--forceDialog'
+    }
     //args '--openGL3'
     //args '--openGL33'
     //args '--skipStartup'
