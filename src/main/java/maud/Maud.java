@@ -515,9 +515,6 @@ public class Maud extends GuiApplication {
              */
             application.setShowSettings(false);
 
-            if (displaySettings.isGammaCorrection()) {
-                application.setNiftyColorsAsSrgb();
-            }
             application.start();
             /*
              * ... and onward to Maud.guiInitializeApplication()!
