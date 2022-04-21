@@ -5,7 +5,7 @@ plugins {
 }
 
 ext { // current versions of libraries:
-    jme3Version = '3.5.1-stable'
+    jme3Version = '3.5.2-stable'
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
