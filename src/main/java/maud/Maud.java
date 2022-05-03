@@ -35,6 +35,7 @@ import com.jme3.environment.EnvironmentCamera;
 import com.jme3.scene.plugins.bvh.BVHLoader;
 import com.jme3.system.AppSettings;
 import java.io.File;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3_ext_xbuf.XbufLoader;
@@ -45,12 +46,12 @@ import jme3utilities.UncachedKey;
 import jme3utilities.Validate;
 import jme3utilities.ViewPortAppState;
 import jme3utilities.debug.PerformanceAppState;
+import jme3utilities.math.RectSizeLimits;
 import jme3utilities.nifty.GuiApplication;
 import jme3utilities.nifty.bind.BindScreen;
 import jme3utilities.nifty.displaysettings.DsScreen;
 import jme3utilities.ui.ActionApplication;
 import jme3utilities.ui.DisplaySettings;
-import jme3utilities.ui.DisplaySizeLimits;
 import jme3utilities.ui.ShowDialog;
 import maud.dialog.QuitDialog;
 import maud.model.EditState;
@@ -481,7 +482,7 @@ public class Maud extends GuiApplication {
          * Instantiate the display-settings screen.
          */
         String applicationName = "Maud";// v1.0.0-beta1";
-        DisplaySizeLimits dsl = new DisplaySizeLimits(
+        RectSizeLimits dsl = new RectSizeLimits(
                 640, 720, // min width, height
                 2_048, 1_080 // max width, height
         );
@@ -514,6 +515,14 @@ public class Maud extends GuiApplication {
              * by DisplaySettings.initialize().
              */
             application.setShowSettings(false);
+            /*
+             * Designate a sandbox directory.
+             * This has to be done *prior to* initialization.
+             */
+            try {
+                ActionApplication.designateSandbox("Written Assets");
+            } catch (IOException exception) {
+            }
 
             application.start();
             /*
