@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- Copyright (c) 2017-2021, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -3489,7 +3489,7 @@ Approximate minimum screen size: 640x480
                         <control name="label" id="trackType"
                                  backgroundColor="#ffff"
                                  textHAlign="center"
-                                 width="45px"/>
+                                 width="75px"/>
                         <control name="label" text="    Keyframes:  "/>
                         <control name="label" id="trackFrames"
                                  backgroundColor="#ffff"
