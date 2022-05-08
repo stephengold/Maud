@@ -538,14 +538,30 @@ public class LoadedAnimation implements Cloneable {
      * @param spatialTrackIndex which spatial track (&ge;0)
      * @return the pre-existing instance, or null if not found
      */
-    SpatialTrack findSpatialTrack(int spatialTrackIndex) {
+    Object findSpatialTrack(int spatialTrackIndex) {
         assert spatialTrackIndex >= 0 : spatialTrackIndex;
 
-        SpatialTrack result = null;
+        Object result = null;
         Object realAnimation = getReal();
         if (realAnimation instanceof Animation) {
             result = MaudUtil.findSpatialTrack((Animation) realAnimation,
                     spatialTrackIndex);
+
+        } else if (realAnimation instanceof AnimClip) {
+            int spatialTracksSeen = 0;
+            AnimTrack<?>[] tracks = ((AnimClip) realAnimation).getTracks();
+            for (AnimTrack<?> track : tracks) {
+                if (track instanceof TransformTrack) {
+                    HasLocalTransform target
+                            = ((TransformTrack) track).getTarget();
+                    if (target instanceof Spatial) {
+                        if (spatialTracksSeen == spatialTrackIndex) {
+                            result = track;
+                        }
+                        ++spatialTracksSeen;
+                    }
+                }
+            }
         }
 
         return result;
