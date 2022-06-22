@@ -101,7 +101,7 @@ public class BVHLoader implements AssetLoader {
 
     /**
      *
-     * @param bone
+     * @param bone the animated BVH bone (not null)
      * @return a new instance
      */
     private BoneTrack getBoneTrack(BVHBone bone) {
@@ -205,10 +205,10 @@ public class BVHLoader implements AssetLoader {
 
     /**
      *
-     * @param bones
-     * @param tracks
-     * @param hierarchy
-     * @param parent
+     * @param bones (not null, not empty)
+     * @param tracks (not null, not empty)
+     * @param hierarchy (not null)
+     * @param parent (may be null)
      */
     private void populateBoneList(Bone[] bones, BoneTrack[] tracks,
             BVHBone hierarchy, Bone parent) {
