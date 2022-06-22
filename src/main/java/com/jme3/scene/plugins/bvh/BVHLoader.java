@@ -137,24 +137,24 @@ public class BVHLoader implements AssetLoader {
                     }
 
                     if (bVHChannel.getName().equals("Xrotation")) {
-                        rx.fromAngleAxis(
-                                (bVHChannel.getValues().get(i)) * FastMath.DEG_TO_RAD,
+                        float degrees = bVHChannel.getValues().get(i);
+                        rx.fromAngleAxis(degrees * FastMath.DEG_TO_RAD,
                                 Vector3f.UNIT_X);
                         if (axisOrder == LoadBvhAxisOrder.Header) {
                             r.multLocal(rx);
                         }
                     }
                     if (bVHChannel.getName().equals("Yrotation")) {
-                        ry.fromAngleAxis(
-                                (bVHChannel.getValues().get(i)) * FastMath.DEG_TO_RAD,
+                        float degrees = bVHChannel.getValues().get(i);
+                        ry.fromAngleAxis(degrees * FastMath.DEG_TO_RAD,
                                 Vector3f.UNIT_Y);
                         if (axisOrder == LoadBvhAxisOrder.Header) {
                             r.multLocal(ry);
                         }
                     }
                     if (bVHChannel.getName().equals("Zrotation")) {
-                        rz.fromAngleAxis(
-                                (bVHChannel.getValues().get(i)) * FastMath.DEG_TO_RAD,
+                        float degrees = bVHChannel.getValues().get(i);
+                        rz.fromAngleAxis(degrees * FastMath.DEG_TO_RAD,
                                 Vector3f.UNIT_Z);
                         if (axisOrder == LoadBvhAxisOrder.Header) {
                             r.multLocal(rz);
