@@ -522,6 +522,7 @@ public class Maud extends GuiApplication {
             try {
                 ActionApplication.designateSandbox("Written Assets");
             } catch (IOException exception) {
+                // do nothing
             }
 
             application.start();
