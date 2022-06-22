@@ -1167,7 +1167,8 @@ public class EditorDialogs {
                     defaultValue = vector.x + " " + vector.y + " " + vector.z
                             + " " + vector.w;
                 } else {
-                    throw new IllegalArgumentException(oldValue.getClass().getSimpleName());
+                    throw new IllegalArgumentException(
+                            oldValue.getClass().getSimpleName());
                 }
                 controller = new VectorDialog("Set", 4, allowNull);
                 promptMessage = "Enter new vector4 value:";

@@ -436,7 +436,8 @@ public class MeshUtil {
                     --result;
                     progress = true;
 
-                } else if (submeshA != -1 && submeshB == -1) { // A assigned but not B
+                } else if (submeshA != -1 && submeshB == -1) {
+                    // A assigned but not B
                     id2Submesh[idB] = submeshA;
                     --result;
                     progress = true;

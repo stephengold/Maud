@@ -308,7 +308,8 @@ public class MiscOptions implements Cloneable {
 
         if (linkToolAxis != axisIndex) {
             linkToolAxis = axisIndex;
-            EditState.optionSetEdited("LinkTool axis=" + MyString.axisName(axisIndex));
+            EditState.optionSetEdited(
+                    "LinkTool axis=" + MyString.axisName(axisIndex));
         }
     }
 

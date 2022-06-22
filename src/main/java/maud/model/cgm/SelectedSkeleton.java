@@ -662,8 +662,8 @@ public class SelectedSkeleton implements JmeCloneable {
                                     selectedBi);
                             List<Bone> children = bone.getChildren();
                             for (Bone child : children) {
-                                int childIndex = ((Skeleton) skeleton).
-                                        getBoneIndex(child);
+                                int childIndex = ((Skeleton) skeleton)
+                                        .getBoneIndex(child);
                                 result.set(childIndex);
                             }
                         }

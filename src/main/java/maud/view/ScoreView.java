@@ -140,13 +140,15 @@ public class ScoreView implements EditorView {
      */
     private float height = 0f;
     /**
-     * array to pass a single X value to
-     * {@link #attachSparkline(int, float[], float[], com.jme3.scene.Mesh.Mode, java.lang.String, int, com.jme3.material.Material)}
+     * array to pass a single X value to {@link #attachSparkline(int, float[],
+     * float[], com.jme3.scene.Mesh.Mode, java.lang.String, int,
+     * com.jme3.material.Material)}
      */
     final private float[] tempX = new float[1];
     /**
-     * array to pass a single Y value to
-     * {@link #attachSparkline(int, float[], float[], com.jme3.scene.Mesh.Mode, java.lang.String, int, com.jme3.material.Material)}
+     * array to pass a single Y value to {@link #attachSparkline(int, float[],
+     * float[], com.jme3.scene.Mesh.Mode, java.lang.String, int,
+     * com.jme3.material.Material)}
      */
     final private float[] tempY = new float[1];
     /**

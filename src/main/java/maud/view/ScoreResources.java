@@ -165,7 +165,7 @@ public class ScoreResources {
     /**
      * font for labels
      */
-    final TrueTypeFont<?,?> labelFont;
+    final TrueTypeFont<?, ?> labelFont;
     // *************************************************************************
     // constructors
 

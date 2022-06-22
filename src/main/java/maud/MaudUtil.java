@@ -684,9 +684,9 @@ public class MaudUtil {
      * Find a spatial with the specified name in the specified subtree. Note:
      * recursive!
      * <p>
-     * If the tree position is not needed, use
-     * {@link jme3utilities.MySpatial#findNamed(com.jme3.scene.Spatial, java.lang.String)}
-     * instead.
+     * If the tree position is not needed, use {@link
+     * jme3utilities.MySpatial#findNamed(com.jme3.scene.Spatial,
+     * java.lang.String)} instead.
      *
      * @param name the name to search for (not null, not empty)
      * @param subtree which subtree to search (may be null, unaffected)
