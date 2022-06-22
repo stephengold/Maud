@@ -650,7 +650,8 @@ public class SelectedBone implements Cloneable {
             Cgm source = Maud.getModel().getSource();
             int sbIndex = source.getBone().index();
             Pose sourcePose = source.getPose().get();
-            Quaternion sourceRotation = sourcePose.modelOrientation(sbIndex, null);
+            Quaternion sourceRotation
+                    = sourcePose.modelOrientation(sbIndex, null);
 
             int axisIndex = Maud.getModel().getMisc().linkToolAxis();
             Transform model = new Transform();

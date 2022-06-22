@@ -213,7 +213,8 @@ public class SelectedTrack implements JmeCloneable {
             Object newTrack;
             if (oldTrack == selected) {
                 float[] times = MaudUtil.getTrackTimes(oldTrack);
-                Vector3f[] translations = MaudUtil.getTrackTranslations(selected);
+                Vector3f[] translations
+                        = MaudUtil.getTrackTranslations(selected);
                 Vector3f[] scales = MaudUtil.getTrackScales(selected);
                 newTrack = MaudUtil.newTrack(oldTrack, times, translations,
                         null, scales);
@@ -248,7 +249,8 @@ public class SelectedTrack implements JmeCloneable {
             Object newTrack;
             if (oldTrack == selected) {
                 float[] times = MaudUtil.getTrackTimes(oldTrack);
-                Vector3f[] translations = MaudUtil.getTrackTranslations(selected);
+                Vector3f[] translations
+                        = MaudUtil.getTrackTranslations(selected);
                 Quaternion[] rotations = MaudUtil.getTrackRotations(selected);
                 newTrack = MaudUtil.newTrack(oldTrack, times, translations,
                         rotations, null);

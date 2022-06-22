@@ -1832,7 +1832,8 @@ public class EditableCgm extends LoadedCgm {
          */
         if (subtree instanceof Node) {
             Node subtreeNode = (Node) subtree;
-            Map<Bone, Spatial> map = mapAttachments(); // TODO new animation system
+            Map<Bone, Spatial> map
+                    = mapAttachments(); // TODO new animation system
             for (Entry<Bone, Spatial> mapEntry : map.entrySet()) {
                 Spatial spatial = mapEntry.getValue();
                 if (spatial == subtree || spatial.hasAncestor(subtreeNode)) {

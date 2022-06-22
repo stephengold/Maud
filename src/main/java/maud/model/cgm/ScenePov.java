@@ -455,7 +455,8 @@ public class ScenePov implements Cloneable, Pov {
         assert options.isOrbitMode();
 
         if (!isPivoting) {
-            float clampedElevation = CameraOptions.clampElevation(elevationAngle);
+            float clampedElevation
+                    = CameraOptions.clampElevation(elevationAngle);
             Vector3f direction
                     = MyVector3f.fromAltAz(clampedElevation, azimuth);
             directionalGoal.set(direction);

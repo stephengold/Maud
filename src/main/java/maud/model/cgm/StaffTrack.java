@@ -86,8 +86,8 @@ public class StaffTrack {
     /**
      * reusable parallel arrays for keyframes and displayed pose
      */
-    private static float[] ws = null; 
-    private static float[] xs; 
+    private static float[] ws = null;
+    private static float[] xs;
     private static float[] ys;
     private static float[] zs;
     /**
@@ -412,7 +412,8 @@ public class StaffTrack {
      * @param resources provides the material for each axis (not null,
      * unaffected)
      */
-    public static void plotTranslations(int numPlots, ScoreResources resources) {
+    public static void plotTranslations(
+            int numPlots, ScoreResources resources) {
         Validate.nonNegative(numPlots, "number of plots");
         Validate.nonNull(resources, "resources");
 

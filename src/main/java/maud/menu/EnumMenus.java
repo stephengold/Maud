@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018-2020, Stephen Gold
+ Copyright (c) 2018-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -233,7 +233,8 @@ public class EnumMenus {
         VertexBuffer.Usage currentUsage = buffer.usage();
         for (VertexBuffer.Usage usage : VertexBuffer.Usage.values()) {
             if (usage != currentUsage
-                    && (usage != VertexBuffer.Usage.CpuOnly || !isIndexBuffer)) {
+                    && (usage != VertexBuffer.Usage.CpuOnly
+                    || !isIndexBuffer)) {
                 // OpenGL crashes when an index buffer is CPU-only
                 builder.add(usage.toString());
             }

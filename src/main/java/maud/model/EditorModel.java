@@ -180,7 +180,8 @@ public class EditorModel {
                     result = targetCgmLoadSlot;
                     break;
                 default:
-                    throw new IllegalArgumentException("whichCgm = " + whichCgm);
+                    throw new IllegalArgumentException(
+                            "whichCgm = " + whichCgm);
             }
         }
 
@@ -517,7 +518,8 @@ public class EditorModel {
         MaudUtil.writePerformAction(writer, action);
 
         int maxChildren = dumper.maxChildren();
-        action = ActionPrefix.setDumpMaxChildren + Integer.toString(maxChildren);
+        action = ActionPrefix.setDumpMaxChildren
+                + Integer.toString(maxChildren);
         MaudUtil.writePerformAction(writer, action);
 
         sceneOptions.writeToScript(writer);

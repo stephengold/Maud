@@ -1352,7 +1352,8 @@ public class Cgm implements Cloneable {
                         break;
 
                     default:
-                        throw new IllegalArgumentException("subset = " + subset);
+                        throw new IllegalArgumentException(
+                                "subset = " + subset);
                 }
             }
 

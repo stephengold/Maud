@@ -708,8 +708,8 @@ public class SceneView extends SceneViewCore {
      * @param varType type of parameter (not null)
      * @param viewValue the desired value (may be null, alias created)
      */
-    public void setOverrideValue(List<Integer> treePosition, String parameterName,
-            VarType varType, Object viewValue) {
+    public void setOverrideValue(List<Integer> treePosition,
+            String parameterName, VarType varType, Object viewValue) {
         Validate.nonNull(treePosition, "treePosition");
         Validate.nonEmpty(parameterName, "parameter name");
         Validate.nonNull(varType, "var type");

@@ -874,7 +874,8 @@ public class ScoreView implements EditorView {
          * viewport height.  The excess height at the top and bottom of
          * a gnomon is referred to as its "handles".
          */
-        float handleSize = 0.1f * cgm.getScorePov().getHalfHeight(); // world units
+        float handleSize
+                = 0.1f * cgm.getScorePov().getHalfHeight(); // world units
         Vector3f start = new Vector3f(gnomonX, handleSize, zLines);
         Vector3f end = new Vector3f(gnomonX, -height - handleSize, zLines);
         Line line = new Line(start, end);

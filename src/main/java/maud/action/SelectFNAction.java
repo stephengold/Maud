@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -210,7 +210,8 @@ class SelectFNAction {
             target.setFaceCullMode(newMode);
 
         } else if (actionString.startsWith(ActionPrefix.selectIndexBase)) {
-            arg = MyString.remainder(actionString, ActionPrefix.selectIndexBase);
+            arg = MyString.remainder(actionString,
+                    ActionPrefix.selectIndexBase);
             int base = Integer.parseInt(arg);
             model.getMisc().setIndexBase(base);
 
