@@ -260,6 +260,9 @@ public class EditorInputMode extends InputMode {
 
                 case "wrap":
                     handled = wrapAction(actionString);
+                    break;
+
+                default:
             }
 
         } else { // action not ongoing
@@ -480,6 +483,7 @@ public class EditorInputMode extends InputMode {
                         target.getAnimation().resampleToNumber(numSamples);
                         handled = true;
                         break;
+                    default:
                 }
             }
 
@@ -499,6 +503,7 @@ public class EditorInputMode extends InputMode {
                         target.getTrack().resampleToNumber(numSamples);
                         handled = true;
                         break;
+                    default:
                 }
             }
         }
@@ -609,6 +614,7 @@ public class EditorInputMode extends InputMode {
                 }
                 handled = true;
                 break;
+            default:
         }
 
         if (!handled && actionString.startsWith(ActionPrefix.viewLicense)) {
@@ -642,6 +648,9 @@ public class EditorInputMode extends InputMode {
             case Action.warpLastCheckpoint:
                 History.redoAll();
                 handled = true;
+                break;
+
+            default:
         }
 
         return handled;

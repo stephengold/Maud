@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -192,6 +192,8 @@ public enum ShapeParameter {
                 case Height:
                 case Radius:
                     return Float.NaN;
+
+                default:
             }
         }
 

@@ -1137,6 +1137,8 @@ public class SelectedTexture implements JmeCloneable {
                 if (value == texture) {
                     result = true;
                 }
+                break;
+            default:
         }
 
         return result;

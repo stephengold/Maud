@@ -450,6 +450,8 @@ public class BoneMenus {
             case "Root":
                 selectSourceRootBone();
                 handled = true;
+                break;
+            default:
         }
 
         return handled;
