@@ -73,7 +73,12 @@ public class StaffTrack {
     /**
      * reusable parallel arrays for interpolated samples
      */
-    private static float[] its = null, iws, ixs, iys, izs, nits;
+    private static float[] its = null;
+    private static float[] iws;
+    private static float[] ixs;
+    private static float[] iys;
+    private static float[] izs;
+    private static float[] nits;
     /**
      * array of normalized keyframe times, parallel with ws/xs/ys/zs
      */
@@ -81,7 +86,10 @@ public class StaffTrack {
     /**
      * reusable parallel arrays for keyframes and displayed pose
      */
-    private static float[] ws = null, xs, ys, zs;
+    private static float[] ws = null; 
+    private static float[] xs; 
+    private static float[] ys;
+    private static float[] zs;
     /**
      * number of interpolated samples per sparkline, or 0 for no interpolation
      */
@@ -108,7 +116,7 @@ public class StaffTrack {
     /**
      * Access the normalized track time for the indexed keyframe.
      *
-     * @param frameIndex, which keyframe (&ge;0)
+     * @param frameIndex which keyframe (&ge;0)
      * @return normalized track time (&ge;0, &le;1)
      */
     public static float getFrameT(int frameIndex) {
