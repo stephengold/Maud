@@ -487,11 +487,10 @@ public class MeshUtil {
         } else if (expandedMode == Mesh.Mode.Lines) {
             int numEdges = numIndices / MyMesh.vpe;
             assert numEdges * MyMesh.vpe == numIndices : numIndices;
-            // assert fails on LineLoop meshes due to JME issue #1603
             for (int edgeI = 0; edgeI < numEdges; ++edgeI) {
                 int startPosition = MyMesh.vpe * edgeI;
                 int vertexI0 = indexList.get(startPosition);
-                int vertexI1 = indexList.get(startPosition + 1); // IndexOutOfBoundsException on LineLoop meshes due to JME issue #1603
+                int vertexI1 = indexList.get(startPosition + 1);
                 int vvid0 = distinctPositions.findVvid(vertexI0);
                 int vvid1 = distinctPositions.findVvid(vertexI1);
                 if (vvid0 != vvid1) {
