@@ -72,7 +72,7 @@ dependencies {
     implementation 'org.jmonkeyengine:jme3-lwjgl:' + jme3Version
     implementation 'org.jmonkeyengine:jme3-plugins:' + jme3Version
     //runtimeOnly 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
-    implementation 'org.openjdk.nashorn:nashorn-core:15.3'
+    implementation 'org.openjdk.nashorn:nashorn-core:15.4'
 
     // from jitpack repositories:
     implementation 'com.github.xbuf.jme3_xbuf:jme3_xbuf_loader:0.9.1'
