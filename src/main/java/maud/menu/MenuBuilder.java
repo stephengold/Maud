@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -399,7 +399,7 @@ class MenuBuilder extends PopupMenuBuilder {
      * usually the final character will be a space)
      */
     void show(String actionPrefix) {
-        int numItems = items.size();
+        int numItems = itemMap.size();
         if (numItems > 0) {
             Maud.gui.showPopupMenu(actionPrefix, this);
         }
