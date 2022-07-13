@@ -89,6 +89,7 @@ import jme3utilities.MySpatial;
 import jme3utilities.Validate;
 import jme3utilities.math.MyArray;
 import jme3utilities.math.MyMath;
+import jme3utilities.math.MyQuaternion;
 import jme3utilities.math.MyVector3f;
 import jme3utilities.wes.TrackEdit;
 import maud.model.cgm.LoadedAnimation;
@@ -1244,7 +1245,7 @@ public class MaudUtil {
         double ssq = x * x + y * y + z * z;
         if (ssq > 1.0) {
             result.set((float) x, (float) y, (float) z, 0f);
-            result.normalizeLocal();
+            MyQuaternion.normalizeLocal(result);
         } else {
             double w = Math.sqrt(1.0 - ssq);
             result.set((float) x, (float) y, (float) z, (float) w);

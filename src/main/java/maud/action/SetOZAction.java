@@ -35,6 +35,7 @@ import com.jme3.shader.VarType;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.math.MyColor;
+import jme3utilities.math.MyQuaternion;
 import jme3utilities.math.MyVector3f;
 import jme3utilities.nifty.dialog.AllowNull;
 import jme3utilities.nifty.dialog.VectorDialog;
@@ -322,7 +323,7 @@ class SetOZAction {
                     double ssq = MyVector3f.lengthSquared(vector);
                     if (ssq > 1.0) {
                         q.set(vector.x, vector.y, vector.z, 0f);
-                        q.normalizeLocal();
+                        MyQuaternion.normalizeLocal(q);
                     } else {
                         double w = Math.sqrt(1.0 - ssq);
                         q.set(vector.x, vector.y, vector.z, (float) w);

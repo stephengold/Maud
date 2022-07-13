@@ -38,6 +38,7 @@ import java.util.logging.Logger;
 import jme3utilities.MySpatial;
 import jme3utilities.Validate;
 import jme3utilities.debug.AxesVisualizer;
+import jme3utilities.math.MyQuaternion;
 import jme3utilities.math.MyVector3f;
 import jme3utilities.wes.Pose;
 import maud.Maud;
@@ -304,7 +305,7 @@ public class SceneDrag {
              * Apply the rotation to the selected bone in the displayed pose.
              */
             newUserRotation = oldUserRotation.mult(rotation);
-            newUserRotation.normalizeLocal();
+            MyQuaternion.normalizeLocal(newUserRotation);
             pose.setRotation(boneIndex, newUserRotation);
 
         } else if (cgm == target
@@ -378,7 +379,7 @@ public class SceneDrag {
                          */
                         Quaternion orientation = object.orientation(null);
                         orientation.multLocal(rotation);
-                        orientation.normalizeLocal();
+                        MyQuaternion.normalizeLocal(orientation);
                         object.setOrientation(orientation);
                     }
                 }
@@ -420,7 +421,7 @@ public class SceneDrag {
                     Quaternion localRotation
                             = editableCgm.getSpatial().localRotation(null);
                     localRotation.multLocal(rotation);
-                    localRotation.normalizeLocal();
+                    MyQuaternion.normalizeLocal(localRotation);
                     editableCgm.setSpatialRotation(localRotation);
                 }
                 break;
