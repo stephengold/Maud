@@ -30,7 +30,6 @@ import com.atr.jme.font.asset.TrueTypeLoader;
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetConfig;
 import com.jme3.audio.openal.ALAudioRenderer;
-import com.jme3.bullet.util.NativeLibrary;
 import com.jme3.environment.EnvironmentCamera;
 import com.jme3.scene.plugins.bvh.BVHLoader;
 import com.jme3.system.AppSettings;
@@ -549,12 +548,6 @@ public class Maud extends GuiApplication {
         assetManager.registerLoader(TrueTypeLoader.class, "ttf");
         assetManager.registerLoader(XbufLoader.class, "xbuf");
 
-        if (!logger.isLoggable(Level.INFO)) {
-            /*
-             * Mute the Libbulletjme startup message.
-             */
-            NativeLibrary.setStartupMessageEnabled(false);
-        }
         EditorViewPorts.startup1();
         /*
          * Attach screen controllers for the 3 major screens.
