@@ -217,7 +217,7 @@ public class MeshUtil {
 
     /**
      * Generate facet normals for a Triangles-mode Mesh without an index buffer.
-     * Any pre-existing target buffer is discarded. TODO move to Heart library
+     * Any pre-existing target buffer is discarded. TODO use MyMesh
      *
      * @param mesh the Mesh to modify (not null, mode=Triangles, not indexed)
      * @param normalBufferType the target buffer type (Normal or BindPoseNormal)
@@ -261,7 +261,7 @@ public class MeshUtil {
 
     /**
      * Generate sphere normals for Mesh. Any pre-existing target buffer is
-     * discarded. TODO move to Heart library
+     * discarded. TODO use MyMesh
      *
      * @param mesh the Mesh to modify (not null)
      * @param normalBufferType the target buffer type (Normal or BindPoseNormal)
