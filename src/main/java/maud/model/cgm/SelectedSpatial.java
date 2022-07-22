@@ -408,6 +408,8 @@ public class SelectedSpatial implements JmeCloneable {
             MyMesh.rotateBuffer(mesh, VertexBuffer.Type.BindPoseNormal,
                     gInPRot);
             MyMesh.rotateBuffer(mesh, VertexBuffer.Type.Normal, gInPRot);
+            // Do not rotate the tangents!
+            // TODO effect of non-uniform scaling on normals?
             // TODO binormal?
 
             mesh.updateBound();
