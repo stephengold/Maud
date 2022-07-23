@@ -79,9 +79,6 @@ public class BVHLoader implements AssetLoader {
     // *************************************************************************
     // private methods
 
-    /**
-     *
-     */
     private void compileData() {
         Bone[] bones = new Bone[animation.getHierarchy().getNbBones()];
         index = 0;
@@ -100,6 +97,7 @@ public class BVHLoader implements AssetLoader {
     }
 
     /**
+     * Generate a BoneTrack for the specified bone.
      *
      * @param bone the animated BVH bone (not null)
      * @return a new instance
@@ -204,6 +202,7 @@ public class BVHLoader implements AssetLoader {
     }
 
     /**
+     * Add a Bone and a track for that Bone.
      *
      * @param bones (not null, not empty)
      * @param tracks (not null, not empty)
@@ -278,7 +277,7 @@ public class BVHLoader implements AssetLoader {
 
     /**
      * Parse one sample of motion data for the specified bone/segment and all
-     * its descendents. Add the data to the appropriate channels. Note:
+     * its descendants. Add the data to the appropriate channels. Note:
      * recursive!
      *
      * @param bone starting point (not null)
