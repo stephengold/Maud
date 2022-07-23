@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -115,7 +115,7 @@ public class SelectedPco implements JmeCloneable {
                 RigidBodyParameter rbp
                         = RigidBodyParameter.valueOf(parameterName);
                 result = rbp.canSet(body, 1f);
-            } catch (IllegalArgumentException e) {
+            } catch (IllegalArgumentException exception) {
                 result = false;
             }
         } else {

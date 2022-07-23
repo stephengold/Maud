@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2021, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -281,7 +281,7 @@ class SelectOSAction {
             RigidBodyParameter rbp; // TODO utility in ParseUtil
             try {
                 rbp = RigidBodyParameter.valueOf(arg);
-            } catch (IllegalArgumentException e) {
+            } catch (IllegalArgumentException exception) {
                 rbp = null;
                 PhysicsMenus.selectRbp(arg);
             }

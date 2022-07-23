@@ -724,7 +724,7 @@ public class EditableCgm extends LoadedCgm {
         dac.link(boneName, 1f, new RangeOfMotion());
         try {
             ragdoll.setSpatial(saveSpatial);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException exception) {
             ragdoll.setSpatial(null);
             dac.unlinkBone(boneName);
             ragdoll.setSpatial(saveSpatial);
