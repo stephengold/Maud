@@ -26,13 +26,11 @@
  */
 package maud;
 
-import com.jme3.math.Triangle;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.mesh.IndexBuffer;
-import com.jme3.util.BufferUtils;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.util.Arrays;
@@ -156,8 +154,8 @@ public class MeshUtil {
         Mesh result = mesh.deepClone();
         switch (algorithm) {
             case Facet: // NOTE: fail if expansion is needed in this case!
-                generateFacetNormals(result, normalBufferType,
-                        positionBufferType);
+                MyMesh.generateFacetNormals(
+                        result, normalBufferType, positionBufferType);
                 break;
 
             case None:
@@ -168,13 +166,13 @@ public class MeshUtil {
                 boolean expansion = MyMesh.hasIndices(mesh)
                         || (mesh.getMode() != Mesh.Mode.Triangles);
                 if (!expansion) {
-                    generateFacetNormals(result, normalBufferType,
-                            positionBufferType);
+                    MyMesh.generateFacetNormals(
+                            result, normalBufferType, positionBufferType);
 
                 } else {
                     Mesh expandedMesh = MyMesh.expand(mesh);
-                    generateFacetNormals(expandedMesh, normalBufferType,
-                            positionBufferType);
+                    MyMesh.generateFacetNormals(
+                            expandedMesh, normalBufferType, positionBufferType);
                     /*
                      * Copy the vectors from the expanded target buffer
                      * to the clone's target buffer using the original indices.
@@ -203,8 +201,8 @@ public class MeshUtil {
                 break;
 
             case Sphere:
-                generateSphereNormals(result, normalBufferType,
-                        positionBufferType);
+                MyMesh.generateSphereNormals(
+                        result, normalBufferType, positionBufferType);
                 break;
 
             default:
@@ -213,74 +211,6 @@ public class MeshUtil {
         }
 
         return result;
-    }
-
-    /**
-     * Generate facet normals for a Triangles-mode Mesh without an index buffer.
-     * Any pre-existing target buffer is discarded. TODO use MyMesh
-     *
-     * @param mesh the Mesh to modify (not null, mode=Triangles, not indexed)
-     * @param normalBufferType the target buffer type (Normal or BindPoseNormal)
-     * @param positionBufferType the source buffer type (Position or
-     * BindPosePosition)
-     */
-    public static void generateFacetNormals(Mesh mesh,
-            VertexBuffer.Type normalBufferType,
-            VertexBuffer.Type positionBufferType) {
-        assert mesh.getMode() == Mesh.Mode.Triangles : mesh.getMode();
-        assert !MyMesh.hasIndices(mesh);
-
-        FloatBuffer positionBuffer = mesh.getFloatBuffer(positionBufferType);
-        int numFloats = positionBuffer.limit();
-
-        FloatBuffer normalBuffer = BufferUtils.createFloatBuffer(numFloats);
-        mesh.setBuffer(normalBufferType, numAxes, normalBuffer);
-
-        Triangle triangle = new Triangle();
-        Vector3f pos1 = new Vector3f();
-        Vector3f pos2 = new Vector3f();
-        Vector3f pos3 = new Vector3f();
-
-        int numTriangles = numFloats / MyMesh.vpt / numAxes;
-        for (int triIndex = 0; triIndex < numTriangles; ++triIndex) {
-            int trianglePosition = triIndex * MyMesh.vpt * numAxes;
-            MyBuffer.get(positionBuffer, trianglePosition, pos1);
-            MyBuffer.get(positionBuffer, trianglePosition + numAxes, pos2);
-            MyBuffer.get(positionBuffer, trianglePosition + 2 * numAxes, pos3);
-            triangle.set(pos1, pos2, pos3);
-
-            Vector3f normal = triangle.getNormal();
-            for (int j = 0; j < MyMesh.vpt; ++j) {
-                normalBuffer.put(normal.x);
-                normalBuffer.put(normal.y);
-                normalBuffer.put(normal.z);
-            }
-        }
-        normalBuffer.flip();
-    }
-
-    /**
-     * Generate sphere normals for Mesh. Any pre-existing target buffer is
-     * discarded. TODO use MyMesh
-     *
-     * @param mesh the Mesh to modify (not null)
-     * @param normalBufferType the target buffer type (Normal or BindPoseNormal)
-     * @param positionBufferType the source buffer type (Position or
-     * BindPosePosition)
-     */
-    public static void generateSphereNormals(Mesh mesh,
-            VertexBuffer.Type normalBufferType,
-            VertexBuffer.Type positionBufferType) {
-        Validate.nonNull(mesh, "mesh");
-
-        FloatBuffer positionBuffer = mesh.getFloatBuffer(positionBufferType);
-        int numFloats = positionBuffer.limit();
-
-        FloatBuffer normalBuffer = BufferUtils.clone(positionBuffer);
-        mesh.setBuffer(normalBufferType, numAxes, normalBuffer);
-
-        MyBuffer.normalize(normalBuffer, 0, numFloats);
-        normalBuffer.limit(numFloats);
     }
 
     /**
