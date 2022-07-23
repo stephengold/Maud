@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2021, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -133,7 +133,8 @@ class MaterialTool extends Tool {
      */
     private void updateIndex() {
         String indexStatus;
-        String nextButton = "", previousButton = "";
+        String nextButton = "";
+        String previousButton = "";
 
         Cgm target = Maud.getModel().getTarget();
         int numGeometries = target.countSpatials(Geometry.class);
@@ -165,7 +166,8 @@ class MaterialTool extends Tool {
      * count.
      */
     private void updateNames() {
-        String defText, materialText;
+        String defText;
+        String materialText;
         String usesText = "";
         String addButton = "";
         String editButton = "";
@@ -244,7 +246,9 @@ class MaterialTool extends Tool {
      */
     private void updateParameterIndex() {
         String indexStatus;
-        String nextButton = "", previousButton = "", selectButton = "";
+        String nextButton = "";
+        String previousButton = "";
+        String selectButton = "";
 
         Cgm target = Maud.getModel().getTarget();
         SelectedSpatial spatial = target.getSpatial();
@@ -282,7 +286,9 @@ class MaterialTool extends Tool {
      * Update the parameter-name/type statuses and delete-button label.
      */
     private void updateParameterName() {
-        String dButton, nameText, typeText;
+        String dButton;
+        String nameText;
+        String typeText;
 
         SelectedMatParam param = Maud.getModel().getTarget().getMatParam();
         if (param.isSelected()) {

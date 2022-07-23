@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -85,7 +85,8 @@ class JointTool extends Tool {
         String type = joint.type();
         setStatusText("jointType", " " + type);
 
-        String nameA = "", nameB = "";
+        String nameA = "";
+        String nameB = "";
         if (joint.isSelected()) {
             nameA = joint.endName(JointEnd.A);
             nameB = joint.endName(JointEnd.B);
@@ -99,7 +100,9 @@ class JointTool extends Tool {
      */
     private void updateIndex() {
         String indexStatus;
-        String nextButton = "", previousButton = "", selectButton = "";
+        String nextButton = "";
+        String previousButton = "";
+        String selectButton = "";
 
         Cgm target = Maud.getModel().getTarget();
         int numJoints = target.getPhysics().countJoints();

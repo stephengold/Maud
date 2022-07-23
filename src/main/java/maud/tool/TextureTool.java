@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018-2020, Stephen Gold
+ Copyright (c) 2018-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -120,7 +120,8 @@ class TextureTool extends Tool {
         updateKey();
         updateUsers();
 
-        String cloneButton = "", nullButton = "";
+        String cloneButton = "";
+        String nullButton = "";
         SelectedTexture texture = Maud.getModel().getTarget().getTexture();
         boolean isNull = texture.isNull();
         if (!isNull) {
@@ -141,8 +142,11 @@ class TextureTool extends Tool {
         }
         setButtonText("textureNew", newButton);
 
-        String magButton = "", minButton = "";
-        String rButton = "", sButton = "", tButton = "";
+        String magButton = "";
+        String minButton = "";
+        String rButton = "";
+        String sButton = "";
+        String tButton = "";
         if (!isNull) {
             magButton = texture.magFilter().toString();
             minButton = texture.minFilter().toString();
@@ -175,7 +179,8 @@ class TextureTool extends Tool {
      */
     private void updateIndex() {
         String indexStatus;
-        String nextButton = "", previousButton = "";
+        String nextButton = "";
+        String previousButton = "";
 
         SelectedTexture texture = Maud.getModel().getTarget().getTexture();
         int numSelections = texture.countSelectables();
@@ -205,7 +210,9 @@ class TextureTool extends Tool {
      * Update the 5 key-dependent properties.
      */
     private void updateKey() {
-        String anisotropyButton, pathButton, typeButton;
+        String anisotropyButton;
+        String pathButton;
+        String typeButton;
 
         SelectedTexture texture = Maud.getModel().getTarget().getTexture();
         if (texture.hasKey()) {

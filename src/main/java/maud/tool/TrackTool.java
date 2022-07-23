@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -122,7 +122,8 @@ class TrackTool extends Tool {
      */
     private void updateIndex() {
         String indexStatus;
-        String nextButton, previousButton;
+        String nextButton;
+        String previousButton;
 
         Cgm target = Maud.getModel().getTarget();
         int numTracks = target.getAnimation().countTracks();

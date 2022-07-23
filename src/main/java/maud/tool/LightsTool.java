@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -110,8 +110,12 @@ class LightsTool extends Tool {
         updateIndex();
         updateProperties();
 
-        String deleteButton, renameButton, selectOwnerButton;
-        String nameStatus, ownerStatus, typeStatus;
+        String deleteButton;
+        String renameButton;
+        String selectOwnerButton;
+        String nameStatus;
+        String ownerStatus;
+        String typeStatus;
 
         SelectedLight light = Maud.getModel().getTarget().getLight();
         if (light.isSelected()) {
@@ -152,7 +156,9 @@ class LightsTool extends Tool {
      * Update the index status and previous/next-button texts.
      */
     private void updateIndex() {
-        String nextButton, previousButton, indexStatus;
+        String nextButton;
+        String previousButton;
+        String indexStatus;
 
         Cgm target = Maud.getModel().getTarget();
         int numLights = target.countLights(Light.class);
@@ -183,7 +189,9 @@ class LightsTool extends Tool {
      * Update the color/direction/position status.
      */
     private void updateProperties() {
-        String colorStatus, directionStatus, positionStatus;
+        String colorStatus;
+        String directionStatus;
+        String positionStatus;
 
         SelectedLight light = Maud.getModel().getTarget().getLight();
         if (light.isSelected()) {

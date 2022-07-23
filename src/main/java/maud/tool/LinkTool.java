@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018-2019, Stephen Gold
+ Copyright (c) 2018-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -207,7 +207,9 @@ class LinkTool extends Tool {
      */
     private void updateIndex() {
         String indexStatus;
-        String nextButton, previousButton, selectButton;
+        String nextButton;
+        String previousButton;
+        String selectButton;
 
         Cgm target = Maud.getModel().getTarget();
         int numLinks = target.getRagdoll().countLinks();

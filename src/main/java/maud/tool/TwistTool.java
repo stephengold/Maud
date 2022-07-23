@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -175,7 +175,9 @@ class TwistTool extends Tool {
      */
     private void updateSelected() {
         boolean enableSliders = false;
-        String rButton = "", sButton = "", xyzButton = "";
+        String rButton = "";
+        String sButton = "";
+        String xyzButton = "";
 
         EditorModel model = Maud.getModel();
         if (model.getMap().isBoneMappingSelected()) {

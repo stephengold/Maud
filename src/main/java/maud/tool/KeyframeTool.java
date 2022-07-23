@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -71,7 +71,8 @@ class KeyframeTool extends Tool {
      */
     @Override
     protected void toolUpdate() {
-        String indexStatus, timeStatus;
+        String indexStatus;
+        String timeStatus;
 
         EditableCgm target = Maud.getModel().getTarget();
         float time = target.getPlay().getTime();

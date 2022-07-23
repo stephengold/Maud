@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018-2019, Stephen Gold
+ Copyright (c) 2018-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -77,8 +77,12 @@ class ExtremeVertexTool extends Tool {
         String axesButton = subject.toString();
         setButtonText("axesSubject2", axesButton);
 
-        String minusXButton = "", minusYButton = "", minusZButton = "";
-        String plusXButton = "", plusYButton = "", plusZButton = "";
+        String minusXButton = "";
+        String minusYButton = "";
+        String minusZButton = "";
+        String plusXButton = "";
+        String plusYButton = "";
+        String plusZButton = "";
 
         Cgm cgm = model.getTarget();
         SelectedSpatial ss = cgm.getSpatial();

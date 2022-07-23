@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -113,8 +113,13 @@ class SgcTool extends Tool {
     protected void toolUpdate() {
         updateIndex();
 
-        String deleteButton, selectPcoButton, selectSpatialButton;
-        String modeStatus, pcoStatus, spatialStatus, typeStatus;
+        String deleteButton;
+        String selectPcoButton;
+        String selectSpatialButton;
+        String modeStatus;
+        String pcoStatus;
+        String spatialStatus;
+        String typeStatus;
 
         SelectedSgc sgc = Maud.getModel().getTarget().getSgc();
         if (sgc.isSelected()) {
@@ -170,7 +175,9 @@ class SgcTool extends Tool {
      * Update the index status and previous/next-button texts.
      */
     private void updateIndex() {
-        String nextButton, previousButton, indexStatus;
+        String indexStatus;
+        String nextButton;
+        String previousButton;
 
         Cgm target = Maud.getModel().getTarget();
         int numSgcs = target.countSgcs(Control.class);

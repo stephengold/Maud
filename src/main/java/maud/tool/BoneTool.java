@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2021, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -189,7 +189,9 @@ class BoneTool extends Tool {
      */
     private void updateIndex() {
         String indexStatus;
-        String nextButton, previousButton, selectButton;
+        String nextButton;
+        String previousButton;
+        String selectButton;
 
         Cgm target = Maud.getModel().getTarget();
         int numBones = target.getSkeleton().countBones();
@@ -254,7 +256,8 @@ class BoneTool extends Tool {
      * Update the name status and rename button.
      */
     private void updateName() {
-        String nameStatus, renameButton;
+        String nameStatus;
+        String renameButton;
 
         SelectedBone bone = Maud.getModel().getTarget().getBone();
         if (bone.isSelected()) {

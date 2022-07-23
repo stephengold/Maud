@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -117,7 +117,9 @@ class OverridesTool extends Tool {
      */
     private void updateIndex() {
         String indexStatus;
-        String nextButton = "", previousButton = "", selectButton = "";
+        String nextButton = "";
+        String previousButton = "";
+        String selectButton = "";
 
         Cgm target = Maud.getModel().getTarget();
         int numMpos = target.getSpatial().countOverrides();
@@ -151,7 +153,9 @@ class OverridesTool extends Tool {
      * Update the name status and delete/rename button texts.
      */
     private void updateName() {
-        String dButton, nameText, rButton;
+        String dButton;
+        String nameText;
+        String rButton;
 
         SelectedOverride override = Maud.getModel().getTarget().getOverride();
         String name = override.parameterName();

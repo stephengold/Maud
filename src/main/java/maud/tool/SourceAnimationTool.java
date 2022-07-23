@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2021, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -355,7 +355,8 @@ class SourceAnimationTool extends Tool {
         boolean moving = animation.isMoving();
         setSliderEnabled("sourceTime", duration != 0f && !moving);
 
-        float fraction, trackTime;
+        float fraction;
+        float trackTime;
         if (duration == 0f) {
             trackTime = 0f;
             fraction = 0f;

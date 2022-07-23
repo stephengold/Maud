@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -85,7 +85,9 @@ class UserDataTool extends Tool {
      */
     private void updateIndex() {
         String indexStatus;
-        String nextButton = "", previousButton = "", selectButton = "";
+        String nextButton = "";
+        String previousButton = "";
+        String selectButton = "";
 
         EditableCgm target = Maud.getModel().getTarget();
         int numKeys = target.getSpatial().countUserData();
@@ -119,7 +121,9 @@ class UserDataTool extends Tool {
      * Update the "selected key" label and rename button label.
      */
     private void updateKey() {
-        String dButton, keyText, rButton;
+        String dButton;
+        String keyText;
+        String rButton;
 
         Cgm target = Maud.getModel().getTarget();
         String key = target.getUserData().key();

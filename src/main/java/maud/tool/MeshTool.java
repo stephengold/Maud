@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018-2021, Stephen Gold
+ Copyright (c) 2018-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -124,8 +124,13 @@ class MeshTool extends Tool {
      * Update the information about the selected vertex buffer.
      */
     private void updateBufferInfo() {
-        String capacityText, formatText, instanceButton;
-        String limitButton, strideButton, typeText, usageButton;
+        String capacityText;
+        String formatText;
+        String instanceButton;
+        String limitButton;
+        String strideButton;
+        String typeText;
+        String usageButton;
 
         SelectedBuffer buffer = Maud.getModel().getTarget().getBuffer();
         if (buffer.isSelected()) {
@@ -184,8 +189,10 @@ class MeshTool extends Tool {
      */
     private void updateBufferIndex() {
         String indexStatus;
-        String nextButton = "", previousButton = "";
-        String deleteButton = "", selectButton = "";
+        String nextButton = "";
+        String previousButton = "";
+        String deleteButton = "";
+        String selectButton = "";
 
         Cgm target = Maud.getModel().getTarget();
         List<String> list = target.getSpatial().listBufferDescs("");
@@ -227,7 +234,8 @@ class MeshTool extends Tool {
      */
     private void updateGeometryIndex() {
         String indexStatus;
-        String nextButton = "", previousButton = "";
+        String nextButton = "";
+        String previousButton = "";
 
         Cgm target = Maud.getModel().getTarget();
         int numGeometries = target.countSpatials(Geometry.class);
@@ -258,8 +266,14 @@ class MeshTool extends Tool {
      * Update the information on the selected mesh.
      */
     private void updateMeshInfo() {
-        String btButton, calcButton, describeStatus, modeButton;
-        String indexedButton, lodsText, verticesButton, weightsButton;
+        String btButton;
+        String calcButton;
+        String describeStatus;
+        String modeButton;
+        String indexedButton;
+        String lodsText;
+        String verticesButton;
+        String weightsButton;
 
         SelectedSpatial spatial = Maud.getModel().getTarget().getSpatial();
         if (spatial.hasMesh()) {

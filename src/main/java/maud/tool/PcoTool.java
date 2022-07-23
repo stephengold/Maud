@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -84,7 +84,9 @@ class PcoTool extends Tool {
      */
     private void updateIndex() {
         String indexStatus;
-        String nextButton = "", previousButton = "", selectButton = "";
+        String nextButton = "";
+        String previousButton = "";
+        String selectButton = "";
 
         Cgm target = Maud.getModel().getTarget();
         int numPcos = target.getPhysics().countPcos();
@@ -149,7 +151,8 @@ class PcoTool extends Tool {
      * Update the shape status and select button.
      */
     private void updateShape() {
-        String sButton, shape;
+        String sButton;
+        String shape;
 
         SelectedPco pco = Maud.getModel().getTarget().getPco();
         if (pco.isSelected()) {
