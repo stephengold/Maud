@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2021, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -493,7 +493,8 @@ public class EditorViewPorts {
     private static void updateSideCamera(Camera camera, Side side) {
         float xBoundary = Maud.getModel().getMisc().xBoundary();
 
-        float leftEdge, rightEdge;
+        float leftEdge;
+        float rightEdge;
         switch (side) {
             case Left:
                 leftEdge = 0f;

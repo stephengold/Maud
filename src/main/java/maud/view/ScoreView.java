@@ -1060,7 +1060,8 @@ public class ScoreView implements EditorView {
      * Attach time limits to the visuals.
      */
     private void attachLimits() {
-        float lowerX, upperX;
+        float lowerX;
+        float upperX;
         float duration = cgm.getAnimation().duration();
         if (duration > 0f) {
             PlayOptions options = cgm.getPlay();

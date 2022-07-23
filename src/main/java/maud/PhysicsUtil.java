@@ -343,7 +343,9 @@ public class PhysicsUtil {
     private static CollisionShape makeShape(ShapeType shapeType,
             Vector3f halfExtents) {
         CollisionShape result;
-        float axisHalfExtent, height, radius;
+        float axisHalfExtent;
+        float height;
+        float radius;
         int axis;
         if (halfExtents.x >= halfExtents.y && halfExtents.x >= halfExtents.z) {
             radius = Math.max(halfExtents.y, halfExtents.z);

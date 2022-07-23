@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -212,7 +212,9 @@ public class Finial extends Mesh {
      * @param sca if true, include a 3-foot limb for scales, else omit
      */
     private void populate(boolean tra, boolean rot, boolean sca) {
-        short sTra = 0, sRot = 0, sSca = 0;
+        short sTra = 0;
+        short sRot = 0;
+        short sSca = 0;
         if (tra) {
             sTra = put3();
         }

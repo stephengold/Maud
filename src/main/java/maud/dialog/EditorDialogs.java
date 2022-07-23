@@ -1056,7 +1056,8 @@ public class EditorDialogs {
         Validate.nonNull(varType, "var type");
 
         DialogController controller;
-        String defaultValue, promptMessage;
+        String defaultValue;
+        String promptMessage;
         switch (varType) {
             case Boolean:
                 if (allowNull.equals(AllowNull.Yes)) {
@@ -1331,7 +1332,9 @@ public class EditorDialogs {
             upperLimit = Math.min(upperLimit, duration);
         }
 
-        float defaultValue, minValue, maxValue;
+        float defaultValue;
+        float maxValue;
+        float minValue;
         switch (whichTime) {
             case LowerLimit:
                 minValue = 0f;
@@ -1380,7 +1383,8 @@ public class EditorDialogs {
         upperLimit = Math.min(upperLimit, duration);
         int numFrames = track.countKeyframes();
 
-        int minIndex, maxIndex;
+        int maxIndex;
+        int minIndex;
         switch (whichTime) {
             case LowerLimit:
                 minIndex = 0;

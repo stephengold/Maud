@@ -522,7 +522,9 @@ public class EditorInputMode extends InputMode {
         EditableCgm target = model.getTarget();
         CgmOutputFormat format;
         CgmOutputSet outputSet;
-        String argList, baseFilePath, prefix;
+        String argList;
+        String baseFilePath;
+        String prefix;
         String[] args;
         boolean handled = true;
 

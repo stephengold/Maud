@@ -1280,7 +1280,10 @@ public class MaudUtil {
      * @return a new Color
      */
     private static Color pixelColor(Image.Format format, int[] bytes) {
-        float a, b, g, r;
+        float a; // alpha channel
+        float b; // blue channel
+        float g; // green channel
+        float r; // red channel
         int numBytes = bytes.length;
 
         switch (format) {
