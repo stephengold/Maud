@@ -325,7 +325,7 @@ public class SelectedFrame implements Cloneable {
         float time = cgm.getPlay().getTime();
         Object selectedTrack = cgm.getTrack().get();
         float[] times = MaudUtil.getTrackTimes(selectedTrack);
-        for (int iFrame = times.length - 1; iFrame >= 0; iFrame--) {
+        for (int iFrame = times.length - 1; iFrame >= 0; --iFrame) {
             if (times[iFrame] < time) {
                 result = times[iFrame];
                 break;
