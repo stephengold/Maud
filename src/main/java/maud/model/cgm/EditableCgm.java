@@ -618,7 +618,7 @@ public class EditableCgm extends LoadedCgm {
             }
 
             // TODO SkinningControl
-            
+
         } else if (selectedSgc instanceof PhysicsControl) {
             /*
              * Notify CgmPhysics about the removal.
