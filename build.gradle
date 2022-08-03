@@ -41,7 +41,7 @@ tasks.withType(JavaExec) { // Java runtime options:
     //jvmArgs '-Xbatch'
     jvmArgs '-Xms4g', '-Xmx4g'
     //jvmArgs '-XX:+PrintCompilation'
-    jvmArgs '-XX:+UseG1GC', '-XX:MaxGCPauseMillis=10'
+    //jvmArgs '-XX:+UseG1GC', '-XX:MaxGCPauseMillis=10'
 }
 
 mainClassName = 'maud.Maud'
