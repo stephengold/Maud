@@ -63,7 +63,7 @@ dependencies {
     implementation 'com.github.stephengold:Heart:8.1.0'
     implementation 'com.github.stephengold:Acorus:0.9.16'
     implementation 'com.github.stephengold:jme3-utilities-nifty:0.9.30'
-    implementation 'com.github.stephengold:Minie:5.0.1'
+    implementation 'com.github.stephengold:Minie:5.1.0'
     implementation 'com.github.stephengold:SkyControl:1.0.3'
     implementation 'com.github.stephengold:jme-ttf:2.2.4'
     implementation 'com.github.stephengold:Wes:0.7.2'
