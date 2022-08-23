@@ -283,7 +283,7 @@ public class SceneViewCore implements EditorView, JmeCloneable {
         ViewPort viewPort = getViewPort();
         ColorRGBA backgroundColor = viewPort.getBackgroundColor(); // alias
         Camera camera = getCamera();
-        Vector3f location = camera.getLocation();
+        Vector3f location = camera.getLocation(); // alias
         float far = camera.getFrustumFar();
 
         AppStateManager stateManager = Maud.getApplication().getStateManager();

@@ -121,7 +121,7 @@ public class SceneUpdater {
             case Camera:
                 transform = new Transform(); // identity
                 Camera camera = sceneView.getCamera();
-                Quaternion rotation = camera.getRotation();
+                Quaternion rotation = camera.getRotation(); // alias
                 transform.getRotation().set(rotation);
                 float screenX = 0.5f * camera.getWidth();
                 float screenY = 0.5f * camera.getHeight();
