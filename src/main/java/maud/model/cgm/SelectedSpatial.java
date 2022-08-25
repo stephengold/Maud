@@ -38,6 +38,7 @@ import com.jme3.bounding.BoundingBox;
 import com.jme3.bounding.BoundingSphere;
 import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.animation.DynamicAnimControl;
+import com.jme3.bullet.animation.RagUtils;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.collision.shapes.ConvexShape;
 import com.jme3.bullet.control.BetterCharacterControl;
@@ -270,9 +271,8 @@ public class SelectedSpatial implements JmeCloneable {
          * to create new S-G controls.
          */
         Spatial spatial = find();
-        SkeletonControl skeletonControl
-                = spatial.getControl(SkeletonControl.class);
-        editableCgm.getSgc().select(skeletonControl, spatial);
+        AbstractControl sControl = RagUtils.findSControl(spatial);
+        editableCgm.getSgc().select(sControl, spatial);
 
         DynamicAnimControl dac = new DynamicAnimControl();
         editableCgm.addSgc(dac, "add a DynamicAnimControl");
