@@ -5,9 +5,7 @@ plugins {
     id 'checkstyle'
 }
 
-ext { // current versions of libraries:
-    jme3Version = '3.5.2-stable'
-}
+ext.jme3Version = '3.5.2-stable' // current version of JMonkeyEngine
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
@@ -63,7 +61,7 @@ dependencies {
     implementation 'com.github.stephengold:Heart:8.2.0'
     implementation 'com.github.stephengold:Acorus:0.9.17'
     implementation 'com.github.stephengold:jme3-utilities-nifty:0.9.30'
-    implementation 'com.github.stephengold:Minie:6.1.0'
+    implementation 'com.github.stephengold:Minie:6.2.0'
     implementation 'com.github.stephengold:SkyControl:1.0.3'
     implementation 'com.github.stephengold:jme-ttf:2.2.4'
     implementation 'com.github.stephengold:Wes:0.7.2'
