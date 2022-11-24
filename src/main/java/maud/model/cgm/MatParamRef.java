@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018-2020, Stephen Gold
+ Copyright (c) 2018-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -250,6 +250,7 @@ public class MatParamRef implements JmeCloneable {
      * scene view.
      *
      * @param desiredValue (may be null only for override, alias created)
+     * @param cgm (not null)
      */
     void setValue(Object desiredValue, Cgm cgm) {
         if (desiredValue == null) {

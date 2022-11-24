@@ -80,6 +80,11 @@ public class TrackItem {
 
     /**
      * Instantiate a new item.
+     *
+     * @param animationName (not null)
+     * @param animControlName (not null)
+     * @param control the animation control (not null)
+     * @param track the animation track (not null)
      */
     TrackItem(String animationName, String animControlName,
             AbstractControl control, Object track) {

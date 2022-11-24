@@ -93,6 +93,8 @@ public class CgmPhysics implements JmeCloneable {
     /**
      * Update the SceneView and start tracking the joints and collision objects
      * of a PhysicsControl that's just been added to the C-G model.
+     *
+     * @param modelSgc the control that's been added (not null)
      */
     void addPhysicsControl(PhysicsControl modelSgc) {
         SceneView sceneView = cgm.getSceneView();
@@ -444,6 +446,8 @@ public class CgmPhysics implements JmeCloneable {
     /**
      * Update the maps and selections before a PhysicsControl gets removed from
      * the C-G model. The invoker is responsible for updating the SceneView.
+     *
+     * @param modelSgc the PhysicsControl to be removed
      */
     void removePhysicsControl(PhysicsControl modelSgc) {
         /*

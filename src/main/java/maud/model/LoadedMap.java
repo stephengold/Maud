@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -669,6 +669,7 @@ public class LoadedMap implements Cloneable {
      * installing it.
      *
      * @param path (not null)
+     * @param useCache true&rarr;utilize the asset cache, false&rarr;bypass it
      * @param diagnose true&rarr;messages to console, false&rarr;no messages
      * @return a skeleton map, or null if the asset had errors
      */

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2021, Stephen Gold
+ Copyright (c) 2021-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -68,6 +68,8 @@ public class GeometryItem {
 
     /**
      * Instantiate a new item.
+     *
+     * @param geometry (not null, alias created)
      */
     GeometryItem(Geometry geometry) {
         assert geometry != null;

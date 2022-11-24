@@ -66,6 +66,8 @@ final public class CgmMenus {
 
     /**
      * Build a CGM menu.
+     *
+     * @param builder the MenuBuilder to use (not null)
      */
     static void buildCgmMenu(MenuBuilder builder) {
         builder.addTool("Tool");

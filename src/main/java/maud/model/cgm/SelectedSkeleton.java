@@ -418,6 +418,8 @@ public class SelectedSkeleton implements JmeCloneable {
 
     /**
      * Access a SkeletonControl or SkinningControl for the selected skeleton.
+     *
+     * @return the relevant control, or null if not found
      */
     AbstractControl getSkeletonControl() {
         Object skeleton = find();

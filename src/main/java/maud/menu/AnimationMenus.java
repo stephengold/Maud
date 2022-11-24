@@ -96,6 +96,8 @@ final public class AnimationMenus {
 
     /**
      * Build an Animation menu.
+     *
+     * @param builder the menu builder to use (not null)
      */
     static void buildAnimationMenu(MenuBuilder builder) {
         builder.addTool("Tool");
@@ -125,6 +127,8 @@ final public class AnimationMenus {
 
     /**
      * Build a Track menu.
+     *
+     * @param builder the MenuBuilder to use (not null)
      */
     static void buildTrackMenu(MenuBuilder builder) {
         builder.addTool("Tool");

@@ -340,6 +340,7 @@ class MenuBuilder extends PopupMenuBuilder {
      * Test whether a filename (or zip entry name) has a CGM suffix.
      *
      * @param name the name of the file/entry (not null, not empty)
+     * @return true for a CGM suffix, otherwise false
      */
     static boolean hasCgmSuffix(String name) {
         assert name != null;
@@ -372,6 +373,7 @@ class MenuBuilder extends PopupMenuBuilder {
      * Test whether a filename (or zip entry name) has a texture suffix.
      *
      * @param name the name of the file/entry (not null, not empty)
+     * @return true for a texture suffix, otherwise false
      */
     static boolean hasTextureSuffix(String name) {
         assert name != null;

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2021, Stephen Gold
+ Copyright (c) 2021-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -59,6 +59,8 @@ public class SpatialItem implements Comparable<SpatialItem> {
 
     /**
      * Instantiate a new item.
+     *
+     * @param spatial (not null, alias created)
      */
     SpatialItem(Spatial spatial) {
         assert spatial != null;

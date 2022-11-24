@@ -91,6 +91,8 @@ class VertexTool extends Tool {
 
     /**
      * Update the indexed animation weight, bone name, and bone-select button.
+     *
+     * @param weightIndex (&ge;0, &lt;4)
      */
     private void updateBone(int weightIndex) {
         assert weightIndex >= 0 : weightIndex;

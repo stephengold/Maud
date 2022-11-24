@@ -1629,6 +1629,8 @@ public class EditableCgm extends LoadedCgm {
     /**
      * Delete the selected attachment/bone link. The invoker is responsible for
      * de-selecting the link, if it was selected.
+     *
+     * @param link the link to delete (not null, not a TorsoLink)
      */
     void unlink(PhysicsLink link) {
         assert link instanceof BoneLink || link instanceof AttachmentLink;

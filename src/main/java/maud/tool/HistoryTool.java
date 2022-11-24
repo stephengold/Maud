@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2021, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -191,6 +191,9 @@ public class HistoryTool extends Tool {
 
     /**
      * Add a checkpoint to the scroll-panel content.
+     *
+     * @param cpIndex which checkpoint (&ge;0)
+     * @param bgColor Nifty color string for the background
      */
     private void addCheckpoint(int cpIndex, String bgColor) {
         Checkpoint checkpoint = History.getCheckpoint(cpIndex);
@@ -212,6 +215,7 @@ public class HistoryTool extends Tool {
      * Add a label to the scroll-panel content.
      *
      * @param text (not null)
+     * @param bgColor Nifty color string for the background
      * @return the element of the newly-created label
      */
     private Element addLabel(final String text, final String bgColor) {

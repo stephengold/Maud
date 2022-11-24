@@ -131,6 +131,10 @@ public class Platform implements BulletDebugAppState.DebugAppStateFilter {
 
     /**
      * Find the nearest contact point of the specified ray.
+     *
+     * @param ray camera ray (not null, unaffected)
+     * @return collision result, or null of no collision with a triangle facing
+     * the camera
      */
     CollisionResult findCollision(Ray ray) {
         CollisionResult result = null;

@@ -83,6 +83,7 @@ final public class Drag {
      * Start dragging the indexed frame in the selected track of the specified
      * C-G model.
      *
+     * @param frameIndex which frame to drag
      * @param cgm a C-G model (not null)
      */
     static void startDraggingFrame(int frameIndex, Cgm cgm) {

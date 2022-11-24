@@ -67,6 +67,8 @@ final public class MeshMenus {
 
     /**
      * Build a Mesh menu.
+     *
+     * @param builder the MenuBuilder to use (not null)
      */
     static void buildMeshMenu(MenuBuilder builder) {
         builder.addTool("Tool");

@@ -2085,6 +2085,9 @@ public class SelectedSpatial implements JmeCloneable {
     /**
      * Test whether the specified Spatial is a Geometry whose Material defines
      * the selected parameter.
+     *
+     * @param newSpatial the Spatial to test
+     * @return true if it defines the selected parameter, otherwise false
      */
     private boolean definesSelectedMatParam(Spatial newSpatial) {
         boolean result = false;

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2021, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -234,6 +234,8 @@ public class SelectedMatParam implements Cloneable {
 
     /**
      * Update the selected parameter after a new material is applied.
+     *
+     * @param newMaterial the material being applied (not null)
      */
     void postSetMaterial(Material newMaterial) {
         if (isSelected()) {

@@ -67,6 +67,8 @@ final public class BoneMenus {
 
     /**
      * Build a Bone menu.
+     *
+     * @param builder the MenuBuilder to use (not null)
      */
     static void buildBoneMenu(MenuBuilder builder) {
         builder.addTool("Tool");
