@@ -48,7 +48,7 @@ import jme3utilities.ui.Locators;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class ParseUtil {
+final public class ParseUtil {
     // *************************************************************************
     // constants and loggers
 

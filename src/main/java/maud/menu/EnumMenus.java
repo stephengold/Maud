@@ -74,7 +74,7 @@ import maud.model.option.scene.TriangleMode;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class EnumMenus {
+final public class EnumMenus {
     // *************************************************************************
     // constants and loggers
 

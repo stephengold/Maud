@@ -44,7 +44,7 @@ import jme3utilities.Validate;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class DescribeUtil {
+final public class DescribeUtil {
     // *************************************************************************
     // constants and loggers
 

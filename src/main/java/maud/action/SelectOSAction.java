@@ -60,7 +60,7 @@ import maud.tool.EditorTools;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SelectOSAction {
+final class SelectOSAction {
     // *************************************************************************
     // constants and loggers
 

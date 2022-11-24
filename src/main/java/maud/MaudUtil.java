@@ -100,7 +100,7 @@ import maud.model.option.RotationDisplayMode;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class MaudUtil {
+final public class MaudUtil {
     // *************************************************************************
     // constants and loggers
 

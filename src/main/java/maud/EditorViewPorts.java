@@ -50,7 +50,7 @@ import maud.view.scene.SceneView;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class EditorViewPorts {
+final public class EditorViewPorts {
     // *************************************************************************
     // enums
 

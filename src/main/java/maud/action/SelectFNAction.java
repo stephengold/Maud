@@ -51,7 +51,7 @@ import maud.tool.EditorTools;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SelectFNAction {
+final class SelectFNAction {
     // *************************************************************************
     // constants and loggers
 

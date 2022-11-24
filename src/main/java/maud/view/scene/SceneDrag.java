@@ -59,7 +59,7 @@ import maud.model.option.scene.AxesSubject;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class SceneDrag {
+final public class SceneDrag {
     // *************************************************************************
     // constants and loggers
 

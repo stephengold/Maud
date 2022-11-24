@@ -39,7 +39,7 @@ import java.util.logging.Logger;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class TmpTracks {
+final class TmpTracks {
     // *************************************************************************
     // constants and loggers
 

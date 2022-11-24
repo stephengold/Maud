@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018, Stephen Gold
+ Copyright (c) 2018-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -41,7 +41,7 @@ import maud.model.cgm.Cgm;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class Drag {
+final public class Drag {
     // *************************************************************************
     // constants and loggers
 

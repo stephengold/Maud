@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@ import maud.model.cgm.EditableCgm;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class NextAction {
+final class NextAction {
     // *************************************************************************
     // constants and loggers
 

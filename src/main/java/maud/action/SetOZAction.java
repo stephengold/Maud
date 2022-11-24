@@ -58,7 +58,7 @@ import maud.model.option.scene.SkeletonColors;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SetOZAction {
+final class SetOZAction {
     // *************************************************************************
     // constants and loggers
 

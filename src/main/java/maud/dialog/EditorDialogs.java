@@ -100,7 +100,7 @@ import org.lwjgl.Sys;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class EditorDialogs {
+final public class EditorDialogs {
     // *************************************************************************
     // constants and loggers
 

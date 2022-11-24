@@ -42,7 +42,7 @@ import maud.model.cgm.LoadedCgm;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class LoadAction {
+final class LoadAction {
     // *************************************************************************
     // constants and loggers
 

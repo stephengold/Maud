@@ -53,7 +53,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class LoadUtil {
+final public class LoadUtil {
     // *************************************************************************
     // constants and loggers
 

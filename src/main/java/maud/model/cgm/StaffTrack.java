@@ -53,7 +53,7 @@ import maud.view.ScoreView;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class StaffTrack {
+final public class StaffTrack {
     // *************************************************************************
     // constants and loggers
 

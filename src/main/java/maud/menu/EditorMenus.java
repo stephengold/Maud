@@ -46,7 +46,7 @@ import maud.tool.EditorTools;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class EditorMenus {
+final public class EditorMenus {
     // *************************************************************************
     // constants and loggers
 

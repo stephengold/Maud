@@ -60,7 +60,7 @@ import maud.model.cgm.SelectedSkeleton;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class CheckLoaded {
+final public class CheckLoaded {
     // *************************************************************************
     // constants and loggers
 

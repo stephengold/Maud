@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018-2019, Stephen Gold
+ Copyright (c) 2018-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@ import maud.view.scene.SceneDrag;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class PickAction {
+final class PickAction {
     // *************************************************************************
     // constants and loggers
 

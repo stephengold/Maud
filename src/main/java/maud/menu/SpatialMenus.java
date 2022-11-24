@@ -44,7 +44,7 @@ import maud.tool.EditorTools;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class SpatialMenus {
+final public class SpatialMenus {
     // *************************************************************************
     // constants and loggers
 

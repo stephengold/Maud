@@ -51,7 +51,7 @@ import jme3utilities.wes.Pose;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class SupportUtil {
+final public class SupportUtil {
     // *************************************************************************
     // constants and loggers
 

@@ -45,7 +45,7 @@ import maud.tool.EditorTools;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class BoneMenus {
+final public class BoneMenus {
     // *************************************************************************
     // constants and loggers
 

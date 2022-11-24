@@ -71,7 +71,7 @@ import maud.model.option.scene.SkeletonOptions;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class SceneUpdater {
+final public class SceneUpdater {
     // *************************************************************************
     // constants and loggers
 

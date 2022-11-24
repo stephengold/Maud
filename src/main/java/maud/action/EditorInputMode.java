@@ -57,7 +57,7 @@ import maud.view.scene.SceneView;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class EditorInputMode extends InputMode {
+final public class EditorInputMode extends InputMode {
     // *************************************************************************
     // constants and loggers
 

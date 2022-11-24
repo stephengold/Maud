@@ -52,7 +52,7 @@ import jme3utilities.math.MyMath;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class MeshUtil {
+final public class MeshUtil {
     // *************************************************************************
     // constants and loggers
 

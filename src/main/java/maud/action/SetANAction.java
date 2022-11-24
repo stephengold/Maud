@@ -49,7 +49,7 @@ import maud.model.option.Background;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SetANAction {
+final class SetANAction {
     // *************************************************************************
     // constants and loggers
 

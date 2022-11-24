@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018-2020, Stephen Gold
+ Copyright (c) 2018-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -38,7 +38,7 @@ import maud.model.option.scene.SceneOptions;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SetFlagAction {
+final class SetFlagAction {
     // *************************************************************************
     // constants and loggers
 

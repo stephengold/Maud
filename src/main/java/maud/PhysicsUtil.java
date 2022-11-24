@@ -63,7 +63,7 @@ import jme3utilities.math.VectorSet;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public class PhysicsUtil {
+final public class PhysicsUtil {
     // *************************************************************************
     // constants and loggers
 

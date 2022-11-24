@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2022, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -56,7 +56,7 @@ import maud.model.option.scene.TriangleMode;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SelectTZAction {
+final class SelectTZAction {
     // *************************************************************************
     // constants and loggers
 
