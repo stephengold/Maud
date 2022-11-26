@@ -147,8 +147,8 @@ final public class BuildMenus {
             if (cgmEntries.size() == 1 && cgmEntries.contains(assetPath)) {
                 loadedCgm.loadAsset(spec, assetPath);
             } else if (!cgmEntries.isEmpty()) {
-                ShowMenus.selectFile(cgmEntries,
-                        menuPrefix + indexString + " ");
+                ShowMenus.selectFile(
+                        cgmEntries, menuPrefix + indexString + " ");
             }
 
         } else { // not a JAR or ZIP

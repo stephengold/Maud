@@ -94,8 +94,8 @@ final public class PhysicsUtil {
      * @param shapeType (not null)
      * @return a new shape (not null)
      */
-    public static CollisionShape makeShape(ShapeType shapeType,
-            Spatial subtree) {
+    public static CollisionShape makeShape(
+            ShapeType shapeType, Spatial subtree) {
         CollisionShape shape;
         switch (shapeType) {
             case Hull:
@@ -160,8 +160,8 @@ final public class PhysicsUtil {
      * @return orientation (in physics-space coordinates, either storeResult or
      * a new instance)
      */
-    public static Quaternion orientation(PhysicsCollisionObject pco,
-            Quaternion storeResult) {
+    public static Quaternion orientation(
+            PhysicsCollisionObject pco, Quaternion storeResult) {
         Validate.nonNull(pco, "object");
         Quaternion result
                 = (storeResult == null) ? new Quaternion() : storeResult;
@@ -233,8 +233,8 @@ final public class PhysicsUtil {
      * @param pco (not null, modified)
      * @param newLocation (in physics-space coordinates, not null, unaffected)
      */
-    public static void setLocation(PhysicsCollisionObject pco,
-            Vector3f newLocation) {
+    public static void setLocation(
+            PhysicsCollisionObject pco, Vector3f newLocation) {
         Validate.nonNull(pco, "object");
         Validate.nonNull(newLocation, "new location");
 
@@ -259,8 +259,8 @@ final public class PhysicsUtil {
      * @param newOrientation (in physics-space coordinates, not null,
      * unaffected)
      */
-    public static void setOrientation(PhysicsCollisionObject pco,
-            Quaternion newOrientation) {
+    public static void setOrientation(
+            PhysicsCollisionObject pco, Quaternion newOrientation) {
         Validate.nonNull(pco, "object");
         Validate.nonNull(newOrientation, "new orientation");
 
@@ -282,8 +282,8 @@ final public class PhysicsUtil {
      * @param storeResult storage for the result (modified if not null)
      * @return world transform (either storeResult or a new instance)
      */
-    public static Transform transform(PhysicsCollisionObject pco,
-            Transform storeResult) {
+    public static Transform transform(
+            PhysicsCollisionObject pco, Transform storeResult) {
         Validate.nonNull(pco, "object");
         Transform result
                 = (storeResult == null) ? new Transform() : storeResult;
@@ -340,8 +340,8 @@ final public class PhysicsUtil {
      * including margin (not null, all non-negative, unaffected)
      * @return a new instance
      */
-    private static CollisionShape makeShape(ShapeType shapeType,
-            Vector3f halfExtents) {
+    private static CollisionShape makeShape(
+            ShapeType shapeType, Vector3f halfExtents) {
         CollisionShape result;
         float axisHalfExtent;
         float height;
@@ -376,37 +376,37 @@ final public class PhysicsUtil {
             case ConeX:
                 radius = Math.max(halfExtents.y, halfExtents.z);
                 height = 2f * halfExtents.x;
-                result = new ConeCollisionShape(radius, height,
-                        PhysicsSpace.AXIS_X);
+                result = new ConeCollisionShape(
+                        radius, height, PhysicsSpace.AXIS_X);
                 break;
 
             case ConeY:
                 radius = Math.max(halfExtents.x, halfExtents.z);
                 height = 2f * halfExtents.y;
-                result = new ConeCollisionShape(radius, height,
-                        PhysicsSpace.AXIS_Y);
+                result = new ConeCollisionShape(
+                        radius, height, PhysicsSpace.AXIS_Y);
                 break;
 
             case ConeZ:
                 radius = Math.max(halfExtents.x, halfExtents.y);
                 height = 2f * halfExtents.z;
-                result = new ConeCollisionShape(radius, height,
-                        PhysicsSpace.AXIS_Z);
+                result = new ConeCollisionShape(
+                        radius, height, PhysicsSpace.AXIS_Z);
                 break;
 
             case CylinderX:
-                result = new CylinderCollisionShape(halfExtents,
-                        PhysicsSpace.AXIS_X);
+                result = new CylinderCollisionShape(
+                        halfExtents, PhysicsSpace.AXIS_X);
                 break;
 
             case CylinderY:
-                result = new CylinderCollisionShape(halfExtents,
-                        PhysicsSpace.AXIS_Y);
+                result = new CylinderCollisionShape(
+                        halfExtents, PhysicsSpace.AXIS_Y);
                 break;
 
             case CylinderZ:
-                result = new CylinderCollisionShape(halfExtents,
-                        PhysicsSpace.AXIS_Z);
+                result = new CylinderCollisionShape(
+                        halfExtents, PhysicsSpace.AXIS_Z);
                 break;
 
             case MsBox:
@@ -476,8 +476,8 @@ final public class PhysicsUtil {
      * @param subtree (not null)
      * @return a new CollisionShape (not null)
      */
-    private static CollisionShape makeShapeSphere(ShapeType shapeType,
-            Spatial subtree) {
+    private static CollisionShape makeShapeSphere(
+            ShapeType shapeType, Spatial subtree) {
         VectorSet vertexLocations
                 = MyMesh.listVertexLocations(subtree, null);
         int numVectors = vertexLocations.numVectors();
@@ -526,8 +526,8 @@ final public class PhysicsUtil {
      * @param subtree (not null)
      * @return a new shape (not null)
      */
-    private static CollisionShape makeShapeTranslated(ShapeType shapeType,
-            Spatial subtree) {
+    private static CollisionShape makeShapeTranslated(
+            ShapeType shapeType, Spatial subtree) {
         Spatial clone = subtree.clone(false);
         clone.setLocalTransform(transformIdentity);
         Vector3f[] minMax = MySpatial.findMinMaxCoords(clone);

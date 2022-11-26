@@ -205,8 +205,8 @@ public class Maud extends GuiApplication {
                     break;
 
                 default:
-                    logger.log(Level.WARNING,
-                            "Unknown command-line argument {0}",
+                    logger.log(
+                            Level.WARNING, "Unknown command-line argument {0}",
                             MyString.quote(arg));
             }
         }
@@ -333,8 +333,8 @@ public class Maud extends GuiApplication {
 
         int buttonCount = context.getMouseInput().getButtonCount();
         if (buttonCount < 3) {
-            String message = String.format("Number of mouse buttons = %d.",
-                    buttonCount);
+            String message = String
+                    .format("Number of mouse buttons = %d.", buttonCount);
             logger.warning(message);
             editorModel.getMisc().setStatusMessage(message);
         }
@@ -467,8 +467,8 @@ public class Maud extends GuiApplication {
      * @param renderer the value passed to
      * {@link com.jme3.system.AppSettings#setRenderer(java.lang.String)}
      */
-    private static void startup0(final ShowDialog showDialog,
-            final String renderer) {
+    private static void startup0(
+            final ShowDialog showDialog, final String renderer) {
         logger.log(Level.INFO, "showDialog={0} renderer={1}",
                 new Object[]{showDialog, MyString.quote(renderer)});
         /*

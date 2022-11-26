@@ -120,8 +120,8 @@ final public class LoadUtil {
      * @param diagnose true&rarr;messages to console, false&rarr;no messages
      * @return a new orphan spatial, or null if unsuccessful
      */
-    public static Spatial loadCgmAsset(AssetManager assetManager,
-            ModelKey key, boolean diagnose) {
+    public static Spatial loadCgmAsset(
+            AssetManager assetManager, ModelKey key, boolean diagnose) {
         if (assetManager == null || key == null) {
             return null;
         }

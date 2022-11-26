@@ -136,24 +136,24 @@ public class BVHLoader implements AssetLoader {
 
                     if (bVHChannel.getName().equals("Xrotation")) {
                         float degrees = bVHChannel.getValues().get(i);
-                        rx.fromAngleAxis(degrees * FastMath.DEG_TO_RAD,
-                                Vector3f.UNIT_X);
+                        rx.fromAngleAxis(
+                                degrees * FastMath.DEG_TO_RAD, Vector3f.UNIT_X);
                         if (axisOrder == LoadBvhAxisOrder.Header) {
                             r.multLocal(rx);
                         }
                     }
                     if (bVHChannel.getName().equals("Yrotation")) {
                         float degrees = bVHChannel.getValues().get(i);
-                        ry.fromAngleAxis(degrees * FastMath.DEG_TO_RAD,
-                                Vector3f.UNIT_Y);
+                        ry.fromAngleAxis(
+                                degrees * FastMath.DEG_TO_RAD, Vector3f.UNIT_Y);
                         if (axisOrder == LoadBvhAxisOrder.Header) {
                             r.multLocal(ry);
                         }
                     }
                     if (bVHChannel.getName().equals("Zrotation")) {
                         float degrees = bVHChannel.getValues().get(i);
-                        rz.fromAngleAxis(degrees * FastMath.DEG_TO_RAD,
-                                Vector3f.UNIT_Z);
+                        rz.fromAngleAxis(
+                                degrees * FastMath.DEG_TO_RAD, Vector3f.UNIT_Z);
                         if (axisOrder == LoadBvhAxisOrder.Header) {
                             r.multLocal(rz);
                         }
@@ -212,8 +212,8 @@ public class BVHLoader implements AssetLoader {
     private void populateBoneList(Bone[] bones, BoneTrack[] tracks,
             BVHBone hierarchy, Bone parent) {
         Bone bone = new Bone(hierarchy.getName());
-        bone.setBindTransforms(hierarchy.getOffset(), new Quaternion(),
-                Vector3f.UNIT_XYZ);
+        bone.setBindTransforms(
+                hierarchy.getOffset(), new Quaternion(), Vector3f.UNIT_XYZ);
 
         if (parent != null) {
             parent.addChild(bone);

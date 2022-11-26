@@ -83,8 +83,8 @@ final public class ParseUtil {
      * @param textString input text (not null, not empty)
      * @return a new object or null
      */
-    public static Object parseMatParam(MatParam oldParameter,
-            String textString) {
+    public static Object parseMatParam(
+            MatParam oldParameter, String textString) {
         Validate.nonNull(oldParameter, "old parameter");
         Validate.nonEmpty(textString, "text string");
 

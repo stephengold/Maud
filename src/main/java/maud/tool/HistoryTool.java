@@ -206,8 +206,8 @@ public class HistoryTool extends Tool {
         Date creationDate = checkpoint.copyTimestamp();
         DateFormat timestampFormatter = DateFormat.getTimeInstance();
         String creationTime = timestampFormatter.format(creationDate);
-        String text = String.format("checkpoint%s added at %s", id,
-                creationTime);
+        String text = String
+                .format("checkpoint%s added at %s", id, creationTime);
         addLabel(text, bgColor);
     }
 

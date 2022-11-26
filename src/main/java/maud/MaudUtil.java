@@ -169,14 +169,14 @@ final public class MaudUtil {
      * @param submeshes meshes created by partitioning the original Mesh (not
      * null, at least 2 meshes, aliases created)
      */
-    public static void copyAndSplitGeometry(Geometry geometry,
-            Mesh... submeshes) {
+    public static void copyAndSplitGeometry(
+            Geometry geometry, Mesh... submeshes) {
         Node parent = geometry.getParent();
         Validate.nonNull(parent, "geometry's parent");
         Validate.require(isBare(geometry), "geometry must be bare");
         int numSubmeshes = submeshes.length;
-        Validate.inRange(numSubmeshes, "number of submeshes",
-                2, Integer.MAX_VALUE);
+        Validate.inRange(
+                numSubmeshes, "number of submeshes", 2, Integer.MAX_VALUE);
 
         String name = geometry.getName();
         for (int submeshI = 0; submeshI < numSubmeshes; ++submeshI) {
@@ -222,8 +222,8 @@ final public class MaudUtil {
      * shadow mode) to search for (may be null)
      * @return the number found (&ge;0)
      */
-    public static <T extends Spatial> int countSpatials(Spatial subtree,
-            Class<T> spatialType, Enum<?> enumValue) {
+    public static <T extends Spatial> int countSpatials(
+            Spatial subtree, Class<T> spatialType, Enum<?> enumValue) {
         int result = 0;
 
         if (subtree != null
@@ -298,8 +298,8 @@ final public class MaudUtil {
      * @param geometries the geometries to merge (all non-null)
      * @return a new, orphan Geometry with the specified name
      */
-    public static Geometry createMergedGeometry(String name,
-            Geometry... geometries) {
+    public static Geometry createMergedGeometry(
+            String name, Geometry... geometries) {
         Validate.nonNullArray(geometries, "geometries");
         int numGeometries = geometries.length;
         Validate.require(numGeometries > 1, "at least 2 geometries");
@@ -384,8 +384,8 @@ final public class MaudUtil {
                     ByteBuffer buffer = BufferUtils.createByteBuffer(32);
                     data.add(buffer);
                 }
-                image = new Image(Image.Format.BGRA8, 1, 1, 1, data,
-                        ColorSpace.Linear);
+                image = new Image(
+                        Image.Format.BGRA8, 1, 1, 1, data, ColorSpace.Linear);
                 texture = new TextureCubeMap();
                 texture.setImage(image);
                 result = texture;
@@ -464,8 +464,8 @@ final public class MaudUtil {
      * @param storePositions (not null, length=3, modified)
      * @return unit suffix (not null)
      */
-    public static String displayRotation(Quaternion rotation,
-            RotationDisplayMode mode, float[] storeValues,
+    public static String displayRotation(
+            Quaternion rotation, RotationDisplayMode mode, float[] storeValues,
             float[] storePositions) {
         Validate.nonNull(rotation, "rotation");
         Validate.nonNull(storePositions, "slider positions");
@@ -694,8 +694,8 @@ final public class MaudUtil {
      * not null)
      * @return the pre-existing spatial, or null if not found
      */
-    public static Spatial findSpatialNamed(String name, Spatial subtree,
-            List<Integer> storePosition) {
+    public static Spatial findSpatialNamed(
+            String name, Spatial subtree, List<Integer> storePosition) {
         Spatial result = null;
         if (subtree != null) {
             String spatialName = subtree.getName();
@@ -732,8 +732,8 @@ final public class MaudUtil {
      * @param spatialTrackIndex which spatial track (&ge;0)
      * @return the pre-existing instance, or null if not found
      */
-    public static SpatialTrack findSpatialTrack(Animation animation,
-            int spatialTrackIndex) {
+    public static SpatialTrack findSpatialTrack(
+            Animation animation, int spatialTrackIndex) {
         Validate.nonNegative(spatialTrackIndex, "spatial track index");
 
         Track[] tracks = animation.getTracks();
@@ -911,8 +911,8 @@ final public class MaudUtil {
      * unaffected)
      * @return true if any found, otherwise false
      */
-    public static boolean hasExtraSpatials(Spatial subtree,
-            Collection<Spatial> attachmentsNodes) {
+    public static boolean hasExtraSpatials(
+            Spatial subtree, Collection<Spatial> attachmentsNodes) {
         Validate.nonNull(attachmentsNodes, "attachments nodes");
 
         boolean result;
@@ -1011,8 +1011,8 @@ final public class MaudUtil {
      * unaffected)
      * @return true if extra, otherwise false
      */
-    public static boolean isExtra(Spatial spatial,
-            Collection<Spatial> attachmentsNodes) {
+    public static boolean isExtra(
+            Spatial spatial, Collection<Spatial> attachmentsNodes) {
         Validate.nonNull(spatial, "spatial");
         Validate.nonNull(attachmentsNodes, "attachments nodes");
 
@@ -1077,8 +1077,8 @@ final public class MaudUtil {
         Object result;
         if (oldTrack instanceof BoneTrack) {
             int boneIndex = ((BoneTrack) oldTrack).getTargetBoneIndex();
-            result = MyAnimation.newBoneTrack(boneIndex, times, translations,
-                    rotations, scales);
+            result = MyAnimation.newBoneTrack(
+                    boneIndex, times, translations, rotations, scales);
 
         } else if (oldTrack instanceof SpatialTrack) {
             Spatial spatial = ((SpatialTrack) oldTrack).getTrackSpatial();
@@ -1090,8 +1090,8 @@ final public class MaudUtil {
         } else if (oldTrack instanceof TransformTrack) {
             TransformTrack transformTrack = (TransformTrack) oldTrack;
             HasLocalTransform target = transformTrack.getTarget();
-            result = new TransformTrack(target, times, translations, rotations,
-                    scales);
+            result = new TransformTrack(
+                    target, times, translations, rotations, scales);
 
         } else {
             throw new IllegalArgumentException();
@@ -1110,8 +1110,8 @@ final public class MaudUtil {
      * BufferedImage.TYPE_4BYTE_ABGR
      * @return a new BufferedImage
      */
-    public static BufferedImage render(Image imageIn, boolean flipY,
-            int awtType) {
+    public static BufferedImage render(
+            Image imageIn, boolean flipY, int awtType) {
         int depth = imageIn.getDepth();
         assert depth <= 1 : depth; // 3-D images aren't handled
 
@@ -1196,8 +1196,8 @@ final public class MaudUtil {
      * &gt;0)
      * @return a new track of the same type, or null if unsuccessful
      */
-    public static Object setFrameTime(Object track, int frameIndex,
-            float newTime) {
+    public static Object setFrameTime(
+            Object track, int frameIndex, float newTime) {
         float[] oldTimes = getTrackTimes(track);
         int numFrames = oldTimes.length;
         Validate.inRange(frameIndex, "frame index", 1, numFrames - 1);
@@ -1227,8 +1227,8 @@ final public class MaudUtil {
      * @param storeResult storage for the result (modified if not null)
      * @return rotation (either storeResult or a new quaternion)
      */
-    public static Quaternion setFromSliders(float[] sliderPositions,
-            Quaternion storeResult) {
+    public static Quaternion setFromSliders(
+            float[] sliderPositions, Quaternion storeResult) {
         int numSliders = sliderPositions.length;
         Validate.inRange(numSliders, "numSliders", 3, 3);
         Quaternion result;

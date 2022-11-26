@@ -673,8 +673,8 @@ public class LoadedMap implements Cloneable {
      * @param diagnose true&rarr;messages to console, false&rarr;no messages
      * @return a skeleton map, or null if the asset had errors
      */
-    private static SkeletonMapping loadFromAsset(String path, boolean useCache,
-            boolean diagnose) {
+    private static SkeletonMapping loadFromAsset(
+            String path, boolean useCache, boolean diagnose) {
         AssetManager assetManager = Locators.getAssetManager();
         /*
          * Load the skeleton map quietly.

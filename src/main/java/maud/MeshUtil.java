@@ -120,8 +120,8 @@ final public class MeshUtil {
         VertexBuffer bindPosition
                 = result.getBuffer(VertexBuffer.Type.BindPosePosition);
         if (bindPosition != null) {
-            result = generateNormals(result,
-                    VertexBuffer.Type.BindPoseNormal,
+            result = generateNormals(
+                    result, VertexBuffer.Type.BindPoseNormal,
                     VertexBuffer.Type.BindPosePosition, algorithm);
         }
 
@@ -138,8 +138,8 @@ final public class MeshUtil {
      * @param algorithm which algorithm to use (not null)
      * @return a new Mesh
      */
-    public static Mesh generateNormals(Mesh mesh,
-            VertexBuffer.Type normalBufferType,
+    public static Mesh generateNormals(
+            Mesh mesh, VertexBuffer.Type normalBufferType,
             VertexBuffer.Type positionBufferType, MeshNormals algorithm) {
         Validate.nonNull(mesh, "mesh");
         Validate.require(MyMesh.hasTriangles(mesh), "triangles in the mesh");
@@ -224,8 +224,8 @@ final public class MeshUtil {
      * mesh units, &ge;0)
      * @return a new array of new meshes without index buffers
      */
-    public static Mesh[] partition(Mesh mesh, VertexBuffer.Type positionType,
-            float tolerance) {
+    public static Mesh[] partition(
+            Mesh mesh, VertexBuffer.Type positionType, float tolerance) {
         Validate.nonNull(positionType, "position type");
         Validate.nonNegative(tolerance, "tolerance");
         Validate.require(mesh.getNumLodLevels() == 0, "no LODs");
@@ -240,11 +240,11 @@ final public class MeshUtil {
         int endPosition = numAxes * numVertices;
         DistinctVectorValues distinctPositions;
         if (tolerance == 0f) {
-            distinctPositions = new DistinctVectorValues(buffer, startPosition,
-                    endPosition);
+            distinctPositions = new DistinctVectorValues(
+                    buffer, startPosition, endPosition);
         } else {
-            distinctPositions = new DistinctVectorValues(buffer, startPosition,
-                    endPosition, tolerance);
+            distinctPositions = new DistinctVectorValues(
+                    buffer, startPosition, endPosition, tolerance);
         }
         Set<IntPair> adjacentPairs = listAdjacentPairs(mesh, distinctPositions);
         /*
@@ -297,8 +297,8 @@ final public class MeshUtil {
                 if (format == null) {
                     format = VertexBuffer.Format.Float; // to avoid an NPE
                 }
-                Buffer outputBuffer = VertexBuffer.createBuffer(format,
-                        numCperE, numOutputVertices);
+                Buffer outputBuffer = VertexBuffer
+                        .createBuffer(format, numCperE, numOutputVertices);
                 outputMesh.setBuffer(type, numCperE, format, outputBuffer);
                 VertexBuffer outputVB = outputMesh.getBuffer(type);
                 /*

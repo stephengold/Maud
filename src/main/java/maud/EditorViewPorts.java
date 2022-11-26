@@ -136,8 +136,8 @@ final public class EditorViewPorts {
         int mapSize = options.shadowMapSize();
         int numSplits = options.numSplits();
         DirectionalLightShadowRenderer dlsr
-                = new DirectionalLightShadowRenderer(manager, mapSize,
-                        numSplits);
+                = new DirectionalLightShadowRenderer(
+                        manager, mapSize, numSplits);
         vp.addProcessor(dlsr);
 
         return dlsr;
@@ -186,10 +186,10 @@ final public class EditorViewPorts {
          * Create 3 view ports for scene-view overlays.
          */
         sourceSceneOverlay = createOverlay(sourceSceneBase, sourceOverlayNode);
-        targetSceneRightOverlay = createOverlay(targetSceneRightBase,
-                targetOverlayNode);
-        targetSceneWideOverlay = createOverlay(targetSceneWideBase,
-                targetOverlayNode);
+        targetSceneRightOverlay = createOverlay(
+                targetSceneRightBase, targetOverlayNode);
+        targetSceneWideOverlay = createOverlay(
+                targetSceneWideBase, targetOverlayNode);
         /*
          * Create 4 view ports for score views.
          */

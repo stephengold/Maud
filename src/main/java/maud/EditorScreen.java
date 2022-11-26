@@ -417,8 +417,8 @@ public class EditorScreen extends GuiScreenController {
      * @param application application that owns this screen (not null)
      */
     @Override
-    public void initialize(AppStateManager stateManager,
-            Application application) {
+    public void initialize(
+            AppStateManager stateManager, Application application) {
         if (isEnabled()) {
             throw new IllegalStateException("shouldn't be enabled yet");
         }
