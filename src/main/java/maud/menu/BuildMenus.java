@@ -69,6 +69,14 @@ final public class BuildMenus {
      */
     final public static String otherName = "other";
     // *************************************************************************
+    // constructors
+
+    /**
+     * A private constructor to inhibit instantiation of this class.
+     */
+    private BuildMenus() {
+    }
+    // *************************************************************************
     // fields
 
     /**
