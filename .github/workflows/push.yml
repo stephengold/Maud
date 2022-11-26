@@ -17,7 +17,7 @@ jobs:
       - uses: gradle/wrapper-validation-action@v1.0.5
       - run: ./gradlew build --console=plain --no-daemon --stacktrace
 
-  Java18-Windows:
+  Java19-Windows:
     if: contains(toJson(github.event.commits), '[ci skip] ') == false
     runs-on: windows-2022
     steps:
@@ -25,6 +25,6 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: 18
+          java-version: 19
       - run: ./gradlew build --console=plain --no-daemon --stacktrace
         shell: bash
