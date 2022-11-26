@@ -450,9 +450,7 @@ public class CgmPhysics implements JmeCloneable {
      * @param modelSgc the PhysicsControl to be removed
      */
     void removePhysicsControl(PhysicsControl modelSgc) {
-        /*
-         * Disassociate the SGC's collision objects.
-         */
+        // Disassociate the SGC's collision objects.
         if (modelSgc instanceof BetterCharacterControl) {
             BetterCharacterControl modelBcc = (BetterCharacterControl) modelSgc;
             PhysicsRigidBody modelBody = modelBcc.getRigidBody();

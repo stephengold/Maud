@@ -455,9 +455,8 @@ final public class PhysicsUtil {
             tempLocation.x = buffer.get();
             tempLocation.y = buffer.get();
             tempLocation.z = buffer.get();
-            /*
-             * Transform vertex coordinates to de-scaled shape coordinates.
-             */
+
+            // Transform vertex coordinates to de-scaled shape coordinates.
             worldToLocal.transformVector(tempLocation, tempLocation);
 
             buffer.reset();

@@ -542,9 +542,8 @@ final public class MaudUtil {
             if (cull == Spatial.CullHint.Always) {
                 continue;
             }
-            /*
-             * Calculate the offset from the camera to the point of contact.
-             */
+
+            // Calculate the offset from the camera to the point of contact.
             Vector3f contactPoint = result.getContactPoint();
             Vector3f offset = contactPoint.subtract(ray.origin);
             /*

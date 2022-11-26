@@ -282,9 +282,8 @@ public class Maud extends GuiApplication {
         if (loadStartupScript) {
             logger.log(Level.INFO, "load {0}",
                     MyString.quote(startupScriptAssetPath));
-            /*
-             * Evaluate the startup script.
-             */
+
+            // Evaluate the startup script.
             UncachedKey key = new UncachedKey(startupScriptAssetPath);
             assetManager.loadAsset(key);
 
@@ -293,9 +292,8 @@ public class Maud extends GuiApplication {
         } else {
             logger.info("loadStartupScript=false");
         }
-        /*
-         * If no target model is loaded, load Jaime as a fallback.
-         */
+
+        // If no target model is loaded, load Jaime as a fallback.
         EditableCgm target = getModel().getTarget();
         if (!target.isLoaded()) {
             logger.info("loading Jaime");

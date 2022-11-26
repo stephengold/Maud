@@ -197,9 +197,8 @@ final public class EditorViewPorts {
         createTargetScoreLeftViewPort();
         createTargetScoreRightViewPort();
         createTargetScoreWideViewPort();
-        /*
-         * Create 2 scene views, each with its own bulletAppState.
-         */
+
+        // Create 2 scene views, each with its own BulletAppState.
         EditorModel editorModel = Maud.getModel();
         Node sourceORoot = (Node) sourceSceneOverlay.getScenes().get(0);
         SceneView sourceSceneView = new SceneView(editorModel.getSource(),
@@ -208,20 +207,17 @@ final public class EditorViewPorts {
         SceneView targetSceneView = new SceneView(editorModel.getTarget(),
                 targetSceneParent, targetSceneWideBase, targetSceneRightBase,
                 targetORoot);
-        /*
-         * Create 2 score views.
-         */
+
+        // Create 2 score views.
         ScoreView sourceScoreView = new ScoreView(null, sourceScore, null);
-        ScoreView targetScoreView = new ScoreView(targetScoreWide,
-                targetScoreRight, targetScoreLeft);
-        /*
-         * Attach views to C-G model slots.
-         */
+        ScoreView targetScoreView = new ScoreView(
+                targetScoreWide, targetScoreRight, targetScoreLeft);
+
+        // Attach views to C-G model slots.
         editorModel.getSource().setViews(sourceSceneView, sourceScoreView);
         editorModel.getTarget().setViews(targetSceneView, targetScoreView);
-        /*
-         * Create the view port for the boundary's drag handle.
-         */
+
+        // Create the view port for the boundary's drag handle.
         createBoundaryViewPort();
     }
 
@@ -306,9 +302,8 @@ final public class EditorViewPorts {
         ViewPort viewPort = renderManager.createMainView(name, camera);
         viewPort.setClearFlags(false, false, false);
         viewPort.setEnabled(false);
-        /*
-         * Attach a scene to the new view port.
-         */
+
+        // Attach a scene to the new view port.
         Node boundaryRoot = new Node("Root for " + name);
         boundaryRoot.setQueueBucket(RenderQueue.Bucket.Gui);
         viewPort.attachScene(boundaryRoot);
