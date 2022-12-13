@@ -60,7 +60,7 @@ dependencies {
     runtimeOnly    'com.github.nifty-gui:nifty-style-black:1.4.3'
     implementation 'com.github.stephengold:Heart:8.2.0'
     implementation 'com.github.stephengold:Acorus:0.9.17'
-    implementation 'com.github.stephengold:jme3-utilities-nifty:0.9.31'
+    implementation 'com.github.stephengold:jme3-utilities-nifty:0.9.32'
     implementation 'com.github.stephengold:Minie:6.2.0'
     implementation 'com.github.stephengold:SkyControl:1.0.3'
     implementation 'com.github.stephengold:jme-ttf:2.2.4'

@@ -401,7 +401,7 @@ class MenuBuilder extends PopupMenuBuilder {
      * usually the final character will be a space)
      */
     void show(String actionPrefix) {
-        int numItems = itemMap.size();
+        int numItems = items.size();
         if (numItems > 0) {
             Maud.gui.showPopupMenu(actionPrefix, this);
         }
