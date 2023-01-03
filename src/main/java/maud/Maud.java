@@ -164,9 +164,7 @@ public class Maud extends GuiApplication {
      * @param arguments array of command-line arguments (not null)
      */
     public static void main(String[] arguments) {
-        /*
-         * Mute the chatty loggers found in certain packages.
-         */
+        // Mute the chatty loggers found in certain packages.
         Heart.setLoggingLevels(Level.WARNING);
         Logger.getLogger(ALAudioRenderer.class.getName())
                 .setLevel(Level.SEVERE);
@@ -175,9 +173,8 @@ public class Maud extends GuiApplication {
 
         String renderer = AppSettings.LWJGL_OPENGL2;
         ShowDialog showDialog = ShowDialog.FirstTime;
-        /*
-         * Process any command-line arguments.
-         */
+
+        // Process any command-line arguments.
         for (String arg : arguments) {
             switch (arg) {
                 case "-3":
@@ -253,23 +250,19 @@ public class Maud extends GuiApplication {
      */
     void startup2() {
         logger.info("");
-        /*
-         * Attach controllers for windows in the editor screen.
-         */
+
+        // Attach controllers for windows in the editor screen.
         gui.tools.attachAll(stateManager);
-        /*
-         * Disable flyCam.
-         */
+
+         // Disable flyCam.
         flyCam.setEnabled(false);
-        /*
-         * Manage latency statistics.
-         */
+
+         // Manage latency statistics.
         PerformanceAppState pas = new PerformanceAppState();
         boolean success = stateManager.attach(pas);
         assert success;
-        /*
-         * Manage view-port updating.
-         */
+
+        // Manage view-port updating.
         ViewPortAppState viewPortState = new ViewPortAppState();
         success = stateManager.attach(viewPortState);
         assert success;
@@ -372,9 +365,7 @@ public class Maud extends GuiApplication {
         }
 
         if (!handled) {
-            /*
-             * Forward unhandled action to the superclass.
-             */
+            // Forward unhandled action to the superclass.
             super.onAction(actionString, ongoing, tpf);
         }
     }
@@ -471,13 +462,11 @@ public class Maud extends GuiApplication {
             final ShowDialog showDialog, final String renderer) {
         logger.log(Level.INFO, "showDialog={0} renderer={1}",
                 new Object[]{showDialog, MyString.quote(renderer)});
-        /*
-         * Instantiate the application.
-         */
+
+        // Instantiate the application.
         application = new Maud();
-        /*
-         * Instantiate the display-settings screen.
-         */
+
+        // Instantiate the display-settings screen.
         String applicationName = "Maud"; // v1.0.0-beta1";
         RectSizeLimits dsl = new RectSizeLimits(
                 640, 720, // min width, height
@@ -523,9 +512,7 @@ public class Maud extends GuiApplication {
             }
 
             application.start();
-            /*
-             * ... and onward to Maud.guiInitializeApplication()!
-             */
+            // ... and onward to Maud.guiInitializeApplication()!
         }
     }
 
@@ -547,19 +534,16 @@ public class Maud extends GuiApplication {
         assetManager.registerLoader(XbufLoader.class, "xbuf");
 
         EditorViewPorts.startup1();
-        /*
-         * Attach screen controllers for the 3 major screens.
-         */
+
+        // Attach screen controllers for the 3 major screens.
         stateManager.attachAll(gui, bindScreen, displaySettingsScreen);
-        /*
-         * Configure and attach the input mode for the editor screen.
-         */
+
+        // Configure and attach the input mode for the editor screen.
         String hotkeyBindingsAssetPath = "Interface/bindings/editor.properties";
         gui.inputMode.setConfigPath(hotkeyBindingsAssetPath);
         stateManager.attach(gui.inputMode);
-        /*
-         * Attach an EnvironmentCamera to tune PBR lighting.
-         */
+
+        // Attach an EnvironmentCamera to tune PBR lighting.
         EnvironmentCamera environmentCamera = new EnvironmentCamera();
         stateManager.attach(environmentCamera);
         /*
