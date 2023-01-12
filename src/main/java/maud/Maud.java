@@ -115,7 +115,7 @@ public class Maud extends GuiApplication {
     // new methods exposed
 
     /**
-     * Access the application instance.
+     * Access the application instance from a static context.
      *
      * @return the pre-existing instance (not null)
      */
@@ -207,6 +207,7 @@ public class Maud extends GuiApplication {
                             MyString.quote(arg));
             }
         }
+
         startup0(showDialog, renderer);
     }
 
