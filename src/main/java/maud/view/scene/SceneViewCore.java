@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -1184,6 +1184,12 @@ public class SceneViewCore implements EditorView, JmeCloneable {
             Vector3f[] subtreeMinMax = MySpatial.findMinMaxCoords(subtree);
             MyVector3f.accumulateMinima(minMax[0], subtreeMinMax[0]);
             MyVector3f.accumulateMaxima(minMax[1], subtreeMinMax[1]);
+        }
+        if (!Vector3f.isValidVector(minMax[0])) {
+            minMax[0].set(-1f, -1f, -1f);
+        }
+        if (!Vector3f.isValidVector(minMax[1])) {
+            minMax[1].set(1f, 1f, 1f);
         }
         Vector3f center = MyVector3f.midpoint(minMax[0], minMax[1], null);
         boolean zUp = Maud.getModel().getMisc().isLoadZup();
