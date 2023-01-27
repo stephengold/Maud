@@ -255,12 +255,12 @@ public class SceneViewCore implements EditorView, JmeCloneable {
         Validate.nonNull(port2, "port2");
         Validate.nonNull(oRoot, "overlay root");
 
-        cgm = ownerCgm;
-        parent = parentNode;
-        viewPort1 = port1;
-        viewPort2 = port2;
-        overlayRoot = oRoot;
-        bulletAppState = makeBullet(port1, port2);
+        this.cgm = ownerCgm;
+        this.parent = parentNode;
+        this.viewPort1 = port1;
+        this.viewPort2 = port2;
+        this.overlayRoot = oRoot;
+        this.bulletAppState = makeBullet(port1, port2);
         /*
          * Initialize the scene graphs.
          */
@@ -584,7 +584,7 @@ public class SceneViewCore implements EditorView, JmeCloneable {
         newNode.attachChild(spatial);
 
         if (spatial == cgmRoot) {
-            cgmRoot = newNode;
+            this.cgmRoot = newNode;
         }
     }
 
@@ -682,7 +682,7 @@ public class SceneViewCore implements EditorView, JmeCloneable {
         Validate.nonNull(newCgm, "new model");
         assert this == newCgm.getSceneView();
 
-        cgm = newCgm;
+        this.cgm = newCgm;
     }
 
     /**
@@ -704,27 +704,28 @@ public class SceneViewCore implements EditorView, JmeCloneable {
                 controlled = cgmRoot;
             }
 
-            skeleton = Cloner.deepClone(selectedSkeleton); // TODO not so deep
+            this.skeleton
+                    = Cloner.deepClone(selectedSkeleton); // TODO not so deep
             if (skeleton instanceof Armature) {
-                animControl = new AnimComposer();
+                this.animControl = new AnimComposer();
                 controlled.addControl(animControl);
 
                 SkinningControl sc = new SkinningControl((Armature) skeleton);
                 controlled.addControl(sc);
                 sc.setHardwareSkinningPreferred(false);
-                skeletonControl = sc;
+                this.skeletonControl = sc;
 
             } else {
                 Skeleton sk = (Skeleton) skeleton;
                 MySkeleton.setUserControl(sk, true);
 
-                animControl = new AnimControl(sk);
+                this.animControl = new AnimControl(sk);
                 controlled.addControl(animControl);
 
                 SkeletonControl sc = new SkeletonControl(sk);
                 controlled.addControl(sc);
                 sc.setHardwareSkinningPreferred(false);
-                skeletonControl = sc;
+                this.skeletonControl = sc;
             }
 
             skeletonVisualizer.setSubject(skeletonControl);
@@ -751,9 +752,9 @@ public class SceneViewCore implements EditorView, JmeCloneable {
             parent.detachChild(cgmRoot);
         }
         setCgmRoot(null);
-        animControl = null;
-        skeleton = null;
-        skeletonControl = null;
+        this.animControl = null;
+        this.skeleton = null;
+        this.skeletonControl = null;
     }
     // *************************************************************************
     // EditorView methods
@@ -1010,21 +1011,21 @@ public class SceneViewCore implements EditorView, JmeCloneable {
     public void cloneFields(Cloner cloner, Object original) {
         // addedProbes not cloned: shared
         // ambientLight not cloned: shared
-        animControl = cloner.clone(animControl);
+        this.animControl = cloner.clone(animControl);
         // axesVisualizer not cloned: shared
         // boundsVisualizer not cloned: shared
         // bulletAppState not cloned: shared
         // cgm not cloned: set later
-        cgmRoot = cloner.clone(cgmRoot);
-        cgmTransform = cloner.clone(cgmTransform);
+        this.cgmRoot = cloner.clone(cgmRoot);
+        this.cgmTransform = cloner.clone(cgmTransform);
         // cursor not cloned: shared
         // mainLight not cloned: shared
         // overlayRoot not cloned: shared
         // parent not cloned: shared
         // platform not cloned: shared
         // projectile not cloned: shared
-        skeleton = cloner.clone(skeleton);
-        skeletonControl = cloner.clone(skeletonControl);
+        this.skeleton = cloner.clone(skeleton);
+        this.skeletonControl = cloner.clone(skeletonControl);
         // skeletonVisualizer not cloned: shared
         // skyControl not cloned: shared
         // vertexSpatial not cloned: shared
@@ -1150,8 +1151,8 @@ public class SceneViewCore implements EditorView, JmeCloneable {
             skeletonControl.render(rm, null);
         }
 
-        skeleton = null;
-        skeletonVisualizer.setSubject(null);
+        this.skeleton = null;
+        this.skeletonVisualizer.setSubject(null);
         /*
          * Remove any skeleton-dependent S-G controls from the base scene graph.
          */
@@ -1159,13 +1160,13 @@ public class SceneViewCore implements EditorView, JmeCloneable {
             Spatial controlled = animControl.getSpatial();
             boolean success = controlled.removeControl(animControl);
             assert success;
-            animControl = null;
+            this.animControl = null;
         }
         if (skeletonControl != null) {
             Spatial controlled = skeletonControl.getSpatial();
             boolean success = controlled.removeControl(skeletonControl);
             assert success;
-            skeletonControl = null;
+            this.skeletonControl = null;
         }
     }
 
@@ -1251,7 +1252,7 @@ public class SceneViewCore implements EditorView, JmeCloneable {
      */
     private void createSkeletonVisualizer() {
         AssetManager assetManager = Locators.getAssetManager();
-        skeletonVisualizer
+        this.skeletonVisualizer
                 = new SkeletonVisualizer(assetManager, skeletonControl);
         overlayRoot.addControl(skeletonVisualizer);
     }
