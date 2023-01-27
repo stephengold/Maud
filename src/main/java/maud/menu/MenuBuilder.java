@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -137,6 +137,8 @@ class MenuBuilder extends PopupMenuBuilder {
             addBlend(name);
         } else if (name.endsWith(".bvh")) {
             addBvh(name);
+        } else if (name.endsWith(".fbx")) {
+            addGeometry(name); // TODO use an FBX icon here
         } else if (name.endsWith(".glb")) {
             addGeometry(name); // TODO use a glTF icon here
         } else if (name.endsWith(".gltf")) {
