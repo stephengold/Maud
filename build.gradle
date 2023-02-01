@@ -48,9 +48,9 @@ application {
 
 repositories {
     //mavenLocal() // to find local SNAPSHOTs of libraries
-    //maven { url 'https://s01.oss.sonatype.org/content/groups/staging' } // to find JME libraries find but not yet released
     mavenCentral()
     maven { url 'https://jitpack.io' } // for jme3_xbuf_loader
+    //maven { url 'https://s01.oss.sonatype.org/content/groups/staging' } // to find libraries staged but not yet released
 }
 
 dependencies {
