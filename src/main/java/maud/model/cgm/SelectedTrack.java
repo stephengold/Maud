@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -203,7 +203,8 @@ public class SelectedTrack implements JmeCloneable {
      * SpatialTrack or TransformTrack.
      */
     public void deleteRotations() {
-        assert selected instanceof SpatialTrack;
+        assert selected instanceof SpatialTrack
+                || selected instanceof TransformTrack;
 
         Object newSelected = null;
 
@@ -288,7 +289,8 @@ public class SelectedTrack implements JmeCloneable {
      * SpatialTrack or TransformTrack.
      */
     public void deleteTranslations() {
-        assert selected instanceof SpatialTrack;
+        assert selected instanceof SpatialTrack
+                || selected instanceof TransformTrack;
 
         Object newSelected = null;
 
