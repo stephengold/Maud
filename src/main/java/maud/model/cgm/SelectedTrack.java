@@ -737,7 +737,7 @@ public class SelectedTrack implements JmeCloneable {
         if (track != null) {
             assert cgm.getAnimation().findTrackIndex(track) != -1;
         }
-        selected = track;
+        this.selected = track;
     }
 
     /**
@@ -1167,7 +1167,7 @@ public class SelectedTrack implements JmeCloneable {
      */
     @Override
     public void cloneFields(Cloner cloner, Object original) {
-        selected = cloner.clone(selected);
+        this.selected = cloner.clone(selected);
     }
 
     /**

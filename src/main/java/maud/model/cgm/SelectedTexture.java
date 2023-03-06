@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018-2022, Stephen Gold
+ Copyright (c) 2018-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -1009,8 +1009,8 @@ public class SelectedTexture implements JmeCloneable {
      */
     @Override
     public void cloneFields(Cloner cloner, Object original) {
-        selectedRefs = cloner.clone(selectedRefs);
-        selectedTexture = cloner.clone(selectedTexture);
+        this.selectedRefs = cloner.clone(selectedRefs);
+        this.selectedTexture = cloner.clone(selectedTexture);
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -608,8 +608,8 @@ public class SelectedLight implements JmeCloneable {
      */
     @Override
     public void cloneFields(Cloner cloner, Object original) {
-        owner = cloner.clone(owner);
-        selected = cloner.clone(selected);
+        this.owner = cloner.clone(owner);
+        this.selected = cloner.clone(selected);
     }
 
     /**

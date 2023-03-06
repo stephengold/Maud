@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -452,7 +452,7 @@ public class SelectedPco implements JmeCloneable {
      */
     @Override
     public void cloneFields(Cloner cloner, Object original) {
-        selectedPco = cloner.clone(selectedPco);
+        this.selectedPco = cloner.clone(selectedPco);
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018-2022, Stephen Gold
+ Copyright (c) 2018-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -637,7 +637,7 @@ public class CgmPhysics implements JmeCloneable {
     public void cloneFields(Cloner cloner, Object original) {
         CgmPhysics originalObject = (CgmPhysics) original;
 
-        pcoModelToView = new TreeMap<>();
+        this.pcoModelToView = new TreeMap<>();
         for (Map.Entry<PhysicsCollisionObject, PhysicsCollisionObject> entry
                 : originalObject.pcoModelToView.entrySet()) {
             PhysicsCollisionObject modelPco = entry.getKey();
@@ -649,7 +649,7 @@ public class CgmPhysics implements JmeCloneable {
         }
         assert pcoModelToView.size() == originalObject.pcoModelToView.size();
 
-        jointModelToView = new TreeMap<>();
+        this.jointModelToView = new TreeMap<>();
         for (Map.Entry<PhysicsJoint, PhysicsJoint> entry
                 : originalObject.jointModelToView.entrySet()) {
             PhysicsJoint modelJoint = entry.getKey();

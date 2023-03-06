@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -750,7 +750,7 @@ public class SelectedAnimControl implements JmeCloneable {
      */
     @Override
     public void cloneFields(Cloner cloner, Object original) {
-        last = cloner.clone(last);
+        this.last = cloner.clone(last);
     }
 
     /**

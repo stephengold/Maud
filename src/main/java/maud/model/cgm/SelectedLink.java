@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018-2021, Stephen Gold
+ Copyright (c) 2018-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -518,7 +518,7 @@ public class SelectedLink implements JmeCloneable {
      */
     @Override
     public void cloneFields(Cloner cloner, Object original) {
-        link = cloner.clone(link);
+        this.link = cloner.clone(link);
     }
 
     /**

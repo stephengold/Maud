@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018-2019, Stephen Gold
+ Copyright (c) 2018-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -355,7 +355,7 @@ public class SelectedRagdoll implements JmeCloneable {
      */
     @Override
     public void cloneFields(Cloner cloner, Object original) {
-        last = cloner.clone(last);
+        this.last = cloner.clone(last);
     }
 
     /**

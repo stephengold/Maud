@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018-2022, Stephen Gold
+ Copyright (c) 2018-2023 Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -318,8 +318,8 @@ public class MatParamRef implements JmeCloneable {
      */
     @Override
     public void cloneFields(Cloner cloner, Object original) {
-        matParamMaterial = cloner.clone(matParamMaterial);
-        overrideSpatial = cloner.clone(overrideSpatial);
+        this.matParamMaterial = cloner.clone(matParamMaterial);
+        this.overrideSpatial = cloner.clone(overrideSpatial);
     }
 
     /**
