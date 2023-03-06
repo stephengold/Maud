@@ -31,6 +31,7 @@ import com.jme3.anim.AnimComposer;
 import com.jme3.anim.AnimTrack;
 import com.jme3.anim.Armature;
 import com.jme3.anim.Joint;
+import com.jme3.anim.MorphTrack;
 import com.jme3.anim.TransformTrack;
 import com.jme3.anim.util.HasLocalTransform;
 import com.jme3.animation.AnimControl;
@@ -355,10 +356,20 @@ public class SelectedTrack implements JmeCloneable {
             assert boneIndex >= 0 : boneIndex;
             description = cgm.getSkeleton().getBoneName(boneIndex);
             description = MyString.quote(description);
+        } else if (selected instanceof MorphTrack) {
+            MorphTrack morphTrack = (MorphTrack) selected;
+            Geometry target = morphTrack.getTarget();
+            description = target.getName();
+            description = MyString.quote(description);
         } else if (selected instanceof SpatialTrack) {
             SpatialTrack spatialTrack = (SpatialTrack) selected;
             Spatial spatial = spatialTrack.getTrackSpatial();
             description = spatial.getName();
+            description = MyString.quote(description);
+        } else if (selected instanceof TransformTrack) {
+            TransformTrack transformTrack = (TransformTrack) selected;
+            HasLocalTransform target = transformTrack.getTarget();
+            description = MyAnimation.getTargetName(target);
             description = MyString.quote(description);
         }
 
