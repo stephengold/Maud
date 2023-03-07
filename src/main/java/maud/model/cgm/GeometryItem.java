@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2021-2022, Stephen Gold
+ Copyright (c) 2021-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -173,8 +173,8 @@ public class GeometryItem {
             return "shadow modes differ";
         }
 
-        Transform transform = geometry.getLocalTransform();
-        Transform transform1 = geometry1.getLocalTransform();
+        Transform transform = geometry.getLocalTransform(); // alias
+        Transform transform1 = geometry1.getLocalTransform(); // alias
         if (!transform.equals(transform1)) {
             return "transforms differ";
         }

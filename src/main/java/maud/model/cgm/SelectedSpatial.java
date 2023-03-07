@@ -404,7 +404,7 @@ public class SelectedSpatial implements JmeCloneable {
             MyMesh.transformBuffer(mesh, VertexBuffer.Type.Position,
                     gInParent);
 
-            Quaternion gInPRot = gInParent.getRotation();
+            Quaternion gInPRot = gInParent.getRotation(); // alias
             MyMesh.rotateBuffer(mesh, VertexBuffer.Type.BindPoseNormal,
                     gInPRot);
             MyMesh.rotateBuffer(mesh, VertexBuffer.Type.Normal, gInPRot);
@@ -1369,7 +1369,7 @@ public class SelectedSpatial implements JmeCloneable {
      */
     public boolean isTransformIdentity() {
         Spatial spatial = find();
-        Transform localTransform = spatial.getLocalTransform();
+        Transform localTransform = spatial.getLocalTransform(); // alias
         boolean result = MyMath.isIdentity(localTransform);
 
         return result;

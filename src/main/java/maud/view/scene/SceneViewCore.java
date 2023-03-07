@@ -1503,9 +1503,9 @@ public class SceneViewCore implements EditorView, JmeCloneable {
         assert numTransforms == boneCount : numTransforms;
 
         Transform transform = new Transform();
-        Vector3f translation = transform.getTranslation();
-        Quaternion rotation = transform.getRotation();
-        Vector3f scale = transform.getScale();
+        Vector3f translation = transform.getTranslation(); // alias
+        Quaternion rotation = transform.getRotation(); // alias
+        Vector3f scale = transform.getScale(); // alias
 
         for (int boneIndex = 0; boneIndex < boneCount; ++boneIndex) {
             if (skeleton instanceof Armature) {

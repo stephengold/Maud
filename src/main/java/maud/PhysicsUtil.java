@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -288,14 +288,14 @@ final public class PhysicsUtil {
         Transform result
                 = (storeResult == null) ? new Transform() : storeResult;
 
-        Vector3f storeLocation = result.getTranslation();
+        Vector3f storeLocation = result.getTranslation(); // alias
         pco.getPhysicsLocation(storeLocation);
 
-        Quaternion storeOrientation = result.getRotation();
+        Quaternion storeOrientation = result.getRotation(); // alias
         orientation(pco, storeOrientation);
 
         CollisionShape shape = pco.getCollisionShape();
-        Vector3f storeScale = result.getScale();
+        Vector3f storeScale = result.getScale(); // alias
         shape.getScale(storeScale);
 
         return result;

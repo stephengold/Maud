@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2021, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -309,7 +309,7 @@ public class SelectedVertex implements Cloneable {
         Validate.nonZero(axesDirection, "direction");
 
         Transform transform = SceneUpdater.axesTransform(cgm);
-        Quaternion rotation = transform.getRotation();
+        Quaternion rotation = transform.getRotation(); // alias
         Vector3f worldDirection = rotation.mult(axesDirection, null);
 
         selectExtremeWorld(worldDirection);

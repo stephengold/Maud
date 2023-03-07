@@ -151,7 +151,7 @@ public class DisplayedPose implements JmeCloneable {
         assert boneIndex >= 0 : boneIndex;
 
         Transform animT = cgm.getAnimation().boneTransform(boneIndex, null);
-        Vector3f animV = animT.getScale();
+        Vector3f animV = animT.getScale(); // alias
         pose.setScale(boneIndex, animV);
     }
 
@@ -182,7 +182,7 @@ public class DisplayedPose implements JmeCloneable {
         assert boneIndex >= 0 : boneIndex;
 
         Transform animT = cgm.getAnimation().boneTransform(boneIndex, null);
-        Vector3f animV = animT.getTranslation();
+        Vector3f animV = animT.getTranslation(); // alias
         pose.setTranslation(boneIndex, animV);
     }
 

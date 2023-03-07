@@ -576,7 +576,7 @@ public class SelectedLight implements JmeCloneable {
             Vector3f axis2 = new Vector3f();
             Vector3f axis3 = new Vector3f();
             MyVector3f.generateBasis(direction, axis2, axis3);
-            Quaternion orientation = result.getRotation();
+            Quaternion orientation = result.getRotation(); // alias
             orientation.fromAxes(direction, axis2, axis3);
         }
 

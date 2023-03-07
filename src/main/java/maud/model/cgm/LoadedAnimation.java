@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -336,9 +336,9 @@ public class LoadedAnimation implements Cloneable {
             Quaternion[] rotations = new Quaternion[numKeyframes];
             Vector3f[] scales = new Vector3f[numKeyframes];
             for (int i = 0; i < numKeyframes; ++i) {
-                translations[i] = identity.getTranslation();
-                rotations[i] = identity.getRotation();
-                scales[i] = identity.getScale();
+                translations[i] = identity.getTranslation(); // alias
+                rotations[i] = identity.getRotation(); // alias
+                scales[i] = identity.getScale(); // alias
             }
             newTrack = new TransformTrack(target, baseTimes, translations,
                     rotations, scales);

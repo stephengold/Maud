@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -273,7 +273,7 @@ final public class MaudUtil {
         if (subtree != null
                 && spatialType.isAssignableFrom(subtree.getClass())) {
 
-            Transform transform = subtree.getLocalTransform();
+            Transform transform = subtree.getLocalTransform(); // alias
             if (!MyMath.isIdentity(transform)) {
                 result = 1;
             }

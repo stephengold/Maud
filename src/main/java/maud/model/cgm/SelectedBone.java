@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -637,7 +637,7 @@ public class SelectedBone implements Cloneable {
         if (shouldEnableControls()) {
             int boneIndex = index();
             Transform animT = cgm.getAnimation().boneTransform(boneIndex, null);
-            Quaternion animQ = animT.getRotation();
+            Quaternion animQ = animT.getRotation(); // alias
             editableCgm.getPose().setRotation(boneIndex, animQ);
         }
     }

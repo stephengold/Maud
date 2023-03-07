@@ -157,7 +157,7 @@ public class CgmTransform implements Cloneable {
      */
     Transform worldTransform() {
         Transform result = new Transform();
-        Quaternion rotation = result.getRotation();
+        Quaternion rotation = result.getRotation(); // alias
         rotation.fromAngleNormalAxis(yAngle, yAxis);
         if (zUpFlag) {
             Quaternion q2 = new Quaternion();

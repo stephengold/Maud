@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -259,7 +259,7 @@ final public class SceneUpdater {
             }
             axesNode.setLocalTransform(transform);
 
-            Vector3f axesOrigin = transform.getTranslation();
+            Vector3f axesOrigin = transform.getTranslation(); // alias
             Vector3f cameraLocation = cgm.getScenePov().location(null);
             float distance = axesOrigin.distance(cameraLocation);
             float length = 0.2f * distance;
