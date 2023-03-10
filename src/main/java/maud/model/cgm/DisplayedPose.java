@@ -97,10 +97,10 @@ public class DisplayedPose implements JmeCloneable {
      */
     void resetToBind(Object skeleton) {
         if (skeleton instanceof Armature) {
-            pose = new Pose((Armature) skeleton);
+            this.pose = new Pose((Armature) skeleton);
             pose.setToBind();
         } else {
-            pose = new Pose((Skeleton) skeleton);
+            this.pose = new Pose((Skeleton) skeleton);
         }
     }
 
@@ -114,7 +114,7 @@ public class DisplayedPose implements JmeCloneable {
         assert newCgm != null;
         assert newCgm.getPose() == this;
 
-        cgm = newCgm;
+        this.cgm = newCgm;
     }
 
     /**
@@ -128,7 +128,7 @@ public class DisplayedPose implements JmeCloneable {
         if (frozenFlag && !newSetting) {
             setToAnimation();
         }
-        frozenFlag = newSetting;
+        this.frozenFlag = newSetting;
     }
 
     /**
