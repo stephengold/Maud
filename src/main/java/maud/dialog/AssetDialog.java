@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -132,9 +132,8 @@ class AssetDialog extends TextEntryDialog {
         Locators.save();
         Locators.unregisterAll();
         Locators.register(spec);
-        /*
-         * Temporarily hush asset-manager warnings about missing resources.
-         */
+
+        // Temporarily hush asset-manager warnings about missing resources.
         Logger amLogger = Logger.getLogger(AssetManager.class.getName());
         Level savedLevel = amLogger.getLevel();
         amLogger.setLevel(Level.SEVERE);

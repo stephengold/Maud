@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -429,9 +429,8 @@ public class EditorScreen extends GuiScreenController {
         setListener(inputMode);
 
         super.initialize(stateManager, application);
-        /*
-         * Initialize the texture previewer to a square, unshaded and all white.
-         */
+
+        // Initialize the texture previewer to a square, unshaded and all white.
         RectangleMesh square = new RectangleMesh();
         texturePreviewer = new Geometry("texture preview", square);
         Material material = MyAsset.createUnshadedMaterial(assetManager);
@@ -451,9 +450,8 @@ public class EditorScreen extends GuiScreenController {
         if (findTool("spatial") == null) {
             return;
         }
-        /*
-         * Check whether further initialization remains to be done.
-         */
+
+        // Check whether further initialization remains to be done.
         EditorModel model = Maud.getModel();
         Cgm target = model.getTarget();
         if (!target.isLoaded()) {
@@ -470,9 +468,8 @@ public class EditorScreen extends GuiScreenController {
         updateBoundaryHandle();
         EditorViewPorts.update();
         updateBars();
-        /*
-         * Update the loaded animations.
-         */
+
+        // Update the loaded animations.
         Cgm source = model.getSource();
         if (source.getAnimation().isMoving()) {
             updateTrackTime(source, tpf);
@@ -512,9 +509,8 @@ public class EditorScreen extends GuiScreenController {
         }
         updateDragPov();
         updateTexturePreviewer();
-        /*
-         * Update the views.
-         */
+
+        // Update the views.
         source.getSceneView().update(null, tpf);
         target.getSceneView().update(null, tpf);
         source.getScoreView().update(source, tpf);
@@ -545,9 +541,8 @@ public class EditorScreen extends GuiScreenController {
     private void updateBars() {
         EditorModel model = Maud.getModel();
         MiscOptions misc = model.getMisc();
-        /*
-         * Update visibility of both bars.
-         */
+
+        // Update visibility of both bars.
         boolean visible = misc.isMenuBarVisible();
         Element menuBar = getScreen().findElementById("menu bar");
         menuBar.setVisible(visible);
@@ -566,14 +561,12 @@ public class EditorScreen extends GuiScreenController {
                 description = axesOptions.describe();
             }
             setStatusText("statusLeft", " " + description);
-            /*
-             * Copy the status message to the center.
-             */
+
+            // Copy the status message to the center.
             String message = misc.statusMessage();
             setStatusText("statusCenter", message);
-            /*
-             * Update the description of camera options at the right end.
-             */
+
+            // Update the description of camera options at the right end.
             description = "";
             if (viewType == ViewType.Scene) {
                 CameraOptions options = model.getScene().getCamera();

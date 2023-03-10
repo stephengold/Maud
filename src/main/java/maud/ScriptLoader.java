@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -67,17 +67,14 @@ public class ScriptLoader implements AssetLoader {
      */
     @Override
     public Object load(AssetInfo assetInfo) {
-        /*
-         * Open the asset as a stream and create a reader.
-         */
+        // Open the asset as a stream and create a reader.
         InputStream stream = assetInfo.openStream();
         InputStreamReader reader = new InputStreamReader(stream, charset);
 
         ScriptEngine scriptEngine;
         scriptEngine = new ScriptEngineManager().getEngineByName("nashorn");
-        /*
-         * Evaluate the script.
-         */
+
+        // Evaluate the script.
         Object result = "";
         try {
             result = scriptEngine.eval(reader);

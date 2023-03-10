@@ -157,9 +157,8 @@ final public class MeshMenus {
             target.getBuffer().select(prefix);
             return;
         }
-        /*
-         * Build a reduced menu.
-         */
+
+        // Build a reduced menu.
         List<String> prefixList = new ArrayList<>(bufferDescs);
         String currentDesc = target.getBuffer().describe();
         prefixList.remove(currentDesc);

@@ -1041,9 +1041,8 @@ public class SelectedTrack implements JmeCloneable {
                         previousVertexIndex, skinningMatrices, w);
                 previousWorld.subtractLocal(w);
                 world.addLocal(previousWorld);
-                /*
-                 * Convert the world offset to a bone offset.
-                 */
+
+                // Convert the world offset to a bone offset.
                 SupportUtil.sensitivity(boneIndex, previousGeometryRef[0],
                         previousVertexIndex, tempPose, sensMat);
                 float determinant = sensMat.determinant();
@@ -1052,9 +1051,8 @@ public class SelectedTrack implements JmeCloneable {
                 }
                 sensMat.invertLocal();
                 Vector3f boneOffset = sensMat.mult(world, null);
-                /*
-                 * Modify the keyframe's translation.
-                 */
+
+                // Modify the keyframe's translation.
                 Vector3f translation = translations[frameIndex];
                 translations[frameIndex] = translation.add(boneOffset);
             }
@@ -1317,15 +1315,13 @@ public class SelectedTrack implements JmeCloneable {
             }
             sensMat.invertLocal();
             Vector3f boneOffset = sensMat.mult(world, null);
-            /*
-             * Modify the keyframe's translation.
-             */
+
+            // Modify the keyframe's translation.
             Vector3f translation = translations[frameIndex];
             translations[frameIndex] = translation.add(boneOffset);
         }
-        /*
-         * Construct a new animation using the modified translations.
-         */
+
+        //Construct a new animation using the modified translations.
         Object newSelected = null;
 
         TmpTracks.clear();

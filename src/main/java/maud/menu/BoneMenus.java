@@ -246,9 +246,7 @@ final public class BoneMenus {
         if (skeleton.hasBone(argument)) {
             target.getBone().select(argument);
         } else {
-            /*
-             * Treat the argument as a bone-name prefix.
-             */
+            // Treat the argument as a bone-name prefix.
             List<String> boneNames = skeleton.listBoneNames(argument);
             showBoneSubmenu(boneNames);
         }
@@ -357,9 +355,7 @@ final public class BoneMenus {
         if (skeleton.hasBone(argument)) {
             source.getBone().select(argument);
         } else {
-            /*
-             * Treat the argument as a bone-name prefix.
-             */
+            // Treat the argument as a bone-name prefix.
             List<String> boneNames = skeleton.listBoneNames(argument);
             showBoneSubmenu(boneNames);
         }

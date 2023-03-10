@@ -178,9 +178,8 @@ class MenuBuilder extends PopupMenuBuilder {
     void addFiles(Collection<String> names, int maxItems) {
         assert names != null;
         assert maxItems >= 2 : maxItems;
-        /*
-         * Generate the list of names and prefixes to add.
-         */
+
+        // Generate the list of names and prefixes to add.
         List<String> menuList = new ArrayList<>(names);
 
         MyString.reduce(menuList, maxItems);

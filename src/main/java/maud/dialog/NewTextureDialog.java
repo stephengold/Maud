@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020-2022, Stephen Gold
+ Copyright (c) 2020-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -189,17 +189,15 @@ class NewTextureDialog implements DialogController {
 
         AssetKey<?> key = new AssetKey<>(assetPath);
         AssetManager manager = Locators.getAssetManager();
-        /*
-         * Search in all known asset locations.
-         */
+
+        // Search in all known asset locations.
         Locators.save();
         Locators.unregisterAll();
         Locators.registerDefault();
         List<String> specList = Maud.getModel().getLocations().listAll();
         Locators.register(specList);
-        /*
-         * Temporarily hush AssetManager warnings about missing resources.
-         */
+
+        // Temporarily hush AssetManager warnings about missing resources.
         Logger amLogger = Logger.getLogger(AssetManager.class.getName());
         Level savedLevel = amLogger.getLevel();
         amLogger.setLevel(Level.SEVERE);

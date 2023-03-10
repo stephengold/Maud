@@ -91,9 +91,8 @@ final public class BuildMenus {
      */
     static void addAssetLocation() {
         Map<String, File> fileMap = Heart.driveMap();
-        /*
-         * Add working directory.
-         */
+
+        // Add the working directory.
         String workPath = System.getProperty("user.dir");
         File work = new File(workPath);
         if (work.isDirectory()) {
@@ -101,9 +100,8 @@ final public class BuildMenus {
             File oldFile = fileMap.put(absoluteDirPath, work);
             assert oldFile == null : oldFile;
         }
-        /*
-         * Add home directory.
-         */
+
+        // Add the user's home directory.
         String homePath = System.getProperty("user.home");
         File home = new File(homePath);
         if (home.isDirectory()) {
@@ -173,10 +171,7 @@ final public class BuildMenus {
             } else if (file.canRead()) {
                 loadedCgm.loadAsset(spec, assetPath);
 
-            } else {
-                /*
-                 * Treat the pathname as a prefix.
-                 */
+            } else { // Treat the pathname as a prefix.
                 File parent = file.getParentFile();
                 String parentPath = Heart.fixedPath(parent);
                 if (!parentPath.endsWith("/")) {
@@ -357,10 +352,7 @@ final public class BuildMenus {
             } else if (file.canRead()) {
                 texture.setAssetPath(assetPath);
 
-            } else {
-                /*
-                 * Treat the pathname as a prefix.
-                 */
+            } else { // Treat the pathname as a prefix.
                 File parent = file.getParentFile();
                 String parentPath = Heart.fixedPath(parent);
                 if (!parentPath.endsWith("/")) {

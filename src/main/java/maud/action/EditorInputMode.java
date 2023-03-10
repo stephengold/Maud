@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -144,9 +144,8 @@ final public class EditorInputMode extends InputMode {
         logger.log(Level.INFO, "Got action {0} ongoing={1}", new Object[]{
             MyString.quote(actionString), ongoing
         });
-        /*
-         * Parse the action string and attempt to handle the action.
-         */
+
+        // Parse the action string and attempt to handle the action.
         boolean handled = false;
         String[] words = actionString.split(" ");
         String firstWord = words[0];
@@ -272,9 +271,7 @@ final public class EditorInputMode extends InputMode {
         }
 
         if (!handled) {
-            /*
-             * Forward the unhandled action to the application.
-             */
+            // Forward the unhandled action to the application.
             getActionApplication().onAction(actionString, ongoing, tpf);
         }
     }

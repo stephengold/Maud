@@ -227,9 +227,7 @@ final public class AnimationMenus {
                 || argument.equals(LoadedAnimation.retargetedPoseName)) {
             cgm.getAnimation().load(argument);
         } else {
-            /*
-             * Treat the argument as an animation-name prefix.
-             */
+            // Treat the argument as an animation-name prefix.
             List<String> animationNames = sac.listAnimationNames(argument);
             showAnimationSubmenu(animationNames, cgm);
         }
@@ -432,9 +430,7 @@ final public class AnimationMenus {
         if (animation.hasTrack(argument)) {
             target.getTrack().selectWithDescription(argument);
         } else {
-            /*
-             * Treat the argument as a track-description prefix.
-             */
+            // Treat the argument as a track-description prefix.
             List<TrackItem> items = animation.listTracks();
             Set<String> descriptions = new TreeSet<>();
             for (TrackItem item : items) {

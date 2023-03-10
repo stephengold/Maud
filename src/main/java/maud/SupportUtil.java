@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -228,9 +228,8 @@ final public class SupportUtil {
             int vertexIndex, Pose pose, Matrix3f storeResult) {
         Validate.nonNull(geometry, "geometry");
         Matrix3f result = (storeResult == null) ? new Matrix3f() : storeResult;
-        /*
-         * Create a clone of the Pose for temporary modifications.
-         */
+
+        // Create a clone of the Pose for temporary modifications.
         Cloner cloner = new Cloner();
         Object skeleton = pose.findSkeleton();
         if (skeleton != null) {  // Don't clone the skeleton!

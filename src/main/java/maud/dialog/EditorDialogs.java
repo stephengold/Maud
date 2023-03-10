@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -1100,13 +1100,10 @@ final public class EditorDialogs {
                 int minValue = Integer.MIN_VALUE;
                 int maxValue = Integer.MAX_VALUE;
                 if (parameterName.equals("NumberOfBones")) {
-                    /*
-                     * PreShadow.vert crashes if NumberOfBones < 1.
-                     */
+                    // PreShadow.vert crashes if NumberOfBones < 1.
                     minValue = 1;
-                    /*
-                     * Lighting.frag crashes if NumberOfBones > 250.
-                     */
+
+                    // Lighting.frag crashes if NumberOfBones > 250.
                     maxValue = 250;
                 }
                 controller = new IntegerDialog("Set", minValue, maxValue,
@@ -1118,9 +1115,7 @@ final public class EditorDialogs {
             case Texture3D:
             case TextureArray:
             case TextureCubeMap:
-                /*
-                 * Select the texture in the texture tool.
-                 */
+                // Select the texture in the texture tool.
                 Cgm target = Maud.getModel().getTarget();
                 MatParamRef ref;
                 if (allowNull.equals(AllowNull.Yes)) {
