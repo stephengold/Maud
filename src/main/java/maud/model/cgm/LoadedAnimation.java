@@ -327,8 +327,8 @@ public class LoadedAnimation implements Cloneable {
         Object realAnimation = getReal();
         if (realAnimation instanceof Animation) {
             int boneIndex = cgm.getBone().index();
-            newTrack = MyAnimation.newBoneTrack(boneIndex, baseTimes,
-                    identity);
+            newTrack = MyAnimation.newBoneTrack(
+                    boneIndex, baseTimes, identity);
         } else {
             Joint target = (Joint) cgm.getBone().get();
             int numKeyframes = baseTimes.length;
@@ -340,8 +340,8 @@ public class LoadedAnimation implements Cloneable {
                 rotations[i] = identity.getRotation(); // alias
                 scales[i] = identity.getScale(); // alias
             }
-            newTrack = new TransformTrack(target, baseTimes, translations,
-                    rotations, scales);
+            newTrack = new TransformTrack(
+                    target, baseTimes, translations, rotations, scales);
         }
 
         String boneName = cgm.getBone().name();

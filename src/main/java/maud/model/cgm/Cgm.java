@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -609,8 +609,8 @@ public class Cgm implements Cloneable {
             result = technique.interpolate(time, (Track) track, duration,
                     fallback, null);
         } else if (track instanceof TransformTrack) {
-            result = technique.interpolate(time, (TransformTrack) track,
-                    duration, null);
+            result = technique.interpolate(
+                    time, (TransformTrack) track, duration, null);
         }
 
         return result;
