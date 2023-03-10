@@ -51,7 +51,6 @@ import com.jme3.material.MatParamOverride;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Matrix4f;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Ray;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector2f;
@@ -1503,26 +1502,15 @@ public class SceneViewCore implements EditorView, JmeCloneable {
         assert numTransforms == boneCount : numTransforms;
 
         Transform transform = new Transform();
-        Vector3f translation = transform.getTranslation(); // alias
-        Quaternion rotation = transform.getRotation(); // alias
-        Vector3f scale = transform.getScale(); // alias
 
         for (int boneIndex = 0; boneIndex < boneCount; ++boneIndex) {
+            pose.localTransform(boneIndex, transform);
             if (skeleton instanceof Armature) {
                 Joint joint = ((Armature) skeleton).getJoint(boneIndex);
-                pose.localTransform(boneIndex, transform);
                 joint.setLocalTransform(transform);
             } else {
                 Bone bone = ((Skeleton) skeleton).getBone(boneIndex);
-                boolean haveControl = bone.hasUserControl();
-                if (!haveControl) {
-                    bone.setUserControl(true);
-                }
-                pose.userTransform(boneIndex, transform);
-                bone.setUserTransforms(translation, rotation, scale);
-                if (!haveControl) {
-                    bone.setUserControl(false);
-                }
+                MySkeleton.setLocalTransform(bone, transform);
             }
 
             List<Integer> nodePosition = ss.attachmentsPosition(boneIndex);
