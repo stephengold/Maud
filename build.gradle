@@ -63,7 +63,7 @@ dependencies {
     implementation 'com.github.stephengold:Minie:7.3.0+for36'
     implementation 'com.github.stephengold:SkyControl:1.0.3'
     implementation 'com.github.stephengold:jme-ttf:2.2.4'
-    implementation 'com.github.stephengold:Wes:0.7.3+for36'
+    implementation 'com.github.stephengold:Wes:0.7.4+for36'
     runtimeOnly    'org.jmonkeyengine:jme3-awt-dialogs:' + jme3Version
     implementation 'org.jmonkeyengine:jme3-blender:3.3.2-stable'
     runtimeOnly    'org.jmonkeyengine:jme3-desktop:' + jme3Version
