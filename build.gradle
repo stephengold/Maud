@@ -97,9 +97,9 @@ tasks.register('cleanDyLibs', Delete) { // extracted macOS native libraries
 tasks.register('cleanLogs', Delete) { // JVM crash logs
     delete fileTree(dir: '.', include: 'hs_err_pid*.log')
 }
+tasks.register('cleanSandbox', Delete) { // Acorus sandbox
+    delete 'Written Assets'
+}
 tasks.register('cleanSOs', Delete) { // extracted Linux and Android native libraries
     delete fileTree(dir: '.', include: '*.so')
-}
-tasks.register('cleanWrittenAssets', Delete) { // Acorus output directory
-    delete 'Written Assets'
 }
