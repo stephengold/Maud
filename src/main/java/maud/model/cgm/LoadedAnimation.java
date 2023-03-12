@@ -235,9 +235,9 @@ public class LoadedAnimation implements Cloneable {
                 result.loadIdentity();
             } else {
                 double time = cgm.getPlay().getTime();
-                Transform local = new Transform();
-                track.getDataAtTime(time, local);
                 Pose pose = cgm.getPose().get();
+                Transform local = pose.bindTransform(boneIndex, null);
+                track.getDataAtTime(time, local);
                 pose.userForLocal(boneIndex, local, result);
             }
         }
