@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -86,7 +86,7 @@ public class Maud extends GuiApplication {
     /**
      * true once {@link #startup1()} has completed, until then false
      */
-    private boolean didStartup1 = false;
+    private static boolean didStartup1 = false;
     /**
      * true IFF the EnvironmentCamera is busy
      */
