@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -172,27 +172,23 @@ final public class EditorViewPorts {
         camera.setName("Target Scene Wide");
         Node targetBRoot = application.getRootNode();
         targetBRoot.setName("root for target scene base");
-        /*
-         * Create 2 view ports for split-display scene views.
-         */
+
+        // Create 2 view ports for split-display scene views.
         Node sourceSceneParent = createSourceSceneViewPort();
         Node targetSceneParent = createTargetSceneViewPort();
-        /*
-         * Create 2 root nodes for scene-view overlays.
-         */
+
+        // Create 2 root nodes for scene-view overlays.
         Node sourceOverlayNode = new Node("root for source scene overlays");
         Node targetOverlayNode = new Node("root for target scene overlays");
-        /*
-         * Create 3 view ports for scene-view overlays.
-         */
+
+        // Create 3 view ports for scene-view overlays.
         sourceSceneOverlay = createOverlay(sourceSceneBase, sourceOverlayNode);
         targetSceneRightOverlay = createOverlay(
                 targetSceneRightBase, targetOverlayNode);
         targetSceneWideOverlay = createOverlay(
                 targetSceneWideBase, targetOverlayNode);
-        /*
-         * Create 4 view ports for score views.
-         */
+
+        // Create 4 view ports for score views.
         createSourceScoreViewPort();
         createTargetScoreLeftViewPort();
         createTargetScoreRightViewPort();
@@ -360,14 +356,12 @@ final public class EditorViewPorts {
         sourceSceneBase = renderManager.createMainView(name, camera);
         sourceSceneBase.setClearFlags(true, true, true);
         sourceSceneBase.setEnabled(false);
-        /*
-         * Attach a scene to the new view port.
-         */
+
+        // Attach a scene to the new view port.
         Node scene = new Node("root for source scene base");
         sourceSceneBase.attachScene(scene);
-        /*
-         * Add an attachment point to the scene.
-         */
+
+        // Add an attachment point to the scene.
         Node parent = new Node("parent for source CGM");
         scene.attachChild(parent);
 
@@ -385,9 +379,8 @@ final public class EditorViewPorts {
         sourceScore = renderManager.createMainView("Source Score", camera);
         sourceScore.setClearFlags(true, true, true);
         sourceScore.setEnabled(false);
-        /*
-         * Attach a scene to the new view port.
-         */
+
+        // Attach a scene to the new view port.
         Node root = new Node("Root for source score");
         sourceScore.attachScene(root);
     }
@@ -406,14 +399,12 @@ final public class EditorViewPorts {
         targetSceneRightBase = renderManager.createMainView(name, camera);
         targetSceneRightBase.setClearFlags(true, true, true);
         targetSceneRightBase.setEnabled(false);
-        /*
-         * Attach the existing scene to the new view port.
-         */
+
+        // Attach the existing scene to the new view port.
         Node rootNode = application.getRootNode();
         targetSceneRightBase.attachScene(rootNode);
-        /*
-         * Add an attachment point to the scene.
-         */
+
+        // Add an attachment point to the scene.
         Node parent = new Node("parent for target CGM");
         rootNode.attachChild(parent);
 
@@ -432,9 +423,8 @@ final public class EditorViewPorts {
         targetScoreLeft = renderManager.createMainView(name, camera);
         targetScoreLeft.setClearFlags(true, true, true);
         targetScoreLeft.setEnabled(false);
-        /*
-         * Attach a scene to the new view port.
-         */
+
+        // Attach a scene to the new view port.
         Node root = new Node("Root for " + name);
         targetScoreLeft.attachScene(root);
     }
@@ -451,9 +441,8 @@ final public class EditorViewPorts {
         targetScoreRight = renderManager.createMainView(name, camera);
         targetScoreRight.setClearFlags(true, true, true);
         targetScoreRight.setEnabled(false);
-        /*
-         * Attach a scene to the new view port.
-         */
+
+        // Attach a scene to the new view port.
         Node root = new Node("Root for " + name);
         targetScoreRight.attachScene(root);
     }
@@ -472,9 +461,8 @@ final public class EditorViewPorts {
         targetScoreWide = renderManager.createMainView(name, camera);
         targetScoreWide.setClearFlags(true, true, true);
         targetScoreWide.setEnabled(false);
-        /*
-         * Attach a scene to the new view port.
-         */
+
+        // Attach a scene to the new view port.
         Node root = new Node("Root for " + name);
         targetScoreWide.attachScene(root);
     }

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -174,9 +174,8 @@ final public class LoadUtil {
             compoundCollisionShapeLogger.setLevel(Level.SEVERE);
             xbufLoaderLogger.setLevel(ch.qos.logback.classic.Level.ERROR);
         }
-        /*
-         * Load the model.
-         */
+
+        // Load the model.
         Spatial loaded;
         try {
             loaded = assetManager.loadModel(key);
@@ -187,9 +186,7 @@ final public class LoadUtil {
             loaded = null;
         }
         if (!diagnose) {
-            /*
-             * Restore logging levels.
-             */
+            // Restore logging levels.
             customLogger.setLevel(customLevel);
             faceLogger.setLevel(faceLevel);
             gltfLoaderLogger.setLevel(gltfLoaderLevel);

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -256,17 +256,14 @@ final public class MeshUtil {
         if (numSubmeshes < 0) {
             numSubmeshes = 0;
         }
-        /*
-         * Construct the submeshes.
-         */
+
+        // Construct the submeshes.
         IndexBuffer indexList = mesh.getIndicesAsList();
         int numIndices = indexList.size();
         Mesh.Mode expandedMode = MyMesh.expandedMode(mesh);
         Mesh[] result = new Mesh[numSubmeshes];
         for (int submesh = 0; submesh < numSubmeshes; ++submesh) {
-            /*
-             * Determine the number of vertices for the submesh.
-             */
+            // Determine the number of vertices for the submesh.
             int numOutputVertices = 0;
             for (int ii = 0; ii < numIndices; ++ii) {
                 int vertexIndex = indexList.get(ii);
@@ -276,9 +273,8 @@ final public class MeshUtil {
                 }
             }
             assert numOutputVertices > 0;
-            /*
-             * Instantiate the output mesh.
-             */
+
+            // Instantiate the output mesh.
             Mesh outputMesh = new Mesh();
             result[submesh] = outputMesh;
             outputMesh.setMode(expandedMode);
@@ -288,9 +284,8 @@ final public class MeshUtil {
                 if (type == VertexBuffer.Type.Index) {
                     continue;
                 }
-                /*
-                 * Create the VertexBuffer for output.
-                 */
+
+                // Create the VertexBuffer for output.
                 int numCperE = vb.getNumComponents();
                 numCperE = MyMath.clamp(numCperE, 1, 4); // to avoid an IAE
                 VertexBuffer.Format format = vb.getFormat();
@@ -466,9 +461,8 @@ final public class MeshUtil {
                     break;
                 }
             }
-            /*
-             * Assign IDs to the new submesh until closure is achieved.
-             */
+
+            // Assign IDs to the new submesh until closure is achieved.
             numUnassigned = assignIds(result, adjacentPairs, numUnassigned);
         }
 

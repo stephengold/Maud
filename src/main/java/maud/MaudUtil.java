@@ -642,9 +642,8 @@ final public class MaudUtil {
                 success = true;
                 if (storePosition != null) {
                     storePosition.clear();
-                    /*
-                     * Climb to the subtree's root, adding indices to the list.
-                     */
+
+                    // Climb to the subtree's root, adding indices to the list.
                     Spatial climber = spatial;
                     while (climber != subtree) {
                         Node parent = climber.getParent();

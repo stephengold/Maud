@@ -141,7 +141,7 @@ public class LoadedAnimation implements Cloneable {
         Object oldAnim = getReal();
         Object oldSelectedTrack = cgm.getTrack().get();
         Object[] oldTracks = getTracks();
-        if (oldAnim instanceof Animation) {
+        if (oldAnim instanceof Animation) { // old animation system
             float oldDuration = duration();
             float newDuration = oldDuration - neckTime;
             Animation newAnimation = new Animation(loadedName, newDuration);
@@ -164,7 +164,7 @@ public class LoadedAnimation implements Cloneable {
             }
             newAnim = newAnimation;
 
-        } else {
+        } else { // new animation system
             int numTracks = oldTracks.length;
             AnimTrack<?>[] newTracks = new AnimTrack<?>[numTracks];
             AnimClip newClip = new AnimClip(loadedName);
@@ -216,7 +216,7 @@ public class LoadedAnimation implements Cloneable {
                 result.loadIdentity();
             }
 
-        } else if (oldAnim instanceof Animation) {
+        } else if (oldAnim instanceof Animation) { // old animation system
             BoneTrack track
                     = MyAnimation.findBoneTrack((Animation) oldAnim, boneIndex);
             if (track == null) {
@@ -228,7 +228,7 @@ public class LoadedAnimation implements Cloneable {
                 techniques.transform(track, time, duration, null, result);
             }
 
-        } else {
+        } else { // new animation system
             TransformTrack track
                     = MyAnimation.findJointTrack((AnimClip) oldAnim, boneIndex);
             if (track == null) {
@@ -926,14 +926,9 @@ public class LoadedAnimation implements Cloneable {
             float duration = cgm.getAnimControl().getDuration(name);
             float playSpeed;
             if (duration == 0f) {
-                /*
-                 * The animation consists of a single frame: set speed to zero.
-                 */
+                // The animation consists of a single frame: set speed to zero.
                 playSpeed = 0f;
-            } else {
-                /*
-                 * Start the animation at normal speed.
-                 */
+            } else { // Start the animation at normal speed.
                 playSpeed = 1f;
             }
             loadReal(name, playSpeed);
