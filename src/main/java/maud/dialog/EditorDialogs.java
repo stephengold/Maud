@@ -1183,8 +1183,8 @@ final public class EditorDialogs {
      * Display a "set maxCheckpoints " dialog to enter the new limit.
      */
     public static void setMaxCheckpoints() {
-        DialogController controller = new IntegerDialog("Set", 2,
-                Integer.MAX_VALUE, AllowNull.No);
+        DialogController controller = new IntegerDialog(
+                "Set", 2, Integer.MAX_VALUE, AllowNull.No);
 
         int oldLimit = Maud.getModel().getMisc().maxCheckpoints();
         String defaultText = Integer.toString(oldLimit);

@@ -386,8 +386,8 @@ final public class MeshUtil {
      * @param distinctPositions distinct positions in the Mesh (not null)
      * @return a new set of ID pairs
      */
-    private static Set<IntPair> listAdjacentPairs(Mesh mesh,
-            DistinctVectorValues distinctPositions) {
+    private static Set<IntPair> listAdjacentPairs(
+            Mesh mesh, DistinctVectorValues distinctPositions) {
         IndexBuffer indexList = mesh.getIndicesAsList();
         int numIndices = indexList.size();
         Mesh.Mode expandedMode = MyMesh.expandedMode(mesh);

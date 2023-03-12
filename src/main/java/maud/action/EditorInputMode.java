@@ -382,8 +382,8 @@ final public class EditorInputMode extends InputMode {
         String args;
         boolean handled = false;
         if (actionString.startsWith(ActionPrefix.mergeGeometries)) {
-            args = MyString.remainder(actionString,
-                    ActionPrefix.mergeGeometries);
+            args = MyString.remainder(
+                    actionString, ActionPrefix.mergeGeometries);
             if (args.contains(" ")) {
                 String indices = args.split(" ")[0];
                 String newGeometryName

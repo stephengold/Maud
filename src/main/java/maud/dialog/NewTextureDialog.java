@@ -264,8 +264,8 @@ class NewTextureDialog implements DialogController {
      * @return a text string (not null)
      */
     private static boolean isChecked(Element dialogElement) {
-        CheckBox checkBox = dialogElement.findNiftyControl("#dialogcheck",
-                CheckBox.class);
+        CheckBox checkBox = dialogElement.findNiftyControl(
+                "#dialogcheck", CheckBox.class);
         boolean result = checkBox.isChecked();
         return result;
     }
