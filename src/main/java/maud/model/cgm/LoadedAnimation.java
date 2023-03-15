@@ -150,8 +150,8 @@ public class LoadedAnimation implements Cloneable {
                 Track oldTrack = (Track) trk;
                 Track newTrack;
                 if (trk instanceof BoneTrack || trk instanceof SpatialTrack) {
-                    Transform neckTransform = techniques.interpolate(neckTime,
-                            oldTrack, oldDuration, null, null);
+                    Transform neckTransform = techniques.interpolate(
+                            neckTime, oldTrack, oldDuration, null, null);
                     newTrack = TrackEdit.behead(
                             oldTrack, neckTime, neckTransform, oldDuration);
                 } else { // TODO other track types
@@ -1178,11 +1178,11 @@ public class LoadedAnimation implements Cloneable {
             Object newTrack;
             if (oldTrack instanceof BoneTrack
                     || oldTrack instanceof SpatialTrack) {
-                newTrack = techniques.resampleAtRate((Track) oldTrack,
-                        sampleRate, duration);
+                newTrack = techniques.resampleAtRate(
+                        (Track) oldTrack, sampleRate, duration);
             } else if (oldTrack instanceof TransformTrack) {
-                newTrack = TrackEdit.resampleAtRate((TransformTrack) oldTrack,
-                        sampleRate, duration);
+                newTrack = TrackEdit.resampleAtRate(
+                        (TransformTrack) oldTrack, sampleRate, duration);
             } else { // TODO other track types
                 newTrack = TrackEdit.cloneTrack(oldTrack);
             }
@@ -1364,8 +1364,8 @@ public class LoadedAnimation implements Cloneable {
                 "%s the %s animation to t=%f", verb,
                 MyString.quote(loadedName), newDuration);
         Object oldAnim = getReal();
-        editableCgm.replace(oldAnim, newAnim, eventDescription,
-                newSelectedTrack);
+        editableCgm.replace(
+                oldAnim, newAnim, eventDescription, newSelectedTrack);
         load(loadedName);
     }
 
@@ -1418,8 +1418,8 @@ public class LoadedAnimation implements Cloneable {
         Object newAnim = newAnim();
         TmpTracks.addAllToAnim(newAnim);
 
-        String eventDescription = String.format("simplify the %s animation",
-                MyString.quote(loadedName));
+        String eventDescription = String.format(
+                "simplify the %s animation", MyString.quote(loadedName));
         Object oldAnim = getReal();
         editableCgm.replace(
                 oldAnim, newAnim, eventDescription, newSelectedTrack);
@@ -1444,8 +1444,8 @@ public class LoadedAnimation implements Cloneable {
                 TransformTrack transformTrack = (TransformTrack) oldTrack;
                 Transform endTransform = new Transform();
                 transformTrack.getDataAtTime(endTime, endTransform);
-                newTrack = TrackEdit.truncate(transformTrack, endTime,
-                        endTransform);
+                newTrack = TrackEdit.truncate(
+                        transformTrack, endTime, endTransform);
             } else { // TODO other track types
                 newTrack = TrackEdit.cloneTrack(oldTrack);
             }
@@ -1485,11 +1485,11 @@ public class LoadedAnimation implements Cloneable {
             Object newTrack;
             if (oldTrack instanceof BoneTrack
                     || oldTrack instanceof SpatialTrack) {
-                newTrack = TrackEdit.wrap((Track) oldTrack, duration,
-                        endWeight);
+                newTrack = TrackEdit.wrap(
+                        (Track) oldTrack, duration, endWeight);
             } else if (oldTrack instanceof TransformTrack) {
-                newTrack = TrackEdit.wrap((TransformTrack) oldTrack, duration,
-                        endWeight);
+                newTrack = TrackEdit.wrap(
+                        (TransformTrack) oldTrack, duration, endWeight);
             } else { // TODO other track types
                 newTrack = TrackEdit.cloneTrack(oldTrack);
             }
@@ -1507,8 +1507,8 @@ public class LoadedAnimation implements Cloneable {
                 "wrap all tracks in the %s animation using end weight=%f",
                 MyString.quote(loadedName), endWeight);
         Object oldAnim = getReal();
-        editableCgm.replace(oldAnim, newAnim, eventDescription,
-                newSelectedTrack);
+        editableCgm.replace(
+                oldAnim, newAnim, eventDescription, newSelectedTrack);
     }
     // *************************************************************************
     // Object methods
