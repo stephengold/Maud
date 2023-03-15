@@ -176,6 +176,13 @@ public class LoadedAnimation implements Cloneable {
                     oldTrack.getDataAtTime(neckTime, neckTransform);
                     newTracks[i] = TrackEdit.behead(
                             oldTrack, neckTime, neckTransform);
+                } else if (trk instanceof MorphTrack) {
+                    MorphTrack oldTrack = (MorphTrack) trk;
+                    int numTargets = oldTrack.getNbMorphTargets();
+                    float[] neckWeights = new float[numTargets];
+                    oldTrack.getDataAtTime(neckTime, neckWeights);
+                    newTracks[i]
+                            = TrackEdit.behead(oldTrack, neckTime, neckWeights);
                 } else {
                     newTracks[i] = (AnimTrack<?>) TrackEdit.cloneTrack(trk);
                 }
