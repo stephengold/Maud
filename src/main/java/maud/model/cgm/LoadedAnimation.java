@@ -1340,6 +1340,13 @@ public class LoadedAnimation implements Cloneable {
             if (oldTrack instanceof BoneTrack
                     || oldTrack instanceof SpatialTrack) {
                 newTrack = TrackEdit.truncate((Track) oldTrack, newDuration);
+            } else if (oldTrack instanceof MorphTrack) {
+                MorphTrack morphTrack = (MorphTrack) oldTrack;
+                int numTargets = morphTrack.getNbMorphTargets();
+                float[] endWeights = new float[numTargets];
+                morphTrack.getDataAtTime(newDuration, endWeights);
+                newTrack = TrackEdit.truncate(
+                        morphTrack, newDuration, endWeights);
             } else if (oldTrack instanceof TransformTrack) {
                 TransformTrack transformTrack = (TransformTrack) oldTrack;
                 Transform endTransform = new Transform();
@@ -1440,6 +1447,13 @@ public class LoadedAnimation implements Cloneable {
             if (oldTrack instanceof BoneTrack
                     || oldTrack instanceof SpatialTrack) {
                 newTrack = TrackEdit.truncate((Track) oldTrack, endTime);
+            } else if (oldTrack instanceof MorphTrack) {
+                MorphTrack morphTrack = (MorphTrack) oldTrack;
+                int numTargets = morphTrack.getNbMorphTargets();
+                float[] endWeights = new float[numTargets];
+                morphTrack.getDataAtTime(endTime, endWeights);
+                newTrack = TrackEdit.truncate(
+                        morphTrack, endTime, endWeights);
             } else if (oldTrack instanceof TransformTrack) {
                 TransformTrack transformTrack = (TransformTrack) oldTrack;
                 Transform endTransform = new Transform();
