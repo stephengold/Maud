@@ -27,7 +27,6 @@
 package maud.view;
 
 import com.atr.jme.font.TrueTypeFont;
-import com.atr.jme.font.TrueTypeMesh;
 import com.atr.jme.font.asset.TrueTypeKeyMesh;
 import com.atr.jme.font.shape.TrueTypeNode;
 import com.atr.jme.font.util.Style;
