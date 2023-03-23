@@ -21,7 +21,7 @@
         <property name="optional" value="true"/>
     </module>
 
-    <!-- Checks for whitespace                            -->
+    <!-- Checks for whitespace                             -->
     <!-- See http://checkstyle.org/config_whitespace.html -->
     <module name="FileTabCharacter">
         <property name="eachLine" value="true"/>
@@ -66,6 +66,7 @@
             <property name="allowByTailComment" value="true"/>
             <property name="allowNonPrintableEscapes" value="true"/>
         </module>
+
         <module name="AvoidStarImport"/>
         <module name="IllegalImport"/> <!-- defaults to sun.* packages -->
         <module name="RedundantImport"/>
@@ -77,6 +78,7 @@
         <module name="NoLineWrap">
             <property name="tokens" value="PACKAGE_DEF, IMPORT, STATIC_IMPORT"/>
         </module>
+
         <module name="EmptyBlock">
             <property name="option" value="TEXT"/>
             <property name="tokens"
@@ -117,6 +119,7 @@
             <property name="query" value="//RCURLY[parent::SLIST[count(./*)=1]
                                      or preceding-sibling::*[last()][self::LCURLY]]"/>
         </module>
+
         <module name="WhitespaceAfter">
             <property name="tokens"
                       value="COMMA, SEMI, TYPECAST, LITERAL_IF, LITERAL_ELSE,
@@ -139,7 +142,7 @@
                     SR_ASSIGN, STAR, STAR_ASSIGN, LITERAL_ASSERT, TYPE_EXTENSION_AND"/>
             <message key="ws.notFollowed"
                      value="WhitespaceAround: ''{0}'' is not followed by whitespace. Empty blocks
-               may only be represented as '{}' when not part of a multi-block statement (4.1.3)"/>
+                    may only be represented as '{}' when not part of a multi-block statement (4.1.3)"/>
             <message key="ws.notPreceded"
                      value="WhitespaceAround: ''{0}'' is not preceded with whitespace."/>
         </module>
@@ -183,6 +186,7 @@
             <property name="tokens" value="METHOD_REF"/>
             <property name="option" value="nl"/>
         </module>
+
         <module name="PackageName">
             <property name="format" value="^[a-z][a-z3.]*[a-z]$"/>
             <message key="name.invalidPattern"
@@ -251,6 +255,7 @@
             <message key="name.invalidPattern"
                      value="Interface type name ''{0}'' must match pattern ''{1}''."/>
         </module>
+
         <module name="NoFinalizer"/>
         <module name="GenericWhitespace">
             <message key="ws.followed"
@@ -307,7 +312,7 @@
             <property name="id" value="AnnotationLocationMostCases"/>
             <property name="tokens"
                       value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, METHOD_DEF, CTOR_DEF,
-                      RECORD_DEF, COMPACT_CTOR_DEF"/>
+                    RECORD_DEF, COMPACT_CTOR_DEF"/>
         </module>
         <module name="AnnotationLocation">
             <property name="id" value="AnnotationLocationVariables"/>
@@ -315,6 +320,9 @@
             <property name="allowSamelineMultipleAnnotations" value="true"/>
         </module>
         <module name="NonEmptyAtclauseDescription"/>
+
+        <!-- Checks for Javadoc comments                    -->
+        <!-- See https://checkstyle.org/config_javadoc.html -->
         <module name="InvalidJavadocPosition"/>
         <module name="JavadocTagContinuationIndentation">
             <property name="offset" value="0"/>
@@ -334,20 +342,23 @@
             <property name="allowMissingParamTags" value="false"/>
             <property name="allowMissingReturnTag" value="false"/>
             <property name="allowedAnnotations" value=""/>
-            <property name="tokens" value="METHOD_DEF, CTOR_DEF, ANNOTATION_FIELD_DEF, COMPACT_CTOR_DEF"/>
+            <property name="tokens"
+                      value="METHOD_DEF, CTOR_DEF, ANNOTATION_FIELD_DEF,
+                    COMPACT_CTOR_DEF"/>
         </module>
         <module name="MissingJavadocMethod">
             <property name="scope" value="public"/>
             <property name="minLineCount" value="-1"/>
             <property name="allowedAnnotations" value=""/>
-            <property name="tokens" value="METHOD_DEF, CTOR_DEF, ANNOTATION_FIELD_DEF,
-                                   COMPACT_CTOR_DEF"/>
+            <property name="tokens"
+                      value="METHOD_DEF, CTOR_DEF, ANNOTATION_FIELD_DEF,
+                    COMPACT_CTOR_DEF"/>
         </module>
         <module name="MissingJavadocType">
             <property name="scope" value="protected"/>
             <property name="tokens"
                       value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF,
-                      RECORD_DEF, ANNOTATION_DEF"/>
+                    RECORD_DEF, ANNOTATION_DEF"/>
             <property name="excludeScope" value="nothing"/>
         </module>
         <module name="JavadocStyle">
