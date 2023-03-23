@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -176,7 +176,7 @@ public class ScoreResources {
     ScoreResources() {
         AssetManager assetManager = Locators.getAssetManager();
 
-        AssetKey<TrueTypeMesh> assetKey = new TrueTypeKeyMesh(
+        AssetKey<TrueTypeFont> assetKey = new TrueTypeKeyMesh(
                 "Interface/Fonts/ProFontWindows.ttf", Style.Plain, 18);
         labelFont = assetManager.loadAsset(assetKey);
 
