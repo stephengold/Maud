@@ -66,7 +66,7 @@ dependencies {
     implementation 'com.github.stephengold:Acorus:1.0.0'
     implementation 'com.github.stephengold:jme3-utilities-nifty:0.9.35'
     implementation 'com.github.stephengold:Minie:7.3.0+for36'
-    implementation 'com.github.stephengold:SkyControl:1.0.3'
+    implementation 'com.github.stephengold:SkyControl:1.0.4'
     implementation 'com.github.stephengold:jme-ttf:3.0.0'
     implementation 'com.github.stephengold:Wes:0.7.5'
     runtimeOnly    'org.jmonkeyengine:jme3-awt-dialogs:' + jme3Version
