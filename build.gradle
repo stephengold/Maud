@@ -84,6 +84,7 @@ dependencies {
 tasks.register('runForceDialog', JavaExec) {
     args '--forceDialog'
     mainClass = 'maud.Maud'
+    description 'Runs the editor after displaying the Settings dialog.'
 }
 
 // cleanup tasks:
