@@ -22,12 +22,12 @@
     </module>
 
     <!-- Checks for whitespace                             -->
-    <!-- See http://checkstyle.org/config_whitespace.html -->
+    <!-- See https://checkstyle.org/config_whitespace.html -->
     <module name="FileTabCharacter">
         <property name="eachLine" value="true"/>
     </module>
 
-    <!-- Checks that a package-info.java file exists for each package. -->
+    <!-- Checks that a package-info.java file exists for each package  -->
     <!-- See https://checkstyle.org/config_javadoc.html#JavadocPackage -->
     <module name="JavadocPackage"/>
 
@@ -38,7 +38,7 @@
         <property name="message" value="Line has trailing whitespace."/>
     </module>
 
-    <!-- Checks for size violations.                  -->
+    <!-- Checks for size violations                   -->
     <!-- See https://checkstyle.org/config_sizes.html -->
     <module name="FileLength">
         <property name="max" value="2200"/>
@@ -67,6 +67,8 @@
             <property name="allowNonPrintableEscapes" value="true"/>
         </module>
 
+        <!-- Checks for imports                             -->
+        <!-- See https://checkstyle.org/config_imports.html -->
         <module name="AvoidStarImport"/>
         <module name="IllegalImport"/> <!-- defaults to sun.* packages -->
         <module name="RedundantImport"/>
@@ -79,6 +81,8 @@
             <property name="tokens" value="PACKAGE_DEF, IMPORT, STATIC_IMPORT"/>
         </module>
 
+        <!-- Checks for blocks. You know, those {}'s       -->
+        <!-- See https://checkstyle.org/config_blocks.html -->
         <module name="EmptyBlock">
             <property name="option" value="TEXT"/>
             <property name="tokens"
@@ -187,6 +191,8 @@
             <property name="option" value="nl"/>
         </module>
 
+        <!-- Checks for naming conventions                 -->
+        <!-- See https://checkstyle.org/config_naming.html -->
         <module name="PackageName">
             <property name="format" value="^[a-z][a-z3.]*[a-z]$"/>
             <message key="name.invalidPattern"
@@ -377,7 +383,7 @@
             <property name="tokens" value="BLOCK_COMMENT_BEGIN"/>
         </module>
 
-        <!-- Checks for size violations.                  -->
+        <!-- Checks for size violations                   -->
         <!-- See https://checkstyle.org/config_sizes.html -->
         <module name="MethodLength">
             <property name="max" value="250"/>
