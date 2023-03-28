@@ -11,7 +11,7 @@ sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 checkstyle {
-    toolVersion '10.9.2'
+    toolVersion '10.9.3'
 }
 
 tasks.withType(JavaCompile) { // Java compile-time options:
