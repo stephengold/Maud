@@ -16,6 +16,10 @@ jobs:
           java-version: 11
       - uses: gradle/wrapper-validation-action@v1
       - run: ./gradlew build --console=plain --no-daemon --stacktrace
+      - uses: actions/upload-artifact@v3
+        with:
+          name: linux build
+          path: build/distributions/Maud.tar
 
   Java20-Windows:
     if: contains(toJson(github.event.commits), '[ci skip] ') == false
@@ -28,3 +32,7 @@ jobs:
           java-version: 20
       - run: ./gradlew build --console=plain --no-daemon --stacktrace
         shell: bash
+      - uses: actions/upload-artifact@v3
+        with:
+          name: windows build
+          path: build/distributions/Maud.zip
