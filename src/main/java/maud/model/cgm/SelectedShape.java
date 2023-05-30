@@ -331,7 +331,7 @@ public class SelectedShape implements JmeCloneable {
      */
     public void select(CollisionShape shape) {
         Validate.nonNull(shape, "shape");
-        selectedShape = shape;
+        this.selectedShape = shape;
     }
 
     /**
@@ -389,14 +389,14 @@ public class SelectedShape implements JmeCloneable {
      * Deselect the selected shape, if any.
      */
     public void selectNone() {
-        selectedShape = null;
+        this.selectedShape = null;
     }
 
     /**
      * Select the shape of the selected collision object.
      */
     public void selectPcoShape() {
-        selectedShape = cgm.getPco().getShape();
+        this.selectedShape = cgm.getPco().getShape();
     }
 
     /**
@@ -424,11 +424,11 @@ public class SelectedShape implements JmeCloneable {
         assert newCgm != null;
         assert newCgm.getShape() == this;
 
-        cgm = newCgm;
+        this.cgm = newCgm;
         if (newCgm instanceof EditableCgm) {
-            editableCgm = (EditableCgm) newCgm;
+            this.editableCgm = (EditableCgm) newCgm;
         } else {
-            editableCgm = null;
+            this.editableCgm = null;
         }
     }
 

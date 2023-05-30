@@ -128,7 +128,7 @@ public class Finial extends Mesh {
             float sparklineHeight) {
         Validate.nonNegative(sparklineHeight, "sparkline height");
 
-        shh = sparklineHeight / 2;
+        this.shh = sparklineHeight / 2;
 
         int numVertices = 0;
         int numLines = 1;
@@ -145,12 +145,12 @@ public class Finial extends Mesh {
             numLines += numLines3;
         }
 
-        floats = BufferUtils.createFloatBuffer(numAxes * numVertices);
+        this.floats = BufferUtils.createFloatBuffer(numAxes * numVertices);
         VertexBuffer positions = new VertexBuffer(Type.Position);
         positions.setupData(Usage.Static, numAxes, Format.Float, floats);
         setBuffer(positions);
 
-        shorts = BufferUtils.createShortBuffer(2 * numLines);
+        this.shorts = BufferUtils.createShortBuffer(2 * numLines);
         VertexBuffer indices = new VertexBuffer(Type.Index);
         indices.setupData(Usage.Static, 2, Format.UnsignedShort, shorts);
         setBuffer(indices);
@@ -277,8 +277,8 @@ public class Finial extends Mesh {
         putLine(12, 13);
 
         int connectIndex = baseI + numLines4;
-        height += 3 * hpf;
-        baseI += numVertices3;
+        this.height += 3 * hpf;
+        this.baseI += numVertices3;
 
         return (short) connectIndex;
     }
@@ -328,8 +328,8 @@ public class Finial extends Mesh {
         putLine(20, 21);
 
         int connectIndex = baseI + 21;
-        height += 4 * hpf;
-        baseI += numVertices4;
+        this.height += 4 * hpf;
+        this.baseI += numVertices4;
 
         return (short) connectIndex;
     }

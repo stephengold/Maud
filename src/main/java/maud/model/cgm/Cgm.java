@@ -1215,7 +1215,7 @@ public class Cgm implements Cloneable {
         Cgm target = Maud.getModel().getTarget();
         assert this != target; // not allowed to unload target
 
-        rootSpatial = null;
+        this.rootSpatial = null;
         sceneView.unloadCgm();
 
         // Reset the selected bone/physics/vertex.

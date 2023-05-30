@@ -1200,7 +1200,7 @@ public class SceneViewCore implements EditorView, JmeCloneable {
      */
     private void createAxes() {
         AssetManager assetManager = Locators.getAssetManager();
-        axesVisualizer = new AxesVisualizer(assetManager, 1f, 1f);
+        this.axesVisualizer = new AxesVisualizer(assetManager, 1f, 1f);
 
         Node axesNode = new Node("axes node");
         axesNode.addControl(axesVisualizer);
@@ -1213,7 +1213,7 @@ public class SceneViewCore implements EditorView, JmeCloneable {
         assert boundsVisualizer == null;
 
         AssetManager assetManager = Locators.getAssetManager();
-        boundsVisualizer = new BoundsVisualizer(assetManager);
+        this.boundsVisualizer = new BoundsVisualizer(assetManager);
         boundsVisualizer
                 .setSphereType(SphereMeshes.PoleSphere); // TODO configure
         overlayRoot.addControl(boundsVisualizer);
@@ -1254,8 +1254,8 @@ public class SceneViewCore implements EditorView, JmeCloneable {
 
         AssetManager assetManager = Locators.getAssetManager();
         Camera camera = viewPort2.getCamera();
-        skyControl = new SkyControl(assetManager, camera, 0.9f,
-                StarsOption.Cube, false);
+        this.skyControl = new SkyControl(
+                assetManager, camera, 0.9f, StarsOption.Cube, false);
         skyControl.setCloudsRate(4f);
         skyControl.setSunStyle("Textures/skies/suns/hazy-disc.png");
         skyControl.setTopVerticalAngle(1.784f);
