@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -224,9 +224,8 @@ public class Finial extends Mesh {
         if (sca) {
             sSca = put3();
         }
-        /*
-         * connecting vertical bar, if needed
-         */
+
+        // connecting vertical bar, if needed
         if (tra && sca) {
             shorts.put(sTra).put(sSca);
         } else if (tra && rot) {
@@ -258,27 +257,23 @@ public class Finial extends Mesh {
         putXY(2 * otw, shh);
         putXY(2 * otw, 2 * hpf + shh);
         putXY(width, hpf + shh);
-        /*
-         * crowsfoot for first sparkline
-         */
+
+        // crowsfoot for first sparkline
         putLine(0, 9);
         putLine(1, 12);
         putLine(2, 9);
-        /*
-         * crowsfoot for 2nd sparkline
-         */
+
+        // crowsfoot for 2nd sparkline
         putLine(3, 10);
         putLine(4, 14);
         putLine(5, 10);
-        /*
-         * crowsfoot for 3rd sparkline
-         */
+
+        // crowsfoot for 3rd sparkline
         putLine(6, 11);
         putLine(7, 13);
         putLine(8, 11);
-        /*
-         * connecting vertical bar
-         */
+
+        // connecting vertical bar
         putLine(12, 13);
 
         int connectIndex = baseI + numLines4;
@@ -307,33 +302,28 @@ public class Finial extends Mesh {
         }
         putXY(2 * otw, 2 * hpf);
         putXY(width, 2 * hpf);
-        /*
-         * crowsfoot for first sparkline
-         */
+
+        // crowsfoot for first sparkline
         putLine(0, 12);
         putLine(1, 16);
         putLine(2, 12);
-        /*
-         * crowsfoot for 2nd sparkline
-         */
+
+        // crowsfoot for 2nd sparkline
         putLine(3, 13);
         putLine(4, 17);
         putLine(5, 13);
-        /*
-         * crowsfoot for 3rd sparkline
-         */
+
+        // crowsfoot for 3rd sparkline
         putLine(6, 14);
         putLine(7, 18);
         putLine(8, 14);
-        /*
-         * crowsfoot for 4th sparkline
-         */
+
+        // crowsfoot for 4th sparkline
         putLine(9, 15);
         putLine(10, 19);
         putLine(11, 15);
-        /*
-         * connecting T
-         */
+
+        // connecting T
         putLine(16, 19);
         putLine(20, 21);
 

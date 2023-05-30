@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -109,9 +109,7 @@ public class LoadedMap implements Cloneable {
             String sourceName = boneMapping.getSourceName();
             int sourceIndex = sourceSkeleton.boneIndex(sourceName);
             if (sourceIndex != -1) {
-                /*
-                 * Calculate the model orientation of the source bone.
-                 */
+                // Calculate the model orientation of the source bone.
                 Pose sourcePose = source.getPose().get();
                 Quaternion mo = sourcePose.modelOrientation(sourceIndex, null);
 
@@ -676,9 +674,8 @@ public class LoadedMap implements Cloneable {
     private static SkeletonMapping loadFromAsset(
             String path, boolean useCache, boolean diagnose) {
         AssetManager assetManager = Locators.getAssetManager();
-        /*
-         * Load the skeleton map quietly.
-         */
+
+        // Load the skeleton map quietly.
         AssetKey<SkeletonMapping> key = new AssetKey<>(path);
         if (!useCache) {
             /*

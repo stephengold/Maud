@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -315,9 +315,7 @@ public class EditableCgm extends LoadedCgm {
         Spatial controlledSpatial = getSpatial().find();
         controlledSpatial.addControl(newSgc);
         if (newSgc instanceof PhysicsControl) {
-            /*
-             * Notify CgmPhysics about the addition.
-             */
+            // Notify CgmPhysics about the addition.
             PhysicsControl physicsControl = (PhysicsControl) newSgc;
             getPhysics().addPhysicsControl(physicsControl);
         }
@@ -606,28 +604,23 @@ public class EditableCgm extends LoadedCgm {
                 List<Integer> nodePosition = findSpatial(attachmentsNode);
 
                 MySkeleton.cancelAttachments(bone);
-                /*
-                 * Detach the attachments node from its parent.
-                 */
+
+                // Detach the attachments node from its parent.
                 boolean success = attachmentsNode.removeFromParent();
                 assert success;
-                /*
-                 * Synchronize with the scene view.
-                 */
+
+                // Synchronize with the scene view.
                 sceneView.deleteSubtree(nodePosition);
             }
 
             // TODO SkinningControl
 
         } else if (selectedSgc instanceof PhysicsControl) {
-            /*
-             * Notify CgmPhysics about the removal.
-             */
+            // Notify CgmPhysics about the removal.
             PhysicsControl pc = (PhysicsControl) selectedSgc;
             getPhysics().removePhysicsControl(pc);
-            /*
-             * Synchronize with the scene view.
-             */
+
+            // Synchronize with the scene view.
             List<Integer> treePosition = findSpatial(controlled);
             int pcPosition = PhysicsUtil.pcToPosition(controlled, pc);
             sceneView.removePhysicsControl(treePosition, pcPosition);

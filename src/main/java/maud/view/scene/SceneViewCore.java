@@ -622,20 +622,17 @@ public class SceneViewCore implements EditorView, JmeCloneable {
     public void postMakeLive() {
         PhysicsSpace space = getPhysicsSpace();
         assert space.isEmpty();
-        /*
-         * Detach any old visualization from the scene graph.
-         */
+
+        // Detach any old visualization from the scene graph.
         parent.detachAllChildren();
-        /*
-         * Update backpointers to this view.
-         */
+
+        // Update backpointers to this view.
         cursor.setView(this);
         platform.setView(this);
         projectile.setView(this);
         vertexMarker.setView(this);
-        /*
-         * Attach this visualization.
-         */
+
+        // Attach this visualization.
         if (cgmRoot != null) {
             parent.attachChild(cgmRoot);
         }
@@ -743,9 +740,7 @@ public class SceneViewCore implements EditorView, JmeCloneable {
      * Update the view when unloading the C-G model.
      */
     public void unloadCgm() {
-        /*
-         * Detach the old spatial (if any) from the base scene graph.
-         */
+        // Detach the old spatial (if any) from the base scene graph.
         if (cgmRoot != null) {
             MyControlP.disablePhysicsControls(cgmRoot);
             parent.detachChild(cgmRoot);
@@ -788,9 +783,8 @@ public class SceneViewCore implements EditorView, JmeCloneable {
     @Override
     public void considerBones(Selection selection) {
         Validate.nonNull(selection, "selection");
-        /*
-         * Determine which bones to consider.
-         */
+
+        // Determine which bones to consider.
         SkeletonOptions options = Maud.getModel().getScene().getSkeleton();
         ShowBones showBones = options.getShowBones();
         int selectedBoneIndex = cgm.getBone().index();
@@ -878,9 +872,8 @@ public class SceneViewCore implements EditorView, JmeCloneable {
         Camera camera = getCamera();
         InputManager inputManager = Maud.getApplication().getInputManager();
         Ray ray = MyCamera.mouseRay(camera, inputManager);
-        /*
-         * Trace the ray to the C-G model's visualization.
-         */
+
+        // Trace the ray to the C-G model's visualization.
         CollisionResult collision = MaudUtil.findCollision(cgmRoot, ray);
         if (collision != null) {
             Geometry geometry = collision.getGeometry();
@@ -1152,9 +1145,8 @@ public class SceneViewCore implements EditorView, JmeCloneable {
 
         this.skeleton = null;
         this.skeletonVisualizer.setSubject(null);
-        /*
-         * Remove any skeleton-dependent S-G controls from the base scene graph.
-         */
+
+        // Remove any skeleton-dependent S-G controls from the base scene graph.
         if (animControl != null) {
             Spatial controlled = animControl.getSpatial();
             boolean success = controlled.removeControl(animControl);
@@ -1234,14 +1226,12 @@ public class SceneViewCore implements EditorView, JmeCloneable {
         Node scene = getSceneRoot();
         int numLights = scene.getLocalLightList().size();
         assert numLights == 0 : numLights;
-        /*
-         * Name the lights.
-         */
+
+        // Name the lights.
         ambientLight.setName("ambient light");
         mainLight.setName("main light");
-        /*
-         * Light the scene.
-         */
+
+        // Light the scene.
         scene.addLight(ambientLight);
         scene.addLight(mainLight);
     }
@@ -1371,9 +1361,7 @@ public class SceneViewCore implements EditorView, JmeCloneable {
      * Alter a newly loaded C-G model to prepare it for visualization.
      */
     private void prepareForViewing() {
-        /*
-         * Attach the C-G model to the base scene graph.
-         */
+        // Attach the C-G model to the base scene graph.
         parent.attachChild(cgmRoot);
         /*
          * Use the skeleton from the first AnimControl, SkeletonControl, or
@@ -1395,27 +1383,22 @@ public class SceneViewCore implements EditorView, JmeCloneable {
         MyControlP.removeNonPhysicsControls(cgmRoot);
         PhysicsSpace space = getPhysicsSpace();
         MyControlP.enablePhysicsControls(cgmRoot, space);
-        /*
-         * Create and add scene-graph controls for the skeleton.
-         */
+
+        // Create and add scene-graph controls for the skeleton.
         setSkeleton(selectedSkeleton, false);
-        /*
-         * Configure the transform and calculate the model's size.
-         */
+
+        // Configure the transform and calculate the model's size.
         float maxExtent = configureTransform();
-        /*
-         * Reset the camera limits/rate/position.
-         */
+
+        // Reset the camera limits/rate/position.
         ScenePov pov = getPov();
         pov.setCgmSize(maxExtent);
         pov.setLocation(cameraStartLocation.mult(maxExtent));
-        /*
-         * Reset the 3-D cursor location.
-         */
+
+        // Reset the 3-D cursor location.
         cursor.setLocation(cursorStartLocation.mult(maxExtent));
-        /*
-         * Reset the platform diameter.
-         */
+
+        // Reset the platform diameter.
         EditorModel model = Maud.getModel();
         WhichCgm whichCgm = model.whichCgm(cgm);
         model.getScene().setPlatformDiameter(whichCgm, maxExtent);
@@ -1447,9 +1430,8 @@ public class SceneViewCore implements EditorView, JmeCloneable {
             List<Integer> position) {
         assert position != null;
         assert spatial != null;
-        /*
-         * Copy local transform from the MVC model.
-         */
+
+        // Copy local transform from the MVC model.
         Transform transform = cgm.getLocalTransform(position);
         spatial.setLocalTransform(transform);
 

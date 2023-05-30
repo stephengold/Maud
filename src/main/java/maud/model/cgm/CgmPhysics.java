@@ -479,9 +479,8 @@ public class CgmPhysics implements JmeCloneable {
             PhysicsCollisionObject modelPco = (PhysicsCollisionObject) modelSgc;
             disassociate(modelPco);
         }
-        /*
-         * If the selected shape is no longer used in the CGM, deselect it.
-         */
+
+        // If the selected shape is no longer used in the CGM, deselect it.
         SelectedShape ss = cgm.getShape();
         if (ss.isSelected()) {
             Set<Long> users = ss.userSet();

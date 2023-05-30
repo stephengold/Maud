@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -251,9 +251,7 @@ final public class BuildMenus {
             model.getMap().loadAsset(spec, assetPath);
 
         } else {
-            /*
-             * Treat the pathname as a prefix.
-             */
+            // Treat the pathname as a prefix.
             File parent = file.getParentFile();
             String parentPath = Heart.fixedPath(parent);
             String prefix = file.getName();
@@ -399,9 +397,8 @@ final public class BuildMenus {
      */
     static boolean menuBar(String menuName) {
         assert menuName != null;
-        /*
-         * Dynamically generate the menu's list of items.
-         */
+
+        // Dynamically generate the menu's list of items.
         builder.reset();
         switch (menuName) {
             case "Animation":
@@ -532,9 +529,7 @@ final public class BuildMenus {
         builder.addOgre("Sinbad");
 
         // TODO models in the Blender/ folder of testdata
-        /*
-         * non-animated models:
-         */
+        // non-animated models:
         if (haveTestdata) {
             builder.addJme("Boat");
             builder.addJme("Buggy");
@@ -651,14 +646,12 @@ final public class BuildMenus {
      */
     private static void buildFolderMenu(Map<String, File> fileMap) {
         assert fileMap != null;
-        /*
-         * Generate a list of file names (and prefixes) to display in the menu.
-         */
+
+        // Generate a list of file names (and prefixes) to display in the menu.
         Set<String> nameSet = fileMap.keySet();
         List<String> nameList = new ArrayList<>(nameSet);
-        /*
-         * Build a reduced menu.
-         */
+
+        // Build a reduced menu.
         MyString.reduce(nameList, ShowMenus.maxItems);
         Collections.sort(nameList);
         builder.reset();

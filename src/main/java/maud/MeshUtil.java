@@ -341,15 +341,13 @@ final public class MeshUtil {
     private static int assignIds(int[] id2Submesh, Set<IntPair> adjacentPairs,
             int oldNumUnassigned) {
         int result = oldNumUnassigned;
-        /*
-         * Iterate until further progress is impossible.
-         */
+
+        // Iterate until further progress is impossible.
         boolean progress;
         do {
             progress = false;
-            /*
-             * Assign position IDs to existing submeshes based on adjacency.
-             */
+
+            // Assign position IDs to existing submeshes based on adjacency.
             for (IntPair pair : adjacentPairs) {
                 int idA = pair.smaller();
                 int idB = pair.larger();
@@ -447,9 +445,7 @@ final public class MeshUtil {
         int numUnassigned = numDistinctPositions;
         int numSubmeshes = 0;
         while (numUnassigned > 0) {
-            /*
-             * Allocate a new submesh for the first unassigned position.
-             */
+            // Allocate a new submesh for the first unassigned position.
             for (int idA = 0; idA < numDistinctPositions; ++idA) {
                 int submeshA = result[idA];
                 if (submeshA == -1) { // A isn't assigned yet

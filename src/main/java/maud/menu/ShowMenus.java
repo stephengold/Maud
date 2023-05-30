@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -92,9 +92,8 @@ final public class ShowMenus {
             target.addMatParam(namePrefix);
             return;
         }
-        /*
-         * Build a reduced menu.
-         */
+
+        // Build a reduced menu.
         List<String> reducedList = new ArrayList<>(matParamNames);
         MyString.reduce(reducedList, maxItems);
         Collections.sort(reducedList);
@@ -196,9 +195,8 @@ final public class ShowMenus {
             target.getMatParam().select(namePrefix);
             return;
         }
-        /*
-         * Build a reduced menu.
-         */
+
+        // Build a reduced menu.
         List<String> reducedList = new ArrayList<>(matParamNames);
         MyString.reduce(reducedList, maxItems);
         Collections.sort(reducedList);

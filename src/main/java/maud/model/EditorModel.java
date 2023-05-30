@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -472,9 +472,8 @@ public class EditorModel {
 
         assetLocations.writeToScript(writer);
         miscOptions.writeToScript(writer);
-        /*
-         * write dumper options
-         */
+
+        // write dumper options
         String action;
         String indentIncrement = dumper.indentIncrement();
         int numSpaces = indentIncrement.length();
@@ -524,9 +523,8 @@ public class EditorModel {
 
         sceneOptions.writeToScript(writer);
         scoreOptions.writeToScript(writer);
-        /*
-         * tweening techniques
-         */
+
+        // tweening techniques
         TweenVectors tweenTranslations = techniques.getTweenTranslations();
         String arg = tweenTranslations.toString();
         MaudUtil.writePerformAction(writer,
@@ -541,14 +539,12 @@ public class EditorModel {
         arg = tweenScales.toString();
         MaudUtil.writePerformAction(writer,
                 ActionPrefix.selectTweenScales + arg);
-        /*
-         * Always load Jaime at startup.
-         */
+
+        // Always load Jaime at startup.
         MaudUtil.writePerformAction(writer,
                 ActionPrefix.loadCgmNamed + "Jaime");
-        /*
-         * Select and position each selected tool.
-         */
+
+        // Select and position each selected tool.
         for (WindowController tool : Maud.gui.listWindowControllers()) {
             if (tool.isEnabled()) {
                 String toolId = tool.getId();

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -214,9 +214,8 @@ public class EditableMap extends LoadedMap {
             History.autoAdd();
             String sourceBoneName = source.getBone().name();
             String targetBoneName = target.getBone().name();
-            /*
-             * Remove any prior mappings involving those bones.
-             */
+
+            // Remove any prior mappings involving those bones.
             BoneMapping boneMapping = map.getForSource(sourceBoneName);
             if (boneMapping != null) {
                 map.removeMapping(boneMapping);
@@ -225,9 +224,8 @@ public class EditableMap extends LoadedMap {
             if (boneMapping != null) {
                 map.removeMapping(boneMapping);
             }
-            /*
-             * Predict what the twist will be.
-             */
+
+            // Predict what the twist will be.
             Quaternion twist = estimateTwist();
             map.map(targetBoneName, sourceBoneName, twist);
 

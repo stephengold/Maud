@@ -1217,9 +1217,8 @@ public class Cgm implements Cloneable {
 
         rootSpatial = null;
         sceneView.unloadCgm();
-        /*
-         * Reset the selected bone/physics/vertex.
-         */
+
+        // Reset the selected bone/physics/vertex.
         selectedBone.deselect();
         selectedJoint.selectNone();
         selectedLink.selectNone();
@@ -1280,9 +1279,8 @@ public class Cgm implements Cloneable {
         clone.selectedTrack = cloner.clone(selectedTrack);
         clone.selectedUserData = selectedUserData.clone();
         clone.selectedVertex = selectedVertex.clone();
-        /*
-         * Redirect all the back pointers to the clone.
-         */
+
+        // Redirect all the back pointers to the clone.
         clone.getAnimation().setCgm(clone);
         clone.getAnimControl().setCgm(clone);
         clone.getBone().setCgm(clone);

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -273,9 +273,7 @@ final public class SpatialMenus {
         if (target.hasSpatial(argument)) {
             target.getSpatial().select(argument);
         } else {
-            /*
-             * Treat the argument as a spatial-name prefix.
-             */
+            // Treat the argument as a spatial-name prefix.
             List<String> names = target.listSpatialNames(argument, subset);
             showSpatialSubmenu(names, subset);
         }

@@ -501,10 +501,7 @@ public class SelectedShape implements JmeCloneable {
                     result.combineWithParent(parent);
                 }
 
-            } else {
-                /*
-                 * shape has multiple users, or none
-                 */
+            } else { // shape has multiple users, or none
                 result.loadIdentity();
             }
         }
