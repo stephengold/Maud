@@ -120,8 +120,8 @@ public class Selection {
     public Selection(Vector2f screenXY, float dSquaredThreshold) {
         Validate.positive(dSquaredThreshold, "D-squared threshold");
 
-        bestDSquared = dSquaredThreshold;
-        inputXY = screenXY.clone();
+        this.bestDSquared = dSquaredThreshold;
+        this.inputXY = screenXY.clone();
     }
     // *************************************************************************
     // new methods exposed
@@ -148,14 +148,14 @@ public class Selection {
 
         float dSquared = screenXY.distanceSquared(inputXY);
         if (dSquared < bestDSquared) {
-            bestDSquared = dSquared;
+            this.bestDSquared = dSquared;
             clear();
-            bestAxisIndex = axisIndex;
-            bestCgm = cgm;
+            this.bestAxisIndex = axisIndex;
+            this.bestCgm = cgm;
             if (scoreView) {
-                bestType = Type.PoseTransformAxis;
+                this.bestType = Type.PoseTransformAxis;
             } else {
-                bestType = Type.SceneAxis;
+                this.bestType = Type.SceneAxis;
             }
         }
     }
@@ -174,10 +174,10 @@ public class Selection {
         Validate.nonNegative(dSquared, "distance squared");
 
         if (dSquared < bestDSquared) {
-            bestDSquared = dSquared;
+            this.bestDSquared = dSquared;
             clear();
-            bestBoneIndex = boneIndex;
-            bestCgm = cgm;
+            this.bestBoneIndex = boneIndex;
+            this.bestCgm = cgm;
             bestType = Type.Bone;
         }
     }
@@ -192,9 +192,9 @@ public class Selection {
         Validate.nonNegative(dSquared, "distance squared");
 
         if (dSquared < bestDSquared) {
-            bestDSquared = dSquared;
+            this.bestDSquared = dSquared;
             clear();
-            bestType = Type.Boundary;
+            this.bestType = Type.Boundary;
         }
     }
 
@@ -210,10 +210,10 @@ public class Selection {
         Validate.nonNegative(dSquared, "distance squared");
 
         if (dSquared < bestDSquared) {
-            bestDSquared = dSquared;
+            this.bestDSquared = dSquared;
             clear();
-            bestCgm = cgm;
-            bestType = Type.Gnomon;
+            this.bestCgm = cgm;
+            this.bestType = Type.Gnomon;
         }
     }
 
@@ -230,11 +230,11 @@ public class Selection {
         Validate.nonNegative(frameIndex, "frame index");
 
         if (dSquared < bestDSquared) {
-            bestDSquared = dSquared;
+            this.bestDSquared = dSquared;
             clear();
-            bestFrameIndex = frameIndex;
-            bestCgm = cgm;
-            bestType = Type.Keyframe;
+            this.bestFrameIndex = frameIndex;
+            this.bestCgm = cgm;
+            this.bestType = Type.Keyframe;
         }
     }
 
@@ -252,11 +252,11 @@ public class Selection {
         Validate.nonEmpty(description, "description");
 
         if (dSquared < bestDSquared) {
-            bestDSquared = dSquared;
+            this.bestDSquared = dSquared;
             clear();
-            bestTrackDesc = description;
-            bestCgm = cgm;
-            bestType = Type.Track;
+            this.bestTrackDesc = description;
+            this.bestCgm = cgm;
+            this.bestType = Type.Track;
         }
     }
 
@@ -278,12 +278,12 @@ public class Selection {
 
         float dSquared = screenXY.distanceSquared(inputXY);
         if (dSquared < bestDSquared) {
-            bestDSquared = dSquared;
+            this.bestDSquared = dSquared;
             clear();
-            bestGeometry = geometry;
-            bestVertexIndex = vertexIndex;
-            bestCgm = cgm;
-            bestType = Type.Vertex;
+            this.bestGeometry = geometry;
+            this.bestVertexIndex = vertexIndex;
+            this.bestCgm = cgm;
+            this.bestType = Type.Vertex;
         }
     }
 
@@ -355,13 +355,13 @@ public class Selection {
      * Reset fields to "none" before making a new selection.
      */
     private void clear() {
-        bestGeometry = null;
-        bestAxisIndex = -1;
-        bestBoneIndex = SelectedSkeleton.noBoneIndex;
-        bestFrameIndex = -1;
-        bestVertexIndex = -1;
-        bestCgm = null;
-        bestTrackDesc = null;
+        this.bestGeometry = null;
+        this.bestAxisIndex = -1;
+        this.bestBoneIndex = SelectedSkeleton.noBoneIndex;
+        this.bestFrameIndex = -1;
+        this.bestVertexIndex = -1;
+        this.bestCgm = null;
+        this.bestTrackDesc = null;
     }
 
     /**

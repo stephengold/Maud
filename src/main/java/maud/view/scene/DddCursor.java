@@ -97,7 +97,7 @@ public class DddCursor {
      */
     DddCursor(SceneViewCore owner) {
         assert owner != null;
-        view = owner;
+        this.view = owner;
     }
     // *************************************************************************
     // new methods exposed
@@ -137,7 +137,7 @@ public class DddCursor {
         assert newView != view;
         assert newView.getCursor() == this;
 
-        view = newView;
+        this.view = newView;
     }
 
     /**
@@ -153,16 +153,16 @@ public class DddCursor {
         boolean visible = options.isVisible();
         if (wasVisible && !visible) {
             setGeometry(null);
-            geometry = null;
+            this.geometry = null;
         } else if (!wasVisible && visible) {
-            geometry = createStar();
+            this.geometry = createStar();
             setGeometry(geometry);
         }
 
         if (geometry != null) {
             // color
             float cycleTime = options.getCycleTime();
-            colorTime = (colorTime + tpf) % cycleTime;
+            this.colorTime = (colorTime + tpf) % cycleTime;
             double t = Math.sin(Math.PI * colorTime / cycleTime);
             double t2 = t * t;
             float fraction = (float) (t2 * t2); // 4th power of sine
@@ -241,7 +241,7 @@ public class DddCursor {
         if (newGeometry != null) {
             view.attachToSceneRoot(newGeometry);
         }
-        geometry = newGeometry;
+        this.geometry = newGeometry;
     }
 
     /**
