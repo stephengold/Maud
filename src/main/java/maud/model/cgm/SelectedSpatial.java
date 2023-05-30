@@ -363,8 +363,8 @@ public class SelectedSpatial implements JmeCloneable {
 
         Transform tmpTransform = new Transform(); // TODO garbage
         for (Spatial child : children) {
-            tmpTransform.set(child.getLocalTransform());
-            tmpTransform.combineWithParent(nodeTransform);
+            MyMath.combine(
+                    child.getLocalTransform(), nodeTransform, tmpTransform);
             child.setLocalTransform(tmpTransform);
         }
         node.setLocalTransform(transformIdentity);
@@ -396,8 +396,8 @@ public class SelectedSpatial implements JmeCloneable {
 
         for (Geometry geometry : geometries) {
             Mesh mesh = geometry.getMesh(); // TODO check for instancing
-            Transform gInWorld = geometry.getWorldTransform().clone();
-            Transform gInParent = gInWorld.combineWithParent(wip);
+            Transform gInParent
+                    = MyMath.combine(geometry.getWorldTransform(), wip, null);
 
             MyMesh.transformBuffer(
                     mesh, VertexBuffer.Type.BindPosePosition, gInParent);

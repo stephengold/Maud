@@ -498,7 +498,7 @@ public class SelectedShape implements JmeCloneable {
                             child.copyTransform(parent);
                         }
                     }
-                    result.combineWithParent(parent);
+                    MyMath.combine(result, parent, result);
                 }
 
             } else { // shape has multiple users, or none

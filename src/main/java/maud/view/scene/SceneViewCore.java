@@ -1508,7 +1508,7 @@ public class SceneViewCore implements EditorView, JmeCloneable {
                 if (!MySpatial.isIgnoringTransforms(transformSpatial)) {
                     Transform worldTransform
                             = transformSpatial.getWorldTransform();
-                    transform.combineWithParent(worldTransform);
+                    MyMath.combine(transform, worldTransform, transform);
                 }
                 MySpatial.setWorldTransform(attachNode, transform);
             }

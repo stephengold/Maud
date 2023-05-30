@@ -48,6 +48,7 @@ import jme3utilities.MySpatial;
 import jme3utilities.debug.AxesVisualizer;
 import jme3utilities.debug.BoundsVisualizer;
 import jme3utilities.debug.SkeletonVisualizer;
+import jme3utilities.math.MyMath;
 import jme3utilities.sky.SkyControl;
 import jme3utilities.sky.Updater;
 import maud.EditorViewPorts;
@@ -113,7 +114,7 @@ final public class SceneUpdater {
                     Spatial tsp = sceneView.findTransformSpatial();
                     if (!MySpatial.isIgnoringTransforms(tsp)) {
                         Transform worldTransform = tsp.getWorldTransform();
-                        transform.combineWithParent(worldTransform);
+                        MyMath.combine(transform, worldTransform, transform);
                     }
                 }
                 break;
