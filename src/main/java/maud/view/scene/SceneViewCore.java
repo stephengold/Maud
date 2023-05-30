@@ -260,9 +260,8 @@ public class SceneViewCore implements EditorView, JmeCloneable {
         this.viewPort2 = port2;
         this.overlayRoot = oRoot;
         this.bulletAppState = makeBullet(port1, port2);
-        /*
-         * Initialize the scene graphs.
-         */
+
+        // Initialize the scene graphs.
         createAxes();
         createBounds();
         createLights();
@@ -1507,7 +1506,7 @@ public class SceneViewCore implements EditorView, JmeCloneable {
                 Spatial transformSpatial = findTransformSpatial();
                 if (!MySpatial.isIgnoringTransforms(transformSpatial)) {
                     Transform worldTransform
-                            = transformSpatial.getWorldTransform();
+                            = transformSpatial.getWorldTransform(); // alias
                     MyMath.combine(transform, worldTransform, transform);
                 }
                 MySpatial.setWorldTransform(attachNode, transform);

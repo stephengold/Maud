@@ -384,7 +384,7 @@ public class SelectedSpatial implements JmeCloneable {
         if (parent == null) {
             wip = new Transform();
         } else {
-            Transform parentInWorld = parent.getWorldTransform();
+            Transform parentInWorld = parent.getWorldTransform(); // alias
             wip = parentInWorld.invert();
         }
         List<Geometry> geometries
@@ -1938,7 +1938,7 @@ public class SelectedSpatial implements JmeCloneable {
         Transform[] childTransforms = new Transform[numChildren];
         for (int i = 0; i < numChildren; ++i) {
             Spatial child = children.get(i);
-            childTransforms[i] = child.getWorldTransform();
+            childTransforms[i] = child.getWorldTransform(); // alias
         }
         node.setLocalTranslation(localOffset);
         for (int i = 0; i < numChildren; ++i) {

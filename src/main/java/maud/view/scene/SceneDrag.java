@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -185,9 +185,7 @@ final public class SceneDrag {
      * @param worldLine (not null, unaffected)
      */
     static void updateSubject(AxesVisualizer visualizer, Line worldLine) {
-        /*
-         * Calculate the old axis direction in world coordinates.
-         */
+        // Calculate the old axis direction in world coordinates.
         Spatial spatial = visualizer.getSpatial();
         assert !MySpatial.isIgnoringTransforms(spatial);
         Vector3f axesOrigin = spatial.getWorldTranslation();
@@ -223,10 +221,7 @@ final public class SceneDrag {
                 break;
 
             case ScaleAll:
-            case ScaleAxis:
-                /*
-                 * Calculate the new axis length in local units.
-                 */
+            case ScaleAxis: // Calculate the new axis length in local units.
                 axisLine = new Line(axesOrigin, oldDirWorld);
                 newTipWorld = MyVector3f.lineMeetsLine(axisLine, worldLine);
                 if (newTipWorld != null) {
@@ -249,9 +244,7 @@ final public class SceneDrag {
                 break;
 
             case Translate:
-                /*
-                 * Calculate the axis displacement in world coordinates.
-                 */
+                // Calculate the axis displacement in world coordinates.
                 axisLine = new Line(axesOrigin, oldDirWorld);
                 newTipWorld = MyVector3f.lineMeetsLine(axisLine, worldLine);
                 if (newTipWorld != null) {
@@ -301,9 +294,7 @@ final public class SceneDrag {
 
         Quaternion newUserRotation = null;
         if (bone.shouldEnableControls()) {
-            /*
-             * Apply the rotation to the selected bone in the displayed pose.
-             */
+            // Apply the rotation to the selected bone in the displayed pose.
             newUserRotation = oldUserRotation.mult(rotation);
             MyQuaternion.normalizeLocal(newUserRotation);
             pose.setRotation(boneIndex, newUserRotation);
@@ -311,9 +302,7 @@ final public class SceneDrag {
         } else if (cgm == target
                 && cgm.getAnimation().isRetargetedPose()
                 && map.isBoneMappingSelected()) {
-            /*
-             * Apply the rotation to the target bone in the displayed pose.
-             */
+            // Apply the rotation to the target bone in the displayed pose.
             newUserRotation = oldUserRotation.mult(rotation);
             pose.setRotation(boneIndex, newUserRotation);
         }
@@ -321,9 +310,8 @@ final public class SceneDrag {
         if (newUserRotation != null && !bone.shouldEnableControls()) {
             assert target.getAnimation().isRetargetedPose();
             assert map.isBoneMappingSelected();
-            /*
-             * Infer a new effective twist for the selected bone mapping.
-             */
+
+            // Infer a new effective twist for the selected bone mapping.
             Quaternion sourceMo
                     = model.getSource().getBone().modelOrientation(null);
             Quaternion targetMo
@@ -343,9 +331,7 @@ final public class SceneDrag {
      * length&gt;0)
      */
     private static void rotate(Vector3f cross, Vector3f newDirWorld) {
-        /*
-         * Convert the cross product to a rotation quaternion.
-         */
+        // Convert the cross product to a rotation quaternion.
         double lengthSquared = MyVector3f.lengthSquared(cross);
         double dLength = Math.sqrt(lengthSquared);
         float fLength = (float) dLength;
@@ -374,9 +360,7 @@ final public class SceneDrag {
                 if (editableCgm != null) {
                     SelectedPco object = editableCgm.getPco();
                     if (object.canPosition()) {
-                        /*
-                         * Rotate the selected physics object.
-                         */
+                        // Rotate the selected physics object.
                         Quaternion orientation = object.orientation(null);
                         orientation.multLocal(rotation);
                         MyQuaternion.normalizeLocal(orientation);
@@ -389,18 +373,13 @@ final public class SceneDrag {
                 if (dragAxisIndex == MyVector3f.xAxis) {
                     SelectedLight light = editableCgm.getLight();
                     if (light.canDirect()) {
-                        /*
-                         * Adjust the direction of the selected light.
-                         */
+                        // Adjust the direction of the selected light.
                         light.setDirection(newDirWorld);
                     }
                 }
                 break;
 
-            case Model:
-                /*
-                 * Apply the Y-axis rotation to the world transform.
-                 */
+            case Model: // Apply the Y-axis rotation to the world transform.
                 Cgm cgm = getCgm();
                 CgmTransform cgmTransform = cgm.getSceneView().getTransform();
                 float angle = FastMath.asin(cross.y * fLength);
@@ -414,10 +393,7 @@ final public class SceneDrag {
                 break;
 
             case Spatial:
-                if (editableCgm != null) {
-                    /*
-                     * Rotate the selected spatial.
-                     */
+                if (editableCgm != null) { // Rotate the selected spatial.
                     Quaternion localRotation
                             = editableCgm.getSpatial().localRotation(null);
                     localRotation.multLocal(rotation);
@@ -452,9 +428,7 @@ final public class SceneDrag {
         switch (subject) {
             case Bone:
                 if (cgm.getBone().shouldEnableControls()) {
-                    /*
-                     * Scale the selected bone in the displayed pose.
-                     */
+                    // Scale the selected bone in the displayed pose.
                     Pose pose = cgm.getPose().get();
                     int boneIndex = cgm.getBone().index();
                     Vector3f userScale = pose.userScale(boneIndex, null);
@@ -477,10 +451,7 @@ final public class SceneDrag {
             case Light: // ignore attempts to scale lights
                 break;
 
-            case Model:
-                /*
-                 * Scale the world transform.
-                 */
+            case Model: // Scale the world transform.
                 CgmTransform cgmTransform = cgm.getSceneView().getTransform();
                 cgmTransform.scale(factor);
                 break;
@@ -496,10 +467,7 @@ final public class SceneDrag {
                 break;
 
             case Spatial:
-                if (editableCgm != null) {
-                    /*
-                     * Scale the selected spatial.
-                     */
+                if (editableCgm != null) { // Scale the selected spatial.
                     Vector3f localScale = cgm.getSpatial().localScale(null);
                     localScale.multLocal(factor);
                     editableCgm.setSpatialScale(localScale);
@@ -550,10 +518,7 @@ final public class SceneDrag {
                 break;
 
             case Spatial:
-                if (editableCgm != null) {
-                    /*
-                     * Scale the selected spatial.
-                     */
+                if (editableCgm != null) { // Scale the selected spatial.
                     Vector3f localScale = cgm.getSpatial().localScale(null);
                     localScale.multLocal(scale);
                     editableCgm.setSpatialScale(localScale);
@@ -615,9 +580,8 @@ final public class SceneDrag {
                         userOffset = transform.transformInverseVector(
                                 meshOffset, null);
                     }
-                    /*
-                     * Translate the selected bone in the displayed pose.
-                     */
+
+                    // Translate the selected bone in the displayed pose.
                     int boneIndex = bone.index();
                     Vector3f userTranslation
                             = pose.userTranslation(boneIndex, null);
@@ -629,9 +593,7 @@ final public class SceneDrag {
             case CollisionObject:
                 SelectedPco object = editableCgm.getPco();
                 if (object.canPosition()) {
-                    /*
-                     * Translate the selected physics object.
-                     */
+                    // Translate the selected physics object.
                     Vector3f location = object.location(null);
                     location.addLocal(offset);
                     object.setLocation(location);
@@ -640,10 +602,7 @@ final public class SceneDrag {
 
             case Light:
                 SelectedLight light = editableCgm.getLight();
-                if (light.canPosition()) {
-                    /*
-                     * Translate the selected light.
-                     */
+                if (light.canPosition()) { // Translate the selected light.
                     Vector3f position = light.position();
                     position.addLocal(offset);
                     light.setPosition(position);
@@ -659,18 +618,15 @@ final public class SceneDrag {
 
             case Spatial:
                 if (editableCgm != null) {
-                    /*
-                     * Factor out parental rotation and scaling in this view.
-                     */
+                    // Factor out parental rotation and scaling in this view.
                     Spatial spatial = cgm.getSceneView().selectedSpatial();
                     Node parent = spatial.getParent();
                     Transform transform = parent.getWorldTransform().clone();
                     transform.getTranslation().zero();
                     Vector3f localOffset
                             = transform.transformInverseVector(offset, null);
-                    /*
-                     * Translate the selected spatial.
-                     */
+
+                    // Translate the selected spatial.
                     Vector3f localTranslation
                             = editableCgm.getSpatial().localTranslation(null);
                     localTranslation.addLocal(localOffset);

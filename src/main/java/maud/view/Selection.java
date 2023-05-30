@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -373,9 +373,7 @@ public class Selection {
         bestCgm.getBone().select(bestBoneIndex);
         EditorModel model = Maud.getModel();
         if (model.getTarget().getAnimation().isRetargetedPose()) {
-            /*
-             * Also select the mapped bone (if any).
-             */
+            // Also select the mapped bone (if any).
             LoadedMap map = model.getMap();
             if (bestCgm == model.getSource()
                     && map.isSourceBoneMapped(bestBoneIndex)) {

@@ -445,7 +445,7 @@ final public class PhysicsUtil {
         int numVectors = vertexLocations.numVectors();
         assert numVectors > 0 : numVectors;
 
-        Transform localToWorld = subtree.getWorldTransform();
+        Transform localToWorld = subtree.getWorldTransform(); // alias
         Transform worldToLocal = localToWorld.invert();
         Vector3f tempLocation = new Vector3f();
         FloatBuffer buffer = vertexLocations.toBuffer();
@@ -483,7 +483,7 @@ final public class PhysicsUtil {
         int numVectors = vertexLocations.numVectors();
         assert numVectors > 0 : numVectors;
 
-        Transform localToWorld = subtree.getWorldTransform();
+        Transform localToWorld = subtree.getWorldTransform(); // alias
         Transform worldToLocal = localToWorld.invert();
         Vector3f tempLocation = new Vector3f();
         double radiusSquared = 0f;

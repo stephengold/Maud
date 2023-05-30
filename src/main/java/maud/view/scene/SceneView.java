@@ -152,9 +152,7 @@ public class SceneView extends SceneViewCore {
 
         PhysicsControl copy = Heart.deepCopy(physicsControl);
         if (copy instanceof RigidBodyControl) {
-            /*
-             * Force kinematic mode for visualization purposes.
-             */
+            // Force kinematic mode for visualization purposes.
             RigidBodyControl rbc = (RigidBodyControl) copy;
             rbc.setKinematic(true);
             rbc.setKinematicSpatial(true);
@@ -219,9 +217,8 @@ public class SceneView extends SceneViewCore {
         MyControlP.removeNonPhysicsControls(clone);
         PhysicsSpace space = getPhysicsSpace();
         MyControlP.enablePhysicsControls(clone, space);
-        /*
-         * Attach the child to the scene.
-         */
+
+        // Attach the child to the scene.
         Node parentNode = (Node) findSpatial(parentPosition);
         parentNode.attachChild(clone);
     }
@@ -340,9 +337,8 @@ public class SceneView extends SceneViewCore {
         AxesVisualizer axesVisualizer = getAxesVisualizer();
         assert axesVisualizer.isEnabled();
         Spatial axesSpatial = axesVisualizer.getSpatial();
-        /*
-         * Calculate distances to the tip and tail of the axis arrow.
-         */
+
+        // Calculate distances to the tip and tail of the axis arrow.
         assert !MySpatial.isIgnoringTransforms(axesSpatial);
         Vector3f tailLocation = axesSpatial.getWorldTranslation();
         Vector3f tipLocation = axesVisualizer.tipLocation(axisIndex);
@@ -865,7 +861,7 @@ public class SceneView extends SceneViewCore {
         if (MySpatial.isIgnoringTransforms(transformSpatial)) {
             result.loadIdentity();
         } else {
-            Transform alias = transformSpatial.getWorldTransform();
+            Transform alias = transformSpatial.getWorldTransform(); // alias
             result.set(alias);
         }
 

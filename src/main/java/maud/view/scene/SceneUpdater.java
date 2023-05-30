@@ -177,7 +177,7 @@ final public class SceneUpdater {
                     if (MySpatial.isIgnoringTransforms(spatial)) {
                         transform = new Transform(); // identity
                     } else {
-                        transform = spatial.getWorldTransform();
+                        transform = spatial.getWorldTransform(); // alias
                     }
                 }
                 break;

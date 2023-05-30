@@ -115,9 +115,7 @@ public class EditState implements Cloneable {
      * Callback before a checkpoint is created.
      */
     public void preCheckpoint() {
-        /*
-         * Potentially new continuous edits.
-         */
+        // Potentially new continuous edits.
         this.continuousEditState = "";
     }
 

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -147,9 +147,7 @@ public class DddCursor {
      * @param tpf time interval between frames (in seconds, &ge;0)
      */
     void update(Cgm cgm, float tpf) {
-        /*
-         * visibility
-         */
+        // visibility
         boolean wasVisible = (geometry != null);
         DddCursorOptions options = Maud.getModel().getScene().getCursor();
         boolean visible = options.isVisible();
@@ -162,9 +160,7 @@ public class DddCursor {
         }
 
         if (geometry != null) {
-            /*
-             * color
-             */
+            // color
             float cycleTime = options.getCycleTime();
             colorTime = (colorTime + tpf) % cycleTime;
             double t = Math.sin(Math.PI * colorTime / cycleTime);
@@ -176,13 +172,11 @@ public class DddCursor {
                     = MyColor.interpolateLinear(fraction, color0, color1);
             Material material = geometry.getMaterial();
             material.setColor("Color", newColor); // note: creates alias
-            /*
-             * location
-             */
+
+            // location
             MySpatial.setWorldLocation(geometry, location);
-            /*
-             * scale
-             */
+
+            // scale
             float newScale = worldScale();
             if (newScale > 0f) {
                 MySpatial.setWorldScale(geometry, newScale);
@@ -198,15 +192,12 @@ public class DddCursor {
         Camera camera = view.getCamera();
         InputManager inputManager = Maud.getApplication().getInputManager();
         Ray ray = MyCamera.mouseRay(camera, inputManager);
-        /*
-         * Trace the ray to the C-G model.
-         */
+
+        // Trace the ray to the C-G model.
         Spatial cgmRoot = view.getCgmRoot();
         CollisionResult collision = MaudUtil.findCollision(cgmRoot, ray);
         if (collision == null) {
-            /*
-             * The ray missed the C-G model; try to trace it to the platform.
-             */
+            // The ray missed the C-G model; try to trace it to the platform.
             collision = view.getPlatform().findCollision(ray);
         }
 
