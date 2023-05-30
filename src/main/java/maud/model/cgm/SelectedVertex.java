@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyMesh;
 import jme3utilities.Validate;
+import jme3utilities.math.MyQuaternion;
 import jme3utilities.math.MyVector3f;
 import jme3utilities.math.Population;
 import jme3utilities.wes.Pose;
@@ -310,7 +311,8 @@ public class SelectedVertex implements Cloneable {
 
         Transform transform = SceneUpdater.axesTransform(cgm);
         Quaternion rotation = transform.getRotation(); // alias
-        Vector3f worldDirection = rotation.mult(axesDirection, null);
+        Vector3f worldDirection
+                = MyQuaternion.rotate(rotation, axesDirection, null);
 
         selectExtremeWorld(worldDirection);
     }

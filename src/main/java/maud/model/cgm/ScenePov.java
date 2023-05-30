@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -34,6 +34,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyCamera;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
+import jme3utilities.math.MyQuaternion;
 import jme3utilities.math.MyVector3f;
 import maud.Maud;
 import maud.model.option.scene.CameraOptions;
@@ -255,7 +256,7 @@ public class ScenePov implements Cloneable, Pov {
         } else {
             Quaternion rotate = new Quaternion();
             rotate.fromAngleAxis(amount, upDirection);
-            rotate.mult(lookDirection, directionalGoal);
+            MyQuaternion.rotate(rotate, lookDirection, directionalGoal);
         }
         lookDirection.set(directionalGoal);
     }
@@ -278,7 +279,7 @@ public class ScenePov implements Cloneable, Pov {
             Vector3f pitchAxis = pitchAxis();
             Quaternion rotate = new Quaternion();
             rotate.fromAngleAxis(amount, pitchAxis);
-            rotate.mult(lookDirection, directionalGoal);
+            MyQuaternion.rotate(rotate, lookDirection, directionalGoal);
         }
         lookDirection.set(directionalGoal);
     }
