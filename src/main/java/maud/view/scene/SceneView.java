@@ -361,8 +361,8 @@ public class SceneView extends SceneViewCore {
      * @param spatialPosition the tree position of the Spatial to move (not
      * null, unaffected)
      */
-    public void moveSpatial(List<Integer> targetPosition,
-            List<Integer> spatialPosition) {
+    public void moveSpatial(
+            List<Integer> targetPosition, List<Integer> spatialPosition) {
         Validate.nonNull(targetPosition, "parent position");
         Validate.nonNull(spatialPosition, "spatial position");
 
@@ -384,8 +384,8 @@ public class SceneView extends SceneViewCore {
      * @param pcPosition index among all physics controls added to the
      * controlled spatial (&ge;0)
      */
-    public void removePhysicsControl(List<Integer> treePosition,
-            int pcPosition) {
+    public void removePhysicsControl(
+            List<Integer> treePosition, int pcPosition) {
         logger.log(Level.INFO, "");
         Validate.nonNull(treePosition, "tree position");
         Validate.nonNegative(pcPosition, "control position");
@@ -465,8 +465,8 @@ public class SceneView extends SceneViewCore {
      * controlled spatial (&ge;0)
      * @param newSetting true&rarr;apply to local, false&rarr;apply to world
      */
-    public void setApplyPhysicsLocal(List<Integer> treePosition, int pcPosition,
-            boolean newSetting) {
+    public void setApplyPhysicsLocal(
+            List<Integer> treePosition, int pcPosition, boolean newSetting) {
         Validate.nonNull(treePosition, "tree position");
         Validate.nonNegative(pcPosition, "control position");
 
@@ -755,8 +755,8 @@ public class SceneView extends SceneViewCore {
      * controlled spatial (&ge;0)
      * @param newSetting true&rarr;enable, false&rarr;disable
      */
-    public void setPhysicsControlEnabled(List<Integer> treePosition,
-            int pcPosition, boolean newSetting) {
+    public void setPhysicsControlEnabled(
+            List<Integer> treePosition, int pcPosition, boolean newSetting) {
         Validate.nonNull(treePosition, "tree position");
         Validate.nonNegative(pcPosition, "control position");
 
@@ -771,8 +771,8 @@ public class SceneView extends SceneViewCore {
      * unaffected)
      * @param newBucket the new value for queue bucket (not null)
      */
-    public void setQueueBucket(List<Integer> treePosition,
-            RenderQueue.Bucket newBucket) {
+    public void setQueueBucket(
+            List<Integer> treePosition, RenderQueue.Bucket newBucket) {
         Validate.nonNull(treePosition, "tree position");
         Validate.nonNull(newBucket, "new bucket");
 
