@@ -639,7 +639,7 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Delete the selected spatial and its descendents, if any. The invoker is
+     * Delete the selected spatial and its descendants, if any. The invoker is
      * responsible for updating selections.
      */
     void deleteSubtree() {
@@ -1792,7 +1792,7 @@ public class EditableCgm extends LoadedCgm {
     // private methods
 
     /**
-     * Delete all "extra" spatials among a node's descendents. Note: recursive!
+     * Delete all "extra" spatials among a node's descendants. Note: recursive!
      *
      * @param subtree subtree to traverse (not null)
      * @param attachmentsNodes collection of attachments nodes (not null,
@@ -1823,7 +1823,7 @@ public class EditableCgm extends LoadedCgm {
     }
 
     /**
-     * Delete the specified Spatial and its descendents, if any.
+     * Delete the specified Spatial and its descendants, if any.
      *
      * @param subtree the root of the scene-graph subtree to delete (not null)
      */

@@ -375,7 +375,7 @@ public class SelectedSpatial implements JmeCloneable {
 
     /**
      * Apply the local Transform of the selected Spatial (and those of its
-     * descendents) to all of their meshes.
+     * descendants) to all of their meshes.
      */
     public void applyTransformToMeshes() {
         Spatial subtree = find();

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2021, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -73,7 +73,7 @@ public enum ShowBones {
      */
     Selected,
     /**
-     * visualize the selected bone and all its descendents
+     * visualize the selected bone and all its descendants
      */
     Subtree,
     /**

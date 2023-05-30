@@ -229,7 +229,7 @@ public class BVHLoader implements AssetLoader {
     }
 
     /**
-     * Parse the hierarchy of the named bone/segment, including its descendents.
+     * Parse the hierarchy of the named bone/segment, including its descendants.
      * Note: recursive!
      *
      * @param name name for the bone (not null, not empty)

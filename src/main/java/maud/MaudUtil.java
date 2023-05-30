@@ -997,7 +997,7 @@ final public class MaudUtil {
     /**
      * Test whether the specified Spatial is an "extra" spatial.
      *
-     * A spatial is "extra" iff neither it nor any of its descendents:
+     * A spatial is "extra" iff neither it nor any of its descendants:
      * <ul>
      * <li> is an attachments node
      * <li> has a scene-graph control

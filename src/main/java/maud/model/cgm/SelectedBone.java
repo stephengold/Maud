@@ -232,9 +232,7 @@ public class SelectedBone implements Cloneable {
     public boolean influencesAttachmentsNode() {
         boolean result = hasAttachmentsNode();
         if (!result) {
-            /*
-             * Test descendent bones/joints.
-             */
+            // Test descendant bones/joints.
             Object skeleton = cgm.getSkeleton().find();
             int numBones = cgm.getSkeleton().countBones();
             for (int iBone = 0; iBone < numBones; iBone++) {

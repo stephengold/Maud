@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -170,7 +170,7 @@ public class SceneView extends SceneViewCore {
 
     /**
      * Apply the local Transform of the selected Spatial (and those of its
-     * descendents) to each of its meshes.
+     * descendants) to each of its meshes.
      */
     public void applyTransform() {
         Spatial subtree = selectedSpatial();
@@ -300,7 +300,7 @@ public class SceneView extends SceneViewCore {
     }
 
     /**
-     * Delete the specified spatial and its descendents, if any.
+     * Delete the specified spatial and its descendants, if any.
      *
      * @param treePosition tree position of spatial to delete (not null)
      */
