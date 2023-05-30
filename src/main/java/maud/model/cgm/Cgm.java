@@ -1323,8 +1323,8 @@ public class Cgm implements Cloneable {
      * @param subset which kinds of spatials to include (not null)
      * @return a new list of names
      */
-    private List<String> listSpatialNames(Spatial subtree, String prefix,
-            WhichSpatials subset) {
+    private List<String> listSpatialNames(
+            Spatial subtree, String prefix, WhichSpatials subset) {
         List<String> names = new ArrayList<>(5);
         if (subtree != null) {
             String spatialName = subtree.getName();

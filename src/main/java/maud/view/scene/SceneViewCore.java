@@ -788,8 +788,8 @@ public class SceneViewCore implements EditorView, JmeCloneable {
         SkeletonOptions options = Maud.getModel().getScene().getSkeleton();
         ShowBones showBones = options.getShowBones();
         int selectedBoneIndex = cgm.getBone().index();
-        BitSet boneIndexSet = cgm.getSkeleton().listShown(showBones,
-                selectedBoneIndex, null);
+        BitSet boneIndexSet = cgm.getSkeleton().listShown(
+                showBones, selectedBoneIndex, null);
         int selectedBone = cgm.getBone().index();
         if (selectedBone != -1) {
             boneIndexSet.clear(selectedBone);
@@ -887,8 +887,8 @@ public class SceneViewCore implements EditorView, JmeCloneable {
             Vector3f worldPosition = new Vector3f();
 
             for (int vertexIndex : vertexIndices) {
-                MyMesh.vertexWorldLocation(geometry, vertexIndex, matrices,
-                        worldPosition);
+                MyMesh.vertexWorldLocation(
+                        geometry, vertexIndex, matrices, worldPosition);
                 Vector3f screen = camera.getScreenCoordinates(worldPosition);
                 Vector2f screenXY = new Vector2f(screen.x, screen.y);
                 selection.considerVertex(cgm, geometry, vertexIndex, screenXY);
@@ -1426,8 +1426,8 @@ public class SceneViewCore implements EditorView, JmeCloneable {
      * @param spatial subtree of the base scene graph (not null)
      * @param position tree position of subtree (not null, unaffected)
      */
-    private void updateLocalTransforms(Spatial spatial,
-            List<Integer> position) {
+    private void updateLocalTransforms(
+            Spatial spatial, List<Integer> position) {
         assert position != null;
         assert spatial != null;
 

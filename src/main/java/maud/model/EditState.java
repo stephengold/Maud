@@ -128,8 +128,8 @@ public class EditState implements Cloneable {
      * @param oldShape shape to replace (not null, unaffected)
      * @param newShape replacement shape (not null, unaffected)
      */
-    public void replaceForResize(CollisionShape oldShape,
-            CollisionShape newShape) {
+    public void replaceForResize(
+            CollisionShape oldShape, CollisionShape newShape) {
         Validate.nonNull(newShape, "new shape");
 
         String oldState = "ss" + oldShape.toString();
@@ -276,8 +276,8 @@ public class EditState implements Cloneable {
             History.autoAdd();
             ++editCount;
             continuousEditState = newState;
-            String description = String.format("recolor light named %s",
-                    MyString.quote(lightName));
+            String description = String.format(
+                    "recolor light named %s", MyString.quote(lightName));
             History.addEvent(description);
         }
     }
@@ -356,8 +356,8 @@ public class EditState implements Cloneable {
             History.autoAdd();
             ++editCount;
             continuousEditState = newState;
-            String description = String.format("alter range of motion for %s",
-                    MyString.quote(linkName));
+            String description = String.format(
+                    "alter range of motion for %s", MyString.quote(linkName));
             History.addEvent(description);
         }
     }

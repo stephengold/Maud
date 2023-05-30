@@ -399,14 +399,13 @@ public class SelectedSpatial implements JmeCloneable {
             Transform gInWorld = geometry.getWorldTransform().clone();
             Transform gInParent = gInWorld.combineWithParent(wip);
 
-            MyMesh.transformBuffer(mesh, VertexBuffer.Type.BindPosePosition,
-                    gInParent);
-            MyMesh.transformBuffer(mesh, VertexBuffer.Type.Position,
-                    gInParent);
+            MyMesh.transformBuffer(
+                    mesh, VertexBuffer.Type.BindPosePosition, gInParent);
+            MyMesh.transformBuffer(mesh, VertexBuffer.Type.Position, gInParent);
 
             Quaternion gInPRot = gInParent.getRotation(); // alias
-            MyMesh.rotateBuffer(mesh, VertexBuffer.Type.BindPoseNormal,
-                    gInPRot);
+            MyMesh.rotateBuffer(
+                    mesh, VertexBuffer.Type.BindPoseNormal, gInPRot);
             MyMesh.rotateBuffer(mesh, VertexBuffer.Type.Normal, gInPRot);
             // Do not rotate the tangents!
             // TODO effect of non-uniform scaling on normals?

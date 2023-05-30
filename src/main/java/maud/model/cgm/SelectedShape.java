@@ -638,8 +638,8 @@ public class SelectedShape implements JmeCloneable {
      * @param eventDescription description for the edit history (not null, not
      * empty)
      */
-    private void replaceInObjects(CollisionShape newShape,
-            String eventDescription) {
+    private void replaceInObjects(
+            CollisionShape newShape, String eventDescription) {
         assert newShape != null;
         assert eventDescription != null;
         assert !eventDescription.isEmpty();
