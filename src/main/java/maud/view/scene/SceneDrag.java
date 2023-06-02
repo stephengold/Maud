@@ -38,6 +38,7 @@ import java.util.logging.Logger;
 import jme3utilities.MySpatial;
 import jme3utilities.Validate;
 import jme3utilities.debug.AxesVisualizer;
+import jme3utilities.math.MyMath;
 import jme3utilities.math.MyQuaternion;
 import jme3utilities.math.MyVector3f;
 import jme3utilities.wes.Pose;
@@ -563,7 +564,7 @@ final public class SceneDrag {
                         transform.getTranslation().zero();
                     }
                     Vector3f meshOffset
-                            = transform.transformInverseVector(offset, null);
+                            = MyMath.transformInverse(transform, offset, null);
                     /*
                      * Factor out the parent bone's rotation and scaling
                      * in the displayed pose.
@@ -577,8 +578,8 @@ final public class SceneDrag {
                     } else {
                         pose.modelTransform(parentIndex, transform);
                         transform.getTranslation().zero();
-                        userOffset = transform.transformInverseVector(
-                                meshOffset, null);
+                        userOffset = MyMath.transformInverse(
+                                transform, meshOffset, null);
                     }
 
                     // Translate the selected bone in the displayed pose.
@@ -624,7 +625,7 @@ final public class SceneDrag {
                     Transform transform = parent.getWorldTransform().clone();
                     transform.getTranslation().zero();
                     Vector3f localOffset
-                            = transform.transformInverseVector(offset, null);
+                            = MyMath.transformInverse(transform, offset, null);
 
                     // Translate the selected spatial.
                     Vector3f localTranslation
