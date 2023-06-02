@@ -35,6 +35,7 @@ import com.jme3.util.clone.Cloner;
 import com.jme3.util.clone.JmeCloneable;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
+import jme3utilities.math.MyMath;
 import jme3utilities.wes.Pose;
 
 /**
@@ -207,7 +208,7 @@ public class DisplayedPose implements JmeCloneable {
 
         Transform transform = cgm.getSceneView().worldTransform(null);
         Vector3f modelLocation = pose.modelLocation(boneIndex, null);
-        transform.transformVector(modelLocation, result);
+        MyMath.transform(transform, modelLocation, result);
 
         return result;
     }

@@ -54,6 +54,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyMesh;
 import jme3utilities.MySpatial;
 import jme3utilities.Validate;
+import jme3utilities.math.MyMath;
 import jme3utilities.math.MyVector3f;
 import jme3utilities.math.RectangularSolid;
 import jme3utilities.math.VectorSet;
@@ -457,7 +458,7 @@ final public class PhysicsUtil {
             tempLocation.z = buffer.get();
 
             // Transform vertex coordinates to de-scaled shape coordinates.
-            worldToLocal.transformVector(tempLocation, tempLocation);
+            MyMath.transform(worldToLocal, tempLocation, tempLocation);
 
             buffer.reset();
             buffer.put(tempLocation.x);
@@ -494,7 +495,7 @@ final public class PhysicsUtil {
             tempLocation.y = buffer.get();
             tempLocation.z = buffer.get();
 
-            worldToLocal.transformVector(tempLocation, tempLocation);
+            MyMath.transform(worldToLocal, tempLocation, tempLocation);
             double r2 = MyVector3f.lengthSquared(tempLocation);
             if (r2 > radiusSquared) {
                 radiusSquared = r2;
