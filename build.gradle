@@ -60,6 +60,7 @@ repositories {
     mavenCentral()
     maven { url 'https://jitpack.io' } // to find jme3_xbuf_loader (see below)
     //maven { url 'https://s01.oss.sonatype.org/content/groups/staging' } // to find libraries staged but not yet released
+    //maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots' } // to find public SNAPSHOTs of libraries
 }
 
 dependencies {
