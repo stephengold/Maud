@@ -7,8 +7,10 @@ plugins {
 
 ext.jme3Version = '3.6.1-stable' // current version of JMonkeyEngine
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
 
 checkstyle {
     toolVersion '10.12.0'
