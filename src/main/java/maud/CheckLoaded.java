@@ -390,8 +390,8 @@ final public class CheckLoaded {
             int numVertices = mesh.getVertexCount();
             for (int vertexI = 0; vertexI < numVertices; ++vertexI) {
                 if (MyMesh.isAnimated(mesh)) {
-                    MyMesh.vertexVector3f(mesh,
-                            VertexBuffer.Type.BindPoseNormal, vertexI,
+                    MyMesh.vertexVector3f(
+                            mesh, VertexBuffer.Type.BindPoseNormal, vertexI,
                             tmpVector);
                 } else {
                     MyMesh.vertexVector3f(mesh, VertexBuffer.Type.Normal,

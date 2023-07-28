@@ -255,10 +255,10 @@ public class Maud extends GuiApplication {
         // Attach controllers for windows in the editor screen.
         gui.tools.attachAll(stateManager);
 
-         // Disable flyCam.
+        // Disable flyCam.
         flyCam.setEnabled(false);
 
-         // Manage latency statistics.
+        // Manage latency statistics.
         PerformanceAppState pas = new PerformanceAppState();
         boolean success = stateManager.attach(pas);
         assert success;
@@ -473,8 +473,8 @@ public class Maud extends GuiApplication {
                 640, 720, // min width, height
                 2_048, 1_080 // max width, height
         );
-        DisplaySettings displaySettings
-                = new DisplaySettings(application, applicationName, dsl) {
+        DisplaySettings displaySettings = new DisplaySettings(
+                application, applicationName, dsl) {
             @Override
             protected void applyOverrides(AppSettings settings) {
                 super.applyOverrides(settings);

@@ -110,7 +110,7 @@ final public class EditorViewPorts {
      * whole display in score mode
      */
     private static ViewPort targetScoreWide;
-// *************************************************************************
+    // *************************************************************************
     // constructors
 
     /**

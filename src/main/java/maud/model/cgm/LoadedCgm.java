@@ -393,8 +393,8 @@ public class LoadedCgm extends Cgm {
      * @param diagnose true&rarr;messages to console, false&rarr;no messages
      * @return an orphaned spatial, or null if the asset had errors
      */
-    private Spatial loadFromAsset(String assetPath, boolean useCache,
-            boolean diagnose) {
+    private Spatial loadFromAsset(
+            String assetPath, boolean useCache, boolean diagnose) {
         AssetManager assetManager = Locators.getAssetManager();
         Locators.save();
         /*
