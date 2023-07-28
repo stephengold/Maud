@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -26,6 +26,14 @@
  */
 package maud;
 
+import com.jme3.anim.AnimClip;
+import com.jme3.anim.AnimComposer;
+import com.jme3.anim.AnimTrack;
+import com.jme3.anim.Armature;
+import com.jme3.anim.Joint;
+import com.jme3.anim.MorphTrack;
+import com.jme3.anim.TransformTrack;
+import com.jme3.anim.util.HasLocalTransform;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.Animation;
 import com.jme3.animation.Bone;
@@ -35,6 +43,7 @@ import com.jme3.animation.Track;
 import com.jme3.light.Light;
 import com.jme3.material.Material;
 import com.jme3.math.Quaternion;
+import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Spatial;
@@ -79,6 +88,85 @@ final public class CheckLoaded {
     }
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Check for anomalies in a loaded AnimComposer.
+     *
+     * @param composer (not null, unaffected)
+     * @return false if issues found, otherwise true
+     */
+    public static boolean animComposer(AnimComposer composer) {
+        Collection<String> clips = composer.getAnimClipsNames();
+        if (clips.isEmpty()) {
+            logger.warning("AnimComposer has no clips");
+            return false;
+        }
+
+        TreeSet<String> nameSet = new TreeSet<>();
+        for (String name : clips) {
+            if (name == null) {
+                logger.warning("anim clip name is null");
+                return false;
+            }
+            if (name.isEmpty()) {
+                logger.warning("anim clip name is empty");
+                return false;
+            }
+            //System.out.println("check AnimClip " + MyString.quote(name));
+            if (MaudUtil.isReservedAnimationName(name)) {
+                logger.warning("anim clip has reserved name");
+                return false;
+            }
+            if (nameSet.contains(name)) {
+                logger.warning("duplicate anim clip name");
+                return false;
+            }
+            nameSet.add(name);
+            AnimClip clip = composer.getAnimClip(name);
+            if (clip == null) {
+                logger.warning("AnimClip is null");
+                return false;
+            }
+            double duration = clip.getLength();
+            if (duration < 0.0) {
+                logger.warning("AnimClip has negative length");
+                return false;
+            }
+            AnimTrack[] tracks = clip.getTracks();
+            if (tracks == null) {
+                logger.warning("AnimClip has no track list");
+                return false;
+            }
+            int numTracks = tracks.length;
+            if (numTracks == 0) {
+                logger.warning("AnimClip has no tracks");
+                return false;
+            }
+            List<HasLocalTransform> targetList = new ArrayList<>();
+            for (AnimTrack tr : tracks) {
+                duration = tr.getLength();
+                if (duration < 0.0) {
+                    logger.warning("AnimTrack has negative length");
+                    return false;
+                }
+                if (tr instanceof TransformTrack) {
+                    TransformTrack transTrack = (TransformTrack) tr;
+                    if (!transformTrack(transTrack, targetList)) {
+                        return false;
+                    }
+                } else if (tr instanceof MorphTrack) {
+                    MorphTrack morphTrack = (MorphTrack) tr;
+                    // TODO check for anomalies in a loaded MorphTrack
+                } else {
+                    String className = tr.getClass().getName();
+                    logger.warning("unexpected AnimTrack: " + className);
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
 
     /**
      * Check for anomalies in a loaded AnimControl.
@@ -176,6 +264,29 @@ final public class CheckLoaded {
                         return false;
                     }
                 }
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Check for anomalies in a loaded Armature.
+     *
+     * @param armature (not null, unaffected)
+     * @return false if issues found, otherwise true
+     */
+    public static boolean armature(Armature armature) {
+        int numJoints = armature.getJointCount();
+        if (numJoints < 0) {
+            logger.warning("joint count is negative");
+            return false;
+        }
+        Set<String> nameSet = new TreeSet<>();
+        for (int jointIndex = 0; jointIndex < numJoints; jointIndex++) {
+            Joint joint = armature.getJoint(jointIndex);
+            if (!joint(joint, jointIndex, nameSet)) {
+                return false;
             }
         }
 
@@ -350,10 +461,24 @@ final public class CheckLoaded {
             lightNames.add(name);
         }
 
-        // TODO check armatures, skinning controls, and composers
+        List<Armature> armatures = MySkeleton.listArmatures(cgmRoot, null);
+        for (Armature armature : armatures) {
+            if (!armature(armature)) {
+                return false;
+            }
+        }
+
         List<Skeleton> skeletons = MySkeleton.listSkeletons(cgmRoot, null);
         for (Skeleton skeleton : skeletons) {
             if (!skeleton(skeleton)) {
+                return false;
+            }
+        }
+
+        List<AnimComposer> composers
+                = MySpatial.listControls(cgmRoot, AnimComposer.class, null);
+        for (AnimComposer composer : composers) {
+            if (!animComposer(composer)) {
                 return false;
             }
         }
@@ -373,6 +498,74 @@ final public class CheckLoaded {
                 logger.warning("model has animated mesh without bone weights");
                 return false;
             }
+        }
+
+        return true;
+    }
+
+    /**
+     * Check for anomalies in an armature joint.
+     *
+     * @param joint (may be null, unaffected)
+     * @param index index of the joint in the armature
+     * @param nameSet names of joints already checked (not null, modified)
+     * @return false if issues found, otherwise true
+     */
+    public static boolean joint(Joint joint, int index, Set<String> nameSet) {
+        Validate.nonNull(nameSet, "set of names");
+
+        if (joint == null) {
+            logger.warning("joint is null");
+            return false;
+        }
+        String name = joint.getName();
+        if (name == null) {
+            logger.warning("joint name is null");
+            return false;
+        }
+        if (name.isEmpty()) {
+            logger.warning("joint name is empty");
+            return false;
+        }
+        //System.out.println("check joint " + MyString.quote(name));
+        if (name.equals(SelectedSkeleton.noBone)) {
+            logger.warning("joint has reserved name");
+            return false;
+        }
+        if (nameSet.contains(name)) {
+            logger.log(Level.WARNING, "duplicate joint name: {0}",
+                    MyString.quote(name));
+        } else {
+            nameSet.add(name);
+        }
+        int id = joint.getId();
+        if (id != index) {
+            logger.log(Level.WARNING, "incorrect id for joint named {0}",
+                    MyString.quote(name));
+        }
+
+        Transform t0 = joint.getInitialTransform();
+        Quaternion rotation = t0.getRotation();
+        float norm = rotation.norm();
+        if (Math.abs(norm - 1f) > 0.0001f) {
+            logger.warning("joint initial rotation not normalized");
+            return false;
+        }
+
+        Transform t1 = joint.getLocalTransform();
+        rotation = t1.getRotation();
+        norm = rotation.norm();
+        if (Math.abs(norm - 1f) > 0.0001f) {
+            logger.warning("joint local rotation not normalized");
+            return false;
+        }
+
+        Transform t2 = joint.getModelTransform();
+        rotation = t2.getRotation();
+        norm = rotation.norm();
+        if (Math.abs(norm - 1f) > 0.0001f) {
+            logger.warning("joint model rotation not normalized");
+            return false;
         }
 
         return true;
@@ -426,6 +619,66 @@ final public class CheckLoaded {
         for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
             Bone b = skeleton.getBone(boneIndex);
             if (!bone(b, nameSet)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Check for anomalies in a loaded TransformTrack.
+     *
+     * @param track the track to analyze (not null, unaffected)
+     * @param targetList targets of tracks already checked (not null, modified)
+     * @return false if issues found, otherwise true
+     */
+    public static boolean transformTrack(
+            TransformTrack track, List<HasLocalTransform> targetList) {
+        HasLocalTransform target = track.getTarget();
+        if (target == null) {
+            logger.warning("TransformTrack has no target");
+            return false;
+        }
+        if (targetList.contains(target)) {
+            logger.warning("multiple tracks for the same Target");
+            return false;
+        } else {
+            targetList.add(target);
+        }
+
+        float[] times = track.getTimes();
+        int numFrames = times.length;
+        Vector3f[] translations = track.getTranslations();
+        if (translations != null) {
+            int numTranslations = translations.length;
+            if (numTranslations != numFrames) {
+                logger.warning("track translations have wrong length");
+                return false;
+            }
+        }
+
+        Quaternion[] rotations = track.getRotations();
+        if (rotations != null) {
+            int numRotations = rotations.length;
+            if (numRotations != numFrames) {
+                logger.warning("track rotations have wrong length");
+                return false;
+            }
+            for (Quaternion rotation : rotations) {
+                float norm = rotation.norm();
+                if (Math.abs(norm - 1f) > 0.0001f) {
+                    logger.warning("track rotations not normalized");
+                    return false;
+                }
+            }
+        }
+
+        Vector3f[] scales = track.getScales();
+        if (scales != null) {
+            int numScales = scales.length;
+            if (numScales != numFrames) {
+                logger.warning("track scales have wrong length");
                 return false;
             }
         }
