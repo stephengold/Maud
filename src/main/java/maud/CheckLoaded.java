@@ -360,28 +360,28 @@ final public class CheckLoaded {
         }
         Vector3f[] translations = boneTrack.getTranslations();
         if (translations == null) {
-            logger.warning("bone track lacks translation data");
+            logger.warning("BoneTrack lacks translation data");
             return false;
         }
         int numTranslations = translations.length;
         if (numTranslations != numFrames) {
-            logger.warning("translation data have wrong length");
+            logger.warning("track translations have wrong length");
             return false;
         }
         Quaternion[] rotations = boneTrack.getRotations();
         if (rotations == null) {
-            logger.warning("bone track lacks rotation data");
+            logger.warning("BoneTrack lacks rotation data");
             return false;
         }
         int numRotations = rotations.length;
         if (numRotations != numFrames) {
-            logger.warning("rotation data have wrong length");
+            logger.warning("track rotations have wrong length");
             return false;
         }
         for (Quaternion rotation : rotations) {
             float norm = rotation.norm();
             if (Math.abs(norm - 1f) > 0.0001f) {
-                logger.warning("rotation data not normalized");
+                logger.warning("track rotations not normalized");
                 return false;
             }
         }
@@ -389,7 +389,7 @@ final public class CheckLoaded {
         if (scales != null) {
             int numScales = scales.length;
             if (numScales != numFrames) {
-                logger.warning("scale data have wrong length");
+                logger.warning("track scales have wrong length");
                 return false;
             }
         }
@@ -596,7 +596,7 @@ final public class CheckLoaded {
                 if (!tmpVector.isUnitVector()) {
                     float length = tmpVector.length();
                     logger.log(Level.WARNING,
-                            "normal not a unit vector, length = {0}",
+                            "mesh normal not a unit vector, length = {0}",
                             new Object[]{length});
                     return false;
                 }
