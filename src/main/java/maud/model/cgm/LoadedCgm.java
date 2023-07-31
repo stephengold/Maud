@@ -171,11 +171,11 @@ public class LoadedCgm extends Cgm {
             success = false;
         } else {
             if (spec == null || !spec.startsWith("file:///")) {
-                assetRootPath = "";
+                this.assetRootPath = "";
             } else {
                 String rootPath = MyString.remainder(spec, "file:///");
                 assert !rootPath.isEmpty();
-                assetRootPath = rootPath;
+                this.assetRootPath = rootPath;
             }
             postLoad(loaded);
             success = true;
@@ -289,7 +289,7 @@ public class LoadedCgm extends Cgm {
         assert cgmRoot != null;
 
         CheckLoaded.cgm(cgmRoot);
-        rootSpatial = Heart.deepCopy(cgmRoot);
+        this.rootSpatial = Heart.deepCopy(cgmRoot);
         getVertex().deselect();
         getSceneView().loadCgm(cgmRoot);
         updateSceneWireframe();
@@ -354,10 +354,10 @@ public class LoadedCgm extends Cgm {
         Cgm target = Maud.getModel().getTarget();
         assert this != target; // not allowed to unload target
 
-        assetRootPath = null;
-        baseAssetPath = null;
-        extension = null;
-        name = null;
+        this.assetRootPath = null;
+        this.baseAssetPath = null;
+        this.extension = null;
+        this.name = null;
 
         super.unload();
     }
@@ -440,16 +440,16 @@ public class LoadedCgm extends Cgm {
             if (this == Maud.getModel().getTarget() && isLoaded()) {
                 History.autoAdd();
             }
-            extension = ext;
+            this.extension = ext;
             int extLength = extension.length();
             if (extLength == 0) {
-                baseAssetPath = assetPath;
+                this.baseAssetPath = assetPath;
             } else {
                 int pathLength = assetPath.length() - extLength - 1;
-                baseAssetPath = assetPath.substring(0, pathLength);
+                this.baseAssetPath = assetPath.substring(0, pathLength);
             }
-            assetRootPath = Locators.getRootPath();
-            name = loaded.getName();
+            this.assetRootPath = Locators.getRootPath();
+            this.name = loaded.getName();
         }
 
         Locators.restore();
