@@ -201,6 +201,7 @@ final public class CheckLoaded {
                 logger.warning("animation has reserved name");
                 return false;
             }
+            //System.out.println("check animation " + MyString.quote(name));
             if (nameSet.contains(name)) {
                 logger.warning("duplicate animation name");
                 return false;
@@ -297,7 +298,7 @@ final public class CheckLoaded {
      * Check for anomalies in a bone.
      *
      * @param bone (may be null, unaffected)
-     * @param nameSet (not null, modified)
+     * @param nameSet names of bones already checked (not null, modified)
      * @return false if issues found, otherwise true
      */
     public static boolean bone(Bone bone, Set<String> nameSet) {
@@ -316,6 +317,7 @@ final public class CheckLoaded {
             logger.warning("bone name is empty");
             return false;
         }
+        //System.out.println("check bone " + MyString.quote(name));
         if (name.equals(SelectedSkeleton.noBone)) {
             logger.warning("bone has reserved name");
             return false;
@@ -336,7 +338,8 @@ final public class CheckLoaded {
      * @param boneTrack (not null, unaffected)
      * @param numBones (&gt;0)
      * @param numFrames (&gt;0)
-     * @param targetBoneIndexSet (not null, modified)
+     * @param targetBoneIndexSet bone indices of tracks already checked (not
+     * null, modified)
      * @return false if issues found, otherwise true
      */
     public static boolean boneTrack(BoneTrack boneTrack, int numBones,

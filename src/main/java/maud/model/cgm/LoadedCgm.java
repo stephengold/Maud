@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -314,9 +314,8 @@ public class LoadedCgm extends Cgm {
         } else {
             getAnimation().loadBindPose(true);
         }
-        /*
-         * Verify that the displayed pose has been initialized.
-         */
+
+        //Verify that the displayed pose has been initialized.
         int boneCount = getSkeleton().countBones();
         int numTransforms = getPose().get().countBones();
         assert numTransforms == boneCount : numTransforms;
@@ -397,9 +396,8 @@ public class LoadedCgm extends Cgm {
             String assetPath, boolean useCache, boolean diagnose) {
         AssetManager assetManager = Locators.getAssetManager();
         Locators.save();
-        /*
-         * Load the C-G model.
-         */
+
+        // Load the C-G model.
         String ext;
         Spatial loaded;
         if (assetPath.endsWith(".bvh")) {
