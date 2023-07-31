@@ -292,8 +292,8 @@ public class SceneViewCore implements EditorView, JmeCloneable {
 
         int lpIndex = 1 + addedProbes.size();
         String lpName = String.format("Probe#%d", lpIndex);
-        JobProgressAdapter<LightProbe> progress
-                = new JobProgressAdapter<LightProbe>() {
+        JobProgressAdapter<LightProbe> progress;
+        progress = new JobProgressAdapter<LightProbe>() {
             @Override
             public void done(LightProbe result) {
                 Maud.envCamIsBusy = false;

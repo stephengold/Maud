@@ -313,7 +313,7 @@ final public class CheckLoaded {
             logger.warning("bone name is null");
             return false;
         }
-        if (name.length() == 0) {
+        if (name.isEmpty()) {
             logger.warning("bone name is empty");
             return false;
         }
