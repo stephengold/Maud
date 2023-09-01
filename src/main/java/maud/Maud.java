@@ -468,7 +468,7 @@ public class Maud extends GuiApplication {
         application = new Maud();
 
         // Instantiate the display-settings screen.
-        String applicationName = "Maud v1.0.0-beta2";
+        String applicationName = "Maud"; // v1.0.0-beta2";
         RectSizeLimits dsl = new RectSizeLimits(
                 640, 720, // min width, height
                 2_048, 1_080 // max width, height
