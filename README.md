@@ -114,7 +114,7 @@ Maud was designed for a desktop environment with:
   + using Git:
     + `git clone https://github.com/stephengold/Maud.git`
     + `cd Maud`
-    + `git checkout -b latest 1.0.0-beta1`
+    + `git checkout -b latest 1.0.0-beta2`
   + using a web browser:
     + browse to [the latest release](https://github.com/stephengold/Maud/releases/latest)
     + follow the "Source code (zip)" link
@@ -204,7 +204,7 @@ the "1" key on the main keyboard (but NOT the "1" key on the numeric keypad).
 
 Keyboard shortcuts in the Editor Screen include:
 
- + "." to pause/restart the loaded animation(s)
+ + "." or "Pause" to pause/restart the loaded animation(s)
  + "Esc" to exit from the active menu (or if there's no active menu, to exit from Maud)
  + "H" to toggle the visibility of the menu bar and the status bar
  + "X" to create a checkpoint
