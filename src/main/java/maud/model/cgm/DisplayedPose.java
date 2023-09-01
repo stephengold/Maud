@@ -99,7 +99,6 @@ public class DisplayedPose implements JmeCloneable {
     void resetToBind(Object skeleton) {
         if (skeleton instanceof Armature) {
             this.pose = new Pose((Armature) skeleton);
-            pose.setToBind();
         } else {
             this.pose = new Pose((Skeleton) skeleton);
         }
