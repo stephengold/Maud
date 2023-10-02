@@ -133,8 +133,8 @@ You can run the local build using the Gradle wrapper:
   + using Windows Command Prompt: `.\gradlew run`
 
 You can restore the project to a pristine state:
- + using Bash or PowerShell: `./gradlew clean`
- + using Windows Command Prompt: `.\gradlew clean`
+ + using Bash or PowerShell: `./gradlew clean cleanSandbox`
+ + using Windows Command Prompt: `.\gradlew clean cleanSandbox`
 
 [Jump to table of contents](#toc)
 
