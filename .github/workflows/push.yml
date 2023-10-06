@@ -21,7 +21,7 @@ jobs:
           name: linux build
           path: build/distributions/Maud.tar
 
-  Java20-Windows:
+  Java21-Windows:
     if: contains(toJson(github.event.commits), '[ci skip] ') == false
     runs-on: windows-2022
     steps:
@@ -29,7 +29,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: 20
+          java-version: 21
       - run: ./gradlew build --console=plain --no-daemon --stacktrace
         shell: bash
       - uses: actions/upload-artifact@v3
