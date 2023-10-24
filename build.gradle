@@ -1,7 +1,7 @@
-// Gradle build script for the Maud project
+// Gradle script to build the Maud project
 
 plugins {
-    id 'application'
+    id 'application' // to build a Java application
     id 'checkstyle'
 }
 
