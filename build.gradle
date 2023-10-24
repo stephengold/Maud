@@ -12,6 +12,16 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
+tasks.register('runForceDialog', JavaExec) {
+    args '--forceDialog'
+    mainClass = 'maud.Maud'
+    description 'Runs the editor after displaying the Settings dialog.'
+}
+
+application {
+    mainClass = 'maud.Maud'
+}
+
 checkstyle {
     toolVersion '10.12.4'
 }
@@ -50,10 +60,6 @@ tasks.withType(JavaExec).configureEach { // Java runtime options:
     //jvmArgs '-XX:+UseG1GC', '-XX:MaxGCPauseMillis=10'
 }
 
-application {
-    mainClass = 'maud.Maud'
-}
-
 configurations.configureEach {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds' // to disable caching of SNAPSHOTs
 }
@@ -79,12 +85,6 @@ dependencies {
 
     // from jitpack repositories:
     implementation 'com.github.xbuf.jme3_xbuf:jme3_xbuf_loader:0.9.1'
-}
-
-tasks.register('runForceDialog', JavaExec) {
-    args '--forceDialog'
-    mainClass = 'maud.Maud'
-    description 'Runs the editor after displaying the Settings dialog.'
 }
 
 // cleanup tasks:
