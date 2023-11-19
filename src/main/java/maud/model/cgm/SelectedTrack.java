@@ -1016,9 +1016,8 @@ public class SelectedTrack implements JmeCloneable {
         Vector3f world = new Vector3f();
         Vector3f w = new Vector3f();
         Matrix3f sensMat = new Matrix3f();
-        /*
-         * Calculate a new bone translation for each keyframe.
-         */
+
+        // Calculate a new bone translation for each keyframe.
         float[] times = MaudUtil.getTrackTimes(selected);
         Vector3f[] translations = MaudUtil.getTrackTranslations(selected);
         TweenTransforms technique = Maud.getModel().getTweenTransforms();
@@ -1090,8 +1089,8 @@ public class SelectedTrack implements JmeCloneable {
         TmpTracks.addAllToAnim(newAnim);
 
         String trackName = describe();
-        String description = String.format(
-                "translate track %s for traction", trackName);
+        String description
+                = String.format("translate track %s for traction", trackName);
         editableCgm.replace(oldAnim, newAnim, description, newSelected);
 
         return true;
@@ -1281,9 +1280,8 @@ public class SelectedTrack implements JmeCloneable {
         Geometry[] geometryRef = new Geometry[1];
         Vector3f world = new Vector3f();
         Matrix3f sensMat = new Matrix3f();
-        /*
-         * Calculate a new bone translation for each keyframe.
-         */
+
+        // Calculate a new bone translation for each keyframe.
         float[] times = boneTrack.getKeyFrameTimes();
         Vector3f[] translations = boneTrack.getTranslations();
         TweenTransforms techniques = Maud.getModel().getTweenTransforms();
@@ -1303,9 +1301,8 @@ public class SelectedTrack implements JmeCloneable {
             world.x = 0f;
             world.y = cgmY - world.y;
             world.z = 0f;
-            /*
-             * Convert the world offset to a bone offset.
-             */
+
+            // Convert the world offset to a bone offset.
             Geometry geometry = geometryRef[0];
             SupportUtil.sensitivity(
                     boneIndex, geometry, vertexIndex, tempPose, sensMat);
@@ -1321,7 +1318,7 @@ public class SelectedTrack implements JmeCloneable {
             translations[frameIndex] = translation.add(boneOffset);
         }
 
-        //Construct a new animation using the modified translations.
+        // Construct a new animation using the modified translations.
         Object newSelected = null;
 
         TmpTracks.clear();
@@ -1344,8 +1341,8 @@ public class SelectedTrack implements JmeCloneable {
         TmpTracks.addAllToAnim(newAnim);
 
         String trackName = describe();
-        String description = String.format(
-                "translate track %s for support", trackName);
+        String description
+                = String.format("translate track %s for support", trackName);
         editableCgm.replace(oldAnim, newAnim, description, newSelected);
 
         return true;
