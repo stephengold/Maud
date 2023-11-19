@@ -538,6 +538,11 @@ public class SelectedTrack implements JmeCloneable {
      */
     public boolean isBoneTrack() {
         boolean result = selected instanceof BoneTrack;
+        if (!result && (selected instanceof TransformTrack)) {
+            TransformTrack transformTrack = (TransformTrack) selected;
+            HasLocalTransform target = transformTrack.getTarget();
+            result = target instanceof Joint;
+        }
         return result;
     }
 
@@ -960,7 +965,8 @@ public class SelectedTrack implements JmeCloneable {
      * Y-coordinate as it is for bind pose.
      */
     public void translateForSupport() {
-        assert selected instanceof BoneTrack;
+        assert selected instanceof BoneTrack
+                || selected instanceof TransformTrack;
 
         SelectedSkeleton selectedSkeleton = cgm.getSkeleton();
         Object skeleton = selectedSkeleton.find();
@@ -1260,9 +1266,6 @@ public class SelectedTrack implements JmeCloneable {
      * @return true if successful, otherwise false
      */
     private boolean translateForSupport(float cgmY) {
-        BoneTrack boneTrack = (BoneTrack) selected;
-        int boneIndex = boneTrack.getTargetBoneIndex();
-
         SelectedSkeleton selectedSkeleton = cgm.getSkeleton();
         Object skeleton = selectedSkeleton.find();
         assert skeleton != null;
@@ -1282,9 +1285,11 @@ public class SelectedTrack implements JmeCloneable {
         Matrix3f sensMat = new Matrix3f();
 
         // Calculate a new bone translation for each keyframe.
-        float[] times = boneTrack.getKeyFrameTimes();
-        Vector3f[] translations = boneTrack.getTranslations();
+        float[] times = MaudUtil.getTrackTimes(selected);
+        Vector3f[] translations = MaudUtil.getTrackTranslations(selected);
         TweenTransforms techniques = Maud.getModel().getTweenTransforms();
+        int boneIndex = targetBoneIndex();
+
         int numKeyframes = times.length;
         for (int frameIndex = 0; frameIndex < numKeyframes; frameIndex++) {
             float trackTime = times[frameIndex];
@@ -1325,11 +1330,11 @@ public class SelectedTrack implements JmeCloneable {
         Object[] oldTracks = cgm.getAnimation().getTracks();
         for (Object oldTrack : oldTracks) {
             Object newTrack;
-            if (oldTrack == boneTrack) {
-                Quaternion[] rotations = boneTrack.getRotations();
-                Vector3f[] scales = boneTrack.getScales();
-                newTrack = MyAnimation.newBoneTrack(
-                        boneIndex, times, translations, rotations, scales);
+            if (oldTrack == selected) {
+                Quaternion[] rotations = MaudUtil.getTrackRotations(selected);
+                Vector3f[] scales = MaudUtil.getTrackScales(selected);
+                newTrack = MaudUtil.newTrack(
+                        oldTrack, times, translations, rotations, scales);
                 newSelected = newTrack;
             } else {
                 newTrack = TrackEdit.cloneTrack(oldTrack);
