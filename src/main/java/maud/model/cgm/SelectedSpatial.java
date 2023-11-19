@@ -1911,7 +1911,7 @@ public class SelectedSpatial implements JmeCloneable {
             Spatial selectedSpatial = find();
             if (input == selectedSpatial) {
                 result = true;
-            } else if (input instanceof Node) {
+            } else if (selectedSpatial instanceof Node) {
                 Node selectedNode = (Node) selectedSpatial;
                 result = input.hasAncestor(selectedNode);
             } else {
