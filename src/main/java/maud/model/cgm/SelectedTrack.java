@@ -1000,8 +1000,9 @@ public class SelectedTrack implements JmeCloneable {
      * @return true if successful, otherwise false
      */
     public boolean translateForTraction() {
-        BoneTrack boneTrack = (BoneTrack) selected;
-        int boneIndex = boneTrack.getTargetBoneIndex();
+        assert selected instanceof BoneTrack
+                || selected instanceof TransformTrack;
+        int boneIndex = targetBoneIndex();
 
         SelectedSkeleton selectedSkeleton = cgm.getSkeleton();
         Object skeleton = selectedSkeleton.find();
@@ -1082,8 +1083,8 @@ public class SelectedTrack implements JmeCloneable {
             if (oldTrack == selected) {
                 Quaternion[] rotations = MaudUtil.getTrackRotations(selected);
                 Vector3f[] scales = MaudUtil.getTrackScales(selected);
-                newTrack = MyAnimation.newBoneTrack(
-                        boneIndex, times, translations, rotations, scales);
+                newTrack = MaudUtil.newTrack(
+                        oldTrack, times, translations, rotations, scales);
                 newSelected = newTrack;
             } else {
                 newTrack = TrackEdit.cloneTrack(oldTrack);
