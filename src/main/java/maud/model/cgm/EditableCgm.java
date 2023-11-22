@@ -680,13 +680,11 @@ public class EditableCgm extends LoadedCgm {
             rootSpatial = newNode;
         }
         newNode.attachChild(selectedSpatial);
-        /*
-         * Make sure the selected spatial doesn't change.
-         */
+
+        // Make sure the selected spatial doesn't change.
         getSpatial().select(selectedSpatial);
-        /*
-         * Check whether the selected skeleton has changed.
-         */
+
+        // Check whether the selected skeleton has changed.
         boolean[] selectedSgc = {false};
         Object newSkeleton = getSkeleton().find(selectedSgc);
         if (newSkeleton != oldSkeleton) {
@@ -922,9 +920,8 @@ public class EditableCgm extends LoadedCgm {
         String eventDescription = String.format("re-parent %s spatials to %s",
                 numSelected, MyString.quote(targetName));
         moveSpatials(targetNode, eventDescription, spatials);
-        /*
-         * Keep the same spatial selected.
-         */
+
+        // Keep the same spatial selected.
         ss.select(targetNode);
     }
 
@@ -1661,9 +1658,8 @@ public class EditableCgm extends LoadedCgm {
 
         String filePath = format.extend(baseFilePath);
         File file = new File(filePath);
-        /*
-         * create the parent folder (see JME issue #1011)
-         */
+
+        // create the parent folder (see JME issue #1011)
         File parent = file.getParentFile();
         if (parent != null && !parent.exists()) {
             parent.mkdirs();
@@ -1714,9 +1710,8 @@ public class EditableCgm extends LoadedCgm {
                  */
                 assetRootPath = af;
                 baseAssetPath = MyString.remainder(baseFilePath, af);
-                /*
-                 * In asset paths, a leading slash is always redundant.
-                 */
+
+                // In asset paths, a leading slash is always redundant.
                 if (baseAssetPath.startsWith("/")) {
                     baseAssetPath = MyString.remainder(baseAssetPath, "/");
                 }
@@ -1737,9 +1732,7 @@ public class EditableCgm extends LoadedCgm {
                 editState.setPristine(eventDescription);
 
             } else {
-                /*
-                 * Don't update the origin information, don't mark as pristine.
-                 */
+                // Don't update the origin information, don't mark as pristine.
                 History.addEvent(eventDescription);
             }
         }
@@ -1773,9 +1766,8 @@ public class EditableCgm extends LoadedCgm {
 
         String eventDescription = "load model named " + MyString.quote(name);
         editState.setPristine(eventDescription);
-        /*
-         * Repair any minor issues with the loaded C-G model.
-         */
+
+        // Repair any minor issues with the loaded C-G model.
         repairSpatials(cgmRoot);
         repairTracks(cgmRoot);
 
@@ -1822,9 +1814,8 @@ public class EditableCgm extends LoadedCgm {
      */
     private void deleteSubtree(Spatial subtree) {
         assert !MySpatial.isOrphan(subtree);
-        /*
-         * Cancel all attachments nodes in the subtree.
-         */
+
+        // Cancel all attachments nodes in the subtree.
         if (subtree instanceof Node) {
             Node subtreeNode = (Node) subtree;
             Map<Bone, Spatial> map
@@ -1837,15 +1828,13 @@ public class EditableCgm extends LoadedCgm {
                 }
             }
         }
-        /*
-         * Delete the corresponding Spatial in the scene view.
-         */
+
+        // Delete the corresponding Spatial in the scene view.
         SceneView sceneView = getSceneView();
         List<Integer> position = findSpatial(subtree);
         sceneView.deleteSubtree(position);
-        /*
-         * Detach the subtree from its parent.
-         */
+
+        // Detach the subtree from its parent.
         boolean success = subtree.removeFromParent();
         assert success;
     }

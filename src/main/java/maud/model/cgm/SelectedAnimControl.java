@@ -124,9 +124,8 @@ public class SelectedAnimControl implements JmeCloneable {
 
         float newDuration = duration1 + duration2;
         Animation chain = new Animation(animationName, newDuration);
-        /*
-         * Add tracks to the new animation.
-         */
+
+        // Add tracks to the new animation.
         int numTracks2 = list2.size();
         BitSet done = new BitSet(numTracks2);
         for (TrackItem item1 : list1) {
@@ -252,9 +251,8 @@ public class SelectedAnimControl implements JmeCloneable {
         List<TrackItem> allTracks = cgm.listTrackItems();
         String[] argArray = indices.split(",");
         int numTracks = argArray.length;
-        /*
-         * Enumerate selected tracks and calculate max duration.
-         */
+
+        // Enumerate selected tracks and calculate max duration.
         double maxDuration = 0.0;
         List<TrackItem> selectedTracks = new ArrayList<>(numTracks);
         for (String arg : argArray) {
@@ -270,9 +268,7 @@ public class SelectedAnimControl implements JmeCloneable {
 
         AbstractControl control = find();
         if (control instanceof AnimControl) {
-            /*
-             * Mix the selected tracks together into a new Animation.
-             */
+            // Mix the selected tracks together into a new Animation.
             Animation mix = new Animation(animationName, (float) maxDuration);
             for (TrackItem item : selectedTracks) {
                 Track track = (Track) item.getTrack();
@@ -291,10 +287,7 @@ public class SelectedAnimControl implements JmeCloneable {
             }
             editableCgm.addAnimation(mix);
 
-        } else {
-            /*
-             * Mix the selected tracks together into a new clip.
-             */
+        } else { // Mix the selected tracks together into a new clip.
             AnimClip mix = new AnimClip(animationName);
             int numSelected = selectedTracks.size();
             AnimTrack<?>[] trackArray = new AnimTrack[numSelected];

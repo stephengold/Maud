@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -234,9 +234,8 @@ final public class StaffTrack {
         Validate.nonNull(resources, "resources");
 
         Quaternion[] rotations = MaudUtil.getTrackRotations(track);
-        /*
-         * copy frame values
-         */
+
+        // copy frame values
         int numFrames = rotations.length;
         for (int i = 0; i < numFrames; i++) {
             ws[i] = rotations[i].getW();
@@ -245,10 +244,7 @@ final public class StaffTrack {
             zs[i] = rotations[i].getZ();
         }
 
-        if (numSamples > 0) {
-            /*
-             * interpolate to obtain sample values
-             */
+        if (numSamples > 0) { // interpolate to obtain sample values
             TweenTransforms tt = Maud.getModel().getTweenTransforms();
             TweenRotations technique = tt.getTweenRotations();
             float[] times = MaudUtil.getTrackTimes(track);
@@ -282,9 +278,8 @@ final public class StaffTrack {
         } else {
             numToNormalize = nts.length;
         }
-        /*
-         * Normalize frames, samples, and (if applicable) displayed pose.
-         */
+
+        // Normalize frames, samples, and (if applicable) displayed pose.
         normalize(numToNormalize, ws, numSamples, iws);
         normalize(numToNormalize, xs, numSamples, ixs);
         normalize(numToNormalize, ys, numSamples, iys);
@@ -330,9 +325,8 @@ final public class StaffTrack {
         Validate.nonNull(resources, "resources");
 
         Vector3f[] scales = MaudUtil.getTrackScales(track);
-        /*
-         * copy frame values
-         */
+
+        // copy frame values
         int numFrames = scales.length;
         for (int i = 0; i < numFrames; i++) {
             xs[i] = scales[i].x;
@@ -340,10 +334,7 @@ final public class StaffTrack {
             zs[i] = scales[i].z;
         }
 
-        if (numSamples > 0) {
-            /*
-             * interpolate to obtain sample values
-             */
+        if (numSamples > 0) { // interpolate to obtain sample values
             TweenTransforms tt = Maud.getModel().getTweenTransforms();
             TweenVectors technique = tt.getTweenScales();
             float[] times = MaudUtil.getTrackTimes(track);
@@ -374,9 +365,8 @@ final public class StaffTrack {
         } else {
             numToNormalize = nts.length;
         }
-        /*
-         * Normalize frames, samples, and (if applicable) displayed pose.
-         */
+
+        // Normalize frames, samples, and (if applicable) displayed pose.
         normalize(numToNormalize, xs, numSamples, ixs);
         normalize(numToNormalize, ys, numSamples, iys);
         normalize(numToNormalize, zs, numSamples, izs);
@@ -418,9 +408,8 @@ final public class StaffTrack {
         Validate.nonNull(resources, "resources");
 
         Vector3f[] translations = MaudUtil.getTrackTranslations(track);
-        /*
-         * copy frame values
-         */
+
+        // copy frame values
         int numFrames = translations.length;
         for (int i = 0; i < numFrames; i++) {
             xs[i] = translations[i].x;
@@ -428,10 +417,7 @@ final public class StaffTrack {
             zs[i] = translations[i].z;
         }
 
-        if (numSamples > 0) {
-            /*
-             * interpolate to obtain sample values
-             */
+        if (numSamples > 0) { // interpolate to obtain sample values
             TweenTransforms tt = Maud.getModel().getTweenTransforms();
             TweenVectors technique = tt.getTweenTranslations();
             float[] times = MaudUtil.getTrackTimes(track);
@@ -463,9 +449,8 @@ final public class StaffTrack {
         } else {
             numToNormalize = nts.length;
         }
-        /*
-         * Normalize frames, samples, and (if applicable) displayed pose.
-         */
+
+        // Normalize frames, samples, and (if applicable) displayed pose.
         normalize(numToNormalize, xs, numSamples, ixs);
         normalize(numToNormalize, ys, numSamples, iys);
         normalize(numToNormalize, zs, numSamples, izs);
@@ -538,9 +523,7 @@ final public class StaffTrack {
      * Prepare a bone/spatial track for visualization.
      */
     private static void loadTrack() {
-        /*
-         * Copy keyframe times to nts[].
-         */
+        // Copy keyframe times to nts[].
         float[] times = MaudUtil.getTrackTimes(track);
         assert times[0] == 0f : times[0];
         int numFrames = times.length;
@@ -548,10 +531,7 @@ final public class StaffTrack {
         System.arraycopy(times, 0, nts, 0, numFrames);
 
         float duration = cgm.getAnimation().duration();
-        if (duration > 0f) {
-            /*
-             * Normalize nts[] to range from 0 to 1.
-             */
+        if (duration > 0f) { // Normalize nts[] to range from 0 to 1.
             MyArray.normalize(nts, 0f, duration);
         }
         assert nts[0] == 0f : nts[0];
@@ -561,9 +541,7 @@ final public class StaffTrack {
         }
 
         if (ws == null || numFrames > ws.length) {
-            /*
-             * Allocate larger buffers for keyframe data.
-             */
+            // Allocate larger buffers for keyframe data.
             ws = new float[numFrames];
             xs = new float[numFrames];
             ys = new float[numFrames];
@@ -571,9 +549,7 @@ final public class StaffTrack {
         }
 
         if (its == null || numSamples > its.length) {
-            /*
-             * Allocate larger buffers for interpolated samples.
-             */
+            // Allocate larger buffers for interpolated samples.
             its = new float[numSamples];
             iws = new float[numSamples];
             ixs = new float[numSamples];
@@ -581,9 +557,8 @@ final public class StaffTrack {
             izs = new float[numSamples];
             nits = new float[numSamples];
         }
-        /*
-         * Calculate sample times.
-         */
+
+        // Calculate sample times.
         if (numSamples > 0) {
             for (int i = 0; i < numSamples; i++) {
                 nits[i] = i / (float) (numSamples - 1); // normalized times

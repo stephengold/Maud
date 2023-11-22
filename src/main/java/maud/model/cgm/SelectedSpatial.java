@@ -484,9 +484,8 @@ public class SelectedSpatial implements JmeCloneable {
 
         String eventDescription = "boost spatial " + MyString.quote(name);
         editableCgm.moveSpatials(target, eventDescription, spatial);
-        /*
-         * Keep the same spatial selected.
-         */
+
+        // Keep the same spatial selected.
         treePosition = cgm.findSpatial(spatial);
         assert treePosition != null;
     }
@@ -792,9 +791,7 @@ public class SelectedSpatial implements JmeCloneable {
         Spatial selectedSpatial = find();
         Node parent = selectedSpatial.getParent();
         if (parent != null) {
-            /*
-             * If the selected S-G control will be deleted, deselect it.
-             */
+            // If the selected S-G control will be deleted, deselect it.
             SelectedSgc sgc = cgm.getSgc();
             Spatial controlled = sgc.getControlled();
             if (subtreeContains(controlled)) {
@@ -802,9 +799,8 @@ public class SelectedSpatial implements JmeCloneable {
             }
 
             editableCgm.deleteSubtree();
-            /*
-             * Select the parent node.
-             */
+
+            // Select the parent node.
             int lastLevel = treePosition.size() - 1;
             treePosition.remove(lastLevel);
             assert find() == parent;

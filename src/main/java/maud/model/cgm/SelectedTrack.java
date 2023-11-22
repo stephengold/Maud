@@ -1071,9 +1071,8 @@ public class SelectedTrack implements JmeCloneable {
             assert previousVertexIndex != -1;
             assert previousGeometryRef[0] != null;
         }
-        /*
-         * Construct a new animation using the modified translations.
-         */
+
+        // Construct a new animation using the modified translations.
         Object newSelected = null;
 
         TmpTracks.clear();

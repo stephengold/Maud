@@ -321,9 +321,7 @@ public class ScenePov implements Cloneable, Pov {
         if (options.isOrbitMode()) {
             Vector3f centerLocation = centerLocation(null);
             if (!centerLocation.equals(lastCenterLocation)) {
-                /*
-                 * Pivot toward the new center.
-                 */
+                // Pivot toward the new center.
                 setOrbitGoal();
                 lastCenterLocation.set(centerLocation);
             }
@@ -332,9 +330,7 @@ public class ScenePov implements Cloneable, Pov {
         updateLookDirection(tpf);
 
         if (options.isOrbitMode() && !isPivoting) {
-            /*
-             * Update the POV's location, so that it looks toward the center.
-             */
+            // Update the POV's location, so that it looks toward the center.
             float range = range();
             Vector3f offset = lookDirection.mult(range);
             centerLocation(povLocation);
