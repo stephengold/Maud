@@ -686,8 +686,8 @@ public class CgmPhysics implements JmeCloneable {
      * @param viewPco (not null)
      * @param modelPco (not null)
      */
-    private void associate(PhysicsCollisionObject viewPco,
-            PhysicsCollisionObject modelPco) {
+    private void associate(
+            PhysicsCollisionObject viewPco, PhysicsCollisionObject modelPco) {
         assert viewPco != null;
         assert modelPco != null;
 

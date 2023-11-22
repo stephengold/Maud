@@ -237,11 +237,11 @@ public class EditableCgm extends LoadedCgm {
         History.autoAdd();
         material.setKey(null);
         material.setParam(parameterName, varType, value);
-        getSceneView().setParamValue(treePosition, parameterName, varType,
-                value);
+        getSceneView().setParamValue(
+                treePosition, parameterName, varType, value);
 
-        String description = String.format("add material parameter %s",
-                MyString.quote(parameterName));
+        String description = String.format(
+                "add material parameter %s", MyString.quote(parameterName));
         editState.setEdited(description);
 
         getMatParam().select(parameterName);
@@ -409,8 +409,8 @@ public class EditableCgm extends LoadedCgm {
      * @param subtree which subtree to attach (not null, orphan)
      * @param eventDescription description of causative event (not null)
      */
-    void attachSpatial(Node targetNode, Spatial subtree,
-            String eventDescription) {
+    void attachSpatial(
+            Node targetNode, Spatial subtree, String eventDescription) {
         assert targetNode != null;
         assert subtree != null;
         assert MySpatial.isOrphan(subtree);
@@ -444,8 +444,8 @@ public class EditableCgm extends LoadedCgm {
         Geometry geometry = (Geometry) getSpatial().find();
         Mesh mesh = geometry.getMesh();
         float tolerance = Maud.getModel().getMisc().vertexPositionTolerance();
-        Mesh[] submeshes = MeshUtil.partition(mesh, VertexBuffer.Type.Position,
-                tolerance);
+        Mesh[] submeshes = MeshUtil.partition(
+                mesh, VertexBuffer.Type.Position, tolerance);
         int numSubmeshes = submeshes.length;
         if (numSubmeshes > 1) {
             History.autoAdd();
@@ -549,8 +549,8 @@ public class EditableCgm extends LoadedCgm {
     public void deleteExtraSpatials() {
         if (rootSpatial instanceof Node) {
             History.autoAdd();
-            int oldNumSpatials = MySpatial.countSpatials(rootSpatial,
-                    Spatial.class);
+            int oldNumSpatials = MySpatial.countSpatials(
+                    rootSpatial, Spatial.class);
 
             Node rootNode = (Node) rootSpatial;
             Map<Bone, Spatial> map = mapAttachments();
@@ -693,8 +693,8 @@ public class EditableCgm extends LoadedCgm {
             getSceneView().setSkeleton(newSkeleton, selectedSgc[0]);
         }
 
-        String eventDescription = String.format("insert parent %s",
-                MyString.quote(newNodeName));
+        String eventDescription = String.format(
+                "insert parent %s", MyString.quote(newNodeName));
         editState.setEdited(eventDescription);
     }
 
@@ -770,8 +770,8 @@ public class EditableCgm extends LoadedCgm {
      * @param spatials the spatials to move (not null, does not contain
      * targetNode or any ancestor thereof)
      */
-    void moveSpatials(Node targetNode, String eventDescription,
-            Spatial... spatials) {
+    void moveSpatials(
+            Node targetNode, String eventDescription, Spatial... spatials) {
         assert targetNode != null;
         assert spatials != null;
 
@@ -1084,8 +1084,8 @@ public class EditableCgm extends LoadedCgm {
                 PhysicsControl pc = (PhysicsControl) modelSgc;
                 int pcPosition = PhysicsUtil.pcToPosition(controlled, pc);
                 SceneView sceneView = getSceneView();
-                sceneView.setApplyPhysicsLocal(treePosition, pcPosition,
-                        newSetting);
+                sceneView.setApplyPhysicsLocal(
+                        treePosition, pcPosition, newSetting);
 
                 if (newSetting) {
                     editState.setEdited("enable local physics");
@@ -1263,8 +1263,8 @@ public class EditableCgm extends LoadedCgm {
      * @param maxAngle the desired maximum rotation angle (in radians)
      * @param minAngle the desired minimum rotation angle (in radians)
      */
-    public void setLinkAxisLimits(int axisIndex, float maxAngle,
-            float minAngle) {
+    public void setLinkAxisLimits(
+            int axisIndex, float maxAngle, float minAngle) {
         Validate.inRange(axisIndex, "axis index", PhysicsSpace.AXIS_X,
                 PhysicsSpace.AXIS_Z);
         Validate.inRange(maxAngle, "maximum angle", minAngle, FastMath.PI);
@@ -1309,8 +1309,8 @@ public class EditableCgm extends LoadedCgm {
         PhysicsLink link = getLink().find();
         String linkName = link.name();
         DynamicAnimControl dac = getRagdoll().find();
-        String description = String.format("set %s mass to %f",
-                MyString.quote(linkName), mass);
+        String description = String.format(
+                "set %s mass to %f", MyString.quote(linkName), mass);
 
         History.autoAdd();
         dac.setMass(link, mass);
@@ -1359,8 +1359,8 @@ public class EditableCgm extends LoadedCgm {
         History.autoAdd();
         material.setKey(null);
         material.setParam(parameterName, varType, modelValue);
-        getSceneView().setParamValue(treePosition, parameterName, varType,
-                viewValue);
+        getSceneView().setParamValue(
+                treePosition, parameterName, varType, viewValue);
 
         String description = String.format(
                 "alter value of material parameter %s",
@@ -1402,8 +1402,8 @@ public class EditableCgm extends LoadedCgm {
             SceneView sceneView = getSceneView();
             sceneView.setMeshMode(newMode);
 
-            String description = String.format("set mode of mesh to %s",
-                    newMode);
+            String description = String.format(
+                    "set mode of mesh to %s", newMode);
             editState.setEdited(description);
         }
     }
@@ -1488,8 +1488,8 @@ public class EditableCgm extends LoadedCgm {
                     int pcPosition = PhysicsUtil.pcToPosition(controlled, pc);
 
                     SceneView sceneView = getSceneView();
-                    sceneView.setPhysicsControlEnabled(treePosition, pcPosition,
-                            newSetting);
+                    sceneView.setPhysicsControlEnabled(
+                            treePosition, pcPosition, newSetting);
                 }
                 if (newSetting) {
                     editState.setEdited("enable control");
@@ -1726,8 +1726,8 @@ public class EditableCgm extends LoadedCgm {
                  * the filesystem in a format that Maud can load, so update the
                  * origin information and mark as pristine.
                  */
-                assetRootPath = MyString.removeSuffix(baseFilePath,
-                        baseAssetPath);
+                assetRootPath = MyString.removeSuffix(
+                        baseFilePath, baseAssetPath);
                 extension = format.extension();
                 editState.setPristine(eventDescription);
 
@@ -1783,8 +1783,8 @@ public class EditableCgm extends LoadedCgm {
      * @param attachmentsNodes collection of attachments nodes (not null,
      * unaffected)
      */
-    private void deleteExtraSpatials(Node subtree,
-            Collection<Spatial> attachmentsNodes) {
+    private void deleteExtraSpatials(
+            Node subtree, Collection<Spatial> attachmentsNodes) {
         assert subtree != null;
         assert attachmentsNodes != null;
 
@@ -1990,8 +1990,8 @@ public class EditableCgm extends LoadedCgm {
      * @param newHint new value for cull hint (not null)
      * @return the number of spatials modified (&ge;0)
      */
-    private int setCullHintRecursive(Spatial subtree,
-            Spatial.CullHint newHint) {
+    private int setCullHintRecursive(
+            Spatial subtree, Spatial.CullHint newHint) {
         int result;
 
         Spatial.CullHint oldHint = subtree.getLocalCullHint();
@@ -2024,8 +2024,8 @@ public class EditableCgm extends LoadedCgm {
      * @param newBucket the desired value for queue bucket (not null)
      * @return the number of spatials modified (&ge;0)
      */
-    private int setQueueBucketRecursive(Spatial subtree,
-            RenderQueue.Bucket newBucket) {
+    private int setQueueBucketRecursive(
+            Spatial subtree, RenderQueue.Bucket newBucket) {
         int result;
 
         RenderQueue.Bucket oldBucket = subtree.getLocalQueueBucket();

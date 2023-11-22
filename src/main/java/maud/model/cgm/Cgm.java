@@ -385,8 +385,8 @@ public class Cgm implements Cloneable {
      * shadow mode) to search for (may be null)
      * @return the number found (&ge;0)
      */
-    public <T extends Spatial> int countSpatials(Class<T> spatialType,
-            Enum<?> enumValue) {
+    public <T extends Spatial> int countSpatials(
+            Class<T> spatialType, Enum<?> enumValue) {
         int result
                 = MaudUtil.countSpatials(rootSpatial, spatialType, enumValue);
 
@@ -606,8 +606,8 @@ public class Cgm implements Cloneable {
         float duration = loadedAnimation.duration();
         if (track instanceof Track) {
             Transform fallback = spatial.getLocalTransform(); // alias
-            result = technique.interpolate(time, (Track) track, duration,
-                    fallback, null);
+            result = technique.interpolate(
+                    time, (Track) track, duration, fallback, null);
         } else if (track instanceof TransformTrack) {
             result = technique.interpolate(
                     time, (TransformTrack) track, duration, null);
@@ -1159,8 +1159,8 @@ public class Cgm implements Cloneable {
                     AnimClip clip = animComposer.getAnimClip(clipName);
                     AnimTrack<?>[] tracks = clip.getTracks();
                     for (AnimTrack<?> track : tracks) {
-                        TrackItem item = new TrackItem(clipName,
-                                controlName, animComposer, track);
+                        TrackItem item = new TrackItem(
+                                clipName, controlName, animComposer, track);
                         result.add(item);
                     }
                 }
@@ -1172,8 +1172,8 @@ public class Cgm implements Cloneable {
                     Animation animation = ac.getAnim(animationName);
                     Track[] tracks = animation.getTracks();
                     for (Track track : tracks) {
-                        TrackItem item = new TrackItem(animationName,
-                                controlName, ac, track);
+                        TrackItem item = new TrackItem(
+                                animationName, controlName, ac, track);
                         result.add(item);
                     }
                 }
