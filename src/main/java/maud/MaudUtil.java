@@ -787,11 +787,11 @@ final public class MaudUtil {
     }
 
     /**
-     * Access the keyframe rotations for the specified track.
+     * Copy the keyframe rotations for the specified track.
      *
      * @param track the input track (a BoneTrack, SpatialTrack, or
      * TransformTrack)
-     * @return the pre-existing instance or null
+     * @return a new array or null
      */
     public static Quaternion[] getTrackRotations(Object track) {
         Quaternion[] result;
@@ -810,11 +810,11 @@ final public class MaudUtil {
     }
 
     /**
-     * Access the keyframe scales for the specified track.
+     * Copy the keyframe scales for the specified track.
      *
      * @param track the input track (a BoneTrack, SpatialTrack, or
      * TransformTrack)
-     * @return the pre-existing instance or null
+     * @return a new array or null
      */
     public static Vector3f[] getTrackScales(Object track) {
         Vector3f[] result;
@@ -841,11 +841,11 @@ final public class MaudUtil {
     public static float[] getTrackTimes(Object object) {
         float[] result;
         if (object instanceof MorphTrack) {
-            result = ((MorphTrack) object).getTimes();
+            result = ((MorphTrack) object).getTimes(); // alias
         } else if (object instanceof Track) {
-            result = ((Track) object).getKeyFrameTimes();
+            result = ((Track) object).getKeyFrameTimes(); // alias
         } else if (object instanceof TransformTrack) {
-            result = ((TransformTrack) object).getTimes();
+            result = ((TransformTrack) object).getTimes(); // alias
         } else {
             String className = object.getClass().getSimpleName();
             throw new IllegalArgumentException(className);

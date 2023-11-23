@@ -229,7 +229,7 @@ final public class CheckLoaded {
             }
             Set<Integer> targetBoneIndexSet = new TreeSet<>();
             for (Track tr : tracks) {
-                float[] times = tr.getKeyFrameTimes();
+                float[] times = tr.getKeyFrameTimes(); // alias
                 if (times == null) {
                     logger.warning("track has no keyframe data");
                     return false;
@@ -650,7 +650,7 @@ final public class CheckLoaded {
             targetList.add(target);
         }
 
-        float[] times = track.getTimes();
+        float[] times = track.getTimes(); // alias
         int numFrames = times.length;
         Vector3f[] translations = track.getTranslations();
         if (translations != null) {
