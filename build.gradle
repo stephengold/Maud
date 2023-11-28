@@ -74,7 +74,7 @@ dependencies {
     implementation 'com.github.stephengold:Minie:7.7.0'
     implementation 'com.github.stephengold:SkyControl:1.0.4'
     implementation 'com.github.stephengold:jme-ttf:3.0.0'
-    implementation 'com.github.stephengold:Wes:0.8.0'
+    implementation 'com.github.stephengold:Wes:0.8.1'
     runtimeOnly    'org.jmonkeyengine:jme3-awt-dialogs:' + jme3Version
     implementation 'org.jmonkeyengine:jme3-blender:3.3.2-stable'
     runtimeOnly    'org.jmonkeyengine:jme3-desktop:' + jme3Version
