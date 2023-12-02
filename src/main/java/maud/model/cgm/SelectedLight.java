@@ -329,8 +329,8 @@ public class SelectedLight implements JmeCloneable {
      * light.
      */
     void postLoad() {
-        owner = null;
-        selected = null;
+        this.owner = null;
+        this.selected = null;
     }
 
     /**
@@ -387,8 +387,8 @@ public class SelectedLight implements JmeCloneable {
         assert spatial != null;
         assert MyLight.findIndex(light, spatial) != noLightIndex;
 
-        selected = light;
-        owner = spatial;
+        this.selected = light;
+        this.owner = spatial;
     }
 
     /**
@@ -431,8 +431,8 @@ public class SelectedLight implements JmeCloneable {
      * Deselect the selected light, if any.
      */
     public void selectNone() {
-        owner = null;
-        selected = null;
+        this.owner = null;
+        this.selected = null;
     }
 
     /**
@@ -461,11 +461,11 @@ public class SelectedLight implements JmeCloneable {
         assert newCgm != null;
         assert newCgm.getLight() == this;
 
-        cgm = newCgm;
+        this.cgm = newCgm;
         if (newCgm instanceof EditableCgm) {
-            editableCgm = (EditableCgm) newCgm;
+            this.editableCgm = (EditableCgm) newCgm;
         } else {
-            editableCgm = null;
+            this.editableCgm = null;
         }
     }
 

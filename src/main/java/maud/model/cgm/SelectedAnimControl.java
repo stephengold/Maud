@@ -648,7 +648,7 @@ public class SelectedAnimControl implements JmeCloneable {
              * to create a new animation.
              */
             cgm.getAnimation().loadBindPose(false);
-            last = found;
+            this.last = found;
         }
     }
 
@@ -710,11 +710,11 @@ public class SelectedAnimControl implements JmeCloneable {
         assert newCgm != null;
         assert newCgm.getAnimControl() == this;
 
-        cgm = newCgm;
+        this.cgm = newCgm;
         if (newCgm instanceof EditableCgm) {
-            editableCgm = (EditableCgm) newCgm;
+            this.editableCgm = (EditableCgm) newCgm;
         } else {
-            editableCgm = null;
+            this.editableCgm = null;
         }
     }
     // *************************************************************************

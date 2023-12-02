@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -348,7 +348,7 @@ public class SelectedBuffer implements Cloneable {
      */
     public void select(int newIndex) {
         Validate.inRange(newIndex, "new index", -1, Integer.MAX_VALUE);
-        selectedIndex = newIndex;
+        this.selectedIndex = newIndex;
     }
 
     /**
@@ -389,11 +389,11 @@ public class SelectedBuffer implements Cloneable {
         assert newCgm != null;
         assert newCgm.getBuffer() == this;
 
-        cgm = newCgm;
+        this.cgm = newCgm;
         if (newCgm instanceof EditableCgm) {
-            editableCgm = (EditableCgm) newCgm;
+            this.editableCgm = (EditableCgm) newCgm;
         } else {
-            editableCgm = null;
+            this.editableCgm = null;
         }
     }
 

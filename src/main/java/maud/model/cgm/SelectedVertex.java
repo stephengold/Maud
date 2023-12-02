@@ -210,7 +210,7 @@ public class SelectedVertex implements Cloneable {
      * Deselect the selected vertex, if any.
      */
     public void deselect() {
-        selectedIndex = -1;
+        this.selectedIndex = -1;
     }
 
     /**
@@ -297,7 +297,7 @@ public class SelectedVertex implements Cloneable {
      */
     public void select(int newIndex) {
         Validate.inRange(newIndex, "new index", -1, Integer.MAX_VALUE);
-        selectedIndex = newIndex;
+        this.selectedIndex = newIndex;
     }
 
     /**
@@ -325,7 +325,7 @@ public class SelectedVertex implements Cloneable {
             ++selectedIndex;
             int numVertices = cgm.getSpatial().countVertices();
             if (selectedIndex >= numVertices) {
-                selectedIndex = 0;
+                this.selectedIndex = 0;
             }
         }
     }
@@ -338,7 +338,7 @@ public class SelectedVertex implements Cloneable {
             --selectedIndex;
             if (selectedIndex < 0) {
                 int numVertices = cgm.getSpatial().countVertices();
-                selectedIndex = numVertices - 1;
+                this.selectedIndex = numVertices - 1;
             }
         }
     }
@@ -353,7 +353,7 @@ public class SelectedVertex implements Cloneable {
         assert newCgm != null;
         assert newCgm.getVertex() == this;
 
-        cgm = newCgm;
+        this.cgm = newCgm;
     }
 
     /**

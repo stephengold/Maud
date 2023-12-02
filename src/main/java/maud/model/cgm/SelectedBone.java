@@ -158,7 +158,7 @@ public class SelectedBone implements Cloneable {
      * Deselect the selected bone, if any.
      */
     public void deselect() {
-        selectedIndex = SelectedSkeleton.noBoneIndex;
+        this.selectedIndex = SelectedSkeleton.noBoneIndex;
     }
 
     /**
@@ -503,7 +503,7 @@ public class SelectedBone implements Cloneable {
     public void select(int newIndex) {
         Validate.inRange(newIndex, "bone index", SelectedSkeleton.noBoneIndex,
                 Short.MAX_VALUE);
-        selectedIndex = newIndex;
+        this.selectedIndex = newIndex;
     }
 
     /**
@@ -567,7 +567,7 @@ public class SelectedBone implements Cloneable {
             ++selectedIndex;
             int numBones = cgm.getSkeleton().countBones();
             if (selectedIndex >= numBones) {
-                selectedIndex = 0;
+                this.selectedIndex = 0;
             }
         }
     }
@@ -591,7 +591,7 @@ public class SelectedBone implements Cloneable {
             --selectedIndex;
             if (selectedIndex < 0) {
                 int numBones = cgm.getSkeleton().countBones();
-                selectedIndex = numBones - 1;
+                this.selectedIndex = numBones - 1;
             }
         }
     }
@@ -619,11 +619,11 @@ public class SelectedBone implements Cloneable {
         assert newCgm != null;
         assert newCgm.getBone() == this;
 
-        cgm = newCgm;
+        this.cgm = newCgm;
         if (newCgm instanceof EditableCgm) {
-            editableCgm = (EditableCgm) newCgm;
+            this.editableCgm = (EditableCgm) newCgm;
         } else {
-            editableCgm = null;
+            this.editableCgm = null;
         }
     }
 

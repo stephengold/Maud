@@ -422,11 +422,11 @@ public class SelectedLink implements JmeCloneable {
         assert newCgm != null;
         assert newCgm.getLink() == this;
 
-        cgm = newCgm;
+        this.cgm = newCgm;
         if (newCgm instanceof EditableCgm) {
-            editableCgm = (EditableCgm) newCgm;
+            this.editableCgm = (EditableCgm) newCgm;
         } else {
-            editableCgm = null;
+            this.editableCgm = null;
         }
     }
 
@@ -474,9 +474,9 @@ public class SelectedLink implements JmeCloneable {
             throw new RuntimeException(exception);
         }
         if (link instanceof AttachmentLink) {
-            link = dac.findAttachmentLink(boneName);
+            this.link = dac.findAttachmentLink(boneName);
         } else {
-            link = dac.findBoneLink(boneName);
+            this.link = dac.findBoneLink(boneName);
         }
         String description = shapeHeuristic.toString() + " shape for "
                 + MyString.quote(boneName);

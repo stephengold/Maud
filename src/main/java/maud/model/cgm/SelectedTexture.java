@@ -780,11 +780,11 @@ public class SelectedTexture implements JmeCloneable {
         assert newCgm != null;
         assert newCgm.getTexture() == this;
 
-        cgm = newCgm;
+        this.cgm = newCgm;
         if (newCgm instanceof EditableCgm) {
-            editableCgm = (EditableCgm) newCgm;
+            this.editableCgm = (EditableCgm) newCgm;
         } else {
-            editableCgm = null;
+            this.editableCgm = null;
         }
     }
 
@@ -981,7 +981,7 @@ public class SelectedTexture implements JmeCloneable {
         String description = "texture keyed to " + MyString.quote(assetPath);
         editableCgm.replaceSelectedTexture(clone, description);
 
-        lastAssetPath = assetPath;
+        this.lastAssetPath = assetPath;
     }
     // *************************************************************************
     // JmeCloneable methods

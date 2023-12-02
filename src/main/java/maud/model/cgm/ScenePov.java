@@ -190,7 +190,7 @@ public class ScenePov implements Cloneable, Pov {
             float elevationAngle = MyVector3f.altitude(offset);
             float azimuthAngle = MyVector3f.azimuth(offset);
             setOrbitGoal(elevationAngle, azimuthAngle);
-            isPivoting = true;
+            this.isPivoting = true;
         }
     }
     // *************************************************************************
@@ -293,7 +293,7 @@ public class ScenePov implements Cloneable, Pov {
     @Override
     public void setCgm(Cgm newCgm) {
         Validate.nonNull(newCgm, "new model");
-        cgm = newCgm;
+        this.cgm = newCgm;
     }
 
     /**
@@ -304,9 +304,9 @@ public class ScenePov implements Cloneable, Pov {
     public void setCgmSize(float cgmSize) {
         Validate.positive(cgmSize, "model size");
 
-        flyRate = 0.1f * cgmSize;
-        maxRange = 10f * cgmSize;
-        minRange = 0.2f * cgmSize;
+        this.flyRate = 0.1f * cgmSize;
+        this.maxRange = 10f * cgmSize;
+        this.minRange = 0.2f * cgmSize;
     }
 
     /**
@@ -536,7 +536,7 @@ public class ScenePov implements Cloneable, Pov {
         float maxAngle = maxRotationRate * tpf;
         if (angle <= maxAngle) {
             lookDirection.set(directionalGoal);
-            isPivoting = false;
+            this.isPivoting = false;
         } else {
             float fraction = maxAngle / angle;
             MyVector3f.lerp(fraction, lookDirection, directionalGoal,

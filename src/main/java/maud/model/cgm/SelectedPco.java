@@ -236,7 +236,7 @@ public class SelectedPco implements JmeCloneable {
      * @param id the object's Bullet ID
      */
     public void select(long id) {
-        selectedPco = cgm.getPhysics().findPco(id);
+        this.selectedPco = cgm.getPhysics().findPco(id);
     }
 
     /**
@@ -271,7 +271,7 @@ public class SelectedPco implements JmeCloneable {
      * Deselect the selected collision object, if any.
      */
     public void selectNone() {
-        selectedPco = null;
+        this.selectedPco = null;
     }
 
     /**
@@ -300,11 +300,11 @@ public class SelectedPco implements JmeCloneable {
         assert newCgm != null;
         assert newCgm.getPco() == this;
 
-        cgm = newCgm;
+        this.cgm = newCgm;
         if (newCgm instanceof EditableCgm) {
-            editableCgm = (EditableCgm) newCgm;
+            this.editableCgm = (EditableCgm) newCgm;
         } else {
-            editableCgm = null;
+            this.editableCgm = null;
         }
     }
 

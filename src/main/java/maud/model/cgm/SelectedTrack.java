@@ -819,11 +819,11 @@ public class SelectedTrack implements JmeCloneable {
         assert newCgm != null;
         assert newCgm.getTrack() == this;
 
-        cgm = newCgm;
+        this.cgm = newCgm;
         if (newCgm instanceof EditableCgm) {
-            editableCgm = (EditableCgm) newCgm;
+            this.editableCgm = (EditableCgm) newCgm;
         } else {
-            editableCgm = null;
+            this.editableCgm = null;
         }
     }
 

@@ -210,7 +210,7 @@ public class SelectedJoint implements JmeCloneable {
         assert newCgm != null;
         assert newCgm.getJoint() == this;
 
-        cgm = newCgm;
+        this.cgm = newCgm;
     }
 
     /**

@@ -266,7 +266,7 @@ public class ScorePov implements Cloneable, Pov {
         assert newCgm != null;
         assert newCgm.getScorePov() == this;
 
-        cgm = newCgm;
+        this.cgm = newCgm;
     }
 
     /**

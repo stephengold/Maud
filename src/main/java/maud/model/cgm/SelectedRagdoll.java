@@ -272,7 +272,7 @@ public class SelectedRagdoll implements JmeCloneable {
         DynamicAnimControl dac = find();
         if (dac != last) {
             cgm.getLink().selectNone();
-            last = dac;
+            this.last = dac;
         }
     }
 
@@ -286,7 +286,7 @@ public class SelectedRagdoll implements JmeCloneable {
         assert newCgm != null;
         assert newCgm.getRagdoll() == this;
 
-        cgm = newCgm;
+        this.cgm = newCgm;
     }
 
     /**

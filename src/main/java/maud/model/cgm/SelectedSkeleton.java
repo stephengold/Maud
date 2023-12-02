@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -852,7 +852,7 @@ public class SelectedSkeleton implements JmeCloneable {
             cgm.getPose().resetToBind(foundSkeleton);
             SceneView view = cgm.getSceneView();
             view.setSkeleton(foundSkeleton, selectedSgcFlag[0]);
-            last = foundSkeleton;
+            this.last = foundSkeleton;
         }
     }
 
@@ -883,7 +883,7 @@ public class SelectedSkeleton implements JmeCloneable {
         assert newCgm != null;
         assert newCgm.getSkeleton() == this;
 
-        cgm = newCgm;
+        this.cgm = newCgm;
     }
     // *************************************************************************
     // JmeCloneable methods
@@ -911,7 +911,7 @@ public class SelectedSkeleton implements JmeCloneable {
      */
     @Override
     public void cloneFields(Cloner cloner, Object original) {
-        last = cloner.clone(last);
+        this.last = cloner.clone(last);
     }
 
     /**

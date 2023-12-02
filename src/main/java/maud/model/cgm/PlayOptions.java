@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -152,8 +152,8 @@ public class PlayOptions implements Cloneable {
      * Reset the time limits.
      */
     public void resetLimits() {
-        lowerLimit = 0f;
-        upperLimit = Float.MAX_VALUE;
+        this.lowerLimit = 0f;
+        this.upperLimit = Float.MAX_VALUE;
     }
 
     /**
@@ -166,7 +166,7 @@ public class PlayOptions implements Cloneable {
         assert newCgm != null;
         assert newCgm.getPlay() == this;
 
-        cgm = newCgm;
+        this.cgm = newCgm;
     }
 
     /**
@@ -176,7 +176,7 @@ public class PlayOptions implements Cloneable {
      * once-through and then pause
      */
     public void setContinue(boolean newSetting) {
-        continueFlag = newSetting;
+        this.continueFlag = newSetting;
     }
 
     /**
@@ -186,7 +186,7 @@ public class PlayOptions implements Cloneable {
      */
     public void setLowerLimit(float newLimit) {
         Validate.inRange(newLimit, "new limit", 0f, upperLimit);
-        lowerLimit = newLimit;
+        this.lowerLimit = newLimit;
     }
 
     /**
@@ -195,7 +195,7 @@ public class PlayOptions implements Cloneable {
      * @param newSetting true &rarr; paused, false &rarr; running
      */
     public void setPaused(boolean newSetting) {
-        pausedFlag = newSetting;
+        this.pausedFlag = newSetting;
     }
 
     /**
@@ -204,7 +204,7 @@ public class PlayOptions implements Cloneable {
      * @param newSetting true &rarr; pinned, false &rarr; free to translate
      */
     public void setPinned(boolean newSetting) {
-        pinnedFlag = newSetting;
+        this.pinnedFlag = newSetting;
     }
 
     /**
@@ -213,7 +213,7 @@ public class PlayOptions implements Cloneable {
      * @param newSetting true &rarr; reverse, false &rarr; wrap
      */
     public void setReverse(boolean newSetting) {
-        reverseFlag = newSetting;
+        this.reverseFlag = newSetting;
     }
 
     /**
@@ -222,7 +222,7 @@ public class PlayOptions implements Cloneable {
      * @param newSpeed (1 &rarr; forward at normal speed)
      */
     public void setSpeed(float newSpeed) {
-        speed = newSpeed;
+        this.speed = newSpeed;
     }
 
     /**
@@ -237,7 +237,7 @@ public class PlayOptions implements Cloneable {
         Validate.inRange(newTime, "new time", 0f, duration);
 
         if (duration > 0f) {
-            currentTime = newTime;
+            this.currentTime = newTime;
             boolean frozen = cgm.getPose().isFrozen();
             if (!frozen) {
                 cgm.getPose().setToAnimation();
@@ -279,7 +279,7 @@ public class PlayOptions implements Cloneable {
      */
     public void setUpperLimit(float newLimit) {
         Validate.inRange(newLimit, "new limit", lowerLimit, Float.MAX_VALUE);
-        upperLimit = newLimit;
+        this.upperLimit = newLimit;
     }
 
     /**

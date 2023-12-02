@@ -327,8 +327,8 @@ public class SelectedSgc implements JmeCloneable {
         assert spatial != null;
         assert MyControl.findIndex(sgc, spatial) != noSgcIndex;
 
-        selected = sgc;
-        controlled = spatial;
+        this.selected = sgc;
+        this.controlled = spatial;
         cgm.getSkeleton().postSelect();
         cgm.getAnimControl().postSelect();
         cgm.getRagdoll().postSelect();
@@ -375,8 +375,8 @@ public class SelectedSgc implements JmeCloneable {
      * Deselect the selected S-G control, if any.
      */
     public void selectNone() {
-        controlled = null;
-        selected = null;
+        this.controlled = null;
+        this.selected = null;
         cgm.getSkeleton().postSelect();
         cgm.getAnimControl().postSelect();
         cgm.getRagdoll().postSelect();
@@ -449,11 +449,11 @@ public class SelectedSgc implements JmeCloneable {
         assert newCgm != null;
         assert newCgm.getSgc() == this;
 
-        cgm = newCgm;
+        this.cgm = newCgm;
         if (newCgm instanceof EditableCgm) {
-            editableCgm = (EditableCgm) newCgm;
+            this.editableCgm = (EditableCgm) newCgm;
         } else {
-            editableCgm = null;
+            this.editableCgm = null;
         }
     }
     // *************************************************************************

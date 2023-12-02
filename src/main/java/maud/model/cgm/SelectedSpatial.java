@@ -1851,11 +1851,11 @@ public class SelectedSpatial implements JmeCloneable {
         assert newCgm != null;
         assert newCgm.getSpatial() == this;
 
-        cgm = newCgm;
+        this.cgm = newCgm;
         if (newCgm instanceof EditableCgm) {
-            editableCgm = (EditableCgm) newCgm;
+            this.editableCgm = (EditableCgm) newCgm;
         } else {
-            editableCgm = null;
+            this.editableCgm = null;
         }
     }
 
@@ -2181,7 +2181,7 @@ public class SelectedSpatial implements JmeCloneable {
             cgm.getOverride().deselect();
             cgm.getUserData().deselect();
             cgm.getVertex().deselect();
-            last = found;
+            this.last = found;
         }
     }
 }

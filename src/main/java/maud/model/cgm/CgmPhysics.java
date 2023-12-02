@@ -555,7 +555,7 @@ public class CgmPhysics implements JmeCloneable {
     void setCgm(Cgm newCgm) {
         assert newCgm != null;
         assert newCgm.getPhysics() == this;
-        cgm = newCgm;
+        this.cgm = newCgm;
     }
 
     /**
