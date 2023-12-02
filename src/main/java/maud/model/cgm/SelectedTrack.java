@@ -837,7 +837,13 @@ public class SelectedTrack implements JmeCloneable {
 
         Pose pose = cgm.getPose().get();
         int boneIndex = targetBoneIndex();
-        Quaternion poseRotation = pose.userRotation(boneIndex, null);
+        Quaternion poseRotation;
+        if (selected instanceof BoneTrack) {
+            poseRotation = pose.userRotation(boneIndex, null);
+        } else {
+            Transform tmpTransform = pose.localTransform(boneIndex, null);
+            poseRotation = tmpTransform.getRotation();
+        }
 
         float[] times = MaudUtil.getTrackTimes(selected);
         Vector3f[] translations = MaudUtil.getTrackTranslations(selected);
@@ -861,7 +867,13 @@ public class SelectedTrack implements JmeCloneable {
 
         Pose pose = cgm.getPose().get();
         int boneIndex = targetBoneIndex();
-        Vector3f poseScale = pose.userScale(boneIndex, null);
+        Vector3f poseScale;
+        if (selected instanceof BoneTrack) {
+            poseScale = pose.userScale(boneIndex, null);
+        } else {
+            Transform tmpTransform = pose.localTransform(boneIndex, null);
+            poseScale = tmpTransform.getScale();
+        }
 
         float[] times = MaudUtil.getTrackTimes(selected);
         Vector3f[] translations = MaudUtil.getTrackTranslations(selected);
@@ -885,7 +897,13 @@ public class SelectedTrack implements JmeCloneable {
 
         Pose pose = cgm.getPose().get();
         int boneIndex = targetBoneIndex();
-        Vector3f poseTranslation = pose.userTranslation(boneIndex, null);
+        Vector3f poseTranslation;
+        if (selected instanceof BoneTrack) {
+            poseTranslation = pose.userTranslation(boneIndex, null);
+        } else {
+            Transform tmpTransform = pose.localTransform(boneIndex, null);
+            poseTranslation = tmpTransform.getTranslation();
+        }
 
         float[] times = MaudUtil.getTrackTimes(selected);
         Quaternion[] rotations = MaudUtil.getTrackRotations(selected);
