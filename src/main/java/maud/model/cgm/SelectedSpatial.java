@@ -310,7 +310,7 @@ public class SelectedSpatial implements JmeCloneable {
             int numBones = MySpatial.countMeshBones(spatial);
             // TODO option for a SkinningControl
             Bone[] bones = new Bone[numBones];
-            for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
+            for (int boneIndex = 0; boneIndex < numBones; ++boneIndex) {
                 String boneName = String.format("bone%d", boneIndex);
                 bones[boneIndex] = new Bone(boneName);
             }
@@ -1404,7 +1404,7 @@ public class SelectedSpatial implements JmeCloneable {
             }
 
             int numLodLevels = mesh.getNumLodLevels();
-            for (int iLevel = 0; iLevel < numLodLevels; iLevel++) {
+            for (int iLevel = 0; iLevel < numLodLevels; ++iLevel) {
                 String desc = "LoD" + Integer.toString(iLevel);
                 VertexBuffer buffer = mesh.getLodLevel(iLevel);
                 if (desc.startsWith(descPrefix) && buffer.getData() != null) {
@@ -1530,7 +1530,7 @@ public class SelectedSpatial implements JmeCloneable {
     public List<String> listNumberedChildren() {
         int numChildren = countChildren();
         List<String> result = new ArrayList<>(numChildren);
-        for (int childIndex = 0; childIndex < numChildren; childIndex++) {
+        for (int childIndex = 0; childIndex < numChildren; ++childIndex) {
             String name = getChildName(childIndex);
             String choice = String.format("%s [%d]", MyString.quote(name),
                     childIndex);

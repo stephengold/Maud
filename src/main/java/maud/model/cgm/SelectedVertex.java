@@ -445,7 +445,7 @@ public class SelectedVertex implements Cloneable {
         Vector3f tmpWorldLocation = new Vector3f();
 
         int numVertices = cgm.getSpatial().countVertices();
-        for (int iVertex = 0; iVertex < numVertices; iVertex++) {
+        for (int iVertex = 0; iVertex < numVertices; ++iVertex) {
             MyMesh.vertexWorldLocation(selectedGeometry, iVertex,
                     skinningMatrices, tmpWorldLocation);
             double dot = MyVector3f.dot(tmpWorldLocation, worldDirection);

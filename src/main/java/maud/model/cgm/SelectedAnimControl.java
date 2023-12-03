@@ -131,7 +131,7 @@ public class SelectedAnimControl implements JmeCloneable {
         for (TrackItem item1 : list1) {
             Object track1 = item1.getTrack();
             Object track2 = null;
-            for (int trackIndex2 = 0; trackIndex2 < numTracks2; trackIndex2++) {
+            for (int trackIndex2 = 0; trackIndex2 < numTracks2; ++trackIndex2) {
                 if (!done.get(trackIndex2)) {
                     TrackItem item2 = list2.get(trackIndex2);
                     if (item1.hasSameTargetAs(item2)) {
@@ -151,7 +151,7 @@ public class SelectedAnimControl implements JmeCloneable {
             }
             chain.addTrack(newTrack);
         }
-        for (int trackIndex2 = 0; trackIndex2 < numTracks2; trackIndex2++) {
+        for (int trackIndex2 = 0; trackIndex2 < numTracks2; ++trackIndex2) {
             if (!done.get(trackIndex2)) {
                 Object track2 = list2.get(trackIndex2).getTrack();
                 Track newTrack = TrackEdit.delayAll((Track) track2, duration1,

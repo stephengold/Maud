@@ -994,7 +994,7 @@ public class SelectedTrack implements JmeCloneable {
         int numBones = cgm.getSkeleton().countBones();
         Matrix4f[] skinningMatrices = new Matrix4f[numBones];
         Matrix4f identity = new Matrix4f();
-        for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
+        for (int boneIndex = 0; boneIndex < numBones; ++boneIndex) {
             skinningMatrices[boneIndex] = identity;
         }
 
@@ -1048,7 +1048,7 @@ public class SelectedTrack implements JmeCloneable {
         TweenTransforms technique = Maud.getModel().getTweenTransforms();
         int numKeyframes = times.length;
         int previousVertexIndex = -1;
-        for (int frameIndex = 0; frameIndex < numKeyframes; frameIndex++) {
+        for (int frameIndex = 0; frameIndex < numKeyframes; ++frameIndex) {
             float trackTime = times[frameIndex];
             if (oldAnim instanceof Animation) {
                 tempPose.setToAnimation(
@@ -1309,7 +1309,7 @@ public class SelectedTrack implements JmeCloneable {
         int boneIndex = targetBoneIndex();
 
         int numKeyframes = times.length;
-        for (int frameIndex = 0; frameIndex < numKeyframes; frameIndex++) {
+        for (int frameIndex = 0; frameIndex < numKeyframes; ++frameIndex) {
             float trackTime = times[frameIndex];
             if (oldAnim instanceof Animation) {
                 tempPose.setToAnimation(

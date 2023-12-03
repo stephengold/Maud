@@ -123,7 +123,7 @@ public class CgmPhysics implements JmeCloneable {
             List<PhysicsLink> vLinks = viewDac.listLinks(PhysicsLink.class);
             assert vLinks.size() == numLinks : numLinks;
 
-            for (int i = 0; i < numLinks; i++) {
+            for (int i = 0; i < numLinks; ++i) {
                 PhysicsLink mLink = mLinks.get(i);
                 PhysicsLink vLink = vLinks.get(i);
 

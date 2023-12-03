@@ -237,7 +237,7 @@ final public class StaffTrack {
 
         // copy frame values
         int numFrames = rotations.length;
-        for (int i = 0; i < numFrames; i++) {
+        for (int i = 0; i < numFrames; ++i) {
             ws[i] = rotations[i].getW();
             xs[i] = rotations[i].getX();
             ys[i] = rotations[i].getY();
@@ -253,7 +253,7 @@ final public class StaffTrack {
             parms = technique.precompute(times, duration, rotations);
             Quaternion tempQ = new Quaternion();
 
-            for (int iSample = 0; iSample < numSamples; iSample++) {
+            for (int iSample = 0; iSample < numSamples; ++iSample) {
                 float time = its[iSample];
                 technique.interpolate(time, parms, tempQ);
                 iws[iSample] = tempQ.getW();
@@ -328,7 +328,7 @@ final public class StaffTrack {
 
         // copy frame values
         int numFrames = scales.length;
-        for (int i = 0; i < numFrames; i++) {
+        for (int i = 0; i < numFrames; ++i) {
             xs[i] = scales[i].x;
             ys[i] = scales[i].y;
             zs[i] = scales[i].z;
@@ -342,7 +342,7 @@ final public class StaffTrack {
             VectorCurve parms = technique.precompute(times, duration, scales);
             Vector3f tempV = new Vector3f();
 
-            for (int iSample = 0; iSample < numSamples; iSample++) {
+            for (int iSample = 0; iSample < numSamples; ++iSample) {
                 float time = its[iSample];
                 technique.interpolate(time, parms, tempV);
                 ixs[iSample] = tempV.x;
@@ -411,7 +411,7 @@ final public class StaffTrack {
 
         // copy frame values
         int numFrames = translations.length;
-        for (int i = 0; i < numFrames; i++) {
+        for (int i = 0; i < numFrames; ++i) {
             xs[i] = translations[i].x;
             ys[i] = translations[i].y;
             zs[i] = translations[i].z;
@@ -426,7 +426,7 @@ final public class StaffTrack {
                     = technique.precompute(times, duration, translations);
             Vector3f tempV = new Vector3f();
 
-            for (int iSample = 0; iSample < numSamples; iSample++) {
+            for (int iSample = 0; iSample < numSamples; ++iSample) {
                 float time = its[iSample];
                 technique.interpolate(time, parms, tempV);
                 ixs[iSample] = tempV.x;
@@ -560,7 +560,7 @@ final public class StaffTrack {
 
         // Calculate sample times.
         if (numSamples > 0) {
-            for (int i = 0; i < numSamples; i++) {
+            for (int i = 0; i < numSamples; ++i) {
                 nits[i] = i / (float) (numSamples - 1); // normalized times
                 its[i] = duration * nits[i]; // non-normalized times
             }
@@ -584,7 +584,7 @@ final public class StaffTrack {
         float min = Float.POSITIVE_INFINITY;
         float max = Float.NEGATIVE_INFINITY;
 
-        for (int i = 0; i < numK; i++) {
+        for (int i = 0; i < numK; ++i) {
             float value = keyframeData[i];
             if (value < min) {
                 min = value;
@@ -594,7 +594,7 @@ final public class StaffTrack {
             }
         }
 
-        for (int i = 0; i < numI; i++) {
+        for (int i = 0; i < numI; ++i) {
             float value = interpolatedData[i];
             if (value < min) {
                 min = value;

@@ -514,7 +514,7 @@ public class SelectedSkeleton implements JmeCloneable {
     public List<String> listAttachedBones() {
         List<String> result = new ArrayList<>(5);
         int numBones = countBones();
-        for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
+        for (int boneIndex = 0; boneIndex < numBones; ++boneIndex) {
             Object bone = getBone(boneIndex);
             Node attachmentsNode = MaudUtil.getBoneAttachments(bone);
             if (attachmentsNode != null) {
@@ -569,7 +569,7 @@ public class SelectedSkeleton implements JmeCloneable {
         List<String> result = new ArrayList<>(size);
 
         if (numBones > 0) {
-            for (int boneIndex = 0; boneIndex < numBones; boneIndex++) {
+            for (int boneIndex = 0; boneIndex < numBones; ++boneIndex) {
                 String name = getBoneName(boneIndex);
                 if (name != null && !name.isEmpty()) {
                     result.add(name);
@@ -691,7 +691,7 @@ public class SelectedSkeleton implements JmeCloneable {
                     break;
 
                 case Leaves:
-                    for (int loopBi = 0; loopBi < numBones; loopBi++) {
+                    for (int loopBi = 0; loopBi < numBones; ++loopBi) {
                         Object bone = getBone(loopBi);
                         int numChildren = MaudUtil.countBoneChildren(bone);
                         boolean isLeaf = (numChildren == 0);
@@ -700,7 +700,7 @@ public class SelectedSkeleton implements JmeCloneable {
                     break;
 
                 case Mapped:
-                    for (int loopBi = 0; loopBi < numBones; loopBi++) {
+                    for (int loopBi = 0; loopBi < numBones; ++loopBi) {
                         boolean isMapped;
                         if (cgm == model.getSource()) {
                             isMapped = map.isSourceBoneMapped(loopBi);
@@ -753,7 +753,7 @@ public class SelectedSkeleton implements JmeCloneable {
                     break;
 
                 case Unmapped:
-                    for (int loopBi = 0; loopBi < numBones; loopBi++) {
+                    for (int loopBi = 0; loopBi < numBones; ++loopBi) {
                         boolean isMapped;
                         if (cgm == model.getSource()) {
                             isMapped = map.isSourceBoneMapped(loopBi);

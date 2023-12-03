@@ -235,7 +235,7 @@ public class SelectedBone implements Cloneable {
             // Test descendant bones/joints.
             Object skeleton = cgm.getSkeleton().find();
             int numBones = cgm.getSkeleton().countBones();
-            for (int iBone = 0; iBone < numBones; iBone++) {
+            for (int iBone = 0; iBone < numBones; ++iBone) {
                 Node attachmentNode = null;
 
                 if (MaudUtil.descendsFrom(iBone, selectedIndex, skeleton)) {
