@@ -75,6 +75,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -1097,6 +1098,29 @@ final public class MaudUtil {
         }
 
         return result;
+    }
+
+    /**
+     * Write a Vector4f starting at the specified position. Does not alter the
+     * buffer's position.
+     *
+     * @param buffer the buffer to write to (not null, modified)
+     * @param startPosition the position at which to start writing (&ge;0)
+     * @param vector the input vector (not null, unaffected)
+     *
+     * @see com.jme3.util.BufferUtils#setInBuffer(com.jme3.math.Vector4f,
+     * java.nio.FloatBuffer, int)
+     */
+    public static void put( // TODO use MyBuffer
+            FloatBuffer buffer, int startPosition, Vector4f vector) {
+        Validate.nonNull(buffer, "buffer");
+        Validate.nonNegative(startPosition, "start position");
+        Validate.nonNull(vector, "vector");
+
+        buffer.put(startPosition, vector.x);
+        buffer.put(startPosition + 1, vector.y);
+        buffer.put(startPosition + 2, vector.z);
+        buffer.put(startPosition + 3, vector.w);
     }
 
     /**
