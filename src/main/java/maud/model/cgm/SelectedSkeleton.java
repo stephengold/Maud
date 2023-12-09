@@ -130,11 +130,11 @@ public class SelectedSkeleton implements JmeCloneable {
         Validate.nonEmpty(boneName, "bone name");
 
         int result;
-        Object skeleton = find();
-        if (skeleton instanceof Armature) {
-            result = ((Armature) skeleton).getJointIndex(boneName);
+        Object selected = find();
+        if (selected instanceof Armature) {
+            result = ((Armature) selected).getJointIndex(boneName);
         } else {
-            result = ((Skeleton) skeleton).getBoneIndex(boneName);
+            result = ((Skeleton) selected).getBoneIndex(boneName);
         }
 
         return result;
@@ -147,11 +147,11 @@ public class SelectedSkeleton implements JmeCloneable {
      */
     public int countBones() {
         int result = 0;
-        Object skeleton = find();
-        if (skeleton instanceof Armature) {
-            result = ((Armature) skeleton).getJointCount();
-        } else if (skeleton instanceof Skeleton) {
-            result = ((Skeleton) skeleton).getBoneCount();
+        Object selected = find();
+        if (selected instanceof Armature) {
+            result = ((Armature) selected).getJointCount();
+        } else if (selected instanceof Skeleton) {
+            result = ((Skeleton) selected).getBoneCount();
         }
 
         assert result >= 0 : result;
@@ -278,12 +278,12 @@ public class SelectedSkeleton implements JmeCloneable {
      */
     public int findIndex() {
         int result;
-        Object skeleton = find();
-        if (skeleton == null) {
+        Object selected = find();
+        if (selected == null) {
             result = -1;
         } else {
             List<Object> list = cgm.listSkeletons();
-            result = list.indexOf(skeleton);
+            result = list.indexOf(selected);
             assert result != -1;
         }
 
@@ -299,7 +299,7 @@ public class SelectedSkeleton implements JmeCloneable {
         Spatial result;
 
         boolean[] selectedSgcFlag = {false};
-        Object skeleton = find(selectedSgcFlag);
+        Object skeleton = SelectedSkeleton.this.find(selectedSgcFlag);
         if (skeleton == null) {
             result = null;
         } else if (selectedSgcFlag[0]) {
@@ -339,11 +339,11 @@ public class SelectedSkeleton implements JmeCloneable {
         Validate.nonNegative(boneIndex, "bone index");
 
         Object result;
-        Object skeleton = find();
-        if (skeleton instanceof Armature) {
-            result = ((Armature) skeleton).getJoint(boneIndex);
+        Object selected = find();
+        if (selected instanceof Armature) {
+            result = ((Armature) selected).getJoint(boneIndex);
         } else {
-            result = ((Skeleton) skeleton).getBone(boneIndex);
+            result = ((Skeleton) selected).getBone(boneIndex);
         }
 
         return result;
@@ -359,11 +359,11 @@ public class SelectedSkeleton implements JmeCloneable {
         Validate.nonEmpty(name, "name");
 
         Object result;
-        Object skeleton = find();
-        if (skeleton instanceof Armature) {
-            result = ((Armature) skeleton).getJoint(name);
+        Object selected = find();
+        if (selected instanceof Armature) {
+            result = ((Armature) selected).getJoint(name);
         } else {
-            result = ((Skeleton) skeleton).getBone(name);
+            result = ((Skeleton) selected).getBone(name);
         }
 
         return result;
@@ -399,15 +399,15 @@ public class SelectedSkeleton implements JmeCloneable {
         Validate.nonNegative(boneIndex, "bone index");
 
         int result;
-        Object object = find();
-        if (object instanceof Armature) {
-            Armature armature = (Armature) object;
+        Object selected = find();
+        if (selected instanceof Armature) {
+            Armature armature = (Armature) selected;
             Joint joint = armature.getJoint(boneIndex);
             Joint parent = joint.getParent();
             result = armature.getJointIndex(parent);
 
         } else {
-            Skeleton skeleton = (Skeleton) object;
+            Skeleton skeleton = (Skeleton) selected;
             Bone bone = skeleton.getBone(boneIndex);
             Bone parent = bone.getParent();
             result = skeleton.getBoneIndex(parent);
@@ -422,14 +422,14 @@ public class SelectedSkeleton implements JmeCloneable {
      * @return the relevant control, or null if not found
      */
     AbstractControl getSkeletonControl() {
-        Object skeleton = find();
+        Object selected = find();
 
         AbstractControl result = null;
-        if (skeleton instanceof Armature) {
+        if (selected instanceof Armature) {
             List<SkinningControl> list = cgm.listSgcs(SkinningControl.class);
             for (SkinningControl sgc : list) {
                 Armature sgcArmature = sgc.getArmature();
-                if (sgcArmature == skeleton) {
+                if (sgcArmature == selected) {
                     result = sgc;
                 }
             }
@@ -438,7 +438,7 @@ public class SelectedSkeleton implements JmeCloneable {
             List<SkeletonControl> list = cgm.listSgcs(SkeletonControl.class);
             for (SkeletonControl sgc : list) {
                 Skeleton sgcSkeleton = sgc.getSkeleton();
-                if (sgcSkeleton == skeleton) {
+                if (sgcSkeleton == selected) {
                     result = sgc;
                     break;
                 }
@@ -497,8 +497,8 @@ public class SelectedSkeleton implements JmeCloneable {
     public boolean isSelected() {
         boolean result = false;
         if (cgm.isLoaded()) {
-            Object skeleton = find();
-            if (skeleton != null) {
+            Object selected = find();
+            if (selected != null) {
                 result = true;
             }
         }
@@ -630,7 +630,7 @@ public class SelectedSkeleton implements JmeCloneable {
         assert result.size() >= numBones : result.size();
 
         if (numBones > 0) {
-            Object skeleton = find();
+            Object selected = find();
             EditorModel model = Maud.getModel();
             LoadedMap map = model.getMap();
             int ascentBi = selectedBi;
@@ -651,20 +651,20 @@ public class SelectedSkeleton implements JmeCloneable {
                 case Family:
                     result.clear();
                     if (selectedBi != noBoneIndex) {
-                        if (skeleton instanceof Armature) {
-                            Joint joint = ((Armature) skeleton).getJoint(
+                        if (selected instanceof Armature) {
+                            Joint joint = ((Armature) selected).getJoint(
                                     selectedBi);
                             List<Joint> children = joint.getChildren();
                             for (Joint child : children) {
                                 int childIndex = child.getId();
                                 result.set(childIndex);
                             }
-                        } else if (skeleton instanceof Skeleton) {
-                            Bone bone = ((Skeleton) skeleton).getBone(
+                        } else if (selected instanceof Skeleton) {
+                            Bone bone = ((Skeleton) selected).getBone(
                                     selectedBi);
                             List<Bone> children = bone.getChildren();
                             for (Bone child : children) {
-                                int childIndex = ((Skeleton) skeleton)
+                                int childIndex = ((Skeleton) selected)
                                         .getBoneIndex(child);
                                 result.set(childIndex);
                             }
@@ -679,12 +679,12 @@ public class SelectedSkeleton implements JmeCloneable {
                 case Influencers:
                     Spatial subtree = findSpatial();
                     BitSet bitset;
-                    if (skeleton instanceof Armature) {
+                    if (selected instanceof Armature) {
                         bitset = InfluenceUtil.addAllInfluencers(subtree,
-                                (Armature) skeleton);
+                                (Armature) selected);
                     } else {
                         bitset = InfluenceUtil.addAllInfluencers(subtree,
-                                (Skeleton) skeleton);
+                                (Skeleton) selected);
                     }
                     result.clear();
                     result.or(bitset);
@@ -737,7 +737,7 @@ public class SelectedSkeleton implements JmeCloneable {
                         for (int loopBi = 0; loopBi < numBones; ++loopBi) {
                             boolean inSubtree = (loopBi == selectedBi)
                                     || MaudUtil.descendsFrom(loopBi, selectedBi,
-                                            skeleton);
+                                            selected);
                             result.set(loopBi, inSubtree);
                         }
                     }
@@ -782,9 +782,9 @@ public class SelectedSkeleton implements JmeCloneable {
     public List<String> listRootBoneNames() {
         Object[] roots = listRoots();
         List<String> result = new ArrayList<>(roots.length);
-        Object skeleton = find();
+        Object selected = find();
         for (Object root : roots) {
-            if (skeleton instanceof Armature) {
+            if (selected instanceof Armature) {
                 String name = ((Joint) root).getName();
                 result.add(name);
             } else {
@@ -805,14 +805,14 @@ public class SelectedSkeleton implements JmeCloneable {
     public List<Integer> listRootIndices() {
         Object[] roots = listRoots();
         List<Integer> result = new ArrayList<>(roots.length);
-        Object skeleton = find();
+        Object selected = find();
         for (Object root : roots) {
-            if (skeleton instanceof Armature) {
+            if (selected instanceof Armature) {
                 int index = ((Joint) root).getId();
                 result.add(index);
             } else {
                 Bone bone = (Bone) root;
-                int index = ((Skeleton) skeleton).getBoneIndex(bone);
+                int index = ((Skeleton) selected).getBoneIndex(bone);
                 result.add(index);
             }
         }
@@ -827,12 +827,12 @@ public class SelectedSkeleton implements JmeCloneable {
      */
     Object[] listRoots() {
         Object[] result;
-        Object skeleton = find();
-        if (skeleton instanceof Armature) {
-            result = ((Armature) skeleton).getRoots();
+        Object selected = find();
+        if (selected instanceof Armature) {
+            result = ((Armature) selected).getRoots();
 
-        } else if (skeleton instanceof Skeleton) {
-            result = ((Skeleton) skeleton).getRoots();
+        } else if (selected instanceof Skeleton) {
+            result = ((Skeleton) selected).getRoots();
 
         } else {
             result = new Object[0];
