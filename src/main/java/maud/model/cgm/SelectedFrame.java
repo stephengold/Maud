@@ -118,8 +118,8 @@ public class SelectedFrame implements Cloneable {
                 int boneIndex = sTrack.targetBoneIndex();
                 if (oldTrack instanceof BoneTrack) {
                     Transform user = pose.userTransform(boneIndex, null);
-                    newTrack = TrackEdit.replaceKeyframe((Track) oldTrack,
-                            frameIndex, user);
+                    newTrack = TrackEdit.replaceKeyframe(
+                            (Track) oldTrack, frameIndex, user);
                 } else {
                     Transform local = pose.localTransform(boneIndex, null);
                     newTrack = TrackEdit.replaceKeyframe(
@@ -140,8 +140,7 @@ public class SelectedFrame implements Cloneable {
         String description = String.format(
                 "replace keyframe at t=%f in track %s", time, trackName);
         Object oldAnim = cgm.getAnimation().getReal();
-        editableCgm.replace(oldAnim, newAnim, description,
-                newSelected);
+        editableCgm.replace(oldAnim, newAnim, description, newSelected);
     }
 
     /**
@@ -275,8 +274,7 @@ public class SelectedFrame implements Cloneable {
                 "adjust the timing of frame%s in track %s",
                 DescribeUtil.index(frameIndex), trackName);
         Object oldAnim = cgm.getAnimation().getReal();
-        editableCgm.replace(oldAnim, newAnim, eventDescription,
-                newSelected);
+        editableCgm.replace(oldAnim, newAnim, eventDescription, newSelected);
     }
     // *************************************************************************
     // Object methods

@@ -426,8 +426,8 @@ final public class MaudUtil {
      * @param sk the Armature or Skeleton to analyze (not null, unaffected)
      * @return true if the subject descends from the ancestor, otherwise false
      */
-    public static boolean descendsFrom(int boneIndex, int ancestorIndex,
-            Object sk) {
+    public static boolean descendsFrom(
+            int boneIndex, int ancestorIndex, Object sk) {
         Validate.nonNegative(boneIndex, "bone index");
         Validate.nonNegative(ancestorIndex, "ancestor index");
 
@@ -1065,9 +1065,9 @@ final public class MaudUtil {
      * @param scales (either null or same length as times)
      * @return a new track of the same type as oldTrack
      */
-    public static Object newTrack(Object oldTrack, float[] times,
-            Vector3f[] translations, Quaternion[] rotations,
-            Vector3f[] scales) {
+    public static Object newTrack(
+            Object oldTrack, float[] times, Vector3f[] translations,
+            Quaternion[] rotations, Vector3f[] scales) {
         int numKeyframes = times.length;
         assert numKeyframes > 0 : numKeyframes;
         assert translations == null || translations.length == numKeyframes;

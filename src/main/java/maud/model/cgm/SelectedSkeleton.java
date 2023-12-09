@@ -680,11 +680,11 @@ public class SelectedSkeleton implements JmeCloneable {
                     Spatial subtree = findSpatial();
                     BitSet bitset;
                     if (selected instanceof Armature) {
-                        bitset = InfluenceUtil.addAllInfluencers(subtree,
-                                (Armature) selected);
+                        bitset = InfluenceUtil.addAllInfluencers(
+                                subtree, (Armature) selected);
                     } else {
-                        bitset = InfluenceUtil.addAllInfluencers(subtree,
-                                (Skeleton) selected);
+                        bitset = InfluenceUtil.addAllInfluencers(
+                                subtree, (Skeleton) selected);
                     }
                     result.clear();
                     result.or(bitset);
@@ -736,8 +736,8 @@ public class SelectedSkeleton implements JmeCloneable {
                     if (selectedBi != noBoneIndex) {
                         for (int loopBi = 0; loopBi < numBones; ++loopBi) {
                             boolean inSubtree = (loopBi == selectedBi)
-                                    || MaudUtil.descendsFrom(loopBi, selectedBi,
-                                            selected);
+                                    || MaudUtil.descendsFrom(
+                                            loopBi, selectedBi, selected);
                             result.set(loopBi, inSubtree);
                         }
                     }
