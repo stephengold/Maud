@@ -1102,7 +1102,7 @@ final public class MaudUtil {
 
     /**
      * Write a Vector4f starting at the specified position. Does not alter the
-     * buffer's position.
+     * buffer's position. TODO use MyBuffer
      *
      * @param buffer the buffer to write to (not null, modified)
      * @param startPosition the position at which to start writing (&ge;0)
@@ -1111,7 +1111,7 @@ final public class MaudUtil {
      * @see com.jme3.util.BufferUtils#setInBuffer(com.jme3.math.Vector4f,
      * java.nio.FloatBuffer, int)
      */
-    public static void put( // TODO use MyBuffer
+    public static void put(
             FloatBuffer buffer, int startPosition, Vector4f vector) {
         Validate.nonNull(buffer, "buffer");
         Validate.nonNegative(startPosition, "start position");
