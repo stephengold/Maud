@@ -441,7 +441,7 @@ public class SceneView extends SceneViewCore {
     }
 
     /**
-     * Alter the indexed float in the selected FloatBuffer.
+     * Alter the indexed float in the selected VertexBuffer.
      *
      * @param floatIndex which float to modify
      * @param newValue the desired value
