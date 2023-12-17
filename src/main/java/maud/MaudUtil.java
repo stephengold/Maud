@@ -517,7 +517,8 @@ final public class MaudUtil {
 
     /**
      * For the specified camera ray, find the nearest collision involving a
-     * triangle facing the camera. Geometries with CullHint.Always are ignored.
+     * triangle facing the camera. Geometries with {@code CullHint.Always} are
+     * ignored.
      *
      * @param subtree collidable subtree of the scene graph (not null,
      * unaffected)

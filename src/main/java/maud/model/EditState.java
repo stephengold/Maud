@@ -83,7 +83,7 @@ public class EditState implements Cloneable {
      * <li> "ss" + physics collision shape being resized,
      * <li> "st" + tree position of the spatial being transformed,
      * <li> "tw" + name of target bone being twisted in the skeleton map,
-     * <li> "vs", OR
+     * <li> "vs",
      * <li> "xb", OR
      * <li> "" for no continuous edit in progress
      * </ul>
