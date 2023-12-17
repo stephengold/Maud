@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -69,11 +69,11 @@ class UserKeyDialog extends TextEntryDialog {
     protected String feedback(String inputText) {
         String msg = "";
         if (isReserved(inputText)) {
-            msg = String.format("%s is a reserved key",
-                    MyString.quote(inputText));
+            msg = String.format(
+                    "%s is a reserved key", MyString.quote(inputText));
         } else if (existsInSpatial(inputText)) {
-            msg = String.format("%s is already in use",
-                    MyString.quote(inputText));
+            msg = String.format(
+                    "%s is already in use", MyString.quote(inputText));
         }
 
         return msg;

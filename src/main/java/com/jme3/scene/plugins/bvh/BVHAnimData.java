@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009-2022 jMonkeyEngine
+ * Copyright (c) 2009-2023 jMonkeyEngine
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -47,8 +47,8 @@ public class BVHAnimData {
     /**
      * message logger for this class
      */
-    final private static Logger logger = Logger.getLogger(
-            BVHAnimData.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(BVHAnimData.class.getName());
     // *************************************************************************
     // fields
 

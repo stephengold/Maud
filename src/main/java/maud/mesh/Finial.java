@@ -124,8 +124,8 @@ public class Finial extends Mesh {
      * @param sparklineHeight vertical space used by a sparkline (in local
      * units, &ge;0)
      */
-    public Finial(boolean tra, boolean rot, boolean sca,
-            float sparklineHeight) {
+    public Finial(
+            boolean tra, boolean rot, boolean sca, float sparklineHeight) {
         Validate.nonNegative(sparklineHeight, "sparkline height");
 
         this.shh = sparklineHeight / 2;

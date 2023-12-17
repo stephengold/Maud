@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2018, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -70,11 +70,11 @@ class BoneRenameDialog extends TextEntryDialog {
     protected String feedback(String proposedName) {
         String msg = "";
         if (isReserved(proposedName)) {
-            msg = String.format("%s is a reserved name",
-                    MyString.quote(proposedName));
+            msg = String.format(
+                    "%s is a reserved name", MyString.quote(proposedName));
         } else if (isUsed(proposedName)) {
-            msg = String.format("%s is already in use",
-                    MyString.quote(proposedName));
+            msg = String.format(
+                    "%s is already in use", MyString.quote(proposedName));
         }
 
         return msg;
