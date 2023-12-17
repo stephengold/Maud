@@ -150,8 +150,7 @@ public class Maud extends GuiApplication {
      * @return true if customized, otherwise false
      */
     public static boolean isStartupScriptCustomized() {
-        String assetPath = startupScriptAssetPath;
-        String filePath = ActionApplication.filePath(assetPath);
+        String filePath = ActionApplication.filePath(startupScriptAssetPath);
         File file = new File(filePath);
         boolean result = file.exists();
 
@@ -226,8 +225,7 @@ public class Maud extends GuiApplication {
      * script (if any) in the "Written Assets" folder.
      */
     public static void revertStartupScript() {
-        String assetPath = startupScriptAssetPath;
-        String filePath = ActionApplication.filePath(assetPath);
+        String filePath = ActionApplication.filePath(startupScriptAssetPath);
         File file = new File(filePath);
         file.delete();
     }
