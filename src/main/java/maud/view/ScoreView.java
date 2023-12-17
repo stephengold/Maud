@@ -955,9 +955,7 @@ public class ScoreView implements EditorView {
         float sizeFactor1 = h1 / preferredSize; // relative to preferred size
         float w1 = sizeFactor1 * textSize;
         if (w1 > maxWidth) {
-            /*
-             * Shrink to avoid clipping.
-             */
+            // Shrink to avoid clipping.
             h1 *= maxWidth / w1;
             sizeFactor1 *= maxWidth / w1;
             w1 = sizeFactor1 * textSize;
@@ -971,17 +969,14 @@ public class ScoreView implements EditorView {
         float sizeFactor2 = w2 / preferredSize; // relative to preferred size
         float h2 = sizeFactor2 * textSize;
         if (h2 > maxHeight) {
-            /*
-             * Shrink to avoid clipping.
-             */
+            // Shrink to avoid clipping.
             w2 *= maxHeight / h2;
             sizeFactor2 *= maxHeight / h2;
             h2 = sizeFactor2 * textSize;
         }
         h2 = FastMath.clamp(h2, minWidth, maxHeight);
-        /*
-         * Decide whether to rotate the label.
-         */
+
+        // Decide whether to rotate the label.
         if (h2 * w2 > h1 * w1) {
             attachLabelVertical(labelText, sizeFactor2, textColor, bgMaterial,
                     rightX, centerY, w2, h2);
@@ -1092,18 +1087,16 @@ public class ScoreView implements EditorView {
 
         Material wireMaterial
                 = isSelectedTrack ? r.wireSelected : r.wireNotSelected;
-        /*
-         * Attach the left-hand rectangle: a narrow outline.
-         */
+
+        // Attach the left-hand rectangle: a narrow outline.
         String rectName = String.format("left rect%d", staffIndex);
         Geometry geometry = new Geometry(rectName, ScoreResources.outlineMesh);
         visuals.attachChild(geometry);
         geometry.setLocalScale(-0.2f, staffHeight, 1f);
         geometry.setLocalTranslation(xLeftMargin, -height, zLines);
         geometry.setMaterial(wireMaterial);
-        /*
-         * Attach a track label overlapping the left-hand rectangle.
-         */
+
+        // Attach a track label overlapping the left-hand rectangle.
         float leftX = cgm.getScorePov().leftX() + xGap;
         float rightX = -0.2f * ScoreResources.hashSize;
         float middleY = -(height + staffHeight / 2);
@@ -1111,9 +1104,8 @@ public class ScoreView implements EditorView {
         float maxWidth = (rightX - leftX) / compression;
         float minWidth = ScoreResources.hashSize / compression;
         attachLabel(rightX, middleY, minWidth, maxWidth, staffHeight);
-        /*
-         * Attach the right-hand rectangle: an outline.
-         */
+
+        // Attach the right-hand rectangle: an outline.
         rectName = String.format("right rect%d", staffIndex);
         geometry = new Geometry(rectName, ScoreResources.outlineMesh);
         visuals.attachChild(geometry);
@@ -1160,9 +1152,7 @@ public class ScoreView implements EditorView {
      */
     private void attachSparklines() {
         if (isSelectedTrack) {
-            /*
-             * Record the X-coordinates of all keyframes in the selected track.
-             */
+            // Record the X-coordinates of all keyframes in the selected track.
             assert frameXs.isEmpty();
             int numFrames = cgm.getTrack().countKeyframes();
             for (int i = 0; i < numFrames; i++) {
@@ -1222,9 +1212,8 @@ public class ScoreView implements EditorView {
             finial = null;
             StaffTrack.setNoData();
         }
-        /*
-         * Calculate the range of (world) Ys that the staff occupies.
-         */
+
+        // Calculate the range of (world) Ys that the staff occupies.
         float newHeight = height + staffHeight;
         float minY = -newHeight;
         float maxY = -height;
@@ -1272,9 +1261,7 @@ public class ScoreView implements EditorView {
     private void attachTrackedStaff(Finial finial) {
         float zoom = cgm.getScorePov().getHalfHeight();
         if (zoom > 4f) {
-            /*
-             * zoomed out too far to render detailed finials
-             */
+            // zoomed out too far to render detailed finials
             float staffHeight = finial.getHeight();
             if (zoom > 25f) {
                 attachHashes(staffHeight);
@@ -1294,9 +1281,7 @@ public class ScoreView implements EditorView {
     private void attachTracklessStaff() {
         float zoom = cgm.getScorePov().getHalfHeight();
         if (zoom < 4f) {
-            /*
-             * Attach a track label on the left side.
-             */
+            // Attach a track label on the left side.
             float leftX = cgm.getScorePov().leftX() + xGap;
             float rightX = -0.2f * ScoreResources.hashSize;
             float middleY = -height;
