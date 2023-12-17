@@ -210,11 +210,11 @@ final public class SceneDrag {
                 newTipWorld = MyVector3f.lineMeetsSphere(worldLine, axesOrigin,
                         oldLengthWorld, dragFarSide);
                 Vector3f newDirWorld = newTipWorld.subtract(axesOrigin);
-                Vector3f newDirLocal = MyVector3f.localizeDirection(newDirWorld,
-                        spatial, null);
+                Vector3f newDirLocal = MyVector3f.localizeDirection(
+                        newDirWorld, spatial, null);
 
-                Vector3f oldDirLocal = MyVector3f.localizeDirection(oldDirWorld,
-                        spatial, null);
+                Vector3f oldDirLocal = MyVector3f.localizeDirection(
+                        oldDirWorld, spatial, null);
                 Vector3f cross = oldDirLocal.cross(newDirLocal);
                 if (!MyVector3f.isZero(cross)) {
                     rotate(cross, newDirWorld);

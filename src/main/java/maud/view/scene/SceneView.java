@@ -256,8 +256,8 @@ public class SceneView extends SceneViewCore {
         Geometry geometry = (Geometry) spatial;
         Mesh mesh = geometry.getMesh();
 
-        Mesh[] submeshes = MeshUtil.partition(mesh, VertexBuffer.Type.Position,
-                tolerance);
+        Mesh[] submeshes = MeshUtil.partition(
+                mesh, VertexBuffer.Type.Position, tolerance);
         MaudUtil.copyAndSplitGeometry(geometry, submeshes);
     }
 
@@ -542,8 +542,8 @@ public class SceneView extends SceneViewCore {
      * unaffected)
      * @param newHint new value for cull hint (not null)
      */
-    public void setCullHint(List<Integer> treePosition,
-            Spatial.CullHint newHint) {
+    public void setCullHint(
+            List<Integer> treePosition, Spatial.CullHint newHint) {
         Validate.nonNull(treePosition, "tree position");
         Validate.nonNull(newHint, "cull hint");
 
@@ -903,8 +903,8 @@ public class SceneView extends SceneViewCore {
      * controlled spatial (&ge;0)
      * @return the pre-existing physics control
      */
-    private PhysicsControl findPhysicsControl(List<Integer> treePosition,
-            int pcPosition) {
+    private PhysicsControl findPhysicsControl(
+            List<Integer> treePosition, int pcPosition) {
         assert treePosition != null;
         assert pcPosition >= 0 : pcPosition;
 

@@ -136,8 +136,8 @@ public class Selection {
      * @param screenXY screen coordinates of the axis (in pixels, not null,
      * unaffected)
      */
-    public void considerAxis(Cgm cgm, int axisIndex, boolean scoreView,
-            Vector2f screenXY) {
+    public void considerAxis(
+            Cgm cgm, int axisIndex, boolean scoreView, Vector2f screenXY) {
         Validate.nonNull(cgm, "model");
         if (scoreView) {
             Validate.inRange(axisIndex, "axis index", 0, 9);
@@ -270,8 +270,8 @@ public class Selection {
      * @param screenXY screen coordinates of the axis (in pixels, not null,
      * unaffected)
      */
-    public void considerVertex(Cgm cgm, Geometry geometry, int vertexIndex,
-            Vector2f screenXY) {
+    public void considerVertex(
+            Cgm cgm, Geometry geometry, int vertexIndex, Vector2f screenXY) {
         Validate.nonNull(cgm, "model");
         Validate.nonNull(geometry, "geometry");
         Validate.nonNegative(vertexIndex, "vertex index");

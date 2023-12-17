@@ -850,8 +850,8 @@ public class ScoreView implements EditorView {
         if (rotations && hasRotations) {
             middleY -= 0.5f * (float) Finial.hpf;
             float maxHeight = 3 * (float) Finial.hpf;
-            attachTransformIcon(leftX, middleY, maxWidth, maxHeight, "rot",
-                    r.rotMaterial);
+            attachTransformIcon(
+                    leftX, middleY, maxWidth, maxHeight, "rot", r.rotMaterial);
             middleY -= 3.5f * (float) Finial.hpf;
         }
 
@@ -859,8 +859,8 @@ public class ScoreView implements EditorView {
         boolean hasScales = StaffTrack.hasScales();
         if (scales && hasScales) {
             float maxHeight = 2 * (float) Finial.hpf;
-            attachTransformIcon(leftX, middleY, maxWidth, maxHeight, "sca",
-                    r.scaMaterial);
+            attachTransformIcon(
+                    leftX, middleY, maxWidth, maxHeight, "sca", r.scaMaterial);
         }
     }
 
@@ -1143,8 +1143,8 @@ public class ScoreView implements EditorView {
         assert yIndex < 10 : yIndex;
         assert material != null;
 
-        Sparkline sparkline = new Sparkline(numVertices, xx, yy,
-                sparklineHeight, mode);
+        Sparkline sparkline
+                = new Sparkline(numVertices, xx, yy, sparklineHeight, mode);
         String name = String.format("%d%s", staffIndex, suffix);
         Geometry geometry = new Geometry(name, sparkline);
         visuals.attachChild(geometry);
@@ -1215,8 +1215,8 @@ public class ScoreView implements EditorView {
         boolean scales = hasScales && options.showsScales();
 
         float staffHeight;
-        Finial finial = new Finial(translations, rotations, scales,
-                sparklineHeight);
+        Finial finial
+                = new Finial(translations, rotations, scales, sparklineHeight);
         staffHeight = finial.getHeight();
         if (staffHeight == 0f) {
             finial = null;
