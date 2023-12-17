@@ -61,7 +61,6 @@ import jme3utilities.MyLight;
 import jme3utilities.MySpatial;
 import jme3utilities.Validate;
 import jme3utilities.debug.AxesVisualizer;
-import jme3utilities.math.MyVector3f;
 import jme3utilities.minie.MyControlP;
 import maud.Maud;
 import maud.MaudUtil;
@@ -230,8 +229,7 @@ public class SceneView extends SceneViewCore {
      * @return length (in local units, &ge;0)
      */
     public float axisLength(int axisIndex) {
-        Validate.inRange(axisIndex, "axis index", MyVector3f.firstAxis,
-                MyVector3f.lastAxis);
+        Validate.axisIndex(axisIndex, "axis index");
 
         AxesVisualizer visualizer = getAxesVisualizer();
         Spatial spatial = visualizer.getSpatial();
@@ -331,8 +329,7 @@ public class SceneView extends SceneViewCore {
      * @return true if pointing away, otherwise false
      */
     public boolean isAxisReceding(int axisIndex) {
-        Validate.inRange(axisIndex, "axis index", MyVector3f.firstAxis,
-                MyVector3f.lastAxis);
+        Validate.axisIndex(axisIndex, "axis index");
 
         AxesVisualizer axesVisualizer = getAxesVisualizer();
         assert axesVisualizer.isEnabled();

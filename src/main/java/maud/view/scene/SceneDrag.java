@@ -156,8 +156,7 @@ final public class SceneDrag {
      */
     public static void start(int axisIndex, float initialLength, Cgm cgm,
             boolean farSideFlag) {
-        Validate.inRange(axisIndex, "axis index", MyVector3f.firstAxis,
-                MyVector3f.lastAxis);
+        Validate.axisIndex(axisIndex, "axis index");
         Validate.positive(initialLength, "initial length");
         Validate.nonNull(cgm, "model");
 

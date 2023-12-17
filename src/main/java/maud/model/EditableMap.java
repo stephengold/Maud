@@ -38,7 +38,6 @@ import jme3utilities.Heart;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyQuaternion;
-import jme3utilities.math.MyVector3f;
 import jme3utilities.ui.ActionApplication;
 import maud.Maud;
 import maud.model.cgm.Cgm;
@@ -276,8 +275,7 @@ public class EditableMap extends LoadedMap {
      * @param axisIndex which axis: 0&rarr;X, 1&rarr;Y, 2&rarr;Z
      */
     public void snapTwist(int axisIndex) {
-        Validate.inRange(axisIndex, "axis index", MyVector3f.firstAxis,
-                MyVector3f.lastAxis);
+        Validate.axisIndex(axisIndex, "axis index");
 
         BoneMapping boneMapping = selectedMapping();
         Quaternion twist = boneMapping.getTwist();

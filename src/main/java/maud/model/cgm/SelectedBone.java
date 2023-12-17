@@ -48,7 +48,6 @@ import jme3utilities.InfluenceUtil;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyQuaternion;
-import jme3utilities.math.MyVector3f;
 import jme3utilities.wes.Pose;
 import maud.Maud;
 import maud.MaudUtil;
@@ -708,8 +707,7 @@ public class SelectedBone implements Cloneable {
      * @param axisIndex which axis: 0&rarr;X, 1&rarr;Y, 2&rarr;Z
      */
     public void snapRotation(int axisIndex) {
-        Validate.inRange(axisIndex, "axis index", MyVector3f.firstAxis,
-                MyVector3f.lastAxis);
+        Validate.axisIndex(axisIndex, "axis index");
 
         if (shouldEnableControls()) {
             Quaternion userRotation = userRotation(null);

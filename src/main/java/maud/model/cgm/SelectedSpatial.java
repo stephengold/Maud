@@ -85,7 +85,6 @@ import jme3utilities.MyString;
 import jme3utilities.Validate;
 import jme3utilities.math.MyMath;
 import jme3utilities.math.MyQuaternion;
-import jme3utilities.math.MyVector3f;
 import jme3utilities.ui.Locators;
 import maud.Maud;
 import maud.MaudUtil;
@@ -1885,8 +1884,7 @@ public class SelectedSpatial implements JmeCloneable {
      * @param axisIndex which axis: 0&rarr;X, 1&rarr;Y, 2&rarr;Z
      */
     public void snapRotation(int axisIndex) {
-        Validate.inRange(axisIndex, "axis index", MyVector3f.firstAxis,
-                MyVector3f.lastAxis);
+        Validate.axisIndex(axisIndex, "axis index");
 
         Quaternion localRotation = localRotation(null);
         MyQuaternion.snapLocal(localRotation, axisIndex);

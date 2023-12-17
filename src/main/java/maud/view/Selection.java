@@ -142,8 +142,7 @@ public class Selection {
         if (scoreView) {
             Validate.inRange(axisIndex, "axis index", 0, 9);
         } else {
-            Validate.inRange(axisIndex, "axis index", MyVector3f.firstAxis,
-                    MyVector3f.lastAxis);
+            Validate.axisIndex(axisIndex, "axis index");
         }
 
         float dSquared = screenXY.distanceSquared(inputXY);
