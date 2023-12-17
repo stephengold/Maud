@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2019, Stephen Gold
+ Copyright (c) 2019-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -93,7 +93,7 @@ public class VertexMarker {
      */
     VertexMarker(SceneViewCore owner) {
         assert owner != null;
-        view = owner;
+        this.view = owner;
     }
     // *************************************************************************
     // new methods exposed
@@ -109,7 +109,7 @@ public class VertexMarker {
         assert newView != view;
         assert newView.getVertex() == this;
 
-        view = newView;
+        this.view = newView;
     }
 
     /**
@@ -120,12 +120,12 @@ public class VertexMarker {
      */
     void update(Cgm cgm, float tpf) {
         if (geometry == null) {
-            geometry = createGeometry();
+            this.geometry = createGeometry();
         }
 
         DddCursorOptions cursorOptions = Maud.getModel().getScene().getCursor();
         float cycleTime = cursorOptions.getCycleTime();
-        colorTime = (colorTime + tpf) % cycleTime;
+        this.colorTime = (colorTime + tpf) % cycleTime;
 
         SelectedVertex vertex = cgm.getVertex();
         if (vertex.isSelected()) {
@@ -151,9 +151,9 @@ public class VertexMarker {
             }
             material.setFloat("PointSize", pointSize);
 
-            geometry.setCullHint(Spatial.CullHint.Never);
+            this.geometry.setCullHint(Spatial.CullHint.Never);
         } else {
-            geometry.setCullHint(Spatial.CullHint.Always);
+            this.geometry.setCullHint(Spatial.CullHint.Always);
         }
     }
     // *************************************************************************

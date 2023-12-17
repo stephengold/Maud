@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -124,7 +124,7 @@ public class Platform implements BulletDebugAppState.DebugAppStateFilter {
      */
     Platform(SceneViewCore owner) {
         assert owner != null;
-        view = owner;
+        this.view = owner;
     }
     // *************************************************************************
     // new methods exposed
@@ -156,7 +156,7 @@ public class Platform implements BulletDebugAppState.DebugAppStateFilter {
         assert newView != view;
         assert newView.getPlatform() == this;
 
-        view = newView;
+        this.view = newView;
     }
 
     /**
@@ -182,8 +182,8 @@ public class Platform implements BulletDebugAppState.DebugAppStateFilter {
                 default:
                     throw new IllegalStateException("type = " + type);
             }
-            oldDiameter = diameter;
-            oldType = type;
+            this.oldDiameter = diameter;
+            this.oldType = type;
         }
     }
     // *************************************************************************
@@ -249,7 +249,7 @@ public class Platform implements BulletDebugAppState.DebugAppStateFilter {
                     rbc.setEnabled(true);
                 }
             }
-            spatial = platformSpatial;
+            this.spatial = platformSpatial;
         }
     }
 

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2020, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -120,7 +120,7 @@ public class Projectile {
      */
     Projectile(SceneViewCore owner) {
         assert owner != null;
-        view = owner;
+        this.view = owner;
     }
     // *************************************************************************
     // new methods exposed
@@ -134,7 +134,7 @@ public class Projectile {
                     = spatial.getControl(RigidBodyControl.class);
             rbc.setEnabled(false);
             spatial.removeFromParent();
-            spatial = null;
+            this.spatial = null;
         }
     }
 
@@ -174,7 +174,7 @@ public class Projectile {
         assert newView != view;
         assert newView.getProjectile() == this;
 
-        view = newView;
+        this.view = newView;
     }
     // *************************************************************************
     // private methods
@@ -195,7 +195,7 @@ public class Projectile {
         AssetManager assetManager = Locators.getAssetManager();
         Material material = MyAsset.createShinyMaterial(assetManager, color);
 
-        spatial = new Geometry(name, mesh);
+        this.spatial = new Geometry(name, mesh);
         spatial.addControl(rbc);
         spatial.setMaterial(material);
         spatial.setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
