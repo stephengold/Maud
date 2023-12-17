@@ -178,7 +178,7 @@ public class Selection {
             clear();
             this.bestBoneIndex = boneIndex;
             this.bestCgm = cgm;
-            bestType = Type.Bone;
+            this.bestType = Type.Bone;
         }
     }
 

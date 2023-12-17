@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -209,9 +209,9 @@ public class ScoreView implements EditorView {
     public ScoreView(ViewPort port1, ViewPort port2, ViewPort port3) {
         Validate.nonNull(port2, "port2");
 
-        viewPort1 = port1;
-        viewPort2 = port2;
-        viewPort3 = port3;
+        this.viewPort1 = port1;
+        this.viewPort2 = port2;
+        this.viewPort3 = port3;
     }
     // *************************************************************************
     // new methods exposed
@@ -310,8 +310,8 @@ public class ScoreView implements EditorView {
              * Series consists entirely of a single value:
              * draw the first keyframe only.
              */
-            tempX[0] = pxx[0];
-            tempY[0] = pyy[0];
+            this.tempX[0] = pxx[0];
+            this.tempY[0] = pyy[0];
             attachSparkline(1, tempX, tempY, Mesh.Mode.Points, suffix + "p",
                     plotIndex, material);
         }
@@ -597,7 +597,7 @@ public class ScoreView implements EditorView {
             int numRoots = roots.size();
             assert numRoots == 1 : numRoots;
             Spatial visualsSpatial = roots.get(0);
-            visuals = (Node) visualsSpatial;
+            this.visuals = (Node) visualsSpatial;
             visuals.detachAllChildren();
             height = 0f;
             staffIndex = 0;
@@ -768,7 +768,7 @@ public class ScoreView implements EditorView {
             }
             ++staffIndex;
         }
-        height = newHeight;
+        this.height = newHeight;
     }
 
     /**
@@ -780,7 +780,7 @@ public class ScoreView implements EditorView {
         int numShown = indices.size();
         for (Integer index : indices) {
             if (staffIndex > 0) {
-                height += yGap;
+                this.height += yGap;
             }
             int boneIndex = index;
             attachBoneStaff(boneIndex);
@@ -1171,28 +1171,28 @@ public class ScoreView implements EditorView {
             }
         }
 
-        numPlots = 0;
+        this.numPlots = 0;
         ScoreOptions options = Maud.getModel().getScore();
 
         boolean hasTranslations = StaffTrack.hasTranslations();
         boolean showTranslations = options.showsTranslations();
         if (hasTranslations && showTranslations) {
             StaffTrack.plotTranslations(numPlots, r);
-            numPlots += 3;
+            this.numPlots += 3;
         }
 
         boolean hasRotations = StaffTrack.hasRotations();
         boolean showRotations = options.showsRotations();
         if (hasRotations && showRotations) {
             StaffTrack.plotRotations(numPlots, r);
-            numPlots += 4;
+            this.numPlots += 4;
         }
 
         boolean hasScales = StaffTrack.hasScales();
         boolean showScales = options.showsScales();
         if (hasScales && showScales) {
             StaffTrack.plotScales(numPlots, r);
-            numPlots += 3;
+            this.numPlots += 3;
         }
     }
 
@@ -1233,12 +1233,12 @@ public class ScoreView implements EditorView {
         String trackDesc = StaffTrack.labelText();
         trackYs.put(trackDesc, new Vector2f(minY, maxY));
 
-        isSelectedTrack = false;
+        this.isSelectedTrack = false;
         boolean isVisible = isStaffVisible(minY, maxY);
         if (isVisible) {
             String desc = cgm.getTrack().describe();
             if (trackDesc.equals(desc)) {
-                isSelectedTrack = true;
+                this.isSelectedTrack = true;
             }
             if (finial == null) {
                 attachTracklessStaff();
@@ -1247,7 +1247,7 @@ public class ScoreView implements EditorView {
             }
             ++staffIndex;
         }
-        height = newHeight;
+        this.height = newHeight;
     }
 
     /**
@@ -1258,7 +1258,7 @@ public class ScoreView implements EditorView {
         int numSpatialTracks = animation.countSpatialTracks();
         for (int trackIndex = 0; trackIndex < numSpatialTracks; trackIndex++) {
             if (staffIndex > 0) {
-                height += yGap;
+                this.height += yGap;
             }
             attachSpatialStaff(trackIndex);
         }

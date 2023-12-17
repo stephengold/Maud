@@ -1708,8 +1708,8 @@ public class EditableCgm extends LoadedCgm {
                  * in a format that Maud can load, so update the
                  * origin information and mark as pristine.
                  */
-                assetRootPath = af;
-                baseAssetPath = MyString.remainder(baseFilePath, af);
+                this.assetRootPath = af;
+                this.baseAssetPath = MyString.remainder(baseFilePath, af);
 
                 // In asset paths, a leading slash is always redundant.
                 if (baseAssetPath.startsWith("/")) {

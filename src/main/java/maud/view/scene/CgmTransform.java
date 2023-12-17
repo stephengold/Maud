@@ -106,9 +106,9 @@ public class CgmTransform implements Cloneable {
         assert Float.isFinite(baseElevation) : baseElevation;
 
         bindCenter.set(center);
-        scale = 1f;
-        yOffset = -baseElevation * scale;
-        zUpFlag = zUp;
+        this.scale = 1f;
+        this.yOffset = -baseElevation * scale;
+        this.zUpFlag = zUp;
     }
 
     /**
@@ -117,7 +117,7 @@ public class CgmTransform implements Cloneable {
      * @param angle (in radians)
      */
     public void rotateY(float angle) {
-        yAngle = MyMath.standardizeAngle(yAngle + angle);
+        this.yAngle = MyMath.standardizeAngle(yAngle + angle);
     }
 
     /**
@@ -127,7 +127,7 @@ public class CgmTransform implements Cloneable {
      */
     void scale(float scaleFactor) {
         assert scaleFactor > 0f : scaleFactor;
-        scale *= scaleFactor;
+        this.scale *= scaleFactor;
     }
 
     /**
@@ -137,7 +137,7 @@ public class CgmTransform implements Cloneable {
      */
     public void setScale(float newScale) {
         Validate.positive(newScale, "new scale");
-        scale = newScale;
+        this.scale = newScale;
     }
 
     /**
@@ -146,7 +146,7 @@ public class CgmTransform implements Cloneable {
      * @param angle the desired angle (in radians)
      */
     public void setYAngle(float angle) {
-        yAngle = MyMath.standardizeAngle(angle);
+        this.yAngle = MyMath.standardizeAngle(angle);
     }
 
     /**
