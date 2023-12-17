@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -109,9 +109,8 @@ class BoneScaleTool extends Tool {
         EditableCgm target = Maud.getModel().getTarget();
         if (target.getBone().shouldEnableControls()) {
             Vector3f scales = readVectorBank("Sca", axisSt, null);
-            /*
-             * Avoid scale factors near zero.
-             */
+
+            // Avoid scale factors near zero.
             scales.x = Math.max(scales.x, 0.001f);
             scales.y = Math.max(scales.y, 0.001f);
             scales.z = Math.max(scales.z, 0.001f);

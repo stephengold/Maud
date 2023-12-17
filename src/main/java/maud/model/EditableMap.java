@@ -312,9 +312,8 @@ public class EditableMap extends LoadedMap {
 
         String filePath = format.extend(baseFilePath);
         File file = new File(filePath);
-        /*
-         * create the parent folder (see JME issue #1011)
-         */
+
+        // create the parent folder (see JME issue #1011)
         File parent = file.getParentFile();
         if (parent != null && !parent.exists()) {
             parent.mkdirs();
@@ -350,9 +349,8 @@ public class EditableMap extends LoadedMap {
                  */
                 this.assetRootPath = af;
                 this.baseAssetPath = MyString.remainder(baseFilePath, af);
-                /*
-                 * In asset paths, a leading slash is always redundant.
-                 */
+
+                // In asset paths, a leading slash is always redundant.
                 if (baseAssetPath.startsWith("/")) {
                     this.baseAssetPath = MyString.remainder(baseAssetPath, "/");
                 }
@@ -370,9 +368,7 @@ public class EditableMap extends LoadedMap {
                 editState.setPristine(eventDescription);
 
             } else {
-                /*
-                 * Don't update the origin information, don't mark as pristine.
-                 */
+                // Don't update the origin information, don't mark as pristine.
                 History.addEvent(eventDescription);
             }
         }

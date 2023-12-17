@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2021, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -72,35 +72,29 @@ class CgmTool extends Tool {
      */
     @Override
     protected void toolUpdate() {
-        /*
-         * name
-         */
+        // name
         EditableCgm target = Maud.getModel().getTarget();
         String name = target.getName();
         String nameText = MyString.quote(name);
         setStatusText("cgmName", " " + nameText);
-        /*
-         * asset base path
-         */
+
+        // asset base path
         String assetPath = target.getAssetPath();
         String abpText
                 = assetPath.isEmpty() ? "unknown" : MyString.quote(assetPath);
         setStatusText("cgmAbp", " " + abpText);
-        /*
-         * asset root
-         */
+
+        // asset root
         String assetRoot = target.getAssetRootPath();
         String assetRootDescription
                 = assetRoot.isEmpty() ? "unknown" : MyString.quote(assetRoot);
         setStatusText("cgmAf", " " + assetRootDescription);
-        /*
-         * asset/file extension
-         */
+
+        // asset/file extension
         String extText = target.getExtension();
         setStatusText("cgmExt", extText);
-        /*
-         * pristine/edited status
-         */
+
+        // pristine/edited status
         String pristineText;
         int editCount = target.getEditState().countUnsavedEdits();
         if (editCount == 0) {
@@ -111,66 +105,56 @@ class CgmTool extends Tool {
             pristineText = String.format("%d edits", editCount);
         }
         setStatusText("cgmPristine", pristineText);
-        /*
-         * S-G controls
-         */
+
+        // scene-graph controls
         int numSgcs = target.countSgcs(Control.class);
         String sgcsText = Integer.toString(numSgcs);
         setButtonText("cgmSgcs", sgcsText);
-        /*
-         * materials
-         */
+
+        // materials
         int numMaterials = target.countMaterials();
         String materialsText = Integer.toString(numMaterials);
         setButtonText("cgmMaterials", materialsText);
-        /*
-         * meshes
-         */
+
+        // meshes
         int numMeshes = target.countMeshes();
         String meshesText = Integer.toString(numMeshes);
         setButtonText("cgmMeshes", meshesText);
-        /*
-         * skeletons
-         */
+
+        // skeletons
         int numSkeletons = target.countSkeletons();
         String skeletonsText = Integer.toString(numSkeletons);
         setStatusText("cgmSkeletons", skeletonsText);
-        /*
-         * hidden spatials
-         */
+
+        // hidden spatials
         int numHiddens
                 = target.countSpatials(Spatial.class, Spatial.CullHint.Always);
         String hiddensText = Integer.toString(numHiddens);
         setStatusText("cgmHiddens", hiddensText);
-        /*
-         * nodes
-         */
+
+        // nodes
         int numNodes = target.countSpatials(Node.class);
         String text = Integer.toString(numNodes);
         setStatusText("cgmNodes", text);
-        /*
-         * meshes with collision data
-         */
+
+        // meshes with collision data
         int numTrees = target.countCollisionTrees();
         String treesText = Integer.toString(numTrees);
         setStatusText("cgmCollisionTrees", treesText);
-        /*
-         * textures
-         */
+
+        // textures
         SelectedTexture texture = target.getTexture();
         int numSelectableTextures = texture.countNonNulls();
         text = Integer.toString(numSelectableTextures);
         setButtonText("cgmTextures", text);
-        /*
-         * transforming spatials
-         */
+
+        // transforming spatials
         int numTransforms
                 = target.countTransformSpatials(Spatial.class);
         String transformsText = Integer.toString(numTransforms);
         setStatusText("cgmTransforms", transformsText);
-        /*
-         * vertices
-         */
+
+        // vertices
         int numVertices = target.countVertices();
         text = Integer.toString(numVertices);
         setButtonText("cgmVertices", text);
