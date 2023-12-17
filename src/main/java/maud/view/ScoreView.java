@@ -1007,7 +1007,6 @@ public class ScoreView implements EditorView {
         assert xWidth > 0f : xWidth;
         assert yHeight > 0f : yHeight;
 
-        String nameSuffix = String.format("%d", staffIndex);
         Spatial label = r.makeLabel(labelText, sizeFactor,
                 textColor, bgMaterial, xWidth, yHeight);
         visuals.attachChild(label);
