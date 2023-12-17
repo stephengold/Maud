@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2019, Stephen Gold
+ Copyright (c) 2017-2023, Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -71,14 +71,14 @@ public class Checkpoint {
      * previous checkpoint (not null, unaffected)
      */
     Checkpoint(List<String> descriptions) {
-        timestamp = new Date();
+        this.timestamp = new Date();
 
         EditorModel live = Maud.getModel();
         live.preCheckpoint();
-        model = new EditorModel(live);
+        this.model = new EditorModel(live);
         live.postCheckpoint();
 
-        eventDescriptions = new ArrayList<>(descriptions);
+        this.eventDescriptions = new ArrayList<>(descriptions);
     }
     // *************************************************************************
     // new methods exposed

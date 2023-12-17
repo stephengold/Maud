@@ -364,15 +364,15 @@ public class LoadedMap implements Cloneable {
             success = false;
         } else {
             success = true;
-            map = loaded;
+            this.map = loaded;
             if (spec == null || !spec.startsWith("file:///")) {
-                assetRootPath = "";
+                this.assetRootPath = "";
             } else {
                 String rootPath = MyString.remainder(spec, "file:///");
                 assert !rootPath.isEmpty();
-                assetRootPath = rootPath;
+                this.assetRootPath = rootPath;
             }
-            baseAssetPath = MyString.removeSuffix(path, ".j3o");
+            this.baseAssetPath = MyString.removeSuffix(path, ".j3o");
         }
 
         return success;
@@ -406,9 +406,9 @@ public class LoadedMap implements Cloneable {
             success = false;
         } else {
             success = true;
-            map = loaded;
-            assetRootPath = "";
-            baseAssetPath = MyString.removeSuffix(assetPath, ".j3o");
+            this.map = loaded;
+            this.assetRootPath = "";
+            this.baseAssetPath = MyString.removeSuffix(assetPath, ".j3o");
         }
 
         return success;
@@ -524,7 +524,7 @@ public class LoadedMap implements Cloneable {
      * @param newSetting true &rarr; invert it, false &rarr; don't invert it
      */
     public void setInvertMap(boolean newSetting) {
-        invertMapFlag = newSetting;
+        this.invertMapFlag = newSetting;
     }
 
     /**

@@ -84,7 +84,7 @@ class AssetDialog extends TextEntryDialog {
     AssetDialog(String description, String specification,
             Collection<String> extList) {
         super(description);
-        spec = specification;
+        this.spec = specification;
         extensions.addAll(extList);
     }
     // *************************************************************************

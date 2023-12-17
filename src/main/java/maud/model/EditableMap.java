@@ -173,8 +173,8 @@ public class EditableMap extends LoadedMap {
     public void invert() {
         if (map.countMappings() > 0) {
             History.autoAdd();
-            map = map.inverse();
-            baseAssetPath = "";
+            this.map = map.inverse();
+            this.baseAssetPath = "";
             editState.setEdited("invert the skeleton map");
         }
     }
@@ -194,8 +194,8 @@ public class EditableMap extends LoadedMap {
             map.map(name, name);
         }
 
-        assetRootPath = "";
-        baseAssetPath = "";
+        this.assetRootPath = "";
+        this.baseAssetPath = "";
         int numBones = boneNames.size();
         String event = String.format("load an identity map with %d bone%s",
                 numBones, numBones == 1 ? "" : "s");
@@ -293,8 +293,8 @@ public class EditableMap extends LoadedMap {
     public void unload() {
         History.autoAdd();
         map.clear();
-        assetRootPath = "";
-        baseAssetPath = "";
+        this.assetRootPath = "";
+        this.baseAssetPath = "";
         editState.setEdited("unload map");
     }
 
@@ -348,13 +348,13 @@ public class EditableMap extends LoadedMap {
                  * folder in a format that Maud can load, so update the
                  * origin information and mark as pristine.
                  */
-                assetRootPath = af;
-                baseAssetPath = MyString.remainder(baseFilePath, af);
+                this.assetRootPath = af;
+                this.baseAssetPath = MyString.remainder(baseFilePath, af);
                 /*
                  * In asset paths, a leading slash is always redundant.
                  */
                 if (baseAssetPath.startsWith("/")) {
-                    baseAssetPath = MyString.remainder(baseAssetPath, "/");
+                    this.baseAssetPath = MyString.remainder(baseAssetPath, "/");
                 }
                 editState.setPristine(eventDescription);
 
@@ -365,7 +365,7 @@ public class EditableMap extends LoadedMap {
                  * filesystem in a format that Maud can load, so update the
                  * origin information and mark as pristine.
                  */
-                assetRootPath = MyString.removeSuffix(baseFilePath,
+                this.assetRootPath = MyString.removeSuffix(baseFilePath,
                         baseAssetPath);
                 editState.setPristine(eventDescription);
 

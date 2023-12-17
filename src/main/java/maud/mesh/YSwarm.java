@@ -78,12 +78,12 @@ public class YSwarm extends Mesh {
     public YSwarm(int maxPoints) {
         Validate.positive(maxPoints, "max points");
 
-        fPositions = BufferUtils.createFloatBuffer(numAxes * maxPoints);
+        this.fPositions = BufferUtils.createFloatBuffer(numAxes * maxPoints);
         VertexBuffer vPositions = new VertexBuffer(Type.Position);
         vPositions.setupData(Usage.Stream, numAxes, Format.Float, fPositions);
         setBuffer(vPositions);
 
-        fColors = BufferUtils.createFloatBuffer(4 * maxPoints);
+        this.fColors = BufferUtils.createFloatBuffer(4 * maxPoints);
         VertexBuffer vColors = new VertexBuffer(Type.Color);
         vColors.setupData(Usage.Stream, 4, Format.Float, fColors);
         setBuffer(vColors);

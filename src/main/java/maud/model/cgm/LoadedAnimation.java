@@ -948,7 +948,7 @@ public class LoadedAnimation implements Cloneable {
      * @param resetDisplayedPose true to reset, false to leave unchanged
      */
     public void loadBindPose(boolean resetDisplayedPose) {
-        loadedName = bindPoseName;
+        this.loadedName = bindPoseName;
         cgm.getPlay().resetLimits();
         cgm.getPlay().setSpeed(0f);
         cgm.getPlay().setTime(0f);
