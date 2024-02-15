@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2023, Stephen Gold
+ Copyright (c) 2017-2024 Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -493,7 +493,7 @@ public class SelectedShape implements JmeCloneable {
 
                     Transform parent = new Transform();
                     for (ChildCollisionShape child : children) {
-                        long id = child.getShape().getObjectId();
+                        long id = child.getShape().nativeId();
                         if (id == userId) {
                             child.copyTransform(parent);
                         }
@@ -606,7 +606,7 @@ public class SelectedShape implements JmeCloneable {
         if (selectedShape == null) {
             return -1L;
         } else {
-            return selectedShape.getObjectId();
+            return selectedShape.nativeId();
         }
     }
 

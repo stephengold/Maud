@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2023, Stephen Gold
+ Copyright (c) 2017-2024 Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -311,7 +311,7 @@ final public class PhysicsUtil {
      * @return true if used/identical, otherwise false
      */
     public static boolean usesShape(CollisionShape user, long shapeId) {
-        long id = user.getObjectId();
+        long id = user.nativeId();
         boolean result = false;
         if (id == shapeId) {
             result = true;
@@ -319,7 +319,7 @@ final public class PhysicsUtil {
             CompoundCollisionShape compound = (CompoundCollisionShape) user;
             ChildCollisionShape[] children = compound.listChildren();
             for (ChildCollisionShape child : children) {
-                id = child.getShape().getObjectId();
+                id = child.getShape().nativeId();
                 if (id == shapeId) {
                     result = true;
                     break;

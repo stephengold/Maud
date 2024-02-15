@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018-2023, Stephen Gold
+ Copyright (c) 2018-2024 Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -186,7 +186,7 @@ public class CgmPhysics implements JmeCloneable {
     PhysicsJoint findJoint(long id) {
         PhysicsJoint result = null;
         for (PhysicsJoint joint : jointModelToView.keySet()) {
-            if (joint.getObjectId() == id) {
+            if (joint.nativeId() == id) {
                 result = joint;
                 break;
             }
@@ -204,7 +204,7 @@ public class CgmPhysics implements JmeCloneable {
     PhysicsCollisionObject findPco(long id) {
         PhysicsCollisionObject result = null;
         for (PhysicsCollisionObject pco : pcoModelToView.keySet()) {
-            if (pco.getObjectId() == id) {
+            if (pco.nativeId() == id) {
                 result = pco;
                 break;
             }
@@ -222,7 +222,7 @@ public class CgmPhysics implements JmeCloneable {
     CollisionShape findShape(long id) {
         for (PhysicsCollisionObject pco : pcoModelToView.keySet()) {
             CollisionShape shape = pco.getCollisionShape();
-            if (shape.getObjectId() == id) {
+            if (shape.nativeId() == id) {
                 return shape;
             }
             if (shape instanceof CompoundCollisionShape) {
@@ -230,7 +230,7 @@ public class CgmPhysics implements JmeCloneable {
                 ChildCollisionShape[] children = ccs.listChildren();
                 for (ChildCollisionShape child : children) {
                     CollisionShape childShape = child.getShape();
-                    if (childShape.getObjectId() == id) {
+                    if (childShape.nativeId() == id) {
                         return childShape;
                     }
                 }
@@ -286,7 +286,7 @@ public class CgmPhysics implements JmeCloneable {
         List<String> result = new ArrayList<>(numJoints);
 
         for (PhysicsJoint joint : jointModelToView.keySet()) {
-            long id = joint.getObjectId();
+            long id = joint.nativeId();
             String name = Long.toHexString(id);
             if (name.startsWith(namePrefix)) {
                 result.add(name);
@@ -508,7 +508,7 @@ public class CgmPhysics implements JmeCloneable {
         assert newView != null;
         assert !(newView instanceof CompoundCollisionShape);
 
-        long oldModelId = oldModel.getObjectId();
+        long oldModelId = oldModel.nativeId();
         CollisionShape oldView = modelToView(oldModel);
         Map<Long, CollisionShape> shapeMap = shapeMap();
         for (CollisionShape modelShape : shapeMap.values()) {
@@ -567,14 +567,14 @@ public class CgmPhysics implements JmeCloneable {
         Map<Long, CollisionShape> result = new TreeMap<>();
         for (PhysicsCollisionObject pco : pcoModelToView.keySet()) {
             CollisionShape shape = pco.getCollisionShape();
-            long id = shape.getObjectId();
+            long id = shape.nativeId();
             result.put(id, shape);
             if (shape instanceof CompoundCollisionShape) {
                 CompoundCollisionShape ccs = (CompoundCollisionShape) shape;
                 ChildCollisionShape[] children = ccs.listChildren();
                 for (ChildCollisionShape child : children) {
                     CollisionShape childShape = child.getShape();
-                    long childId = childShape.getObjectId();
+                    long childId = childShape.nativeId();
                     result.put(childId, childShape);
                 }
             }
@@ -591,18 +591,18 @@ public class CgmPhysics implements JmeCloneable {
      * @return a new set of IDs of collision objects and compound shapes
      */
     Set<Long> userSet(CollisionShape usedShape) {
-        long usedId = usedShape.getObjectId();
+        long usedId = usedShape.nativeId();
         Set<Long> result = new TreeSet<>();
         for (PhysicsCollisionObject pco : pcoModelToView.keySet()) {
             CollisionShape shape = pco.getCollisionShape();
             if (shape == usedShape) {
-                long pcoId = pco.getObjectId();
+                long pcoId = pco.nativeId();
                 result.add(pcoId);
             }
             if (shape instanceof CompoundCollisionShape
                     && shape != usedShape
                     && PhysicsUtil.usesShape(shape, usedId)) {
-                long parentId = shape.getObjectId();
+                long parentId = shape.nativeId();
                 result.add(parentId);
             }
         }
