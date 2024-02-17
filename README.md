@@ -84,7 +84,8 @@ Maud was designed for a desktop environment with:
    containing a "bin" that contains a Java executable.
    The path might be something like "C:\Program Files\Java\jre1.8.0_301"
    or "/usr/lib/jvm/java-11-openjdk-amd64/" .)
-  + using Bash:  `export JAVA_HOME="` *path to installation* `"`
+  + using Bash or Zsh:  `export JAVA_HOME="` *path to installation* `"`
+  + using [Fish]: `set -g JAVA_HOME "` *path to installation* `"`
   + using Windows Command Prompt:  `set JAVA_HOME="` *path to installation* `"`
   + using PowerShell: `$env:JAVA_HOME = '` *path to installation* `'`
 3. Install the latest Maud release from GitHub:
@@ -94,7 +95,7 @@ Maud was designed for a desktop environment with:
   + Extract the contents of the saved ZIP file.
 4. `cd` to the extracted "Maud" directory/folder that contains "bin" and "lib".
 5. Run the Maud startup script:
-  + using Bash: `./bin/Maud`
+  + using Bash or Fish or Zsh: `./bin/Maud`
   + using Windows Command Prompt: `./bin/Maud.bat`
   + using PowerShell: `.\bin\Maud.bat`
 
@@ -107,7 +108,8 @@ Maud was designed for a desktop environment with:
 1. Install a 64-bit Java Development Kit (JDK),
    if you don't already have one.
 2. Point the `JAVA_HOME` environment variable to your JDK installation.
-  + using Bash:  `export JAVA_HOME="` *path to installation* `"`
+  + using Bash or Zsh: `export JAVA_HOME="` *path to installation* `"`
+  + using [Fish]: `set -g JAVA_HOME "` *path to installation* `"`
   + using Windows Command Prompt:  `set JAVA_HOME="` *path to installation* `"`
   + using PowerShell: `$env:JAVA_HOME = '` *path to installation* `'`
 3. Download and extract the Maud source code from GitHub:
@@ -122,18 +124,18 @@ Maud was designed for a desktop environment with:
     + extract the contents of the saved ZIP file
     + `cd` to the extracted directory/folder
 4. Run the [Gradle] wrapper:
-  + using Bash or PowerShell: `./gradlew build`
+  + using Bash or Fish or Zsh or PowerShell: `./gradlew build`
   + using Windows Command Prompt: `.\gradlew build`
 
 After a successful build,
 archives for distribution will be found in `build/distributions`.
 
 You can run the local build using the Gradle wrapper:
-  + using Bash or PowerShell: `./gradlew run`
+  + using Bash or Fish or Zsh or PowerShell: `./gradlew run`
   + using Windows Command Prompt: `.\gradlew run`
 
 You can restore the project to a pristine state:
- + using Bash or PowerShell: `./gradlew clean cleanSandbox`
+ + using Bash or Fish or Zsh or PowerShell: `./gradlew clean cleanSandbox`
  + using Windows Command Prompt: `.\gradlew clean cleanSandbox`
 
 [Jump to table of contents](#toc)
@@ -887,6 +889,7 @@ correct the situation: sgold@sonic.net
 [elements]: https://www.adobe.com/products/photoshop-elements.html "Photoshop Elements"
 [findbugs]: http://findbugs.sourceforge.net "FindBugs Project"
 [firefox]: https://www.mozilla.org/en-US/firefox "Firefox"
+[fish]: https://fishshell.com/ "Fish command-line shell"
 [git]: https://git-scm.com "Git"
 [github]: https://github.com "GitHub"
 [gltf]: https://www.khronos.org/gltf "glTF Project"
