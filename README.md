@@ -99,7 +99,7 @@ Maud was designed for a desktop environment with:
   + using Windows Command Prompt: `./bin/Maud.bat`
   + using PowerShell: `.\bin\Maud.bat`
 
-[Jump to table of contents](#toc)
+[Jump to the table of contents](#toc)
 
 <a name="build"></a>
 
@@ -138,7 +138,7 @@ You can restore the project to a pristine state:
  + using Bash or Fish or Zsh or PowerShell: `./gradlew clean cleanSandbox`
  + using Windows Command Prompt: `.\gradlew clean cleanSandbox`
 
-[Jump to table of contents](#toc)
+[Jump to the table of contents](#toc)
 
 <a name="use"></a>
 
@@ -354,7 +354,7 @@ Standard keyboard shortcuts affecting the scene-view cameras:
 Score views don't have anything analogous to the 3-D cursor, but you can
 move the score-view camera up/down by clicking LMB where you want it to look.
 
-[Jump to table of contents](#toc)
+[Jump to the table of contents](#toc)
 
 <a name="cgms"></a>
 
@@ -413,7 +413,7 @@ By default, models loaded from the classpath or from an archive will be written 
 "Written Assets" folder under Maud's working folder.
 When loading assets, Maud treats this folder as if it overrides the classpath.
 
-[Jump to table of contents](#toc)
+[Jump to the table of contents](#toc)
 
 <a name="bones"></a>
 
@@ -478,7 +478,7 @@ However, since bones can appear close together in scene views,
 and since the RMB is also used to select objects other than bones,
 use this technique with caution.
 
-[Jump to table of contents](#toc)
+[Jump to the table of contents](#toc)
 
 <a name="animations"></a>
 
@@ -533,7 +533,7 @@ Using the animation tools, you can also "pin" a loaded animation.
 Pinning an animation forces all its root bones to the model origin
 for display (scene-view) purposes.
 
-[Jump to table of contents](#toc)
+[Jump to the table of contents](#toc)
 
 <a name="pose"></a>
 
@@ -585,7 +585,7 @@ Then go to the animation time when you want to paste and select
 or "Animations -> Edit -> Insert keyframes" (to paste to all bone tracks in the loaded animation).
 Remember to unfreeze the pose afterward!
 
-[Jump to table of contents](#toc)
+[Jump to the table of contents](#toc)
 
 <a name="map"></a>
 
@@ -639,7 +639,7 @@ To save the loaded skeleton map, select "Map -> Save".
 When you're ready to retarget animations between models,
 use the "Retarget Tool" ("Animations -> Add new -> Retarget source animation").
 
-[Jump to table of contents](#toc)
+[Jump to the table of contents](#toc)
 
 <a name="edithistory"></a>
 
@@ -670,7 +670,7 @@ Maud places a limit on the number of checkpoints you can have at any one time.
 The default limit is 8.
 You can alter this limit using the History Tool.
 
-[Jump to table of contents](#toc)
+[Jump to the table of contents](#toc)
 
 <a name="scripting"></a>
 
@@ -701,7 +701,7 @@ Maud has other mechanisms to make them persist.
 To remove a custom startup script,
 select "Settings -> Revert startup script to default".
 
-[Jump to table of contents](#toc)
+[Jump to the table of contents](#toc)
 
 <a name="args"></a>
 
@@ -728,7 +728,7 @@ build script) to configure Maud prior to executing its startup script:
   to generate verbose log output.
   This output may assist in diagnosing certain issues.
 
-[Jump to table of contents](#toc)
+[Jump to the table of contents](#toc)
 
 <a name="links"></a>
 
@@ -762,7 +762,7 @@ BVH resources:
 + free motion-capture data from Ohio State University's ACCAD:
   https://accad.osu.edu/research/motion-lab/system-data
 
-[Jump to table of contents](#toc)
+[Jump to the table of contents](#toc)
 
 
 <a name="wishlist"></a>
@@ -784,7 +784,7 @@ The following features are on my "to do" list, in no particular order:
  + mirror an animation/pose
  + joint-angle limits for models
 
-[Jump to table of contents](#toc)
+[Jump to the table of contents](#toc)
 
 <a name="conventions"></a>
 
@@ -798,7 +798,7 @@ load orientation in the Settings Tool ("Settings" -> "Tool").
 
 The first keyframe in each track must be at time=0.
 
-[Jump to table of contents](#toc)
+[Jump to the table of contents](#toc)
 
 
 <a name="history"></a>
@@ -814,7 +814,7 @@ https://github.com/stephengold/jme3-utilities
 
 Maud incorporates code from [jMonkeyEngine][jme] and the [BVH Retarget Project][bvhretarget].
 
-[Jump to table of contents](#toc)
+[Jump to the table of contents](#toc)
 
 
 <a name="acks"></a>
@@ -877,7 +877,7 @@ I'm also grateful to my dear Holly, for keeping me sane.
 If I've misattributed anything or left anyone out, please let me know, so I can
 correct the situation: sgold@sonic.net
 
-[Jump to table of contents](#toc)
+[Jump to the table of contents](#toc)
 
 
 [ant]: https://ant.apache.org "Apache Ant Project"
