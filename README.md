@@ -54,6 +54,7 @@ Maud was designed for a desktop environment with:
 
 <a name="toc"></a>
 
+
 ## Contents of this document
 
 + [How to download and run a pre-built release of Maud](#prebuilt)
@@ -73,6 +74,7 @@ Maud was designed for a desktop environment with:
 + [History](#history)
 + [Acknowledgments](#acks)
 
+
 <a name="prebuilt"></a>
 
 ## How to download and run a pre-built release of Maud
@@ -84,9 +86,9 @@ Maud was designed for a desktop environment with:
    containing a "bin" that contains a Java executable.
    The path might be something like "C:\Program Files\Java\jre1.8.0_301"
    or "/usr/lib/jvm/java-11-openjdk-amd64/" .)
-  + using Bash or Zsh:  `export JAVA_HOME="` *path to installation* `"`
+  + using Bash or Zsh: `export JAVA_HOME="` *path to installation* `"`
   + using [Fish]: `set -g JAVA_HOME "` *path to installation* `"`
-  + using Windows Command Prompt:  `set JAVA_HOME="` *path to installation* `"`
+  + using Windows Command Prompt: `set JAVA_HOME="` *path to installation* `"`
   + using PowerShell: `$env:JAVA_HOME = '` *path to installation* `'`
 3. Install the latest Maud release from GitHub:
   + Browse to [the latest release](https://github.com/stephengold/Maud/releases/latest)
@@ -101,6 +103,7 @@ Maud was designed for a desktop environment with:
 
 [Jump to the table of contents](#toc)
 
+
 <a name="build"></a>
 
 ## How to build and run Maud from source
@@ -110,7 +113,7 @@ Maud was designed for a desktop environment with:
 2. Point the `JAVA_HOME` environment variable to your JDK installation.
   + using Bash or Zsh: `export JAVA_HOME="` *path to installation* `"`
   + using [Fish]: `set -g JAVA_HOME "` *path to installation* `"`
-  + using Windows Command Prompt:  `set JAVA_HOME="` *path to installation* `"`
+  + using Windows Command Prompt: `set JAVA_HOME="` *path to installation* `"`
   + using PowerShell: `$env:JAVA_HOME = '` *path to installation* `'`
 3. Download and extract the Maud source code from GitHub:
   + using Git:
@@ -131,14 +134,15 @@ After a successful build,
 archives for distribution will be found in `build/distributions`.
 
 You can run the local build using the Gradle wrapper:
-  + using Bash or Fish or Zsh or PowerShell: `./gradlew run`
-  + using Windows Command Prompt: `.\gradlew run`
++ using Bash or Fish or Zsh or PowerShell: `./gradlew run`
++ using Windows Command Prompt: `.\gradlew run`
 
 You can restore the project to a pristine state:
- + using Bash or Fish or Zsh or PowerShell: `./gradlew clean cleanSandbox`
- + using Windows Command Prompt: `.\gradlew clean cleanSandbox`
++ using Bash or Fish or Zsh or PowerShell: `./gradlew clean cleanSandbox`
++ using Windows Command Prompt: `.\gradlew clean cleanSandbox`
 
 [Jump to the table of contents](#toc)
+
 
 <a name="use"></a>
 
@@ -900,7 +904,7 @@ correct the situation: sgold@sonic.net
 [iqe]: http://sauerbraten.org/iqm "Inter-Quake Model Formats"
 [java]: https://java.com "Java"
 [jfrog]: https://www.jfrog.com "JFrog"
-[jme]: https://jmonkeyengine.org  "jMonkeyEngine Project"
+[jme]: https://jmonkeyengine.org "jMonkeyEngine Project"
 [jme-ttf]: https://1337atr.weebly.com/jttf.html "jME-TTF Rendering System"
 [license]: https://github.com/stephengold/Maud/blob/master/LICENSE "Maud license"
 [makehuman]: http://www.makehumancommunity.org/ "MakeHuman Community"
