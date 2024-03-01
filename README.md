@@ -853,9 +853,11 @@ artists and software developers:
     + [Adobe Photoshop Elements][elements]
     + the [Blender] 3-D animation suite
     + the [Bullet] real-time physics library
+    + the [Checkstyle] tool
     + the [FindBugs] source-code analyzer
     + the [Firefox] and [Chrome] web browsers
     + the [Git] revision-control system and GitK commit viewer
+    + the [GitKraken] client
     + the [Gradle] build tool
     + the [IntelliJ IDEA][idea] and [NetBeans] integrated development environments
     + the [Java] compiler, standard doclet, and virtual machine
@@ -890,6 +892,7 @@ correct the situation: sgold@sonic.net
 [blender]: https://docs.blender.org "Blender Project"
 [bullet]: https://pybullet.org/wordpress "Bullet Real-Time Physics Simulation"
 [bvhretarget]: https://github.com/Nehon/bvhretarget "BVH Retarget Project"
+[checkstyle]: https://checkstyle.org "Checkstyle"
 [chrome]: https://www.google.com/chrome "Chrome"
 [elements]: https://www.adobe.com/products/photoshop-elements.html "Photoshop Elements"
 [findbugs]: http://findbugs.sourceforge.net "FindBugs Project"
@@ -897,6 +900,7 @@ correct the situation: sgold@sonic.net
 [fish]: https://fishshell.com/ "Fish command-line shell"
 [git]: https://git-scm.com "Git"
 [github]: https://github.com "GitHub"
+[gitkraken]: https://www.gitkraken.com "GitKraken client"
 [gltf]: https://www.khronos.org/gltf "glTF Project"
 [gradle]: https://gradle.org "Gradle Project"
 [heart]: https://github.com/stephengold/Heart "Heart Project"
