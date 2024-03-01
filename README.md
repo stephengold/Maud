@@ -108,7 +108,7 @@ Maud was designed for a desktop environment with:
 
 ## How to build and run Maud from source
 
-1. Install a 64-bit Java Development Kit (JDK),
+1. Install a 64-bit [Java Development Kit (JDK)][adoptium],
    if you don't already have one.
 2. Point the `JAVA_HOME` environment variable to your JDK installation.
   + using Bash or Zsh: `export JAVA_HOME="` *path to installation* `"`
@@ -884,6 +884,7 @@ correct the situation: sgold@sonic.net
 [Jump to the table of contents](#toc)
 
 
+[adoptium]: https://adoptium.net/releases.html "Adoptium Project"
 [ant]: https://ant.apache.org "Apache Ant Project"
 [bican]: https://github.com/canbican "Can Bican"
 [blender]: https://docs.blender.org "Blender Project"
