@@ -5,7 +5,10 @@ plugins {
     id 'checkstyle'
 }
 
-ext.jme3Version = '3.6.1-stable' // current version of JMonkeyEngine
+ext {
+    // current version of the JMonkeyEngine libraries:
+    jme3Version = '3.7.0-alpha3.1'
+}
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
