@@ -133,7 +133,7 @@ Maud was designed for a desktop environment with:
     + extract the contents of the saved ZIP file
     + `cd` to the extracted directory/folder
 4. Run the [Gradle] wrapper:
-  + using Bash or Fish or Zsh or PowerShell: `./gradlew build`
+  + using Bash or Fish or PowerShell or Zsh: `./gradlew build`
   + using Windows Command Prompt: `.\gradlew build`
 
 After a successful build,
