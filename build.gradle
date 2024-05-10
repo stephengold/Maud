@@ -1,8 +1,8 @@
 // Gradle script to build the Maud project
 
 plugins {
-    id 'application' // to build a Java application
-    id 'checkstyle'
+    id 'application' // to build JVM applications
+    id 'checkstyle'  // to analyze Java sourcecode for style violations
 }
 
 ext {
