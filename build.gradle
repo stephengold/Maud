@@ -64,22 +64,22 @@ configurations.configureEach {
 
 dependencies {
     // from mavenCentral (or mavenLocal) repositories:
-    implementation(libs.logback.classic)
-    runtimeOnly(libs.nifty.style.black)
-    implementation(libs.heart)
     implementation(libs.acorus)
-    implementation(libs.jme3.utilities.nifty)
-    implementation(libs.minie)
-    implementation(libs.skyControl)
+    implementation(libs.heart)
     implementation(libs.jme.ttf)
-    implementation(libs.wes)
-    runtimeOnly(libs.jme3.awt.dialogs)
     implementation(libs.jme3.blender)
-    runtimeOnly(libs.jme3.desktop)
     implementation(libs.jme3.lwjgl)
     implementation(libs.jme3.plugins)
+    implementation(libs.jme3.utilities.nifty)
+    implementation(libs.logback.classic)
+    implementation(libs.minie)
+    implementation(libs.skyControl)
+    implementation(libs.wes)
+    runtimeOnly(libs.jme3.awt.dialogs)
+    runtimeOnly(libs.jme3.desktop)
     //runtimeOnly(libs.jme3.testdata)
     runtimeOnly(libs.nashorn.core)
+    runtimeOnly(libs.nifty.style.black)
 
     // from jitpack repositories:
     implementation(libs.jme3.xbuf.loader)
