@@ -1,0 +1,26 @@
+## TOML version catalog for the Maud project
+
+[versions]
+checkstyle = "10.16.0"
+jme = "3.7.0-beta1"
+
+[libraries]
+acorus = { module = "com.github.stephengold:Acorus", version = "2.0.0" }
+heart = { module = "com.github.stephengold:Heart", version = "9.0.0" }
+jme-ttf = { module = "com.github.stephengold:jme-ttf", version = "3.0.1" }
+jme3-awt-dialogs = { module = "org.jmonkeyengine:jme3-awt-dialogs", version.ref = "jme" }
+jme3-blender = { module = "org.jmonkeyengine:jme3-blender", version = "3.3.2-stable" }
+jme3-desktop = { module = "org.jmonkeyengine:jme3-desktop", version.ref = "jme" }
+jme3-lwjgl = { module = "org.jmonkeyengine:jme3-lwjgl", version.ref = "jme" }
+jme3-plugins = { module = "org.jmonkeyengine:jme3-plugins", version.ref = "jme" }
+jme3-testdata = { module = "org.jmonkeyengine:jme3-testdata", version = "3.1.0-stable" }
+jme3-utilities-nifty = { module = "com.github.stephengold:jme3-utilities-nifty", version = "0.9.37" }
+jme3-xbuf-loader = { module = "com.github.xbuf.jme3_xbuf:jme3_xbuf_loader", version = "0.9.1" }
+logback-classic = { module = "ch.qos.logback:logback-classic", version = "1.5.0" }
+minie = { module = "com.github.stephengold:Minie", version = "8.1.0" }
+nashorn-core = { module = "org.openjdk.nashorn:nashorn-core", version = "15.4" }
+nifty-style-black = { module = "com.github.nifty-gui:nifty-style-black", version = "1.4.3" }
+skyControl = { module = "com.github.stephengold:SkyControl", version = "1.0.5" }
+wes = { module = "com.github.stephengold:Wes", version = "0.8.1" }
+
+[plugins]

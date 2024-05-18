@@ -5,11 +5,6 @@ plugins {
     id 'checkstyle'  // to analyze Java sourcecode for style violations
 }
 
-ext {
-    // current version of the JMonkeyEngine libraries:
-    jme3Version = '3.7.0-beta1'
-}
-
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
@@ -26,7 +21,7 @@ application {
 }
 
 checkstyle {
-    toolVersion '10.16.0'
+    toolVersion libs.versions.checkstyle.get()
 }
 
 tasks.withType(JavaCompile).configureEach { // Java compile-time options:
@@ -69,25 +64,25 @@ configurations.configureEach {
 
 dependencies {
     // from mavenCentral (or mavenLocal) repositories:
-    implementation 'ch.qos.logback:logback-classic:1.5.0'
-    runtimeOnly    'com.github.nifty-gui:nifty-style-black:1.4.3'
-    implementation 'com.github.stephengold:Heart:9.0.0'
-    implementation 'com.github.stephengold:Acorus:2.0.0'
-    implementation 'com.github.stephengold:jme3-utilities-nifty:0.9.37'
-    implementation 'com.github.stephengold:Minie:8.1.0'
-    implementation 'com.github.stephengold:SkyControl:1.0.5'
-    implementation 'com.github.stephengold:jme-ttf:3.0.1'
-    implementation 'com.github.stephengold:Wes:0.8.1'
-    runtimeOnly    'org.jmonkeyengine:jme3-awt-dialogs:' + jme3Version
-    implementation 'org.jmonkeyengine:jme3-blender:3.3.2-stable'
-    runtimeOnly    'org.jmonkeyengine:jme3-desktop:' + jme3Version
-    implementation 'org.jmonkeyengine:jme3-lwjgl:' + jme3Version
-    implementation 'org.jmonkeyengine:jme3-plugins:' + jme3Version
-    //runtimeOnly   'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
-    runtimeOnly    'org.openjdk.nashorn:nashorn-core:15.4'
+    implementation(libs.logback.classic)
+    runtimeOnly(libs.nifty.style.black)
+    implementation(libs.heart)
+    implementation(libs.acorus)
+    implementation(libs.jme3.utilities.nifty)
+    implementation(libs.minie)
+    implementation(libs.skyControl)
+    implementation(libs.jme.ttf)
+    implementation(libs.wes)
+    runtimeOnly(libs.jme3.awt.dialogs)
+    implementation(libs.jme3.blender)
+    runtimeOnly(libs.jme3.desktop)
+    implementation(libs.jme3.lwjgl)
+    implementation(libs.jme3.plugins)
+    //runtimeOnly(libs.jme3.testdata)
+    runtimeOnly(libs.nashorn.core)
 
     // from jitpack repositories:
-    implementation 'com.github.xbuf.jme3_xbuf:jme3_xbuf_loader:0.9.1'
+    implementation(libs.jme3.xbuf.loader)
 }
 
 // Register cleanup tasks:
