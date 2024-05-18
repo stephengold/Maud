@@ -1,5 +1,7 @@
 // global settings for the Maud project
 
+rootProject.name = 'Maud'
+
 dependencyResolutionManagement {
     repositories {
         //mavenLocal() // to find libraries installed locally
@@ -9,5 +11,3 @@ dependencyResolutionManagement {
         //maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots' } // to find public snapshots of libraries
     }
 }
-
-rootProject.name = 'Maud'
