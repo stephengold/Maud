@@ -7,23 +7,23 @@ jme = "3.7.0-beta1"
 
 [libraries]
 
-acorus = { module = "com.github.stephengold:Acorus", version = "2.0.0" }
-heart = { module = "com.github.stephengold:Heart", version = "9.0.0" }
-jme-ttf = { module = "com.github.stephengold:jme-ttf", version = "3.0.1" }
+acorus = "com.github.stephengold:Acorus:2.0.0"
+heart = "com.github.stephengold:Heart:9.0.0"
+jme-ttf = "com.github.stephengold:jme-ttf:3.0.1"
 jme3-awt-dialogs = { module = "org.jmonkeyengine:jme3-awt-dialogs", version.ref = "jme" }
-jme3-blender = { module = "org.jmonkeyengine:jme3-blender", version = "3.3.2-stable" }
+jme3-blender = "org.jmonkeyengine:jme3-blender:3.3.2-stable"
 jme3-desktop = { module = "org.jmonkeyengine:jme3-desktop", version.ref = "jme" }
 jme3-lwjgl = { module = "org.jmonkeyengine:jme3-lwjgl", version.ref = "jme" }
 jme3-plugins = { module = "org.jmonkeyengine:jme3-plugins", version.ref = "jme" }
-jme3-testdata = { module = "org.jmonkeyengine:jme3-testdata", version = "3.1.0-stable" }
-jme3-utilities-nifty = { module = "com.github.stephengold:jme3-utilities-nifty", version = "0.9.37" }
-jme3-xbuf-loader = { module = "com.github.xbuf.jme3_xbuf:jme3_xbuf_loader", version = "0.9.1" }
-logback-classic = { module = "ch.qos.logback:logback-classic", version = "1.5.0" }
-minie = { module = "com.github.stephengold:Minie", version = "8.1.0" }
-nashorn-core = { module = "org.openjdk.nashorn:nashorn-core", version = "15.4" }
-nifty-style-black = { module = "com.github.nifty-gui:nifty-style-black", version = "1.4.3" }
-skyControl = { module = "com.github.stephengold:SkyControl", version = "1.0.5" }
-wes = { module = "com.github.stephengold:Wes", version = "0.8.1" }
+jme3-testdata = "org.jmonkeyengine:jme3-testdata:3.1.0-stable"
+jme3-utilities-nifty = "com.github.stephengold:jme3-utilities-nifty:0.9.37"
+jme3-xbuf-loader = "com.github.xbuf.jme3_xbuf:jme3_xbuf_loader:0.9.1"
+logback-classic = "ch.qos.logback:logback-classic:1.5.0"
+minie = "com.github.stephengold:Minie:8.1.0"
+nashorn-core = "org.openjdk.nashorn:nashorn-core:15.4"
+nifty-style-black = "com.github.nifty-gui:nifty-style-black:1.4.3"
+skyControl = "com.github.stephengold:SkyControl:1.0.5"
+wes = "com.github.stephengold:Wes:0.8.1"
 
 [bundles]
 
