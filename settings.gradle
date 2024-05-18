@@ -1,6 +1,4 @@
-/*
- * settings.gradle: global settings for the Maud project
- */
+// global settings for the Maud project
 
 dependencyResolutionManagement {
     repositories {
