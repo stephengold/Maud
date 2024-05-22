@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2023, Stephen Gold
+ Copyright (c) 2017-2024 Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -1034,7 +1034,7 @@ public class Cgm implements Cloneable {
      * @param lightType superclass of Light to search for
      * @return a new list of pre-existing lights
      */
-    <T extends Light> List<T> listLights(Class<T> lightType) {
+    final <T extends Light> List<T> listLights(Class<T> lightType) {
         List<T> result = MyLight.listLights(rootSpatial, lightType, null);
         return result;
     }
@@ -1071,7 +1071,7 @@ public class Cgm implements Cloneable {
      * @param sgcType superclass of Control to search for
      * @return a new list of pre-existing S-G controls
      */
-    <T extends Control> List<T> listSgcs(Class<T> sgcType) {
+    final <T extends Control> List<T> listSgcs(Class<T> sgcType) {
         List<T> sgcList = MySpatial.listControls(rootSpatial, sgcType, null);
         return sgcList;
     }
