@@ -89,6 +89,10 @@ dependencies {
 
 tasks.named("clean") {
     dependsOn("cleanDLLs", "cleanDyLibs", "cleanLogs", "cleanSOs")
+    /*
+     * The Acorus sandbox isn't cleaned by default
+     * because it might contain a custom startup script.
+     */
 }
 
 tasks.register<Delete>("cleanDLLs") { // extracted Windows native libraries
