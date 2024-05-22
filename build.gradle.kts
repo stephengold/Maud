@@ -12,14 +12,13 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
+application {
+    mainClass = "maud.Maud"
+}
 tasks.register<JavaExec>("runForceDialog") {
     args("--forceDialog")
     mainClass = "maud.Maud"
     description = "Runs the editor after displaying the Settings dialog."
-}
-
-application {
-    mainClass = "maud.Maud"
 }
 
 checkstyle {
