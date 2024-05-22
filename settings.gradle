@@ -1,4 +1,4 @@
-// global settings for the Maud project
+// global build settings for the Maud project
 
 rootProject.name = 'Maud'
 
@@ -11,3 +11,5 @@ dependencyResolutionManagement {
         //maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots' } // to find public snapshots of libraries
     }
 }
+
+// no subprojects
