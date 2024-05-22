@@ -77,7 +77,7 @@ dependencies {
     implementation(libs.wes)
     runtimeOnly(libs.jme3.awt.dialogs)
     runtimeOnly(libs.jme3.desktop)
-    //runtimeOnly(libs.jme3.testdata)
+    //runtimeOnly(libs.jme3.testdata.old)
     runtimeOnly(libs.nashorn.core)
     runtimeOnly(libs.nifty.style.black)
 

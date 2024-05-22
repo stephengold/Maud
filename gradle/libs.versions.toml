@@ -15,7 +15,7 @@ jme3-blender = "org.jmonkeyengine:jme3-blender:3.3.2-stable"
 jme3-desktop = { module = "org.jmonkeyengine:jme3-desktop", version.ref = "jme" }
 jme3-lwjgl = { module = "org.jmonkeyengine:jme3-lwjgl", version.ref = "jme" }
 jme3-plugins = { module = "org.jmonkeyengine:jme3-plugins", version.ref = "jme" }
-jme3-testdata = "org.jmonkeyengine:jme3-testdata:3.1.0-stable"
+jme3-testdata-old = "org.jmonkeyengine:jme3-testdata:3.1.0-stable"
 jme3-utilities-nifty = "com.github.stephengold:jme3-utilities-nifty:0.9.37"
 jme3-xbuf-loader = "com.github.xbuf.jme3_xbuf:jme3_xbuf_loader:0.9.1"
 logback-classic = "ch.qos.logback:logback-classic:1.5.0"
