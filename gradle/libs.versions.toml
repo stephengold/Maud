@@ -2,7 +2,7 @@
 
 [versions]
 
-checkstyle = "10.16.0"
+checkstyle = "10.17.0"
 jme = "3.7.0-beta1"
 
 [libraries]
