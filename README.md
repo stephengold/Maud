@@ -52,8 +52,8 @@ Maud was designed for a desktop environment with:
  + a wheel mouse and
  + a display at least 640 pixels wide and 720 pixels tall.
 
-<a name="toc"></a>
 
+<a name="toc"></a>
 
 ## Contents of this document
 
