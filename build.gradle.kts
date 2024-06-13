@@ -68,6 +68,9 @@ dependencies {
     implementation(libs.acorus)
     implementation(libs.heart)
     implementation(libs.jme.ttf)
+    if (!isMacOS) {
+        runtimeOnly(libs.jme3.awt.dialogs)
+    }
     implementation(libs.jme3.blender)
     implementation(libs.jme3.lwjgl)
     implementation(libs.jme3.plugins)
