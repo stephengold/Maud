@@ -8,7 +8,7 @@ jme = "3.7.0-beta1.2"
 [libraries]
 
 acorus = "com.github.stephengold:Acorus:2.0.0"
-heart = "com.github.stephengold:Heart:9.0.0"
+heart = "com.github.stephengold:Heart:9.1.0"
 jme-ttf = "com.github.stephengold:jme-ttf:3.0.1"
 jme3-awt-dialogs = { module = "org.jmonkeyengine:jme3-awt-dialogs", version.ref = "jme" }
 jme3-blender = "org.jmonkeyengine:jme3-blender:3.3.2-stable"
