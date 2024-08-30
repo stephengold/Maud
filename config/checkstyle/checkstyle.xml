@@ -13,14 +13,6 @@
     <module name="BeforeExecutionExclusionFileFilter">
         <property name="fileNamePattern" value="IQELoader.java$"/>
     </module>
-
-    <!-- https://checkstyle.org/filters/suppressionfilter.html -->
-    <module name="SuppressionFilter">
-        <property name="file" value="${org.checkstyle.google.suppressionfilter.config}"
-                  default="checkstyle-suppressions.xml"/>
-        <property name="optional" value="true"/>
-    </module>
-
     <!-- Checks for whitespace                        -->
     <!-- See https://checkstyle.org/checks/whitespace -->
     <module name="FileTabCharacter">
