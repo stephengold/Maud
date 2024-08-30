@@ -209,7 +209,7 @@
                      value="Parameter name ''{0}'' must match pattern ''{1}''."/>
         </module>
         <module name="LambdaParameterName">
-            <property name="format" value="^[a-z][a-zA-Z0-9]{0,19}$"/>
+            <property name="format" value="^[a-z][a-zA-Z0-9]{0,11}$"/>
             <message key="name.invalidPattern"
                      value="Lambda parameter name ''{0}'' must match pattern ''{1}''."/>
         </module>
@@ -219,7 +219,7 @@
                      value="Catch parameter name ''{0}'' must match pattern ''{1}''."/>
         </module>
         <module name="LocalVariableName">
-            <property name="format" value="^[a-z][a-zA-Z0-9]{0,28}$"/>
+            <property name="format" value="^[a-z][a-zA-Z0-9]{0,27}$"/>
             <message key="name.invalidPattern"
                      value="Local variable name ''{0}'' must match pattern ''{1}''."/>
         </module>
@@ -230,7 +230,7 @@
                      value="Method name ''{0}'' must match pattern ''{1}''."/>
         </module>
         <module name="PatternVariableName">
-            <property name="format" value="^[a-z][a-zA-Z0-9]{0,19}$"/>
+            <property name="format" value="^[a-z]{0,9}$"/>
             <message key="name.invalidPattern"
                      value="Pattern variable name ''{0}'' must match pattern ''{1}''."/>
         </module>
@@ -241,7 +241,7 @@
                      value="Class type name ''{0}'' must match pattern ''{1}''."/>
         </module>
         <module name="RecordComponentName">
-            <property name="format" value="^[a-z][a-zA-Z0-9]{0,19}$"/>
+            <property name="format" value="^[a-z]{0,9}$"/>
             <message key="name.invalidPattern"
                      value="Record component name ''{0}'' must match pattern ''{1}''."/>
         </module>
