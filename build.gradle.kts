@@ -23,6 +23,11 @@ tasks.register<JavaExec>("runForceDialog") {
     description = "Runs the editor after displaying the Settings dialog."
     mainClass = application.mainClass
 }
+tasks.named<Jar>("jar") {
+    manifest {
+        attributes["Main-Class"] = application.mainClass
+    }
+}
 
 checkstyle {
     toolVersion = libs.versions.checkstyle.get()
