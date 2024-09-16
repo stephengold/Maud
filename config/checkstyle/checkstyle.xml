@@ -13,6 +13,7 @@
     <module name="BeforeExecutionExclusionFileFilter">
         <property name="fileNamePattern" value="IQELoader.java$"/>
     </module>
+
     <!-- Checks for whitespace                        -->
     <!-- See https://checkstyle.org/checks/whitespace -->
     <module name="FileTabCharacter">
