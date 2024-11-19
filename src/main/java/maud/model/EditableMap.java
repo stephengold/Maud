@@ -90,7 +90,7 @@ public class EditableMap extends LoadedMap {
      */
     public void cardinalizeTwist() {
         BoneMapping boneMapping = selectedMapping();
-        Quaternion twist = boneMapping.getTwist();
+        Quaternion twist = boneMapping.getTwist(); // alias
         MyQuaternion.cardinalizeLocal(twist);
 
         String targetBoneName = boneMapping.getTargetName();
@@ -257,7 +257,7 @@ public class EditableMap extends LoadedMap {
      */
     public void setTwist(Quaternion newTwist) {
         BoneMapping boneMapping = selectedMapping();
-        Quaternion twist = boneMapping.getTwist();
+        Quaternion twist = boneMapping.getTwist(); // alias
         if (isInvertingMap()) {
             Quaternion tmp = newTwist.inverse();
             twist.set(tmp);
@@ -278,7 +278,7 @@ public class EditableMap extends LoadedMap {
         Validate.axisIndex(axisIndex, "axis index");
 
         BoneMapping boneMapping = selectedMapping();
-        Quaternion twist = boneMapping.getTwist();
+        Quaternion twist = boneMapping.getTwist(); // alias
         MyQuaternion.snapLocal(twist, axisIndex);
 
         String targetBoneName = boneMapping.getTargetName();

@@ -116,7 +116,7 @@ public class LoadedMap implements Cloneable {
                 Pose targetPose = target.getPose().get();
                 Quaternion userRotation
                         = targetPose.userForModel(boneIndex, mo, null);
-                Quaternion twist = boneMapping.getTwist();
+                Quaternion twist = boneMapping.getTwist(); // alias
                 userRotation.mult(twist, result.getRotation());
             }
         }
@@ -136,7 +136,7 @@ public class LoadedMap implements Cloneable {
                 = (storeResult == null) ? new Quaternion() : storeResult;
 
         BoneMapping boneMapping = selectedMapping();
-        Quaternion twist = boneMapping.getTwist();
+        Quaternion twist = boneMapping.getTwist(); // alias
         result.set(twist);
         if (isInvertingMap()) {
             result.inverseLocal();
@@ -639,7 +639,7 @@ public class LoadedMap implements Cloneable {
             BoneMapping inverse = map.getForSource(targetBoneName);
             if (inverse != null) {
                 String sourceBoneName = inverse.getTargetName();
-                Quaternion inverseTwist = inverse.getTwist();
+                Quaternion inverseTwist = inverse.getTwist(); // alias
                 Quaternion twist = inverseTwist.inverse();
                 result = new BoneMapping(targetBoneName, sourceBoneName, twist);
             }
