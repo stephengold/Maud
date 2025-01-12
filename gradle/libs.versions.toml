@@ -7,7 +7,7 @@ jme = "3.8.0-alpha2"
 
 [libraries]
 
-acorus = "com.github.stephengold:Acorus:2.0.0"
+acorus = "com.github.stephengold:Acorus:2.0.2"
 heart = "com.github.stephengold:Heart:9.2.0"
 jme-ttf = "com.github.stephengold:jme-ttf:3.0.1"
 jme3-awt-dialogs = { module = "org.jmonkeyengine:jme3-awt-dialogs", version.ref = "jme" }
