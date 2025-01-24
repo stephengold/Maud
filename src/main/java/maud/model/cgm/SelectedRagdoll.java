@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2018-2023, Stephen Gold
+ Copyright (c) 2018-2025 Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -298,7 +298,7 @@ public class SelectedRagdoll implements JmeCloneable {
     Spatial setSpatial(Spatial newSpatial) {
         CgmPhysics physics = cgm.getPhysics();
         DynamicAnimControl dac = find();
-        Spatial oldSpatial = dac.getSpatial();
+        Spatial oldSpatial = (dac == null) ? null : dac.getSpatial();
         if (oldSpatial != null) {
             physics.removePhysicsControl(dac);
 
