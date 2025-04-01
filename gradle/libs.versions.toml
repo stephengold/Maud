@@ -2,7 +2,7 @@
 
 [versions]
 
-checkstyle = "10.21.4"
+checkstyle = "10.22.0"
 jme = "3.8.0-alpha4"
 
 [libraries]
@@ -10,12 +10,14 @@ jme = "3.8.0-alpha4"
 acorus = "com.github.stephengold:Acorus:2.0.2"
 heart = "com.github.stephengold:Heart:9.2.0"
 jme-ttf = "com.github.stephengold:jme-ttf:3.0.1"
+
 jme3-awt-dialogs = { module = "org.jmonkeyengine:jme3-awt-dialogs", version.ref = "jme" }
 jme3-blender = "org.jmonkeyengine:jme3-blender:3.3.2-stable"
 jme3-desktop = { module = "org.jmonkeyengine:jme3-desktop", version.ref = "jme" }
 jme3-lwjgl = { module = "org.jmonkeyengine:jme3-lwjgl", version.ref = "jme" }
 jme3-plugins = { module = "org.jmonkeyengine:jme3-plugins", version.ref = "jme" }
 jme3-testdata-old = "org.jmonkeyengine:jme3-testdata:3.1.0-stable"
+
 jme3-utilities-nifty = "com.github.stephengold:jme3-utilities-nifty:0.9.37"
 jme3-xbuf-loader = "com.github.xbuf.jme3_xbuf:jme3_xbuf_loader:0.9.1"
 logback-classic = "ch.qos.logback:logback-classic:1.5.18"
