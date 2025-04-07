@@ -201,7 +201,8 @@
             <property name="allowNonPrintableEscapes" value="true"/>
         </module>
         <module name="CommentsIndentation">
-            <property name="tokens" value="BLOCK_COMMENT_BEGIN"/>
+            <property name="tokens"
+                      value="BLOCK_COMMENT_BEGIN"/>
         </module>
         <module name="Indentation">
             <property name="basicOffset" value="4"/>
@@ -352,7 +353,7 @@
             <property name="tokens"
                       value="BAND, BOR, BSR, BXOR, DIV, EQUAL, GE, GT, LAND, LE, LITERAL_INSTANCEOF, LOR,
                     LT, MINUS, MOD, NOT_EQUAL, PLUS, QUESTION, SL, SR, STAR, METHOD_REF,
-                    TYPE_EXTENSION_AND "/>
+                    TYPE_EXTENSION_AND"/>
         </module>
         <module name="ParenPad">
             <property name="tokens"
