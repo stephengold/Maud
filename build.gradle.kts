@@ -1,4 +1,4 @@
-// Gradle script to build the Maud project
+// Gradle script to build and run the Maud project
 
 import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
 

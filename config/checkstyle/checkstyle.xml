@@ -9,7 +9,7 @@
     <property name="fileExtensions" value="java, properties, xml"/>
     <property name="severity" value="error"/>
 
-    <!-- Excludes all 'IQELoader.java' files from style checking:                       -->
+    <!-- Exclude all 'IQELoader.java' files from style checking:                        -->
     <!-- See https://checkstyle.org/filefilters/beforeexecutionexclusionfilefilter.html -->
     <module name="BeforeExecutionExclusionFileFilter">
         <property name="fileNamePattern" value="IQELoader.java$"/>
