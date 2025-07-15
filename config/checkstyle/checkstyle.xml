@@ -168,12 +168,12 @@
         <module name="MissingJavadocMethod">
             <property name="allowedAnnotations" value=""/>
             <property name="minLineCount" value="-1"/>
-            <property name="scope" value="public"/>
+            <property name="scope" value="private"/>
             <property name="tokens" value="METHOD_DEF, CTOR_DEF, ANNOTATION_FIELD_DEF, COMPACT_CTOR_DEF"/>
         </module>
         <module name="MissingJavadocType">
             <property name="excludeScope" value="nothing"/>
-            <property name="scope" value="protected"/>
+            <property name="scope" value="private"/>
             <property name="tokens" value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, RECORD_DEF, ANNOTATION_DEF"/>
         </module>
         <module name="NonEmptyAtclauseDescription"/>
@@ -248,7 +248,7 @@
             <message key="name.invalidPattern" value="Method name ''{0}'' must match pattern ''{1}''."/>
         </module>
         <module name="MethodTypeParameterName">
-            <property name="format" value="(^[A-Z]$)"/>
+            <property name="format" value="^T$"/>
             <message key="name.invalidPattern" value="Method type name ''{0}'' must match pattern ''{1}''."/>
         </module>
         <module name="PackageName">
