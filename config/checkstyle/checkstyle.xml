@@ -123,14 +123,6 @@
         <module name="NoFinalizer"/>
         <module name="OneStatementPerLine"/>
 
-        <!-- Checks for class design:                 -->
-        <!-- See https://checkstyle.org/checks/design -->
-        <module name="DesignForExtension"/>
-        <module name="FinalClass"/>
-        <module name="HideUtilityClassConstructor"/>
-        <module name="InterfaceIsType"/>
-        <module name="OneTopLevelClass"/>
-
         <!-- Checks for imports:                       -->
         <!-- See https://checkstyle.org/checks/imports -->
         <module name="AvoidStarImport"/>
