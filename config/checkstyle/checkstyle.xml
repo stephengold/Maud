@@ -23,6 +23,15 @@
     <!-- See https://checkstyle.org/checks/misc -->
     <module name="NewlineAtEndOfFile"/>
 
+    <!-- Regexp checks:                           -->
+    <!-- See https://checkstyle.org/checks/regexp -->
+    <module name="RegexpSingleline">
+        <property name="format" value="\s$"/>
+        <property name="maximum" value="0"/>
+        <property name="message" value="Line has trailing whitespace."/>
+        <property name="minimum" value="0"/>
+    </module>
+
     <!-- Checks for size violations:             -->
     <!-- See https://checkstyle.org/checks/sizes -->
     <module name="FileLength">
@@ -37,15 +46,6 @@
     <!-- See https://checkstyle.org/checks/whitespace -->
     <module name="FileTabCharacter">
         <property name="eachLine" value="true"/>
-    </module>
-
-    <!-- Regexp checks:                           -->
-    <!-- See https://checkstyle.org/checks/regexp -->
-    <module name="RegexpSingleline">
-        <property name="format" value="\s$"/>
-        <property name="maximum" value="0"/>
-        <property name="message" value="Line has trailing whitespace."/>
-        <property name="minimum" value="0"/>
     </module>
 
     <module name="TreeWalker">
