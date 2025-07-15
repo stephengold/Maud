@@ -79,6 +79,9 @@ public class BVHLoader implements AssetLoader {
     // *************************************************************************
     // private methods
 
+    /**
+     * Compile the parsed bones and tracks into a BVHAnimData object.
+     */
     private void compileData() {
         Bone[] bones = new Bone[animation.getHierarchy().getNbBones()];
         index = 0;

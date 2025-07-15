@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2023, Stephen Gold
+ Copyright (c) 2017-2025 Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -50,6 +50,9 @@ public class Selection {
     // *************************************************************************
     // enums
 
+    /**
+     * enumerate features that the user can select
+     */
     private enum Type {
         None, Bone, Boundary, Gnomon, Keyframe,
         PoseTransformAxis, SceneAxis, Track, Vertex

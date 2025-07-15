@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2023, Stephen Gold
+ Copyright (c) 2017-2025 Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -54,6 +54,9 @@ final public class EditorViewPorts {
     // *************************************************************************
     // enums
 
+    /**
+     * enumerate the sides of the screen when it's split
+     */
     private enum Side {
         Left, Right
     }
