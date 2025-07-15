@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2021, Stephen Gold
+ Copyright (c) 2017-2025 Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -91,10 +91,10 @@ class MixDialog extends MultiSelectDialog<TrackItem> {
      */
     private boolean anyConflicts(List<Integer> indexList) {
         int numSelected = indexList.size();
-        for (int i = 0; i < numSelected; i++) {
+        for (int i = 0; i < numSelected; ++i) {
             int iIndex = indexList.get(i);
             TrackItem iItem = getItem(iIndex);
-            for (int j = i + 1; j < numSelected; j++) {
+            for (int j = i + 1; j < numSelected; ++j) {
                 int jIndex = indexList.get(j);
                 TrackItem jItem = getItem(jIndex);
                 if (iItem.hasSameTargetAs(jItem)) {

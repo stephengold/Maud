@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2021, Stephen Gold
+ Copyright (c) 2017-2025 Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -196,7 +196,7 @@ public class DddCursorOptions implements Cloneable {
                 + Boolean.toString(visible);
         MaudUtil.writePerformAction(writer, action);
 
-        for (int colorIndex = 0; colorIndex < 2; colorIndex++) {
+        for (int colorIndex = 0; colorIndex < 2; ++colorIndex) {
             action = String.format("%s%d %s", ActionPrefix.set3DCursorColor,
                     colorIndex, colors[colorIndex]);
             MaudUtil.writePerformAction(writer, action);
@@ -221,7 +221,7 @@ public class DddCursorOptions implements Cloneable {
     public DddCursorOptions clone() throws CloneNotSupportedException {
         DddCursorOptions clone = (DddCursorOptions) super.clone();
         clone.colors = new ColorRGBA[2];
-        for (int i = 0; i < colors.length; i++) {
+        for (int i = 0; i < colors.length; ++i) {
             clone.colors[i] = colors[i].clone();
         }
 

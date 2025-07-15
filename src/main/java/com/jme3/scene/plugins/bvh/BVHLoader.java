@@ -116,7 +116,7 @@ public class BVHLoader implements AssetLoader {
         Quaternion rx = new Quaternion();
         Quaternion ry = new Quaternion();
         Quaternion rz = new Quaternion();
-        for (int i = 0; i < animation.getNbFrames(); i++) {
+        for (int i = 0; i < animation.getNbFrames(); ++i) {
             times[i] = time;
 
             Vector3f t = new Vector3f(Vector3f.ZERO);
@@ -196,7 +196,7 @@ public class BVHLoader implements AssetLoader {
             scan.next();
             scan.next();
             animation.setFrameTime(scan.nextFloat());
-            for (int i = 0; i < animation.getNbFrames(); i++) {
+            for (int i = 0; i < animation.getNbFrames(); ++i) {
                 readChannelsValue(animation.getHierarchy());
             }
         }
@@ -223,7 +223,7 @@ public class BVHLoader implements AssetLoader {
         }
         bones[index] = bone;
         tracks[index] = getBoneTrack(hierarchy);
-        index++;
+        ++index;
         if (hierarchy.getChildren() != null) {
             for (BVHBone bVHBone : hierarchy.getChildren()) {
                 populateBoneList(bones, tracks, bVHBone, bone);
@@ -255,7 +255,7 @@ public class BVHLoader implements AssetLoader {
             if (token.equals("CHANNELS")) {
                 int nbChan = scan.nextInt();
                 bone.setChannels(new ArrayList<BVHChannel>(nbChan));
-                for (int i = 0; i < nbChan; i++) {
+                for (int i = 0; i < nbChan; ++i) {
                     bone.getChannels().add(new BVHChannel(scan.next()));
                 }
                 token = scan.next();

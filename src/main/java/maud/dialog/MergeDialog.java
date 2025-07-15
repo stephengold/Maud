@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2021, Stephen Gold
+ Copyright (c) 2021-2025 Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -93,7 +93,7 @@ class MergeDialog extends MultiSelectDialog<GeometryItem> {
      */
     private String mergeFeedback(List<Integer> indexList) {
         int numSelected = indexList.size();
-        for (int i = 0; i < numSelected; i++) {
+        for (int i = 0; i < numSelected; ++i) {
             int iIndex = indexList.get(i);
             GeometryItem iItem = getItem(iIndex);
             String result = iItem.mergeFeedback();
@@ -101,7 +101,7 @@ class MergeDialog extends MultiSelectDialog<GeometryItem> {
                 return result;
             }
 
-            for (int j = i + 1; j < numSelected; j++) {
+            for (int j = i + 1; j < numSelected; ++j) {
                 int jIndex = indexList.get(j);
                 GeometryItem jItem = getItem(jIndex);
                 result = iItem.mergeFeedback(jItem);
