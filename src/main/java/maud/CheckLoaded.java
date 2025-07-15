@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2023, Stephen Gold
+ Copyright (c) 2017-2025 Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -102,7 +102,7 @@ final public class CheckLoaded {
             return false;
         }
 
-        TreeSet<String> nameSet = new TreeSet<>();
+        Set<String> nameSet = new TreeSet<>();
         for (String name : clips) {
             if (name == null) {
                 logger.warning("anim clip name is null");
@@ -187,7 +187,7 @@ final public class CheckLoaded {
             return false;
         }
 
-        TreeSet<String> nameSet = new TreeSet<>();
+        Set<String> nameSet = new TreeSet<>();
         for (String name : animNames) {
             if (name == null) {
                 logger.warning("animation name is null");
