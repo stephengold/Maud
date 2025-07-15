@@ -19,6 +19,10 @@
     <!-- See https://checkstyle.org/checks/javadoc/javadocpackage.html -->
     <module name="JavadocPackage"/>
 
+    <!-- Miscellaneous checks:                  -->
+    <!-- See https://checkstyle.org/checks/misc -->
+    <module name="NewlineAtEndOfFile"/>
+
     <!-- Checks for size violations:             -->
     <!-- See https://checkstyle.org/checks/sizes -->
     <module name="FileLength">
