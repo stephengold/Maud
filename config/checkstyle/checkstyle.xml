@@ -88,13 +88,27 @@
             <property name="tokens" value="LITERAL_TRY, LITERAL_CATCH, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE, LITERAL_DO"/>
         </module>
 
+        <!-- Checks for class design:                 -->
+        <!-- See https://checkstyle.org/checks/design -->
+        <module name="DesignForExtension"/>
+        <module name="FinalClass"/>
+        <module name="HideUtilityClassConstructor"/>
+        <module name="InterfaceIsType"/>
+        <module name="OneTopLevelClass"/>
+
         <!-- Checks for common coding problems:       -->
         <!-- See https://checkstyle.org/checks/coding -->
+        <module name="AvoidNoArgumentSuperConstructorCall"/>
         <module name="ConstructorsDeclarationGrouping"/>
+        <module name="DefaultComesLast"/>
         <module name="EmptyStatement"/>
         <module name="EqualsHashCode"/>
         <module name="FallThrough"/>
+        <module name="HiddenField">
+            <property name="tokens" value="VARIABLE_DEF"/>
+        </module>
         <module name="IllegalInstantiation"/>
+        <module name="IllegalThrows"/>
         <module name="IllegalToken">
             <property name="tokens" value="LITERAL_NATIVE, POST_DEC, STATIC_IMPORT"/>
         </module>
@@ -103,6 +117,7 @@
             <property name="format" value="\\u00(09|0(a|A)|0(c|C)|0(d|D)|22|27|5(C|c))|\\(0(10|11|12|14|15|42|47)|134)"/>
             <property name="message" value="Use special escape sequence instead of octal value or Unicode escaped value."/>
         </module>
+        <module name="IllegalType"/>
         <module name="MissingSwitchDefault"/>
         <module name="MultipleVariableDeclarations"/>
         <module name="NoFinalizer"/>
@@ -188,6 +203,7 @@
             <property name="lineWrappingIndentation" value="4"/>
             <property name="arrayInitIndent" value="4"/>
         </module>
+        <module name="NoCodeInFile"/>
         <module name="OuterTypeFilename"/>
         <module name="UpperEll"/>
 
@@ -259,6 +275,17 @@
         <module name="TypeName">
             <property name="tokens" value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, ANNOTATION_DEF, RECORD_DEF"/>
             <message key="name.invalidPattern" value="Type name ''{0}'' must match pattern ''{1}''."/>
+        </module>
+
+        <!-- Regexp checks:                           -->
+        <!-- See https://checkstyle.org/checks/regexp -->
+        <module name="RegexpSinglelineJava">
+            <property name="format" value="static (abstract|final|package|private|protected)|(package|private|protected|static) (abstract|final)"/>
+            <property name="message" value="Modifiers must appear in alphabetical order."/>
+        </module>
+        <module name="RegexpSinglelineJava">
+            <property name="format" value="\{[ ]+\}"/>
+            <property name="message" value="Empty blocks must not contain spaces."/>
         </module>
 
         <!-- Checks for size violations:             -->
