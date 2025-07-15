@@ -59,14 +59,14 @@ public class BVHLoader implements AssetLoader {
      */
     @Override
     public Object load(AssetInfo info) throws IOException {
-        fileName = info.getKey().getName();
-        numEndEffectors = 0;
+        this.fileName = info.getKey().getName();
+        this.numEndEffectors = 0;
 
         InputStream in = info.openStream();
         try {
-            scan = new Scanner(in);
+            this.scan = new Scanner(in);
             scan.useLocale(Locale.US);
-            fileName = info.getKey().getName();
+            this.fileName = info.getKey().getName();
             loadFromScanner();
         } finally {
             if (in != null) {
@@ -84,7 +84,7 @@ public class BVHLoader implements AssetLoader {
      */
     private void compileData() {
         Bone[] bones = new Bone[animation.getHierarchy().getNbBones()];
-        index = 0;
+        this.index = 0;
         BoneTrack[] tracks
                 = new BoneTrack[animation.getHierarchy().getNbBones()];
         populateBoneList(bones, tracks, animation.getHierarchy(), null);
@@ -96,7 +96,7 @@ public class BVHLoader implements AssetLoader {
         float animLength = animation.getFrameTime() * animation.getNbFrames();
         Animation boneAnimation = new Animation(animName, animLength);
         boneAnimation.setTracks(tracks);
-        data = new BVHAnimData(skeleton, boneAnimation);
+        this.data = new BVHAnimData(skeleton, boneAnimation);
     }
 
     /**
@@ -180,7 +180,7 @@ public class BVHLoader implements AssetLoader {
      * Parse a complete BVH file to construct a new animation.
      */
     private void loadFromScanner() {
-        animation = new BVHAnimation();
+        this.animation = new BVHAnimation();
         String token = scan.next();
         if (token.equals("HIERARCHY")) {
             token = scan.next();
