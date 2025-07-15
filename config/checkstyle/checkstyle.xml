@@ -35,7 +35,7 @@
         <property name="eachLine" value="true"/>
     </module>
     <module name="RegexpSingleline">
-        <property name="format" value="\s+$"/>
+        <property name="format" value="\s$"/>
         <property name="minimum" value="0"/>
         <property name="maximum" value="0"/>
         <property name="message" value="Line has trailing whitespace."/>
@@ -272,7 +272,7 @@
         <!-- Regexp checks:                           -->
         <!-- See https://checkstyle.org/checks/regexp -->
         <module name="RegexpSinglelineJava">
-            <property name="format" value="static (abstract|final|package|private|protected)|(package|private|protected|static) (abstract|final)"/>
+            <property name="format" value="static (abstract|final|package|private|protected)|(package|private|protected) (abstract|final)"/>
             <property name="message" value="Modifiers must appear in alphabetical order."/>
         </module>
         <module name="RegexpSinglelineJava">
