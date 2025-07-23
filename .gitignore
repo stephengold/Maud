@@ -14,4 +14,5 @@
 
 # Ignore extracted native libraries:
 /*.dll
+/*.dylib
 /*.so
