@@ -109,6 +109,7 @@ Maud was designed for a desktop environment with:
 ## How to build and run Maud from source
 
 1. Install a 64-bit [Java Development Kit (JDK)][adoptium],
+   version 17 or higher,
    if you don't already have one.
 2. Point the `JAVA_HOME` environment variable to your JDK installation:
    (In other words, set it to the path of a directory/folder
