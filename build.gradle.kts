@@ -9,7 +9,6 @@ plugins {
 
 val isMacOS = DefaultNativePlatform.getCurrentOperatingSystem().isMacOsX
 val javaVersion = JavaVersion.current()
-val enableNativeAccess = javaVersion.isCompatibleWith(JavaVersion.VERSION_17)
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -43,9 +42,7 @@ tasks.withType<JavaCompile>().all { // Java compile-time options:
     options.compilerArgs.add("-Xlint:unchecked")
     options.encoding = "UTF-8"
     //options.isDeprecation = true // to provide detailed deprecation warnings
-    if (javaVersion.isCompatibleWith(JavaVersion.VERSION_1_10)) {
-        options.release = 8
-    }
+    options.release = 8
 }
 
 tasks.withType<JavaExec>().all { // Java runtime options:
@@ -60,9 +57,7 @@ tasks.withType<JavaExec>().all { // Java runtime options:
     //args("--verbose") // to enable additional log output
     classpath = sourceSets.main.get().runtimeClasspath
     enableAssertions = true
-    if (enableNativeAccess) {
-        jvmArgs("--enable-native-access=ALL-UNNAMED") // suppress System::load() warning
-    }
+    jvmArgs("--enable-native-access=ALL-UNNAMED") // suppress System::load() warning
     //jvmArgs("-verbose:gc")
     jvmArgs("-Xms4g", "-Xmx4g") // to enlarge the Java heap
     //jvmArgs("-XX:+UseG1GC", "-XX:MaxGCPauseMillis=10")
