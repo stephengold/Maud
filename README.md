@@ -84,7 +84,7 @@ Maud was designed for a desktop environment with:
 2. Point the `JAVA_HOME` environment variable to your Java installation.
    (In other words, set it to the path of a directory/folder
    containing a "bin" that contains a Java executable.
-   The path might be something like "C:\Program Files\Java\jre1.8.0_301"
+   The path might be something like "C:\Program Files\Eclipse Adoptium\jdk-17.0.3.7-hotspot"
    or "/usr/lib/jvm/java-11-openjdk-amd64/" .)
   + using Bash or Zsh: `export JAVA_HOME="` *path to installation* `"`
   + using [Fish]: `set -g JAVA_HOME "` *path to installation* `"`
