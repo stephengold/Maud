@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2024 Stephen Gold
+ Copyright (c) 2017-2025 Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -1146,7 +1146,7 @@ final public class MaudUtil {
             for (int x = 0; x < width; ++x) {
                 for (int byteI = 0; byteI < bytesPerPixel; ++byteI) {
                     int pixelByte = byteBuffer.get(byteOffset);
-                    pixelBytes[byteI] = 0xff & pixelByte;
+                    pixelBytes[byteI] = 0xFF & pixelByte;
                     ++byteOffset;
                 }
                 Color color = pixelColor(format, pixelBytes);

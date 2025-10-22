@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2021-2023, Stephen Gold
+ Copyright (c) 2021-2025 Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -233,7 +233,7 @@ public class GeometryItem {
      */
     private String describe() {
         String name = geometry.getName();
-        int hash = geometry.getMaterial().hashCode() & 0xffff;
+        int hash = geometry.getMaterial().hashCode() & 0xFFFF;
         String description = String.format("%s (mat=%04x)", name, hash);
 
         assert description != null;
