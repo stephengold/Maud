@@ -3,7 +3,7 @@
 [versions]
 
 checkstyle = "12.2.0"
-jme = "3.9.0-alpha4"
+jme = "3.9.0-alpha5"
 
 [libraries]
 
