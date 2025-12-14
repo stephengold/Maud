@@ -16,7 +16,7 @@ jobs:
           java-version: 17
       - uses: gradle/actions/wrapper-validation@v5
       - run: ./gradlew build javadoc --console=plain --stacktrace
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         with:
           name: linux build
           path: build/distributions/Maud.tar
@@ -32,7 +32,7 @@ jobs:
           java-version: 25
       - run: ./gradlew build javadoc --console=plain --stacktrace
         shell: bash
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         with:
           name: windows build
           path: build/distributions/Maud.zip
