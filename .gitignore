@@ -12,7 +12,7 @@
 # Ignore the Acorus sandbox:
 /Written Assets/
 
-# Ignore extracted native libraries:
+# Ignore native libraries that get extracted when the app is run:
 /*.dll
 /*.dylib
 /*.so
