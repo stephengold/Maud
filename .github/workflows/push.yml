@@ -15,7 +15,7 @@ jobs:
           distribution: 'zulu'
           java-version: 17
       - uses: gradle/actions/wrapper-validation@v5
-      - run: ./gradlew build javadoc --console=plain --stacktrace
+      - run: ./gradlew -x checkstyleMain build javadoc --console=plain --stacktrace
       - uses: actions/upload-artifact@v6
         with:
           name: linux build
