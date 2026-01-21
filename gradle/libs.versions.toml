@@ -3,7 +3,7 @@
 [versions]
 
 checkstyle = "13.0.0"
-jme = "3.9.0-beta1"
+jme = "3.9.0-stable"
 
 [libraries]
 
