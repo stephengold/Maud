@@ -20,7 +20,7 @@ jme3-testdata-old = "org.jmonkeyengine:jme3-testdata:3.1.0-stable"
 
 jme3-utilities-nifty = "com.github.stephengold:jme3-utilities-nifty:0.9.37"
 jme3-xbuf-loader = "com.github.xbuf.jme3_xbuf:jme3_xbuf_loader:0.9.1"
-logback-classic = "ch.qos.logback:logback-classic:1.5.29"
+logback-classic = "ch.qos.logback:logback-classic:1.5.31"
 minie = "com.github.stephengold:Minie:9.0.3"
 nashorn-core = "org.openjdk.nashorn:nashorn-core:15.7"
 nifty-style-black = "com.github.nifty-gui:nifty-style-black:1.4.3"
