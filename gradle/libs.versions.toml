@@ -2,7 +2,7 @@
 
 [versions]
 
-checkstyle = "13.2.0"
+checkstyle = "13.3.0"
 jme = "3.10.0-alpha1"
 
 [libraries]
