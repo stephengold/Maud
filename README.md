@@ -14,7 +14,7 @@ Anticipated uses:
 Summary of features:
 
  + load models from local filesystems, JAR/ZIP archives, or HTTP servers
- + import models from [Blender]/[glTF]/[IQE]/[Ogre]/[Wavefront][obj]/[Xbuf] and save to native J3O format
+ + import models from [Blender]/[glTF]/[IQE]/[Ogre]/[Wavefront][obj] and save to native J3O format
  + import animations from [Biovision Hierarchy (BVH)](#bvh) files
  + visualize animations, axes, bones, bounding boxes, lights,
    mesh vertices, physics objects, and skeletons
@@ -406,7 +406,6 @@ Maud can also import models in other formats:
  + [Ogre] DotScene (filename must end in ".scene")
  + [Ogre] XML (filename must end in ".mesh.xml")
  + [Wavefront OBJ][obj] (filename must end in ".obj")
- + [Xbuf] (filename must end in ".xbuf")
 
 In addition, Biovision Hierarchy animations can be imported as models.
 To be recognized, such animations must have filenames ending in ".bvh".

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2023, Stephen Gold
+ Copyright (c) 2017-2026 Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -154,8 +154,6 @@ class MenuBuilder extends PopupMenuBuilder {
         } else if (name.endsWith(".mesh.xml")
                 || name.endsWith(".scene")) {
             addOgre(name);
-        } else if (name.endsWith(".xbuf")) {
-            addXbuf(name);
         } else if (name.endsWith(".zip")) {
             addZip(name);
         } else if (name.endsWith("/")) {
@@ -314,18 +312,6 @@ class MenuBuilder extends PopupMenuBuilder {
     }
 
     /**
-     * Add an item with the Xbuf icon to the menu.
-     *
-     * @param item (not null, not empty)
-     */
-    void addXbuf(String item) {
-        assert item != null;
-        assert !item.isEmpty();
-
-        add(item, "Textures/icons/xbuf.png");
-    }
-
-    /**
      * Add an item with the ZIP icon to the menu.
      *
      * @param item (not null, not empty)
@@ -362,8 +348,6 @@ class MenuBuilder extends PopupMenuBuilder {
             result = true;
         } else if (name.endsWith(".mesh.xml")
                 || name.endsWith(".scene")) {
-            result = true;
-        } else if (name.endsWith(".xbuf")) {
             result = true;
         }
 

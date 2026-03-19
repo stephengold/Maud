@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2023, Stephen Gold
+ Copyright (c) 2017-2026 Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -165,14 +165,6 @@ final public class EditorDialogs {
                 "part FPL license, part BSD license");
         text += String.format("%n   sfntly (Apache license)");
 
-        text += String.format("%n   jme3_xbuf_loader (public domain)");
-        text += String.format("%n   jme3_xbuf_rt (public domain)");
-
-        text += String.format("%n   logback-core (%s)",
-                "Eclipse Public License v1.0");
-        text += String.format("%n   logback-classic (%s)",
-                "Eclipse Public License v1.0");
-
         text += String.format("%n%n");
 
         Maud.gui.closeAllPopups();
@@ -327,7 +319,6 @@ final public class EditorDialogs {
         extList.add(".mesh.xml");
         extList.add(".obj");
         extList.add(".scene");
-        extList.add(".xbuf");
         AssetDialog controller = new AssetDialog("Select", spec, extList);
 
         Maud.gui.closeAllPopups();

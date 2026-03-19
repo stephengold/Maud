@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2023, Stephen Gold
+ Copyright (c) 2017-2026 Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -46,7 +46,6 @@ import com.jme3.scene.plugins.ogre.MaterialLoader;
 import com.jme3.scene.plugins.ogre.MeshLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Utility methods for loading maps and models. All methods should be static.
@@ -152,13 +151,6 @@ final public class LoadUtil {
         Level compoundCollisionShapeLevel
                 = compoundCollisionShapeLogger.getLevel();
 
-        org.slf4j.Logger slfLogger
-                = LoggerFactory.getLogger("jme3_ext_xbuf.XbufLoader");
-        ch.qos.logback.classic.Logger xbufLoaderLogger
-                = (ch.qos.logback.classic.Logger) slfLogger;
-        ch.qos.logback.classic.Level xbufLoaderLevel
-                = xbufLoaderLogger.getLevel();
-
         if (!diagnose) {
             /*
              * Temporarily hush warnings about failures to triangulate,
@@ -172,7 +164,6 @@ final public class LoadUtil {
             materialLogger.setLevel(Level.SEVERE);
             materialLoaderLogger.setLevel(Level.SEVERE);
             compoundCollisionShapeLogger.setLevel(Level.SEVERE);
-            xbufLoaderLogger.setLevel(ch.qos.logback.classic.Level.ERROR);
         }
 
         // Load the model.
@@ -194,7 +185,6 @@ final public class LoadUtil {
             materialLogger.setLevel(materialLevel);
             materialLoaderLogger.setLevel(materialLoaderLevel);
             compoundCollisionShapeLogger.setLevel(compoundCollisionShapeLevel);
-            xbufLoaderLogger.setLevel(xbufLoaderLevel);
         }
 
         return loaded;

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2023, Stephen Gold
+ Copyright (c) 2017-2026 Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -230,9 +230,6 @@ public class LoadedCgm extends Cgm {
                 break;
             case "Oto":
                 fileName = "Oto.mesh.xml";
-                break;
-            case "Puppet":
-                fileName = "Puppet.xbuf";
                 break;
             case "Sign Post":
                 fileName = "Sign Post.mesh.xml";

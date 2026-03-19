@@ -35,7 +35,6 @@ The files
 "tool.png",
 "translate.png",
 "wood_0534.jpg",
-"xbuf.png", and
 "zip.png"
 are the work of Stephen Gold, who licensed them under the Creative Commons
 Attribution-Share Alike 3.0 Unported License.

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2023, Stephen Gold
+ Copyright (c) 2017-2026 Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jme3_ext_xbuf.XbufLoader;
 import jme3utilities.Heart;
 import jme3utilities.MyString;
 import jme3utilities.StringLoader;
@@ -521,16 +520,13 @@ public class Maud extends GuiApplication {
      */
     private void startup1() {
         logger.info("");
-        /*
-         * Register loaders for BVH, IQE, JavaScript, txt, font,
-         * and Xbuf assets.
-         */
+
+        // Register loaders for BVH, IQE, JavaScript, txt, and font assets.
         assetManager.registerLoader(BVHLoader.class, "bvh", "BVH");
         assetManager.registerLoader(IQELoader.class, "iqe");
         assetManager.registerLoader(ScriptLoader.class, "js");
         assetManager.registerLoader(StringLoader.class, "txt");
         assetManager.registerLoader(TrueTypeLoader.class, "ttf");
-        assetManager.registerLoader(XbufLoader.class, "xbuf");
 
         EditorViewPorts.startup1();
 

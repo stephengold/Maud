@@ -79,7 +79,6 @@ dependencies {
     implementation(libs.jme3.lwjgl)
     implementation(libs.jme3.plugins)
     implementation(libs.jme3.utilities.nifty)
-    implementation(libs.logback.classic)
     implementation(libs.minie)
     implementation(libs.skyControl)
     implementation(libs.wes)
@@ -88,9 +87,6 @@ dependencies {
     //runtimeOnly(libs.jme3.testdata.old)
     runtimeOnly(libs.nashorn.core)
     runtimeOnly(libs.nifty.style.black)
-
-    // from jitpack repositories:
-    implementation(libs.jme3.xbuf.loader)
 }
 
 // Register cleanup tasks:

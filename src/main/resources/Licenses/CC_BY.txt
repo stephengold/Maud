@@ -3,10 +3,6 @@ Copyright (c) Copyright Blender Foundation durian.blender.org
 The Blender Foundation released this file under a Creative Commons
 Attribution 3.0 license.
 
-The file "Puppet.xbuf" is an adaptation of "Puppet.blend" by Stephen Gold,
-and Stephen Gold released this file under a Creative Commons Attribution 3.0
-license.
-
 Note: the following license does not apply to any other files in the
 Maud project.
 

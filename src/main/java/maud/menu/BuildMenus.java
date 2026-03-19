@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2023, Stephen Gold
+ Copyright (c) 2017-2026 Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -525,7 +525,6 @@ final public class BuildMenus {
             builder.addOgre("Ninja");
             builder.addOgre("Oto");
         }
-        builder.addXbuf("Puppet");
         builder.addOgre("Sinbad");
 
         // TODO models in the Blender/ folder of testdata

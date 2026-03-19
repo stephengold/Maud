@@ -6,6 +6,3 @@ the production of the short film "Sintel" and is
 
 The Blender Foundation released it under a Creative Commons Attribution 3.0
 license.  For details, see https://durian.blender.org/sharing/
-
-Stephen Gold converted the model to Xbuf format and releases the converted
-file Puppet.xbuf under the same Creative Commons Attribution 3.0 license.
