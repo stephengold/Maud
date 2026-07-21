@@ -892,7 +892,7 @@ correct the situation: sgold@sonic.net
 [Jump to the table of contents](#toc)
 
 
-[adoptium]: https://adoptium.net/releases.html "Adoptium Project"
+[adoptium]: https://adoptium.net/temurin/releases/ "Adoptium Project"
 [ant]: https://ant.apache.org "Apache Ant Project"
 [bican]: https://github.com/canbican "Can Bican"
 [blender]: https://docs.blender.org "Blender Project"
