@@ -139,7 +139,6 @@
             <property name="customImportOrderRules" value="STATIC###THIRD_PARTY_PACKAGE"/>
             <property name="separateLineBetweenGroups" value="true"/>
             <property name="sortImportsInGroupAlphabetically" value="true"/>
-            <property name="tokens" value="IMPORT, STATIC_IMPORT, PACKAGE_DEF"/>
         </module>
         <module name="IllegalImport"/> <!-- defaults to sun.* packages -->
         <module name="RedundantImport"/>
@@ -186,7 +185,6 @@
         <module name="Indentation">
             <property name="arrayInitIndent" value="4"/>
             <property name="basicOffset" value="4"/>
-            <property name="braceAdjustment" value="0"/>
             <property name="caseIndent" value="4"/>
             <property name="lineWrappingIndentation" value="4"/>
             <property name="throwsIndent" value="4"/>
