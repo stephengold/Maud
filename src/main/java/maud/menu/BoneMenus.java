@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2017-2022, Stephen Gold
+ Copyright (c) 2017-2026 Stephen Gold
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -310,8 +310,8 @@ final public class BoneMenus {
 
             if (cgm == Maud.getModel().getTarget()) {
                 builder.show(ActionPrefix.selectSkeleton);
-//            } else if (cgm == Maud.getModel().getSource()) {
-//                builder.show(ActionPrefix.selectSourceSkeleton);
+                // } else if (cgm == Maud.getModel().getSource()) {
+                // builder.show(ActionPrefix.selectSourceSkeleton);
             } else {
                 throw new IllegalArgumentException();
             }

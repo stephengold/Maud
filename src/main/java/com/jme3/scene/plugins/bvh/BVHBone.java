@@ -91,9 +91,9 @@ public class BVHBone {
      */
     public int getNbBones() {
         int num = 1;
-//        if(name.equals("Site")){
-//            return 0;
-//        }
+        // if(name.equals("Site")){
+        // return 0;
+        // }
         if (children != null) {
             for (BVHBone child : children) {
                 num += child.getNbBones();
