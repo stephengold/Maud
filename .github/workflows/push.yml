@@ -21,7 +21,7 @@ jobs:
           archive: false
           path: build/distributions/Maud.tar
 
-  Java26-Windows:
+  Java27-Windows:
     if: contains(toJson(github.event.commits), '[ci skip] ') == false
     runs-on: windows-2025
     steps:
@@ -29,7 +29,7 @@ jobs:
       - uses: actions/setup-java@v6
         with:
           distribution: 'liberica'
-          java-version: 26
+          java-version: 27
       - uses: gradle/actions/setup-gradle@v6
       - run: ./gradlew build javadoc --console=plain --stacktrace
         shell: bash
